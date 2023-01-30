@@ -7,6 +7,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.ezen.allit.domain.Product;
@@ -46,9 +47,9 @@ public class ProductController {
 	
 	/** 상품 상세조회 */
 	@GetMapping("/detail")
-	public String getProduct(Product product, Model model,
+	public String getProduct(@PathVariable int pno, Model model,
 							@PageableDefault(page = 1) Pageable pageable) {
-		Product theProduct = productService.getProduct(product);
+		Product theProduct = productService.getProduct(pno);
 		model.addAttribute("product", theProduct);
 		model.addAttribute("page", pageable.getPageNumber());
 		
