@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/seller/")
 public class SellerController {
 	private final SellerService sellerService;
-	private final ProductService productService;
 
 	// 판매자 입점신청 화면 이동
 	@GetMapping("/apply")
@@ -96,9 +94,9 @@ public class SellerController {
 									String searchKeyword) {		
 		Page<Product> productList = null;
 		if(searchKeyword == null) {
-			productList = productService.getProductList(pageable);
+			productList = sellerService.getProductList(pageable);
 		} else {
-			productList = productService.search(searchKeyword, pageable);
+			productList = sellerService.search(searchKeyword, pageable);
 		}
 		
 		int naviSize = 10; // 페이지네이션 갯수
@@ -118,7 +116,7 @@ public class SellerController {
 	@GetMapping("/product/{pno}")
 	public String getProduct(@PathVariable int pno, Model model,
 							@PageableDefault(page = 1) Pageable pageable) {
-		Product theProduct = productService.getProduct(pno);
+		Product theProduct = sellerService.getProduct(pno);
 		model.addAttribute("product", theProduct);
 		model.addAttribute("page", pageable.getPageNumber());
 		
