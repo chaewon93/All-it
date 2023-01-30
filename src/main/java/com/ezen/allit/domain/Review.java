@@ -1,6 +1,7 @@
 package com.ezen.allit.domain;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,14 +20,15 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"product", "seller", "member"})
 @Entity
 public class Review {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int rvno;
 	private String content;
-	private String image;
+	private List<MultipartFile> reviewImageFile;
+	private String imageName;
 	private int rating;
 	private int hit;
 	@ManyToOne(fetch = FetchType.EAGER)

@@ -12,18 +12,18 @@ import lombok.*;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"member", "ordersDetailList"})
 @Entity
 public class Orders {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE) 
-	private int ono;		 					 // 주문 일련번호
+	@GeneratedValue(strategy = GenerationType.IDENTITY) 
+	private int ono;							 					 // 주문 일련번호
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "mid")
-	private Member member;   					 // 사용자 정보
+	private Member member;   										 // 사용자 정보
 	@OneToMany(mappedBy = "orders", fetch = FetchType.EAGER)
-	@JsonIgnoreProperties({"orders"}) // 무한참조 방지
-	private List<OrdersDetail> ordersDetailList; // 연관관계 설정용
+	@JsonIgnoreProperties({"orders"})
+	private List<OrdersDetail> ordersDetailList = new ArrayList<>(); // 연관관계 설정용
 	@CreationTimestamp
-	private Date regDate;	 					 // 구매일
+	private Date regDate;	 										 // 구매일
 }
