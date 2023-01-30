@@ -7,8 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReplySaveRequestDto {
-	private Long mid;
-	private Long bno;
+public class ReviewSaveRequestDto {
 	private String content;
+	private String imageName;
+	private int rating;
+//	private int mid;
+	private int pno;
+//	private int sid;
 }
