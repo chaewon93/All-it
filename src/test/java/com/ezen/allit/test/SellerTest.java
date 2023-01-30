@@ -1,5 +1,6 @@
 package com.ezen.allit.test;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ public class SellerTest {
 	private SellerRepository sellerRepo;
 	
 	@Test
+	
 	public void insert() {
 		Seller seller = new Seller();
 		seller.setId("1111");
