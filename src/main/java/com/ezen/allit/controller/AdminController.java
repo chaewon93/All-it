@@ -1,5 +1,6 @@
 package com.ezen.allit.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Reply;
+import com.ezen.allit.domain.Role;
+import com.ezen.allit.domain.Seller;
 import com.ezen.allit.repository.QnARepository;
-import com.ezen.allit.repository.ReplyRepository;
+import com.ezen.allit.repository.SellerRepository;
 import com.ezen.allit.service.AdminService;
 
 @Controller
@@ -24,6 +27,9 @@ public class AdminController {
 	
 	@Autowired
 	private QnARepository qnaRepo;
+	
+	@Autowired
+	private SellerRepository sellerRepo;
 	
 	@RequestMapping("/getMemberList")
 	public String getMemberList(Model model) {
@@ -102,7 +108,7 @@ public class AdminController {
 		return "redirect:getQnAList";
 	}
 	
-	@PostMapping("/updateReply")
+	@PostMapping("updateReply")
 	public String updateReply(Reply rep) {
 		
 		System.out.println("---------------- update Reply");
@@ -121,4 +127,27 @@ public class AdminController {
 		
 		return "redirect:getQnAList";
 	}
+	
+	@GetMapping("findSellerList")
+	public String findSellerList(int a, Model model, Role role) {
+		List<Seller> sellerList = new ArrayList<>();
+		if(a==0) {	// 관리자,판매자, 판매대기자 전부 조회
+			sellerList = sellerRepo.findAll();
+		}else if(a==1) {	// 관리자 조회
+			sellerList = sellerRepo.findSellerByRole(role.ADMIN);
+		}else if(a==2) {	// 판매자, 판매대기자 조회
+			sellerList = sellerRepo.findSellerByRoleNot(role.ADMIN);
+			a = 5;
+		}else if(a==3) {	// 판매자 조회
+			sellerList = sellerRepo.findSellerByRole(role.SELLER);
+			a = 5;
+		}else if(a==4) {	// 판매대기자 조회
+			sellerList = sellerRepo.findSellerByRole(role.TEMP);
+			a = 5;
+		}
+		model.addAttribute("sellerList", sellerList);
+		model.addAttribute("a", a);
+		return "admin/findSellerList";
+	}
+
 }
