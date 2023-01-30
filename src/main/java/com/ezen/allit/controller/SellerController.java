@@ -122,7 +122,7 @@ public class SellerController {
 		model.addAttribute("product", theProduct);
 		model.addAttribute("page", pageable.getPageNumber());
 		
-		return "product/detail";
+		return "seller/detail";
 	}
 	
 	/*

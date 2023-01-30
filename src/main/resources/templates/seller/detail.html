@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{ /fragments/seller_header.html :: header }"></div>
+<!-- header replace -->
+
+<!-- 내용 섹션 시작 -->
+<form method="post" th:action="@{ /seller/modify }" id="productDetail" enctype="multipart/form-data">
+	<div class="form-group">
+		<input type="text" th:value="${ product.pno }" name="pno" id="pno">
+		<input type="text" th:value="${ product.imageName }" name="imageName" id="imageName">
+		<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="350">
+		<p th:text="${ product.rating }" style="color: purple;"></p>
+		<p th:text="${ product.hit }" style="color: aqua;"></p>
+		<label for="sel1">카테고리</label>
+		<select class="form-control" name="category" id="category">
+			<option>==카테고리==</option>
+			<option th:value="1">패션</option>
+			<option th:value="2">식품</option>
+			<option th:value="3">주방용품</option>
+			<option th:value="4">생활용품</option>
+			<option th:value="5">인테리어</option>
+			<option th:value="6">가전</option>
+			<option th:value="7">스포츠/레저</option>
+			<option th:value="8">도서/음반/DVD</option>
+			<option th:value="9">반려동물용품</option>
+			<option th:value="10">건강식품</option>	
+		</select>
+		<label for="name">상품명</label>
+		<input type="text" class="form-control" th:value="${ product.name }" name="name" id="name"/>
+		<label for="price">판매가</label>
+		<input type="text" class="form-control" th:value="${ product.price }" name="price" id="price"/>
+		<label for="content">상품설명</label>
+		<textarea class="form-control" th:text="${ product.content }" rows="5" name="content" id="content"></textarea>
+		<label for="image">이미지 업로드</label>
+		<input type="file" class="form-control-file border" name="imageFile" id="imageFile"/>
+	</div>
+	<button type="submit" class="btn btn-light" id="modify">상품수정</button>
+	<button type="button" class="btn btn-light" id="delete">삭제</button>
+</form>
+<!-- 내용 섹션 끝 -->
+
+<!-- 댓글 작성 섹션 시작 -->
+<div class="form-group" id="reply_write">
+	<label for="content">댓글</label>
+	<textarea class="form-control" rows="3" name="reply-content" id="reply-content" placeholder="후기를 작성해주세요"></textarea>
+	<input type="hidden" name="mid" id="mid"><!-- 로그인한 유저의 id, value -->
+	<button type="button" class="btn btn-light" id="reply-write">등록</button>
+</div>
+<!-- 댓글 작성 섹션 끝 -->
+
+<!-- 댓글 출력 섹션 시작 -->
+<div class="form-group" id="reply_list">
+
+</div>
+<!-- 댓글 출력 섹션 끝 -->
+
+<!-- 자바스트립트 섹션 시작 -->
+<script type="text/javascript">
+let index = {
+	init:function() {
+		$("#delete").on("click", ()=>{ // function(){} 대신 ()=>{}를 사용하는 이유는 this를 바인딩 하기 위함
+			this.deleteByPno();
+		});
+		$("#reply-write").on("click", () =>{
+			this.writeReply();
+		});
+	},
+
+	deleteByPno:function() {
+		let pno = $("#pno").val();
+		// ajax는 기본이 비동기 호출이기 때문에 만약 뒤에 다른 요청이 있으면 그것도 같이 수행
+		// ajax가 통신을 성공하고 서버가 json을 리턴하면 자동으로 자바오브젝트로 변환해줌
+		$.ajax({
+			type: "delete",
+			url: "/seller/delete/"+pno,
+			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+		}).done(function(response){ // 처리 성공 시
+			alert('삭제가 완료되었습니다');
+			location.href="/seller/main";
+		}).fail(function(error){ // 처리 실패 시
+			alert(JSON.stringify(error));
+		});
+	},
+	
+	writeReply:function() {
+		let data = {
+			mid: $("#mid").val(),
+			sid: $("#sid").val(), 
+			pno: $("#pno").val(),
+			content: $("#reply-content").val()
+		}
+		console.log("data = " + data);
+		console.log("mid = " + mid);
+		console.log("pno = " + pno);
+		console.log("content = " + content);
+		// ajax는 기본이 비동기 호출이기 때문에 만약 뒤에 다른 요청이 있으면 그것도 같이 수행
+		// ajax가 통신을 성공하고 서버가 json을 리턴하면 자동으로 자바오브젝트로 변환해줌
+		$.ajax({
+			type: "post",
+			url: "/reply/save/",
+			data: JSON.stringify(data),
+			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+		}).done(function(response){ // 처리 성공 시
+			alert('댓글이 작성되었습니다');
+			location.href="/seller/main";
+		}).fail(function(error){ // 처리 실패 시
+			alert(JSON.stringify(error));
+		});
+	}
+}
+
+index.init();
+
+</script>
+<!-- 자바스트립트 섹션 끝 -->
+
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+<!-- footer replace -->
+	
