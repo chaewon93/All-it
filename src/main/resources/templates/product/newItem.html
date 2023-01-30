@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:replace="~{ /fragments/seller_header.html :: header }"></div>
+<div th:replace="~{ /fragments/header.html :: header }"></div>
 <!-- header replace -->
 
 <!-- 내용 섹션 시작 -->
@@ -11,7 +11,7 @@
 	</form> <br>
 	<div class="row">
 		<div class="col-sm-4" th:each="product : ${ productList }">
-			<a th:href="@{ /seller/detail(pno=${ product.pno }) }">
+			<a th:href="@{ /product/detail(pno=${ product.pno }) }">
 				<h2 th:text="${ product.name }"></h2>
 				<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="350">
 				<p th:text="${ product.content }"></p>

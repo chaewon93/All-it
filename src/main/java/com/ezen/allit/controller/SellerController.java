@@ -118,14 +118,14 @@ public class SellerController {
 	/*
 	 *  상품 조회
 	 */
-	@GetMapping("/product/detail")
+	@GetMapping("/seller/detail")
 	public String getProduct(Product product, Model model,
 							@PageableDefault(page = 1) Pageable pageable) {
 		Product theProduct = productService.getProduct(product);
 		model.addAttribute("product", theProduct);
 		model.addAttribute("page", pageable.getPageNumber());
 		
-		return "product/detail";
+		return "seller/detail";
 	}
 	
 	/*
