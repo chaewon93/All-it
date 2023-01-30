@@ -2,14 +2,16 @@ package com.ezen.allit.controller;
 
 import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Product;
@@ -18,36 +20,31 @@ import com.ezen.allit.domain.Seller;
 import com.ezen.allit.service.ProductService;
 import com.ezen.allit.service.SellerService;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
+@RequiredArgsConstructor
+@RequestMapping("/seller/")
 public class SellerController {
-	@Autowired
-	private SellerService sellerService;
-	@Autowired
-	private ProductService productService;
-	
-	// 홈 화면 이동
-	@GetMapping({"", "/"})
-	public String index() {
-		
-		return "index";
-	}	
-	
+	private final SellerService sellerService;
+	private final ProductService productService;
+
 	// 판매자 입점신청 화면 이동
-	@GetMapping("/seller/apply")
+	@GetMapping("/apply")
 	public String applyView() {
 		
 		return "seller/apply";
 	}
 	
 	// 판매자 로그인 화면 이동
-	@GetMapping("/seller/login")
+	@GetMapping("/login")
 	public String loginView() {
 		
 		return "seller/login";
 	}
 		
 	// 판매자 상품등록 화면 이동
-	@GetMapping("/seller/insert")
+	@GetMapping("/product/insert")
 	public String insertView() {
 		
 		return "seller/insert";
@@ -64,7 +61,7 @@ public class SellerController {
 	/*
 	 * 판매자 로그인
 	 */
-	@PostMapping("/seller/login")
+	@PostMapping("/login")
 	public String login(String id, String pwd, HttpSession session, Model model) {
 		Seller seller = sellerService.findByIdAndPwd(id, pwd);
 		if(seller != null) {
@@ -73,7 +70,7 @@ public class SellerController {
 				return "admin/adminMain";
 			}
 			session.setAttribute("seller", seller);
-			return "redirect:/seller/main";
+			return "redirect:/seller/";
 		} else {
 			
 			return "seller/login";
@@ -81,9 +78,9 @@ public class SellerController {
 	}
 	
 	/*
-	 *  판매자 입점신청
+	 * 판매자 입점신청
 	 */
-	@PostMapping("/seller/apply")
+	@PostMapping("/apply")
 	public String apply(Seller seller) {
 		seller.setRole(Role.TEMP);
 		sellerService.saveSeller(seller);
@@ -92,9 +89,9 @@ public class SellerController {
 	}
 	
 	/*
-	 *  판매자 메인화면 이동
+	 * 판매자 메인화면 이동
 	 */
-	@GetMapping("/seller/main")
+	@GetMapping("/")
 	public String mainView(Model model, @PageableDefault(page = 1) Pageable pageable,
 									String searchKeyword) {		
 		Page<Product> productList = null;
@@ -116,12 +113,12 @@ public class SellerController {
 	}
 	
 	/*
-	 *  상품 조회
+	 * 판매자 상품조회
 	 */
-	@GetMapping("/seller/detail")
-	public String getProduct(Product product, Model model,
+	@GetMapping("/product/{pno}")
+	public String getProduct(@PathVariable int pno, Model model,
 							@PageableDefault(page = 1) Pageable pageable) {
-		Product theProduct = productService.getProduct(product);
+		Product theProduct = productService.getProduct(pno);
 		model.addAttribute("product", theProduct);
 		model.addAttribute("page", pageable.getPageNumber());
 		
@@ -129,26 +126,26 @@ public class SellerController {
 	}
 	
 	/*
-	 * 상품등록
+	 * 판매자 상품등록
 	 */
-	@PostMapping("/seller/insert")
+	@PostMapping("/product/insert")
 	public String insertProduct(Product product, MultipartFile imageFile) throws Exception {
 		product.setMdPickyn("n");
-		productService.saveProduct(product, imageFile);
+		sellerService.saveProduct(product, imageFile);
 		
-		return "redirect:/seller/main";
+		return "redirect:/seller/";
 	}
 	
 	/*
-	 * 상품수정
+	 * 판매자 상품수정
 	 */
-	@PostMapping("/seller/modify")
+	@PostMapping("/product/modify")
 	public String modifyProduct(int pno, Product product, MultipartFile imageFile) throws Exception {
-		productService.modifyProduct(pno, product, imageFile);
+		sellerService.modifyProduct(pno, product, imageFile);
 		
-		return "redirect:/seller/main";
+		return "redirect:/seller/";
 	}
-	
+
 }
 
 

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript">
+
+</script>
+</head>
+<body>
+	
+<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
+<tr>
+	<th bgcolor="orange" width="100">번호</th>
+	<th bgcolor="orange" width="200">아이디</th>
+	<th bgcolor="orange" width="150">이름</th>
+	<th bgcolor="orange" width="150">설명</th>
+	<th bgcolor="orange" width="100">이메일</th>
+	<th bgcolor="orange" width="100">주소</th>
+	<th bgcolor="orange" width="100">우편번호</th>
+	<th bgcolor="orange" width="100">전화번호</th>
+	<th bgcolor="orange" width="100">사업자등록번호</th>
+	<th bgcolor="orange" width="100">입점상태</th>
+	<th th:if="${a}==5" bgcolor="orange" width="100">체크<br>
+		<input type="checkbox" name="regAll" id="regAll" class="test">
+	</th>
+</tr>
+
+<tr th:each="seller, state : ${sellerList}">
+	<td th:text="${state.count}"></td>
+	<td th:text="${seller.id}"></td>
+	<td th:text="${seller.name}"></td>
+	<td th:text="${seller.content}"></td>
+	<td th:text="${seller.email}"></td>
+	<td th:text="${seller.address}"></td>
+	<td th:text="${seller.zipcode}"></td>
+	<td th:text="${seller.phone}"></td>
+	<td th:text="${seller.regno}"></td>
+	<td th:text="${seller.role}"></td>
+	<td th:if="${a}==5"><input type="checkbox" name="reg" class="test"></td>
+</tr>
+<tr th:if="${a}==5">	
+	<td colspan="11" align="right"><input type="button" value="승인"/></td>
+</tr>
+</table>
+<a th:href="@{/adminMain}">관리자 메인으로...</a> <br>
+<a th:href="@{/findSellerList(a=1)}">관리자 조회</a> <br>
+<a th:href="@{/findSellerList(a=2)}">전체 판매자 조회</a> <br>
+<a th:href="@{/findSellerList(a=3)}">등록된 판매자 조회</a> <br>
+<a th:href="@{/findSellerList(a=4)}">등록 대기 판매자 조회</a> <br>
+	
+</body>
+</html>

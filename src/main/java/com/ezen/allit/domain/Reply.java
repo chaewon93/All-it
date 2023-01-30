@@ -10,11 +10,11 @@ import lombok.*;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"seller", "product", "member", "qna"})
 @Entity
 public class Reply {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE) 
+	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	private int rno;		 // 답글 일련번호
 	private String content;  // 내용
 	@ManyToOne(fetch = FetchType.EAGER)

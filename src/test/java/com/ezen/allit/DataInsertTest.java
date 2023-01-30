@@ -93,4 +93,30 @@ public class DataInsertTest {
 			qnaRepo.save(qna);
 		}		
 	}
+	
+	@Test
+//	@Disabled
+	public void testDataInsert2() {
+		
+		for(int i=1; i<11; i++) {
+			Seller seller = new Seller();
+			
+			seller.setId("판매자"+i);
+			seller.setPwd("aaaa");
+			seller.setName("판매자"+i);
+			seller.setContent("물건판다");
+			seller.setEmail("www.google"+i+".com");
+			seller.setPhone("010-1122-3344");
+			seller.setAddress("서울시 관악구");
+			seller.setZipcode("123-456");
+			int a = i+8;
+			seller.setRegno("1111-33-22-"+a);
+			if(i<7)
+				seller.setRole(Role.SELLER);
+			else
+				seller.setRole(Role.TEMP);
+			
+			sellerRepo.save(seller);
+		}		
+	}
 }

@@ -38,8 +38,24 @@
 <!-- 상품평 작성 섹션 끝 -->
 
 <!-- 댓글 출력 섹션 시작 -->
-<div class="form-group" id="reply_list">
-
+<div class="card">
+	<div class="card-header">댓글</div>
+	<ul class="list-group" id="reply--box" th:each="review : ${ product.reviewList }">
+		<li class="list-group-item d-flex justify-content-between" id="reply--1">
+	  		<div> 
+	  			<!-- <p th:text="${ review.member.id }"></p> -->
+		  		<span th:text="${ review.rating }"></span>점 <span th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span> <br>
+		  		<!-- <p th:text="${ review.seller.id }"></p> -->
+		  		<!-- <p th:text="${ review.product.name }"></p> -->
+		  		<p th:text="${ review.content }"></p>
+		  		<span>좋아요 </span><span th:text="${ review.hit }"></span>개
+	  		</div>
+	  		<div class="d-flex">
+	  			<!-- <div class="font-italic" th:text="${ review.member.id }"></div> &nbsp; -->
+	  			<button class="badge" style="color: black">삭제</button>
+	  		</div>
+	  	</li>
+	</ul>
 </div>
 <!-- 댓글 출력 섹션 끝 -->
 
@@ -85,9 +101,10 @@ let index = {
 		
 		$("#inCart").on("click", ()=>{ // function(){} 대신 ()=>{}를 사용하는 이유는 this를 바인딩 하기 위함
 			this.insertCart();
+
 		});
-		$("#reply-write").on("click", () =>{
-			this.writeReply();
+		$("#save").on("click", () =>{
+			this.save();
 		});
 	},
 
@@ -116,27 +133,21 @@ let index = {
 		});
 	},
 	
-	writeReply:function() {
+	save:function() {
 		let data = {
-			mid: $("#mid").val(),
-			sid: $("#sid").val(), 
-			pno: $("#pno").val(),
-			content: $("#reply-content").val()
+			pno: $("#save-pno").val(),
+			content: $("#reply-content").val(),
+			rating: $("#rating").val()
 		}
 		console.log("data = " + data);
-		console.log("mid = " + mid);
-		console.log("pno = " + pno);
-		console.log("content = " + content);
-		// ajax는 기본이 비동기 호출이기 때문에 만약 뒤에 다른 요청이 있으면 그것도 같이 수행
-		// ajax가 통신을 성공하고 서버가 json을 리턴하면 자동으로 자바오브젝트로 변환해줌
 		$.ajax({
 			type: "post",
-			url: "/reply/save/",
+			url: '/review/save/${data.pno}',
 			data: JSON.stringify(data),
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 		}).done(function(response){ // 처리 성공 시
 			alert('댓글이 작성되었습니다');
-			location.href="/seller/main";
+			location.href="/seller/";
 		}).fail(function(error){ // 처리 실패 시
 			alert(JSON.stringify(error));
 		});
