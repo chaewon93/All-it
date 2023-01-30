@@ -10,7 +10,7 @@ public interface CustomerCenterService {
 	
 	void insertCustomerCenter(CustomerCenter cus);
 	
-	void updateCusto(int cno);
+	void updateCusto(CustomerCenter cus);
 	
 	void deleteCusto(int cno);
 	
