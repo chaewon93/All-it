@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ezen.allit.domain.Product;
 import com.ezen.allit.dto.ResponseDto;
 import com.ezen.allit.service.ProductService;
 import com.ezen.allit.service.SellerService;

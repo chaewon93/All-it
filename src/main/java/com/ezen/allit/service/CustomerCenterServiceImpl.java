@@ -35,16 +35,21 @@ public class CustomerCenterServiceImpl implements CustomerCenterService {
 	}
 
 	@Override
-	public void updateCusto(int cno) {
+	public void updateCusto(CustomerCenter cus) {
 		
+		CustomerCenter custo = cusRepo.findCustomerCenterByCno(cus.getCno());
 		
+		custo.setCategory(cus.getCategory());
+		custo.setTitle(cus.getTitle());
+		custo.setContent(cus.getContent());
 		
+		cusRepo.save(custo);		
 	}
 
 	@Override
 	public void deleteCusto(int cno) {
-		// TODO Auto-generated method stub
-		
+
+		cusRepo.deleteById(cno);		
 	}
 
 }

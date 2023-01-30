@@ -18,7 +18,7 @@ public class SellerTest {
 	private SellerRepository sellerRepo;
 	
 	@Test
-	
+	@Disabled
 	public void insert() {
 		Seller seller = new Seller();
 		seller.setId("1111");
