@@ -10,7 +10,7 @@ import lombok.*;
 @Entity
 public class CustomerCenter {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int cno;		 // 질문 일련번호
 	private String category; // 질문분류
 	private String title;    // 제목

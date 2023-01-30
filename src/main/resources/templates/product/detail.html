@@ -1,56 +1,61 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:replace="~{ /fragments/seller_header.html :: header }"></div>
+<div th:replace="~{ /fragments/header.html :: header }"></div>
 <!-- header replace -->
 
 <!-- 내용 섹션 시작 -->
-<form method="post" th:action="@{ /seller/modify }" id="productDetail" enctype="multipart/form-data">
+<form method="post" id="productDetail">
 	<div class="form-group">
-		<input type="text" th:value="${ product.pno }" name="pno" id="pno">
-		<input type="text" th:value="${ product.imageName }" name="imageName" id="imageName">
-		<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="350">
-		<p th:text="${ product.rating }" style="color: purple;"></p>
-		<p th:text="${ product.hit }" style="color: aqua;"></p>
+		<input type="hidden" th:value="${ product.pno }" name="pno" id="pno">
+		<input type="hidden" th:value="${ product.imageName }" name="imageName" id="imageName">
+		<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="350"><br>
+		별점 <p th:text="${ product.rating }" style="color: purple;"></p>
+		좋아요 <p th:text="${ product.hit }" style="color: aqua;"></p>
 		<label for="sel1">카테고리</label>
-		<select class="form-control" name="category" id="category">
-			<option>==카테고리==</option>
-			<option th:value="1">패션</option>
-			<option th:value="2">식품</option>
-			<option th:value="3">주방용품</option>
-			<option th:value="4">생활용품</option>
-			<option th:value="5">인테리어</option>
-			<option th:value="6">가전</option>
-			<option th:value="7">스포츠/레저</option>
-			<option th:value="8">도서/음반/DVD</option>
-			<option th:value="9">반려동물용품</option>
-			<option th:value="10">건강식품</option>	
-		</select>
+		<input type="hidden" class="form-control" th:value="${ product.category }" name="category" id="category"/>
+		<input type="text" class="form-control" id="type"/>
 		<label for="name">상품명</label>
 		<input type="text" class="form-control" th:value="${ product.name }" name="name" id="name"/>
 		<label for="price">판매가</label>
 		<input type="text" class="form-control" th:value="${ product.price }" name="price" id="price"/>
+		<label for="quantity">수량</label>
+		<input type="text" class="form-control" th:value="1" name="quantity" id="quantity"/>
 		<label for="content">상품설명</label>
 		<textarea class="form-control" th:text="${ product.content }" rows="5" name="content" id="content"></textarea>
-		<label for="image">이미지 업로드</label>
-		<input type="file" class="form-control-file border" name="imageFile" id="imageFile"/>
 	</div>
-	<button type="submit" class="btn btn-light" id="modify">상품수정</button>
-	<button type="button" class="btn btn-light" id="delete">삭제</button>
+	<input type="submit" class="btn btn-light" id="inCart" value="장바구니">
+	<input type="submit" class="btn btn-light" id="buy" formaction="/orders/insert" value="바로구매">
 </form>
 <!-- 내용 섹션 끝 -->
 
-<!-- 댓글 작성 섹션 시작 -->
+<!-- 상품평 작성 섹션 시작 -->
 <div class="form-group" id="reply_write">
-	<label for="content">댓글</label>
+	<label for="content">상품평</label>
 	<textarea class="form-control" rows="3" name="reply-content" id="reply-content" placeholder="후기를 작성해주세요"></textarea>
 	<input type="hidden" name="mid" id="mid"><!-- 로그인한 유저의 id, value -->
 	<button type="button" class="btn btn-light" id="reply-write">등록</button>
 </div>
-<!-- 댓글 작성 섹션 끝 -->
+<!-- 상품평 작성 섹션 끝 -->
 
 <!-- 댓글 출력 섹션 시작 -->
-<div class="form-group" id="reply_list">
-
+<div class="card">
+	<div class="card-header">댓글</div>
+	<ul class="list-group" id="reply--box" th:each="review : ${ product.reviewList }">
+		<li class="list-group-item d-flex justify-content-between" id="reply--1">
+	  		<div> 
+	  			<!-- <p th:text="${ review.member.id }"></p> -->
+		  		<span th:text="${ review.rating }"></span>점 <span th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span> <br>
+		  		<!-- <p th:text="${ review.seller.id }"></p> -->
+		  		<!-- <p th:text="${ review.product.name }"></p> -->
+		  		<p th:text="${ review.content }"></p>
+		  		<span>좋아요 </span><span th:text="${ review.hit }"></span>개
+	  		</div>
+	  		<div class="d-flex">
+	  			<!-- <div class="font-italic" th:text="${ review.member.id }"></div> &nbsp; -->
+	  			<button class="badge" style="color: black">삭제</button>
+	  		</div>
+	  	</li>
+	</ul>
 </div>
 <!-- 댓글 출력 섹션 끝 -->
 
@@ -58,51 +63,91 @@
 <script type="text/javascript">
 let index = {
 	init:function() {
-		$("#delete").on("click", ()=>{ // function(){} 대신 ()=>{}를 사용하는 이유는 this를 바인딩 하기 위함
-			this.deleteByPno();
+		let type = $("#category").val();
+		if(type != null) {
+			switch(type) {
+			case '1' :
+				$("#type").val("패션");
+				break;
+			case '2' :
+				$("#type").val("식품");
+				break;
+			case '3' :
+				$("#type").val("주방용품");
+				break;
+			case '4' :
+				$("#type").val("생활용품");
+				break;
+			case '5' :
+				$("#type").val("인테리어");
+				break;
+			case '6' :
+				$("#type").val("가전");
+				break;
+			case '7' :
+				$("#type").val("스포츠/레저");
+				break;
+			case '8' :
+				$("#type").val("도서/음반/DVD");
+				break;
+			case '9' :
+				$("#type").val("반려동물용품");
+				break;
+			case '10' :
+				$("#type").val("건강식품");
+				break;
+			}
+		}
+		
+		$("#inCart").on("click", ()=>{ // function(){} 대신 ()=>{}를 사용하는 이유는 this를 바인딩 하기 위함
+			this.insertCart();
+
 		});
-		$("#reply-write").on("click", () =>{
-			this.writeReply();
+		$("#save").on("click", () =>{
+			this.save();
 		});
 	},
 
-	deleteByPno:function() {
-		let pno = $("#pno").val();
+	insertCart:function() {
 		// ajax는 기본이 비동기 호출이기 때문에 만약 뒤에 다른 요청이 있으면 그것도 같이 수행
 		// ajax가 통신을 성공하고 서버가 json을 리턴하면 자동으로 자바오브젝트로 변환해줌
 		$.ajax({
-			type: "delete",
-			url: "/seller/delete/"+pno,
+			url: "/cart/insert",
+			type: "post",
+			data: {
+				//mid: $("#mid").val(),
+				quantity : $("#quantity").val()
+			},
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 		}).done(function(response){ // 처리 성공 시
-			alert('삭제가 완료되었습니다');
-			location.href="/seller/main";
+			alert("[처리결과]"+response);
+			if(response == 1) {
+				alert('상품이 장바구니에 담겼습니다.');
+				//location.href="/seller/main";
+			} else if(response == -1) {
+				alert('로그인이 필요한 서비스입니다.');
+				location.href="/member/login";
+			}	
 		}).fail(function(error){ // 처리 실패 시
 			alert(JSON.stringify(error));
 		});
 	},
 	
-	writeReply:function() {
+	save:function() {
 		let data = {
-			mid: $("#mid").val(),
-			sid: $("#sid").val(), 
-			pno: $("#pno").val(),
-			content: $("#reply-content").val()
+			pno: $("#save-pno").val(),
+			content: $("#reply-content").val(),
+			rating: $("#rating").val()
 		}
 		console.log("data = " + data);
-		console.log("mid = " + mid);
-		console.log("pno = " + pno);
-		console.log("content = " + content);
-		// ajax는 기본이 비동기 호출이기 때문에 만약 뒤에 다른 요청이 있으면 그것도 같이 수행
-		// ajax가 통신을 성공하고 서버가 json을 리턴하면 자동으로 자바오브젝트로 변환해줌
 		$.ajax({
 			type: "post",
-			url: "/reply/save/",
+			url: '/review/save/${data.pno}',
 			data: JSON.stringify(data),
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 		}).done(function(response){ // 처리 성공 시
 			alert('댓글이 작성되었습니다');
-			location.href="/seller/main";
+			location.href="/seller/";
 		}).fail(function(error){ // 처리 실패 시
 			alert(JSON.stringify(error));
 		});

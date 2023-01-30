@@ -18,14 +18,14 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"product", "seller", "member"})
 @Entity
 public class Review {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int rvno;
 	private String content;
-	private String image;
+	private String imageName;
 	private int rating;
 	private int hit;
 	@ManyToOne(fetch = FetchType.EAGER)

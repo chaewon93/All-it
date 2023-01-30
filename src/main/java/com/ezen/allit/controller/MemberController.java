@@ -14,9 +14,9 @@ import org.springframework.web.bind.support.SessionStatus;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.service.MemberService;
 
-@SessionAttributes("member")
 @Controller
 @RequestMapping("/member/")
+@SessionAttributes("member")
 public class MemberController {
 	
 	@Autowired

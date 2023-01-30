@@ -17,7 +17,7 @@
 		<ul class="nav justifiy-content-end"> 
 			<li class="nav-item"><a class="nav-link" th:href="@{ / }">사용자페이지</a></li>
 			<li class="nav-item"><a class="nav-link" th:href="@{ / }">마이페이지</a></li>
-			<li class="nav-item"><a class="nav-link" th:href="@{ /logout }">로그아웃</a></li>
+			<li class="nav-item"><a class="nav-link" th:href="@{ /seller/logout }">로그아웃</a></li>
 		</ul>
 		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
 			<a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a> <br><br>
@@ -26,8 +26,8 @@
 		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 			<div class="collapse navbar-collapse" id="collapsibleNavbar">
 				<ul class="navbar-nav">
-					<li class="nav-item"><a class="nav-link" th:href="@{ /seller/main }">상품조회</a></li>
-					<li class="nav-item"><a class="nav-link" th:href="@{ /seller/insert }">상품등록</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /seller/ }">상품조회</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /seller/product/insert }">상품등록</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{ / }">QnA목록</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{ / }">신고목록</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{ / }">판매통계</a></li>
