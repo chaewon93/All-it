@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{ /fragments/login_header.html :: header }"></div>
+<!-- header replace -->
+
+<!-- 내용 섹션 시작 -->
+<form method="post" action="/seller/apply">
+	<div class="form-group">
+		<input type="text" class="form-control" placeholder="아이디" name="id" id="id">
+	</div>
+	<div class="form-group">
+		<input type="password" class="form-control" placeholder="비밀번호" name="pwd" id="pwd">
+	</div>
+	<div class="form-group">
+		<input type="text" class="form-control" placeholder="비밀번호 확인" name="pwd2" id="pwd2">
+	</div>
+	<div class="form-group">
+		<input type="text" class="form-control" placeholder="판매자명" name="name" id="name">
+	</div>
+	<div class="form-group">
+		<input type="text" class="form-control" placeholder="브랜드 설명" name="content" id="content">
+	</div>
+	<div class="form-group">
+		<input type="text" class="form-control" placeholder="이메일" name="email" id="email">
+	</div>
+	<div class="form-group">
+		<input type="text" class="form-control" placeholder="전화번호" name="phone" id="phone">
+	</div>
+	<div class="form-group">
+		<input type="text" class="form-control" placeholder="주소" name="address" id="address">
+	</div>
+	<div class="form-group">
+		<input type="text" class="form-control" placeholder="우편번호" name="zipcode" id="zipcode">
+	</div>
+	<div class="form-group">
+		<input type="text" class="form-control" placeholder="사업자번호" name="regno" id="regno">
+	</div>
+	<button type="submit" class="btn btn-primary">입점신청</button>
+</form>
+<!-- 내용 섹션 끝 -->
+
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+<!-- footer replace -->

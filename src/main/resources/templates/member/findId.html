@@ -1,0 +1,35 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<body th:align="center">
+	<div class="jumbotron text-center"
+		style="margin-bottom: 0; background-color: white">
+		<h1>
+			<img class="logo" th:src="@{ /img/logo.jpg }">
+		</h1>
+	</div>
+<div id="wrap">
+  <h1>아이디 찾기 결과</h1>
+  <form method=post name=formm style="margin-right:0 " action="id_check_form" >
+    <!-- User ID <input type=text name="id" th:value="${id}">   --> 
+    <div style="margin-top: 20px" th:if="${message == 1}">요청하신 ID는 <b th:text="${id}"></b>입니다.</div>   
+    <div style="margin-top: 20px" th:if="${message == -1}">가입되지 않은 정보입니다.</div>
+    <br><input type="button" value="다시 찾기" class="cancel" onclick="reFind()">
+    <input type="button" value="확인" class="ok" onclick="idok()">
+  </form>
+</div>  
+
+<script type="text/javascript">
+function idok(){
+	self.close();
+}
+function reFind(){
+	self.history.go(-1);
+}
+</script>
+</body>
+</html>

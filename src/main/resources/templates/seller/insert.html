@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{ /fragments/seller_header.html :: header }"></div>
+<!-- header replace -->
+
+<!-- 내용 섹션 시작 -->
+<form method="post" th:action="@{ /seller/insert }" enctype="multipart/form-data">
+	<div class="form-group">
+		<label for="sel1">카테고리</label>
+		<select class="form-control" name="category" id="category">
+			<option>==카테고리==</option>
+			<option th:value="1">패션</option>
+			<option th:value="2">식품</option>
+			<option th:value="3">주방용품</option>
+			<option th:value="4">생활용품</option>
+			<option th:value="5">인테리어</option>
+			<option th:value="6">가전</option>
+			<option th:value="7">스포츠/레저</option>
+			<option th:value="8">도서/음반/DVD</option>
+			<option th:value="9">반려동물용품</option>
+			<option th:value="10">건강식품</option>	
+		</select>
+		<label for="name">상품명</label>
+		<input type="text" class="form-control" name="name" id="name"/>
+		<label for="price">판매가</label>
+		<input type="text" class="form-control" name="price" id="price"/>
+		<label for="content">상품설명</label>
+		<textarea class="form-control" rows="5" name="content" id="content"></textarea>
+		<label for="image">이미지 업로드</label>
+		<input type="file" class="form-control-file border" name="imageFile" id="imageFile">
+	</div>
+	<button type="submit" class="btn btn-primary">상품등록</button>
+</form>
+<!-- 내용 섹션 끝 -->
+
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+<!-- footer replace -->

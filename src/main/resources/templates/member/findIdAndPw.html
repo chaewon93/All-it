@@ -1,0 +1,98 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<body th:align="center">
+	<div class="jumbotron text-center"
+		style="margin-bottom: 0; background-color: white">
+		<h1>
+			<img class="logo" th:src="@{ /img/logo.jpg }">
+		</h1>
+	</div>
+<div id="wrap" align="center">
+  	<h1>아이디, 비밀번호 찾기</h1>
+  	<br>
+	<form name="findId" id="findId" action="findId" method="post">
+	<table>
+	<tr>
+		<td align="right"><label> 이름</label></td>
+		<td><input type="text" name="name" id="name" value=""></td>
+	</tr>	
+	<tr>
+		<td align="right"><label> 이메일</label></td>
+		<td><input type="text" name="email" id="email" value=""></td>
+	</tr>
+	<tr>
+		<td align="center" colspan="2">
+			<input type="button" value="아이디 찾기" onclick="findMemberId()">
+		</td>
+	</tr>
+	</table>
+	</form>
+	<hr>
+	
+	
+	<form name="findPW" id="findPW" action="findPw" method="post">
+	<table>
+	<tr>
+		<td align="right"><label> 아이디</label></td>
+		<td><input type="text" name="id" id="id2" value=""></td>
+	</tr>	
+	<tr>
+		<td align="right"><label> 이름</label></td>
+		<td><input type="text" name="name" id="name2" value=""></td>
+	</tr>	
+	<tr>
+		<td align="right"><label> 이메일</label></td>
+		<td><input type="text" name="email" id="email2" value=""></td>
+	</tr>
+	<tr>
+		<td align="center" colspan="2">
+			<input type="button" value="비밀번호 찾기" onclick="findPassword()">
+		</td>
+	</tr>
+	</table>
+	</form>
+</div>
+
+<script type="text/javascript">
+/* 아이디 찾기 */
+function findMemberId() {
+	var name = $("#name").val();
+	var email = $("#email").val();
+	
+	if ($("#name").val()=="") {
+		alert("이름을 입력해 주세요.");
+		return false;
+	} else if ($("#email").val()=="") {
+		alert("이메일을 입력해 주세요.");
+		return false;
+	} else {
+		var form = $("#findId")
+		form.action="findId";  // 컨트롤러로 요청 URL설정
+		form.submit();
+	}
+}
+
+/* 비밀번호 찾기 */
+function findPassword() {
+	if ($("#id2").val() == "") {
+		alert("아이디를 입력해 주세요.");
+		return false;
+	} else if ($("#name2").val() == "") {
+		alert("이름을 입력해 주세요.");
+		return false;
+	} else if ($("#email2").val() == "") {
+		alert("이메일을 입력해 주세요.");
+		return false;
+	} else {
+		$("#findPW").action = "findPw";  // 비밀번호 찾기 URL
+		$("#findPW").submit();
+	}
+}
+</script>
+</body>
+</html>

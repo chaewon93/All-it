@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	
+<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
+<tr>
+	<th bgcolor="orange" width="100">번호</th>
+	<th bgcolor="orange" width="200">아이디</th>
+	<th bgcolor="orange" width="150">이름</th>
+	<th bgcolor="orange" width="150">성별</th>
+	<th bgcolor="orange" width="100">등급</th>
+	<th bgcolor="orange" width="100">주소</th>
+	<th bgcolor="orange" width="100">우편번호</th>
+	<th bgcolor="orange" width="100">전화번호</th>
+</tr>
+
+<tr th:each="member, state : ${memberList}">
+	<td th:text="${state.count}"></td>
+	<td th:text="${member.id}"></td>
+	<td th:text="${member.name}"></td>
+	<td th:text="${member.gender}"></td>
+	<td th:text="${member.grade}"></td>
+	<td th:text="${member.address}"></td>
+	<td th:text="${member.zipcode}"></td>
+	<td th:text="${member.phone}"></td>
+</tr>
+
+</table>
+<a th:href="@{/adminMain}">관리자 메인으로...</a>
+	
+</body>
+</html>

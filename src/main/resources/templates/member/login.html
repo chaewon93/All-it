@@ -1,0 +1,48 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+
+<head>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+
+<body th:align="center">
+<h1>로그인</h1>
+<form th:action="login" method="post">
+<table th:align="center" border="1" th:cellpadding="0" th:cellspacing="0">
+	<tr>
+		<td>아이디</td>
+		<td><input type="text" name="id"/></td>
+	</tr>
+	<tr>
+		<td>비밀번호</td>
+		<td><input type="password" name="pwd"/></td>
+	</tr>
+	<tr>
+		<td colspan="2" align="center">
+			<input type="submit" value="로그인"/>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" align="center">
+			<!-- <a th:href="@{ /member/findIdAndPw }">아이디/비밀번호 찾기</a> -->
+			<input type="button" value="아이디/비밀번호 찾기" onclick="find_form()">
+		</td>
+	</tr>
+</table>
+</form>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+/* 아이디, 비밀번호 찾기 화면 요청 */
+function find_form() {
+	var url = "findIdAndPw";
+	
+	window.open(url, "_blank_", 
+		"toolbar=no, menubar=no, scrollbars=yes, resizable=no, width=550, height=550");
+}
+</script>
+</body>
+
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>

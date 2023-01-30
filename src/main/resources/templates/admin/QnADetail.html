@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<table>
+	<tr>
+		<th>작성자</th>
+		<td th:text="${qna.member.id}"></td>
+	</tr>
+	<tr>
+		<th>내용</th>
+		<td th:text="${qna.content}"></td>
+	</tr>
+	<tr th:if="${qna.status} == '1'">
+		<form id="rep" name="rep" action="/updateReply" method="post">
+			<input type="hidden" name="rno" th:value="${qna.reply?.rno}" >
+			<th>답변</th>
+			<td><textarea name="content" cols="40" rows="10" th:text="${qna.reply?.content}"></textarea></td>
+			<td><input type="submit" value="수정"></td>
+		</form>		
+	</tr>
+	<tr th:if="${qna.status} == '0'">
+		<form id="rep" name="rep" action="/insertReply" method="post">
+			<input type="hidden" name="qno" th:value="${qna.qno}" >
+			<th>답변</th>
+			<td><textarea name="content" rows="10" cols="40"></textarea></td>   
+			<td><input type="submit" value="저장"></td> 
+		</form>		
+	</tr>	
+	<tr>
+		<th>
+		<a th:href="@{/deleteReply(qno=${qna.qno})}" th:text="답변삭제"></a>
+		</th>
+	</tr>
+
+</table>
+
+</body>
+</html>

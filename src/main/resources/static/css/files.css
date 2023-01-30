@@ -1,0 +1,44 @@
+.jumbotron text-center {
+	background-color: rgba(255, 209, 187);
+}
+
+.logo {
+	width: 200px;
+	top: 175px;
+	right: 12px;
+	margin: 0;
+}
+
+.fakeimg {
+	height: 200px;
+	background: #aaa;
+}
+
+.navbar-nav2 .nav-item {
+	display: inline-block;
+}
+
+.footer-container p {
+	font: monospace;
+}
+
+.search {
+	position: relative;
+	width: 380px;
+}
+
+.search input {
+	width: 100%;
+	border: 1px solid #bbb;
+	border-radius: 8px;
+	padding: 10px 12px;
+	font-size: 14px;
+}
+
+.search img {
+	position : absolute;
+	width: 17px;
+	top: 10px;
+	right: 12px;
+	margin: 0;
+}
