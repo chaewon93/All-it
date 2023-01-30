@@ -10,10 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Product;
+import com.ezen.allit.dto.ResponseDto;
 import com.ezen.allit.service.ProductService;
 import com.ezen.allit.service.SellerService;
-
-import dto.ResponseDto;
 
 @RestController
 public class SellerApiController {

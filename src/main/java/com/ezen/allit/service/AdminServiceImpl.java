@@ -99,6 +99,7 @@ public class AdminServiceImpl implements AdminService {
 		int rno = qna.getReply().getRno();
 		
 		qna.setReply(null);
+		qna.setStatus("0");
 		
 		repRepo.deleteById(rno);
 	}

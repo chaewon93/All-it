@@ -51,6 +51,8 @@ public class CustomerCenterController {
 
 		if(cate.equals("전체")) {
 			cate = "자주하는질문";
+		}else if(cate.equals("모두 보기")) {
+			return "redirect:getCusto";
 		}
 		List<CustomerCenter> custoList = cusRepo.findCustomerCenterByCategoryContaining(cate);
 		
@@ -59,10 +61,19 @@ public class CustomerCenterController {
 		return "customerCenter/customerCenter";
 	}
 	
-	@PostMapping("/updateCusto")
-	public String updateCusto(int cno) {
+	@GetMapping("/getCustoDetail")
+	public String getCustoDetail(int cno, Model model) {
+		CustomerCenter custo = cusRepo.findCustomerCenterByCno(cno);
 		
-		cusService.updateCusto(cno);
+		model.addAttribute("custo", custo);
+		
+		return "/customerCenter/custoDetail";
+	}
+	
+	@PostMapping("/updateCusto")
+	public String updateCusto(CustomerCenter cus) {
+		
+		cusService.updateCusto(cus);
 		
 		return "redirect:getCusto";
 	}
@@ -70,7 +81,8 @@ public class CustomerCenterController {
 	@GetMapping("/deleteCusto")
 	public String deleteCusto(int cno) {
 		
-		return "/";
+		cusService.deleteCusto(cno);
+		return "redirect:getCusto";
 	}
 
 }

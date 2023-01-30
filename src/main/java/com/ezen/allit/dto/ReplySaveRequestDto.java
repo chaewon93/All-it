@@ -1,4 +1,4 @@
-package dto;
+package com.ezen.allit.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
