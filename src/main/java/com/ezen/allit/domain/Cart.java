@@ -1,11 +1,7 @@
 package com.ezen.allit.domain;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.*;
 
@@ -25,3 +21,4 @@ public class Cart {
 	@JoinColumn(name = "pno")
 	private Product product; // product 정보
 }
+

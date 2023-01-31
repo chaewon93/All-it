@@ -24,13 +24,13 @@
 				</tr>
 
 				<tr th:each="cartVO : ${cartList}">
-					<td><a th:href="@{ product_detail?pseq=${cartVO.pseq} }">
+					<!-- <td><a th:href="@{ product_detail?pseq=${cartVO.pseq} }">
 							<h3 th:text="${cartVO.pname}"></h3>
 					</a></td>
 					<td th:text="${cartVO.quantity}"></td>
 					<td th:text="${cartVO.price2*cartVO.quantity}" type="currency" /></td>
 					<td th:text="${cartVO.indate}" type="date" /></td>
-					<td><input type="checkbox" name="cseq" id="cseq" th:value="${cartVO.cseq}"></td>
+					<td><input type="checkbox" name="cseq" id="cseq" th:value="${cartVO.cseq}"></td> -->
 				</tr>
 
 				<tr>
