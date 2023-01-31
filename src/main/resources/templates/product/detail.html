@@ -6,6 +6,7 @@
 <!-- 내용 섹션 시작 -->
 <form method="post" id="productDetail">
 	<div class="form-group">
+		<input type="hidden" th:value="${ session['member']?.id }" name="mid" id="mid"><!-- th:if="${ session['member'].id } ne null" -->
 		<input type="hidden" th:value="${ product.pno }" name="pno" id="pno">
 		<input type="hidden" th:value="${ product.imageName }" name="imageName" id="imageName">
 		<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="350"><br>
@@ -13,17 +14,17 @@
 		좋아요 <p th:text="${ product.hit }" style="color: aqua;"></p>
 		<label for="sel1">카테고리</label>
 		<input type="hidden" class="form-control" th:value="${ product.category }" name="category" id="category"/>
-		<input type="text" class="form-control" id="type"/>
+		<input type="text" class="form-control" id="type" disabled="disabled"/>
 		<label for="name">상품명</label>
-		<input type="text" class="form-control" th:value="${ product.name }" name="name" id="name"/>
+		<input type="text" class="form-control" th:value="${ product.name }" name="name" id="name" disabled="disabled"/>
 		<label for="price">판매가</label>
-		<input type="text" class="form-control" th:value="${ product.price }" name="price" id="price"/>
+		<input type="text" class="form-control" th:value="${ product.price }" name="price" id="price" disabled="disabled"/>
 		<label for="quantity">수량</label>
-		<input type="text" class="form-control" th:value="1" name="quantity" id="quantity"/>
+		<input type="number" class="form-control" th:value="1" name="quantity" id="quantity"/>
 		<label for="content">상품설명</label>
-		<textarea class="form-control" th:text="${ product.content }" rows="5" name="content" id="content"></textarea>
+		<textarea class="form-control" th:text="${ product.content }" rows="5" name="content" id="content" disabled="disabled"></textarea>
 	</div>
-	<input type="submit" class="btn btn-light" id="inCart" value="장바구니">
+	<input type="submit" class="btn btn-light" id="inCart" formaction="/cart/insert" value="장바구니">
 	<input type="submit" class="btn btn-light" id="buy" formaction="/orders/insert" value="바로구매">
 </form>
 <!-- 내용 섹션 끝 -->
@@ -103,9 +104,9 @@ let index = {
 			this.insertCart();
 
 		});
-		$("#save").on("click", () =>{
-			this.save();
-		});
+//		$("#save").on("click", () =>{
+//			this.save();
+//		});
 	},
 
 	insertCart:function() {
@@ -114,25 +115,29 @@ let index = {
 		$.ajax({
 			url: "/cart/insert",
 			type: "post",
-			data: {
-				//mid: $("#mid").val(),
+			data: JSON.stringify({
+				mid: $("#mid").val(),
+				pno: $("#pno").val(),
 				quantity : $("#quantity").val()
-			},
-			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}),
+			dataType: "json",
+			contentType: "application/json; charset=utf-8" // body 데이터의 타입을 표시
+			
 		}).done(function(response){ // 처리 성공 시
-			alert("[처리결과]"+response);
+//			alert("[처리결과]"+response);
 			if(response == 1) {
 				alert('상품이 장바구니에 담겼습니다.');
-				//location.href="/seller/main";
+				//self.history.go(-1);
 			} else if(response == -1) {
 				alert('로그인이 필요한 서비스입니다.');
-				location.href="/member/login";
+				location.href="/member-login";
 			}	
 		}).fail(function(error){ // 처리 실패 시
-			alert(JSON.stringify(error));
+			//alert("[error]"+JSON.stringify(error));
+			console.log("[error]"+JSON.stringify(error));
 		});
 	},
-	
+/*	
 	save:function() {
 		let data = {
 			pno: $("#save-pno").val(),
@@ -151,7 +156,7 @@ let index = {
 		}).fail(function(error){ // 처리 실패 시
 			alert(JSON.stringify(error));
 		});
-	}
+	}*/
 }
 
 index.init();

@@ -43,8 +43,6 @@ public class Product {
 	@OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"product"})
 	private List<Reply> replyList = new ArrayList<>();	 // 후기정보
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Cart cart;			 	   					 // 연관관계 설정용
 	@ManyToOne(fetch = FetchType.LAZY)	
 	private Orders orders;			 				     // 연관관계 설정용
 	@ManyToOne(fetch = FetchType.LAZY)

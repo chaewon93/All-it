@@ -46,7 +46,7 @@ public class ProductController {
 	/** 베스트상품 조회 */
 	
 	/** 상품 상세조회 */
-	@GetMapping("/detail")
+	@GetMapping("/detail/{pno}")
 	public String getProduct(@PathVariable int pno, Model model,
 							@PageableDefault(page = 1) Pageable pageable) {
 		Product theProduct = productService.getProduct(pno);

@@ -1,17 +1,13 @@
 package com.ezen.allit.domain;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.*;
 
 @Getter
 @Setter
-@ToString(exclude = {"member", "productList"})
+@ToString(exclude = {"member"})
 @Entity
 public class Cart {
 	
@@ -22,7 +18,11 @@ public class Cart {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "mid")
 	private Member member;	   			 // mno, mname
-	@OneToMany(mappedBy = "cart", fetch = FetchType.EAGER)
-	@JsonIgnoreProperties({"cart"}) // 무한참조 방지
-	private List<Product> productList = new ArrayList<>();   // pno, pname, price2
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "pno")
+	private Product product;   			// pno, pname, price2
+
 }
+
+
+

@@ -28,12 +28,7 @@ public class MemberController {
 		return "index";
 	}
 */	
-	/** 로그인 페이지 */
-	@GetMapping("/login")
-	public void loginView() {
 		
-	}
-	
 	/** 로그인 기능 처리 */
 	@PostMapping("/login")
 	public String login(Member member, Model model) {
@@ -50,14 +45,8 @@ public class MemberController {
 			
 		} else {
 			// 비밀번호 불일치시 로그인 화면으로 이동
-			return "redirect:login";
+			return "redirect:/member-login";
 		}
-	}
-	
-	/** 아이디/비밀번호 찾기 창 */
-	@GetMapping("/findIdAndPw")
-	public void findForm() {
-		
 	}
 	
 	/** 아이디 찾기 기능 처리 */
@@ -92,18 +81,13 @@ public class MemberController {
 		return "member/findPw";
 	}
 	
-	/** 회원가입 페이지 */
-	@GetMapping("/join")
-	public void joinView() {
-		
-	}
 	
 	/** 회원가입 기능 처리 */
 	@PostMapping("/join")
 	public String join(Member member) {
 		memberService.saveMember(member);
 		
-		return "redirect:login";
+		return "redirect:/member-login";
 	}
 	
 	/** 아이디 중복 확인 처리 */
