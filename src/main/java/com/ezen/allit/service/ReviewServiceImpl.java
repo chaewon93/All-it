@@ -22,9 +22,13 @@ public class ReviewServiceImpl implements ReviewService {
 	/*
 	 * 리뷰작성
 	 */
+//	@Transactional
+//	public void saveReview(ReviewSaveRequestDto reviewSaveRequestDto) {
+//		reviewRepo.saveReview(reviewSaveRequestDto.getContent(), reviewSaveRequestDto.getImageName(), reviewSaveRequestDto.getRating(), reviewSaveRequestDto.getPno(), reviewSaveRequestDto.getSid());
+//	}
 	@Transactional
 	public void saveReview(ReviewSaveRequestDto reviewSaveRequestDto) {
-		reviewRepo.saveReview(reviewSaveRequestDto.getContent(), reviewSaveRequestDto.getImageName(), reviewSaveRequestDto.getRating(), reviewSaveRequestDto.getPno(), reviewSaveRequestDto.getSid());
+		reviewRepo.saveReview(reviewSaveRequestDto.getContent(), reviewSaveRequestDto.getImageName(), reviewSaveRequestDto.getRating(), reviewSaveRequestDto.getPno());
 	}
 	
 	/*

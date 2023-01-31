@@ -2,6 +2,8 @@ package com.ezen.allit.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Product;
@@ -13,11 +15,16 @@ public interface SellerService {
 	
 	void saveSeller(Seller seller);
 	
-	Page<Product> getProductList(Pageable pageable);
+//	Page<Seller> getProductList(Pageable pageable, Seller seller);
+	
+//	Page<Seller> search(Seller seller, String searchKeyword, Pageable pageable);
+	
+	Page<Product> getProductList(Pageable pageable, Seller seller);
+	
+	Page<Product> search(Seller seller, String searchKeyword, Pageable pageable);
 	
 	Product getProduct(int pno);
 	
-	Page<Product> search(String searchKeyword, Pageable pageable);
 	
 	Seller getSeller(Seller seller);
 

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,7 +44,7 @@ public class SellerServiceImpl implements SellerService {
 //		String rawPwd = seller.getPwd();		// 입점신청 화면에서 넘겨받은 pwd
 //		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
 //		seller.setPwd(encPwd);
-//		seller.setRole(Role.SELLER);
+//		seller.setRole(Role.TEMP);
 //		System.out.println("seller = " + seller);
 //		sellerRepo.save(seller);
 //	}
@@ -59,12 +60,15 @@ public class SellerServiceImpl implements SellerService {
 	 * 판매자 상품목록조회
 	 */
 	@Transactional
-	public Page<Product> getProductList(Pageable pageable) {
+	public Page<Product> getProductList(Pageable pageable, Seller seller) {
 		int page = pageable.getPageNumber() - 1;
 		int pageSize = 3;
-		
+		System.out.println("서비스 메인화면 처리 중 seller = " + seller);
+//		Page<Seller> product = 
+//				sellerRepo.findAllById(seller.getId(), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "product.pno")));		
 		Page<Product> product = 
-				productRepo.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+				productRepo.findAllBySeller(seller.getId(), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+		System.out.println("서비스 메인화면 처리 중 product = " + product);
 		
         System.out.println("product.getContent() = " + product.getContent()); 			  // 요청 페이지에 해당하는 글
         System.out.println("product.getTotalElements() = " + product.getTotalElements()); // 전체 글갯수
@@ -90,15 +94,25 @@ public class SellerServiceImpl implements SellerService {
 	 * 판매자 상품검색
 	 */
 	@Transactional
-	public Page<Product> search(String searchKeyword, Pageable pageable) {
+	public Page<Product> search(Seller seller, String searchKeyword, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
 		int pageSize = 3;
 		
 		Page<Product> product = 
-				productRepo.findByNameContaining(searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+				productRepo.findByNameContaining(seller.getId(), searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 		
 		return product;
 	}
+//	@Transactional
+//	public Page<Seller> search(Seller seller, String searchKeyword, Pageable pageable) {
+//		int page = pageable.getPageNumber() - 1;
+//		int pageSize = 3;
+//		
+//		Page<Seller> product = 
+//				sellerRepo.findByNameContaining(seller.getId(), searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "product.pno")));
+//		
+//		return product;
+//	}
 	
 	/*
 	 * 판매자 상품등록

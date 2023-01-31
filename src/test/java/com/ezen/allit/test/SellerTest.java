@@ -19,17 +19,19 @@ public class SellerTest {
 	
 	@Test
 	public void insert() {
-		Seller seller = new Seller();
-		seller.setId("1111");
-		seller.setPwd("1111");
-		seller.setName("판매자1");
-		seller.setEmail("seller@seller.com");
-		seller.setPhone("010-1111-1111");
-		seller.setAddress("서울시 관악구 신림동");
-		seller.setZipcode("111-111");
-		seller.setRegno("1111-33-22-8");
-		seller.setContent("갓김치를 파는 사람입니다.");
-		seller.setRole(Role.SELLER);
-		sellerRepo.save(seller);
+		for(int i=1; i<=9; i++) {
+			Seller seller = new Seller();
+			seller.setId("a"+i);
+			seller.setPwd("a"+i);
+			seller.setName("판매자"+i);
+			seller.setEmail("seller@seller.com");
+			seller.setPhone("010-1111-1111");
+			seller.setAddress("서울시 관악구 신림동");
+			seller.setZipcode("111-111");
+			seller.setRegno("1111-33-22-8");
+			seller.setContent("갓김치를 파는 사람입니다.");
+			seller.setRole(Role.SELLER);
+			sellerRepo.save(seller);
+		}
 	}
 }
