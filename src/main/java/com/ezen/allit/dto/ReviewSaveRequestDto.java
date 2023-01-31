@@ -13,5 +13,5 @@ public class ReviewSaveRequestDto {
 	private int rating;
 //	private int mid;
 	private int pno;
-//	private int sid;
+	private int sid;
 }

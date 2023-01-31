@@ -24,7 +24,15 @@ public class ReviewServiceImpl implements ReviewService {
 	 */
 	@Transactional
 	public void saveReview(ReviewSaveRequestDto reviewSaveRequestDto) {
-		reviewRepo.saveReview(reviewSaveRequestDto.getContent(), reviewSaveRequestDto.getImageName(), reviewSaveRequestDto.getRating(), reviewSaveRequestDto.getPno());
+		reviewRepo.saveReview(reviewSaveRequestDto.getContent(), reviewSaveRequestDto.getImageName(), reviewSaveRequestDto.getRating(), reviewSaveRequestDto.getPno(), reviewSaveRequestDto.getSid());
+	}
+	
+	/*
+	 * 리뷰삭제
+	 */
+	@Transactional
+	public void deleteReview(int rvno) {
+		reviewRepo.deleteById(rvno);
 	}
 	
 //	/*

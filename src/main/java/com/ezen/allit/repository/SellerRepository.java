@@ -1,6 +1,7 @@
 package com.ezen.allit.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,6 +12,8 @@ public interface SellerRepository extends JpaRepository<Seller, String> {
 
 	// 판매자 로그인
 	Seller findByIdAndPwd(String id, String pwd);
+	
+	Optional<Seller> findById(String id);
 	
 	// 등록대기 판매자, 등록완료 판매자 조회
 	List<Seller> findSellerByRoleNot(Role role);

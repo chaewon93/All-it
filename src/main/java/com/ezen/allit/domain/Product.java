@@ -44,10 +44,13 @@ public class Product {
 	@JsonIgnoreProperties({"product"})
 	private List<Reply> replyList = new ArrayList<>();	 // 후기정보
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "cno")
 	private Cart cart;			 	   					 // 연관관계 설정용
-	@ManyToOne(fetch = FetchType.LAZY)	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ono")
 	private Orders orders;			 				     // 연관관계 설정용
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "odno")
 	private OrdersDetail ordersDetail; 					 // 연관관계 설정용
 	@CreationTimestamp
 	private Date regDate; 		 	   					 // 등록일 

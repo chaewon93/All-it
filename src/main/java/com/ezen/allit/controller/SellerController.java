@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
-import com.ezen.allit.service.ProductService;
 import com.ezen.allit.service.SellerService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,20 +25,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/seller/")
 public class SellerController {
 	private final SellerService sellerService;
-
-	// 판매자 입점신청 화면 이동
-	@GetMapping("/apply")
-	public String applyView() {
-		
-		return "seller/apply";
-	}
-	
-	// 판매자 로그인 화면 이동
-	@GetMapping("/login")
-	public String loginView() {
-		
-		return "seller/login";
-	}
 		
 	// 판매자 상품등록 화면 이동
 	@GetMapping("/product/insert")
@@ -53,7 +38,7 @@ public class SellerController {
 	public String logout(HttpSession session) {
 		session.invalidate();
 		
-		return "index";
+		return "redirect:/";
 	}
 	
 	/*
@@ -73,17 +58,6 @@ public class SellerController {
 			
 			return "seller/login";
 		}
-	}
-	
-	/*
-	 * 판매자 입점신청
-	 */
-	@PostMapping("/apply")
-	public String apply(Seller seller) {
-		seller.setRole(Role.TEMP);
-		sellerService.saveSeller(seller);
-		
-		return "index";
 	}
 	
 	/*
