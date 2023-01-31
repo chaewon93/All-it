@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <div th:replace="~{ /fragments/seller_header.html :: header }"></div>
 <!-- header replace -->
 
 <!-- 내용 섹션 시작 -->
 <form method="post" th:action="@{ /seller/product/modify }" id="productDetail" enctype="multipart/form-data">
 	<div class="form-group">
+		<input type="text" th:value="${ #authentication.principal.seller.id }" name="seller" id="seller">
 		<input type="text" th:value="${ product.pno }" name="pno" id="pno">
 		<input type="text" th:value="${ product.imageName }" name="imageName" id="imageName">
 		<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="350">
@@ -43,10 +45,10 @@
 <div class="card">
 	<form>
 		<!-- 
-		<input type="hidden" id="mid" th:value="${ #authentication.principal.member.id }">
-		<input type="hidden" id="sid" th:value="${ #authentication.principal.member.id }">
+		<input type="text" id="mid" th:value="${ #authentication.principal.member.id }">
 		 -->
-		<input type="hidden" id="save-pno" th:value="${ product.pno }">
+		<input type="text" id="sid" th:value="${ #authentication.principal.seller.id }">
+		<input type="text" id="save-pno" th:value="${ product.pno }">
 		<div class="card-body">
 			<textarea class="form-control" id="reply-content" rows=""></textarea>
 		</div>
@@ -72,15 +74,16 @@
 		<li class="list-group-item d-flex justify-content-between" id="reply--1">
 	  		<div> 
 	  			<!-- <p th:text="${ review.member.id }"></p> -->
+	  			<input type="text" th:value="${ review.rvno }" name="rvno" id="rvno">
 		  		<span th:text="${ review.rating }"></span>점 <span th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span> <br>
-		  		<!-- <p th:text="${ review.seller.id }"></p> -->
-		  		<!-- <p th:text="${ review.product.name }"></p> -->
+		  		<p th:text="${ review.seller.id }"></p>
+		  		<p th:text="${ review.product.name }"></p>
 		  		<p th:text="${ review.content }"></p>
 		  		<span>좋아요 </span><span th:text="${ review.hit }"></span>개
 	  		</div>
 	  		<div class="d-flex">
 	  			<!-- <div class="font-italic" th:text="${ review.member.id }"></div> &nbsp; -->
-	  			<button class="badge" style="color: black">삭제</button>
+	  			<button class="badge" id="reviewDelete" style="color: black">삭제</button>
 	  		</div>
 	  	</li>
 	</ul>
@@ -96,6 +99,9 @@ let index = {
 		});
 		$("#save").on("click", () =>{
 			this.save();
+		});
+		$("#reviewDelete").on("click", () =>{
+			this.deleteReview();
 		});
 	},
 
@@ -115,6 +121,7 @@ let index = {
 	
 	save:function() {
 		let data = {
+			sid: $("#sid").val(),
 			pno: $("#save-pno").val(),
 			content: $("#reply-content").val(),
 			rating: $("#rating").val()
@@ -127,6 +134,20 @@ let index = {
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 		}).done(function(response){ // 처리 성공 시
 			alert('댓글이 작성되었습니다');
+			location.href="/seller/";
+		}).fail(function(error){ // 처리 실패 시
+			alert(JSON.stringify(error));
+		});
+	},
+	
+	deleteReview:function() {
+		let rvno = $("#rvno").val();
+		$.ajax({
+			type: "delete",
+			url: '/review/delete/'+rvno,
+			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+		}).done(function(response){ // 처리 성공 시
+			alert('댓글이 삭제되었습니다');
 			location.href="/seller/";
 		}).fail(function(error){ // 처리 실패 시
 			alert(JSON.stringify(error));

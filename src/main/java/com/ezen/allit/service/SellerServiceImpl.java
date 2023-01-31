@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.ezen.allit.domain.Product;
+import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
 import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.repository.SellerRepository;
@@ -24,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class SellerServiceImpl implements SellerService {
 	private final SellerRepository sellerRepo;
 	private final ProductRepository productRepo;
+	private final BCryptPasswordEncoder encoder;
   
 	/*
 	 * 동욱파트
@@ -38,6 +41,11 @@ public class SellerServiceImpl implements SellerService {
 	// 판매자 입점신청
 	@Transactional
 	public void saveSeller(Seller seller) {
+		String rawPwd = seller.getPwd();		// 입점신청 화면에서 넘겨받은 pwd
+		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
+		seller.setPwd(encPwd);
+		seller.setRole(Role.SELLER);
+		System.out.println("seller = " + seller);
 		sellerRepo.save(seller);
 	}
 	
