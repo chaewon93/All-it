@@ -22,7 +22,7 @@
 <tr th:each="qna, state : ${qnaList}">
 	<td th:text="${state.count}"></td>
 	<td th:text="${qna.category}"></td>
-	<td align="left"><a th:href="@{/getQnADetail(qno=${qna.qno})}" th:text="${qna.content}"></a></td>
+	<td align="left"><a th:href="@{/admin/getQnADetail(qno=${qna.qno})}" th:text="${qna.content}"></a></td>
 	<td th:text="${qna.regDate}"></td>
 	<td th:text="${qna.status}"></td>
 	<td th:text="${qna.member.id}"></td>
@@ -32,9 +32,9 @@
 </tr>
 
 </table>
-<a th:href="@{/adminMain}">관리자 메인으로</a> <br>
-<a th:href="@{/getQnAList}">QnA 조회</a> <br>
-<a th:href="@{/getNoQnAList}">미답변 QnA 조회</a> <br>
+<a th:href="@{/admin/adminMain}">관리자 메인으로</a> <br>
+<a th:href="@{/admin/getQnAList}">QnA 조회</a> <br>
+<a th:href="@{/admin/getNoQnAList}">미답변 QnA 조회</a> <br>
 	
 </body>
 </html>

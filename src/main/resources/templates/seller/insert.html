@@ -7,7 +7,8 @@
 <!-- 내용 섹션 시작 -->
 <form method="post" th:action="@{ /seller/product/insert }" enctype="multipart/form-data">
 	<div class="form-group">
-		<input type="text" th:value="${ #authentication.principal.seller.id }" name="seller" id="seller">
+<!-- 	<input type="text" th:value="${ #authentication.principal.seller.id }" name="seller" id="seller">
+ -->
 		<label for="sel1">카테고리</label>
 		<select class="form-control" name="category" id="category">
 			<option>==카테고리==</option>

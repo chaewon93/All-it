@@ -14,6 +14,7 @@ import com.ezen.allit.repository.CustomerCenterRepository;
 import com.ezen.allit.service.CustomerCenterService;
 
 @Controller
+@RequestMapping("/admin/")
 public class CustomerCenterController {
 	
 	@Autowired
