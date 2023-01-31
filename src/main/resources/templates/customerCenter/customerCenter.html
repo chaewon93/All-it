@@ -5,13 +5,13 @@
 <title>Insert title here</title>
 </head>
 <body>
-<a th:href="@{/findCusto(cate='전체')}">전체</a> <br>
-<a th:href="@{/findCusto(cate='주문/결제')}">주문/결제</a> <br>
-<a th:href="@{/findCusto(cate='회원서비스')}">회원서비스</a> <br>
-<a th:href="@{/findCusto(cate='배송문의')}">배송문의</a> <br>
-<a th:href="@{/findCusto(cate='반품/교환/환불')}">반품/교환/환불</a> <br>
-<a th:href="@{/findCusto(cate='테스트용 신고')}">신고</a> <br>
-<a th:href="@{/findCusto(cate='모두 보기')}">모두 보기</a> <br>
+<a th:href="@{/admin/findCusto(cate='전체')}">전체</a> <br>
+<a th:href="@{/admin/findCusto(cate='주문/결제')}">주문/결제</a> <br>
+<a th:href="@{/admin/findCusto(cate='회원서비스')}">회원서비스</a> <br>
+<a th:href="@{/admin/findCusto(cate='배송문의')}">배송문의</a> <br>
+<a th:href="@{/admin/findCusto(cate='반품/교환/환불')}">반품/교환/환불</a> <br>
+<a th:href="@{/admin/findCusto(cate='테스트용 신고')}">신고</a> <br>
+<a th:href="@{/admin/findCusto(cate='모두 보기')}">모두 보기</a> <br>
 <table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
 <tr>
 	<th bgcolor="orange" width="100">번호</th>
@@ -24,18 +24,18 @@
 	<td th:text="${state.count}"></td>
 	<td th:text="${custo.category}"></td>
 	<td th:text="${custo.title}"></td>
-	<td align="left"><a th:href="@{/getCustoDetail(cno=${custo.cno})}" th:text="${custo.content}"></a></td>
+	<td align="left"><a th:href="@{/admin/getCustoDetail(cno=${custo.cno})}" th:text="${custo.content}"></a></td>
 </tr>
 <tr th:if="${!#lists.isEmpty(cateList)}" th:each="cate, state : ${cateList}">
 	<td th:text="${state.count}"></td>
 	<td th:text="${cate.category}"></td>
 	<td th:text="${cate.title}"></td>
-	<td align="left"><a th:href="@{/getCustoDetail(cno=${cate.cno})}" th:text="${cate.content}"></a></td>
+	<td align="left"><a th:href="@{/admin/getCustoDetail(cno=${cate.cno})}" th:text="${cate.content}"></a></td>
 </tr>
 
 </table>
-<a th:href="@{/insertCustoView}">글 작성</a> <br>
-<a th:href="@{/adminMain}">관리자 메인으로</a> <br>
+<a th:href="@{/admin/insertCustoView}">글 작성</a> <br>
+<a th:href="@{/admin/adminMain}">관리자 메인으로</a> <br>
 
 </body>
 </html>

@@ -44,6 +44,16 @@ public class SellerApiController {
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 	
+	/*
+	 * 리뷰삭제
+	 */
+	@DeleteMapping("/review/delete/{rvno}")
+	public ResponseDto<Integer> deleteReview(@PathVariable int rvno) {
+		reviewService.deleteReview(rvno);
+		
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}
+	
 	
 	/*
 	 * 상품수정

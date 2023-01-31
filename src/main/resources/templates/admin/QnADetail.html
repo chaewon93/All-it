@@ -16,7 +16,7 @@
 		<td th:text="${qna.content}"></td>
 	</tr>
 	<tr th:if="${qna.status} == '1'">
-		<form id="rep" name="rep" action="/updateReply" method="post">
+		<form id="rep" name="rep" action="/admin/updateReply" method="post">
 			<input type="hidden" name="rno" th:value="${qna.reply?.rno}" >
 			<th>답변</th>
 			<td><textarea name="content" cols="40" rows="10" th:text="${qna.reply?.content}"></textarea></td>
@@ -24,7 +24,7 @@
 		</form>		
 	</tr>
 	<tr th:if="${qna.status} == '0'">
-		<form id="rep" name="rep" action="/insertReply" method="post">
+		<form id="rep" name="rep" action="/admin/insertReply" method="post">
 			<input type="hidden" name="qno" th:value="${qna.qno}" >
 			<th>답변</th>
 			<td><textarea name="content" rows="10" cols="40"></textarea></td>   
@@ -33,7 +33,7 @@
 	</tr>	
 	<tr>
 		<th>
-		<a th:href="@{/deleteReply(qno=${qna.qno})}" th:text="답변삭제"></a>
+		<a th:href="@{/admin/deleteReply(qno=${qna.qno})}" th:text="답변삭제"></a>
 		</th>
 	</tr>
 

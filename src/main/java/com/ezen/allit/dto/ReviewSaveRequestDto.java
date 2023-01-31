@@ -12,6 +12,6 @@ public class ReviewSaveRequestDto {
 	private String imageName;
 	private int rating;
 //	private int mid;
-	private int pno;
 //	private int sid;
+	private int pno;
 }

@@ -10,21 +10,21 @@ import lombok.*;
 
 @Getter
 @Setter
-@ToString(exclude = {"orders", "member", "productList"})
+@ToString(exclude = {"orders", "member", "product"})
 @Entity
 public class OrdersDetail {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
-	private int odno;	    							   // 주문상세 일련번호
-	private int quantity;   		 					   // 주문량
+	private int odno;	    						   // 주문상세 일련번호
+	private int quantity;   		 				   // 주문량
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ono")
-	private Orders orders;	 							   // ono, quantity
+	private Orders orders;	 						   // ono, quantity
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "mid")
-	private Member member;   							   // mno
+	private Member member;   						   // mno
 	@OneToMany(mappedBy = "ordersDetail", fetch = FetchType.LAZY)
 	@JsonIgnoreProperties({"ordersDetail"})
-	private List<Product> productList = new ArrayList<>(); // pno
+	private List<Product> product = new ArrayList<>(); // pno
 	private int status; // 주문상태(1:결제완료, 2:배송중, 3:배송완료, 4:구매확정, 5:주문취소)
 }
