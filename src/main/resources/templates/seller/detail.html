@@ -7,9 +7,10 @@
 <!-- 내용 섹션 시작 -->
 <form method="post" th:action="@{ /seller/product/modify }" id="productDetail" enctype="multipart/form-data">
 	<div class="form-group">
-		<input type="text" th:value="${ #authentication.principal.seller.id }" name="seller" id="seller">
-		<input type="text" th:value="${ product.pno }" name="pno" id="pno">
-		<input type="text" th:value="${ product.imageName }" name="imageName" id="imageName">
+		<!-- <input type="text" th:value="${ #authentication.principal.seller.id }" name="seller" id="seller"> -->
+		<span>판매자:</span><input type="text" id="sid" th:value="${ product.seller.id }">
+		<span>현재 로그인:</span><input type="text" th:value="${ session.seller.id }" name="seller" id="seller">
+		<span>상품번호:</span><input type="text" th:value="${ product.pno }" name="pno" id="pno">
 		<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="350">
 		<p th:text="${ product.rating }" style="color: purple;"></p>
 		<p th:text="${ product.hit }" style="color: aqua;"></p>
@@ -46,9 +47,12 @@
 	<form>
 		<!-- 
 		<input type="text" id="mid" th:value="${ #authentication.principal.member.id }">
-		 -->
 		<input type="text" id="sid" th:value="${ #authentication.principal.seller.id }">
-		<input type="text" id="save-pno" th:value="${ product.pno }">
+		 -->
+		<span>판매자:</span><input type="text" id="sid" th:value="${ product.seller.id }">
+		<span>현재 로그인:</span><input type="text" th:value="${ session.seller.id }" name="seller" id="seller">
+		<span>상품번호:</span><input type="text" id="save-pno" th:value="${ product.pno }">
+		
 		<div class="card-body">
 			<textarea class="form-control" id="reply-content" rows=""></textarea>
 		</div>
@@ -70,15 +74,15 @@
 <!-- 댓글 출력 섹션 시작 -->
 <div class="card">
 	<div class="card-header">댓글</div>
-	<ul class="list-group" id="reply--box" th:each="review : ${ product.reviewList }">
+	<ul class="list-group" id="reply--box" th:each="review : ${ product.review }">
 		<li class="list-group-item d-flex justify-content-between" id="reply--1">
 	  		<div> 
 	  			<!-- <p th:text="${ review.member.id }"></p> -->
-	  			<input type="text" th:value="${ review.rvno }" name="rvno" id="rvno">
+	  			<span>리뷰번호:</span><input type="text" th:value="${ review.rvno }" name="rvno" id="rvno">
 		  		<span th:text="${ review.rating }"></span>점 <span th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span> <br>
-		  		<p th:text="${ review.seller.id }"></p>
-		  		<p th:text="${ review.product.name }"></p>
-		  		<p th:text="${ review.content }"></p>
+		  		<!-- <p th:text="${ review.seller.id }"></p> -->
+		  		<span>상품명:</span><span th:text="${ review.product.name }"></span>
+		  		<span>리뷰:</span><span th:text="${ review.content }"></span>
 		  		<span>좋아요 </span><span th:text="${ review.hit }"></span>개
 	  		</div>
 	  		<div class="d-flex">
@@ -121,7 +125,7 @@ let index = {
 	
 	save:function() {
 		let data = {
-			sid: $("#sid").val(),
+			//sid: $("#sid").val(),
 			pno: $("#save-pno").val(),
 			content: $("#reply-content").val(),
 			rating: $("#rating").val()
