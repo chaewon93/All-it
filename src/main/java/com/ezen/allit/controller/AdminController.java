@@ -2,6 +2,7 @@ package com.ezen.allit.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.QnA;
@@ -148,6 +151,24 @@ public class AdminController {
 		model.addAttribute("sellerList", sellerList);
 		model.addAttribute("a", a);
 		return "admin/findSellerList";
+	}
+	
+	@PostMapping("/regSeller")
+	public String regSeller(@RequestParam(value = "sellerId") String[] sellerId, RedirectAttributes re) {
+		// model은 주로 페이지(view)로 보낼 때 사용...
+		// RedirectAttributes은 컨트롤러로 보낼 때 사용...
+		
+		for(int i=0; i<sellerId.length; i++) {
+			
+			Seller seller = sellerRepo.findById(sellerId[i]).get();
+			if(seller.getRole().equals(Role.TEMP)) {
+				seller.setRole(Role.SELLER);
+			}
+			sellerRepo.save(seller);
+		}
+		re.addAttribute("a", 0);
+		String pass = "redirect:findSellerList"; 
+		return pass;
 	}
 
 }

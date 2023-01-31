@@ -30,7 +30,7 @@ public class DataInsertTest {
 	private QnARepository qnaRepo;
 	
 	@Test
-	@Disabled
+//	@Disabled
 	public void testDataInsert() {
 		
 		for(int i=1; i<11; i++) {
@@ -65,7 +65,7 @@ public class DataInsertTest {
 	}
 	
 	@Test
-	@Disabled
+//	@Disabled
 	public void testDataInsert1() {
 		
 		for(int i=1; i<11; i++) {
