@@ -1,6 +1,5 @@
 package com.ezen.allit.domain;
 
-
 import javax.persistence.*;
 
 import lombok.*;

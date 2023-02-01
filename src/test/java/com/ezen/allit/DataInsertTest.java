@@ -32,7 +32,8 @@ public class DataInsertTest {
 	private QnARepository qnaRepo;
 	
 	@Autowired
-	private ProductRepository proRepo;
+	private ProductRepository prodRepo;
+
 	
 	@Test
 	@Disabled
@@ -139,12 +140,27 @@ public class DataInsertTest {
 					pro.setStatus(0);
 					pro.setDiscount(j);
 					
-					proRepo.save(pro);
+					prodRepo.save(pro);
 				}
 			}
 
 
 		}		
 	}
+	
+	@Test
+	//@Disabled
+	public void testProductDataInsert() {
+		Product product = new Product();
+		
+		for(int i=0; i<3; i++) {
+			product.setCategory(i+1);
+			product.setName("test item"+i);
+			product.setContent("test item"+i+"입니다.");
+			product.setPrice(i+9864);
+			product.setMdPickyn("n");			
 
+			prodRepo.save(product);
+		}
+	}
 }

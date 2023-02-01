@@ -27,6 +27,7 @@ public class ProductController {
 							@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword) {		
 		
 		Page<Product> productList = null;
+
 		if(searchKeyword.equals("")) {
 			System.out.println("검색 키워드 없음");
 			productList = productService.getProductList(pageable);
