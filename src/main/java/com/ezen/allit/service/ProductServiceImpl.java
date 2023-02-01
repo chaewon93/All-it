@@ -23,7 +23,7 @@ public class ProductServiceImpl implements ProductService {
 	public Page<Product> getProductList(Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
 		int pageSize = 9;
-		
+
 		Page<Product> product = 
 				productRepo.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 		
@@ -53,8 +53,9 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public Page<Product> search(String searchKeyword, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 9;
-		
+
+		int pageSize = 6;
+
 		Page<Product> product = 
 				productRepo.findByNameContaining(searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 		

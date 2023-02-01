@@ -103,7 +103,7 @@ public class SellerServiceImpl implements SellerService {
 		
 		return product;
 	}
-*/
+
 //	@Transactional
 //	public Page<Seller> search(Seller seller, String searchKeyword, Pageable pageable) {
 //		int page = pageable.getPageNumber() - 1;

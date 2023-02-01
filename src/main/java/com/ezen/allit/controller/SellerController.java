@@ -70,23 +70,23 @@ public class SellerController {
 	public String mainView(Model model, @PageableDefault(page = 1) Pageable pageable,
 									String searchKeyword,
 									HttpSession session) {
-		Seller seller = (Seller) session.getAttribute("seller");
-		System.out.println("컨트롤러 메인화면 처리1 중 seller = " + seller);
-		Page<Product> productList = null;
-		if(searchKeyword == null) {
+//		Seller seller = (Seller) session.getAttribute("seller");
+//		System.out.println("컨트롤러 메인화면 처리1 중 seller = " + seller);
+//		Page<Product> productList = null;
+//		if(searchKeyword == null) {
 //			productList = sellerService.getProductList(pageable, seller);
-		} else {
+//		} else {
 //			productList = sellerService.search(seller, searchKeyword, pageable);
-		}
-		System.out.println("컨트롤러 메인화면 처리3 중 productList = " + productList);
-		
-		int naviSize = 10; // 페이지네이션 갯수
-		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
-	    int endPage = ((startPage + naviSize - 1) < productList.getTotalPages()) ? startPage + naviSize - 1 : productList.getTotalPages();
-		
-	    model.addAttribute("productList", productList);
-	    model.addAttribute("startPage", startPage);
-	    model.addAttribute("endPage", endPage);
+//		}
+//		System.out.println("컨트롤러 메인화면 처리3 중 productList = " + productList);
+//		
+//		int naviSize = 10; // 페이지네이션 갯수
+//		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+//	    int endPage = ((startPage + naviSize - 1) < productList.getTotalPages()) ? startPage + naviSize - 1 : productList.getTotalPages();
+//		
+//	    model.addAttribute("productList", productList);
+//	    model.addAttribute("startPage", startPage);
+//	    model.addAttribute("endPage", endPage);
 		
 		return "seller/main";
 	}
