@@ -3,12 +3,18 @@ package com.ezen.allit.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Reply;
 import com.ezen.allit.repository.MemberRepository;
+import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.repository.QnARepository;
 import com.ezen.allit.repository.ReplyRepository;
 
@@ -23,6 +29,9 @@ public class AdminServiceImpl implements AdminService {
 	
 	@Autowired
 	private ReplyRepository repRepo;
+	
+	@Autowired
+	private ProductRepository proRepo;
 	
 	@Override
 	public List<Member> getMemberList() {
@@ -102,6 +111,19 @@ public class AdminServiceImpl implements AdminService {
 		qna.setStatus("0");
 		
 		repRepo.deleteById(rno);
+	}
+
+	@Override
+	public Page<Product> findProductByStatus(int status, Pageable pageable) {
+		
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 5;
+		
+		Page<Product> product = 
+				proRepo.findProductByStatus(status, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+//				proRepo.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+		
+		return product;
 	}
 	
 	

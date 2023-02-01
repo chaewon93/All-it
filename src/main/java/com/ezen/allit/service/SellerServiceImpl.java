@@ -59,28 +59,28 @@ public class SellerServiceImpl implements SellerService {
 	/*
 	 * 판매자 상품목록조회
 	 */
-	@Transactional
-	public Page<Product> getProductList(Pageable pageable, Seller seller) {
-		int page = pageable.getPageNumber() - 1;
-		int pageSize = 3;
-		System.out.println("서비스 메인화면 처리 중 seller = " + seller);
-//		Page<Seller> product = 
-//				sellerRepo.findAllById(seller.getId(), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "product.pno")));		
-		Page<Product> product = 
-				productRepo.findAllBySeller(seller.getId(), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
-		System.out.println("서비스 메인화면 처리 중 product = " + product);
-		
-        System.out.println("product.getContent() = " + product.getContent()); 			  // 요청 페이지에 해당하는 글
-        System.out.println("product.getTotalElements() = " + product.getTotalElements()); // 전체 글갯수
-        System.out.println("product.getNumber() = " + product.getNumber()); 			  // DB로 요청한 페이지 번호
-        System.out.println("product.getTotalPages() = " + product.getTotalPages()); 	  // 전체 페이지 갯수
-        System.out.println("product.getSize() = " + product.getSize()); 				  // 한 페이지에 보여지는 글 갯수
-        System.out.println("product.hasPrevious() = " + product.hasPrevious()); 		  // 이전 페이지 존재 여부
-        System.out.println("product.isFirst() = " + product.isFirst()); 		  		  // 첫 페이지 여부
-        System.out.println("product.isLast() = " + product.isLast()); 					  // 마지막 페이지 여부
-		
-        return product;
-	}
+//	@Transactional
+//	public Page<Product> getProductList(Pageable pageable, Seller seller) {
+//		int page = pageable.getPageNumber() - 1;
+//		int pageSize = 3;
+//		System.out.println("서비스 메인화면 처리 중 seller = " + seller);
+////		Page<Seller> product = 
+////				sellerRepo.findAllById(seller.getId(), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "product.pno")));		
+////		Page<Product> product = 
+////				productRepo.findAllBySeller(seller.getId(), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+////		System.out.println("서비스 메인화면 처리 중 product = " + product);
+////		
+////        System.out.println("product.getContent() = " + product.getContent()); 			  // 요청 페이지에 해당하는 글
+////        System.out.println("product.getTotalElements() = " + product.getTotalElements()); // 전체 글갯수
+////        System.out.println("product.getNumber() = " + product.getNumber()); 			  // DB로 요청한 페이지 번호
+////        System.out.println("product.getTotalPages() = " + product.getTotalPages()); 	  // 전체 페이지 갯수
+////        System.out.println("product.getSize() = " + product.getSize()); 				  // 한 페이지에 보여지는 글 갯수
+////        System.out.println("product.hasPrevious() = " + product.hasPrevious()); 		  // 이전 페이지 존재 여부
+////        System.out.println("product.isFirst() = " + product.isFirst()); 		  		  // 첫 페이지 여부
+////        System.out.println("product.isLast() = " + product.isLast()); 					  // 마지막 페이지 여부
+//		
+//        return product;
+//	}
 	
 	/*
 	 * 판매자 상품조회
@@ -93,16 +93,16 @@ public class SellerServiceImpl implements SellerService {
 	/*
 	 * 판매자 상품검색
 	 */
-	@Transactional
-	public Page<Product> search(Seller seller, String searchKeyword, Pageable pageable) {
-		int page = pageable.getPageNumber() - 1;
-		int pageSize = 3;
-		
-		Page<Product> product = 
-				productRepo.findByNameContaining(seller.getId(), searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
-		
-		return product;
-	}
+//	@Transactional
+//	public Page<Product> search(Seller seller, String searchKeyword, Pageable pageable) {
+//		int page = pageable.getPageNumber() - 1;
+//		int pageSize = 3;
+//		
+//		Page<Product> product = 
+//				productRepo.findByNameContaining(seller.getId(), searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+//		
+//		return product; 
+//	}
 //	@Transactional
 //	public Page<Seller> search(Seller seller, String searchKeyword, Pageable pageable) {
 //		int page = pageable.getPageNumber() - 1;

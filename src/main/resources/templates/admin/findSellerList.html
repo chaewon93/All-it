@@ -37,9 +37,9 @@ function delete_seller(){
 </script>
 </head>
 <body>
-	
-<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
+
 <form action="/admin/regSeller" method="post" id="theform">
+<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
 <tr>
 	<th bgcolor="orange" width="100">번호</th>
 	<th bgcolor="orange" width="200">아이디</th>
@@ -75,8 +75,9 @@ function delete_seller(){
 <tr th:if="${a}==6">
 	<td colspan="11" align="right"><input type="button" value="삭제" class="delete" onclick="delete_seller()"></td>
 </tr>
-</form>
+
 </table>
+</form>
 <a th:href="@{/admin/adminMain}">관리자 메인으로...</a> <br>
 <a th:href="@{/admin/findSellerList(a=1)}">관리자 조회</a> <br>
 <a th:href="@{/admin/findSellerList(a=2)}">전체 판매자 조회</a> <br>

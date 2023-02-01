@@ -24,7 +24,7 @@ public class HomeController {
 
 	/** 사용자 로그인 페이지 */
 	@GetMapping("/member-login")
-	public String loginView() {
+	public String memberLoginView() {
 		return "member/login";
 	}
 	
@@ -38,7 +38,7 @@ public class HomeController {
 	@GetMapping("/member-join")
 	public String joinView() {
 		return "member/join";
-
+	}
 	// 판매자 입점신청 화면 이동
 	@GetMapping("/sellerApply")
 	public String applyView() {
