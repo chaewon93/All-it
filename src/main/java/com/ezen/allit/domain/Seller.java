@@ -39,7 +39,7 @@ public class Seller {
 	@OneToMany(mappedBy = "seller", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"seller"})
 	private List<Reply> reply = new ArrayList<>();	   // 연관관계 설정용
-	private Role role;		   		   				   // 역할구분
+	private Role role;		   		   				   // 역할구분(0:temp, 1:seller, 2:admin)
 	@CreationTimestamp
 	private Date regDate; 	   		   				   // 가입일
 }

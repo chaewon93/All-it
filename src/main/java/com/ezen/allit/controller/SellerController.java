@@ -74,9 +74,9 @@ public class SellerController {
 		System.out.println("컨트롤러 메인화면 처리1 중 seller = " + seller);
 		Page<Product> productList = null;
 		if(searchKeyword == null) {
-			productList = sellerService.getProductList(pageable, seller);
+//			productList = sellerService.getProductList(pageable, seller);
 		} else {
-			productList = sellerService.search(seller, searchKeyword, pageable);
+//			productList = sellerService.search(seller, searchKeyword, pageable);
 		}
 		System.out.println("컨트롤러 메인화면 처리3 중 productList = " + productList);
 		

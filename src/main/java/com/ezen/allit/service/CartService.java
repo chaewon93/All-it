@@ -3,6 +3,7 @@ package com.ezen.allit.service;
 import java.util.List;
 
 import com.ezen.allit.domain.Cart;
+import com.ezen.allit.domain.Member;
 
 public interface CartService {
 
@@ -10,5 +11,5 @@ public interface CartService {
 	void insertCart(Cart cart);
 	
 	// 장바구니 조회
-	List<Cart> getCartList(Cart cart);
+	List<Cart> getCartList(Member member);
 }

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ezen.allit.domain.Cart;
+import com.ezen.allit.domain.Member;
 import com.ezen.allit.repository.CartRepository;
 
 @Service
@@ -24,9 +25,8 @@ public class CartServiceImpl implements CartService {
 	}
 
 	@Override
-	public List<Cart> getCartList(Cart cart) {
-		return cartRepo.findAll(Sort.by(Sort.Direction.DESC, "cno"));
-		
+	public List<Cart> getCartList(Member member) {
+		return cartRepo.findByMember(member);
 	}
 
 }
