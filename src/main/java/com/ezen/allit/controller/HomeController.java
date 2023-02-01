@@ -1,5 +1,6 @@
 package com.ezen.allit.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
+	
+	@Autowired
 	private final SellerService sellerService;
 	
 	// 홈 화면 이동
@@ -20,11 +23,10 @@ public class HomeController {
 		
 		return "index";
 	}
-	
 
 	/** 사용자 로그인 페이지 */
 	@GetMapping("/member-login")
-	public String loginView() {
+	public String memberLoginView() {
 		return "member/login";
 	}
 	
@@ -38,6 +40,7 @@ public class HomeController {
 	@GetMapping("/member-join")
 	public String joinView() {
 		return "member/join";
+	}
 
 	// 판매자 입점신청 화면 이동
 	@GetMapping("/sellerApply")
@@ -58,7 +61,7 @@ public class HomeController {
 	 */
 	@PostMapping("/sellerApply")
 	public String apply(Seller seller) {
-		sellerService.saveSeller(seller);
+//		sellerService.saveSeller(seller);
 		
 		return "redirect:/";
 

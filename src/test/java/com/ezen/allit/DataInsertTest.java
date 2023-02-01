@@ -9,10 +9,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.ezen.allit.domain.Grade;
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
 import com.ezen.allit.repository.MemberRepository;
+import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.repository.QnARepository;
 import com.ezen.allit.repository.SellerRepository;
 
@@ -28,6 +30,9 @@ public class DataInsertTest {
 	
 	@Autowired
 	private QnARepository qnaRepo;
+	
+	@Autowired
+	private ProductRepository prodRepo;
 	
 	@Test
 	@Disabled
@@ -118,5 +123,21 @@ public class DataInsertTest {
 			
 			sellerRepo.save(seller);
 		}		
+	}
+	
+	@Test
+	//@Disabled
+	public void testProductDataInsert() {
+		Product product = new Product();
+		
+		for(int i=0; i<3; i++) {
+			product.setCategory(i+1);
+			product.setName("test item"+i);
+			product.setContent("test item"+i+"입니다.");
+			product.setPrice(i+9864);
+			product.setMdPickyn("n");			
+
+			prodRepo.save(product);
+		}
 	}
 }

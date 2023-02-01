@@ -26,7 +26,7 @@ public class ProductController {
 							String searchKeyword) {		
 		
 		Page<Product> productList = null;
-		if(searchKeyword == null) {
+		if(searchKeyword == null || searchKeyword.equals("")) {
 			productList = productService.getProductList(pageable);
 		} else {
 			productList = productService.search(searchKeyword, pageable);
