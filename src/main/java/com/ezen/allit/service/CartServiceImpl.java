@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.ezen.allit.domain.Cart;
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.Product;
 import com.ezen.allit.repository.CartRepository;
 
 @Service
@@ -27,6 +28,16 @@ public class CartServiceImpl implements CartService {
 	@Override
 	public List<Cart> getCartList(Member member) {
 		return cartRepo.findByMember(member);
+	}
+
+	@Override
+	public void deleteCart(int cno) {
+		cartRepo.deleteById(cno);
+	}
+
+	@Override
+	public Cart checkCart(Member member, Product product) {
+		return cartRepo.findByMemberAndProduct(member, product);
 	}
 
 }

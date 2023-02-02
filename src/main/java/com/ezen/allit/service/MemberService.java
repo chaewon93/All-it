@@ -10,9 +10,9 @@ public interface MemberService {
 	
 	public int idCheck(String id);
 	
-	public String findById(String name, String email); 
+	public Member findById(Member member); 
 	
-	public String findByPw(String id, String name, String email); 
+	public Member findByPw(Member member); 
 	
 	public void deleteMember(String id);
 }

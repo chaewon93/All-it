@@ -15,7 +15,7 @@
 		<div class="myInfo">MY 정보</div>
 		<div>
 			<ul class="sidebar" id="infoSidebar">
-				<li><a class="sidebar-head" th:href="@{ info }">
+				<li><a class="sidebar-head" th:href="@{ /member/info }">
 					<span>내 정보 보기/수정</span>
 				</a></li>
 				<li><a class="sidebar-head" th:href="@{ member/pay }">
@@ -26,13 +26,13 @@
 		<div class="myInfo">MY 쇼핑</div>
 		<div>
 			<ul class="sidebar" id="infoSidebar">
-				<li><a class="sidebar-head" th:href="@{ member/cartList }">
+				<li><a class="sidebar-head" th:href="@{ /cart/cartList }">
 					<span>장바구니</span>
 				</a></li>
-				<li><a class="sidebar-head" th:href="@{ member/orderList }">
+				<li><a class="sidebar-head" th:href="@{ /order/orderList }">
 					<span>주문목록/배송조회</span>
 				</a></li>
-				<li><a class="sidebar-head" th:href="@{ member/cancelList }">
+				<li><a class="sidebar-head" th:href="@{ /member/cancelList }">
 					<span>취소/반품/교환/환불 내역</span>
 				</a></li>
 			</ul>
@@ -40,10 +40,10 @@
 		<div class="myInfo">MY 혜택</div>
 		<div>
 			<ul class="sidebar" id="infoSidebar">
-				<li><a class="sidebar-head" th:href="@{ member/coupon }">
+				<li><a class="sidebar-head" th:href="@{ /member/coupon }">
 					<span>할인쿠폰</span>
 				</a></li>
-				<li><a class="sidebar-head" th:href="@{ member/point }">
+				<li><a class="sidebar-head" th:href="@{ /member/point }">
 					<span>포인트관리</span>
 				</a></li>
 			</ul>
@@ -51,16 +51,16 @@
 		<div class="myInfo">MY 활동</div>
 		<div>
 			<ul class="sidebar" id="infoSidebar">
-				<li><a class="sidebar-head" th:href="@{ member/qna }">
+				<li><a class="sidebar-head" th:href="@{ /member/qna }">
 					<span>문의하기</span>
 				</a></li>
-				<li><a class="sidebar-head" th:href="@{ member/qnaList }">
+				<li><a class="sidebar-head" th:href="@{ /member/qnaList }">
 					<span>문의내역</span>
 				</a></li>
-				<li><a class="sidebar-head" th:href="@{ member/review }">
+				<li><a class="sidebar-head" th:href="@{ /member/review }">
 					<span>리뷰관리</span>
 				</a></li>
-				<li><a class="sidebar-head" th:href="@{ member/like }">
+				<li><a class="sidebar-head" th:href="@{ /member/like }">
 					<span>좋아요 리스트</span>
 				</a></li>
 			</ul>

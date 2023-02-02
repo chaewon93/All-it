@@ -47,13 +47,13 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public String findById(String name, String email) {
-		return memberRepo.findId(name, email);
+	public Member findById(Member member) {
+		return memberRepo.findByNameAndEmail(member.getName(), member.getEmail());
 	}
 
 	@Override
-	public String findByPw(String id, String name, String email) {
-		return memberRepo.findPw(id, name, email);
+	public Member findByPw(Member member) {
+		return memberRepo.findByIdAndNameAndEmail(member.getId(), member.getName(), member.getEmail());
 	}
 
 	@Override

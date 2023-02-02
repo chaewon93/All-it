@@ -8,51 +8,38 @@
 </head>
 
 <body th:align="center">
-<h1>장바구니</h1>
-<article style="margin-bottom: 20px">
-	<form name="formm" id="cartform" method="post">
-		<h3 th:if="${cartList.size() == 0}" style="color: red; text-align: center;">장바구니가 비었습니다.</h3>
-		<th:block th:unless="${cartList.size() == 0}">
-			<table id="cartList" border="1" align="center">
-				<tr>
-					<th width="150"><input type="checkbox" id="allCheck" name="allCheck"> 전체선택</th>
-					<th width="450">상 품 정 보</th>
-					<th width="100">수 량</th>
-					<th width="150">가 격</th>
-				</tr>
-				
-				<tr th:each="cart : ${cartList}">
-					<td><input type="checkbox" name="cno" id="cno" th:value="${cart.cno}"></td>
-					<td>
-						<a th:href="@{ |/product/detail/${ cart.product.pno }| }">
-						<img class="img-fluid" th:src="@{ /images/ } + ${ cart.product.imageName }" width="100">
-							<span th:text="${cart.product.name}"></span>
-						</a>
-						<span th:text="${#numbers.formatInteger(cart.product.price, 1, 'COMMA')}+'원'"></span>
-					</td>
-					<td>
-						<input type="number" th:value="${cart.quantity}" id="quantity" name="quantity" width="5" min="1"/>
-						<input type="hidden" th:value="${ session['member']?.id }" name="mid" id="mid">
-						<input type="hidden" th:value="${ cart.product.pno }" name="pno" id="pno">
-					</td>
-					<td th:text="${#numbers.formatInteger((cart.product.price*cart.quantity), 1, 'COMMA')}+'원'"></td>
-				</tr>
-				
-				<tr>
-					<th></th>
-					<th colspan="2">총 상품가격</th>
-					<th th:text="${#numbers.formatInteger(totalPrice, 1, 'COMMA')}+'원'"></th>
-				</tr>
-			</table>
-		</th:block>
-		<div class="clear">
-			<a href="#" onclick="delCart()" th:if="${cartList.size() != 0}" class="btn btn-light"><span id="delCheck">선택삭제</span></a>
-		</div>
-		<div id="buttons" style="float: right">
-			<input type="button" value="쇼핑 계속하기" class="btn btn-light" onclick="location.href='index'">
-			<input th:if="${cartList.size() != 0}" type="button" value="주문하기" class="btn btn-light" onclick="goOrderList()">
-		</div>
-	</form>
+<h1>주문 목록</h1>
+<article>
+	<form name="formm" method="post">
+	<table id="cartList">
+		<tr>
+			<th>상품명</th> <th>수 량</th><th>가 격</th> <th>주문일</th> <th> 진행 상태 </th>    
+		</tr>
+		<!-- 
+		<tr th:each="orderVO : ${orderList}">      
+			<td>
+				<a href="product_detail?pseq=${orderVO.pno}">
+				<h3 th:text="${orderVO.name}"> </h3>              
+				</a>    
+			</td>
+			<td th:text="${orderVO.quantity}"> </td>
+			<td th:text="${#numbers.formatInteger(orderVO.price2*orderVO.quantity, 1, 'COMMA')}+'원'" /> </td>      
+			<td th:text="${#dates.format(orderVO.regDate, 'yyyy-MM-dd')}" /></td>
+			<td> 처리 진행 중 </td>
+		</tr>
+       
+		<tr>
+ 			<th colspan="2"> 총 액 </th>
+			<th colspan="2" th:text="${#numbers.formatInteger(totalPrice, 1, 'COMMA')}+'원'"/><br>     </th> 
+			<th> 주문 처리가 완료되었습니다. </th>                
+		</tr> 
+	</table>   
+       -->    
+	<div class="clear"></div>
+	<div id="buttons" style="float: right">
+		<input type="button"    value="쇼핑 계속하기"  class="cancel"  onclick="location.href='index'">     
+	</div>
+	</form>  
 </article>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -148,7 +135,7 @@
 	});
 	
 	// 주문하기
-	function goOrderList(){
+	function goOrder(){
 		var valueArr = new Array();
 		var list = $("input[name='cno']");
 		for(var i=0; i<list.length; i++) {
@@ -160,7 +147,7 @@
 			alert("주문할 상품을 선택해주세요."); 
 			return false;
 		} else {
-			$("#cartform").action = "/order/orderList";
+			$("#cartform").action = "/order/insert";
 			$("#cartform").submit();
 		}
 	}

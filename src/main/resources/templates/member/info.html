@@ -44,8 +44,10 @@
 			<input type="text" id="zipcode" name="zipcode" required="required" th:value="${session['member'].zipcode}"/>
 			<input type="button" id="kakaoAddr" value="우편번호 찾기"><br>
 			<input type="text" id="addr" name="address" required="required" th:value="${addr[0]}"/><br>
-			<input type="text" id="addrDetail" name="address" required="required" th:value="${addr[1]}"/>
-			<input type="text" id="addrExtra" name="address" required="required" th:value="${addr[2]}"/>
+			<input type="text" id="addrDetail" name="address" required="required" th:if="${addr.length > 1}" th:value="${addr[1]}"/>
+			<input type="text" id="addrDetail" name="address" required="required" th:unless="${addr.length > 1}"/>
+			<input type="text" id="addrExtra" name="address" required="required" th:if="${addr.length > 1}" th:value="${addr[2]}"/>
+			<input type="text" id="addrExtra" name="address" required="required" th:unless="${addr.length > 1}"/>
 		</td>
 	</tr>
 	<tr>
@@ -55,9 +57,10 @@
 	<tr>
 		<td>성별</td>
 		<td>
-			<input type="radio" name="gender" value="남" th:if="${session['member'].gender} == '남'" checked/> 남
-			<input type="radio" name="gender" value="여" th:if="${session['member'].gender} == '여'" checked/> 여
-			<input type="radio" name="gender" value="안함"/> 선택 안 함
+			<input type="hidden" id="gender" th:value="${session['member']?.gender}">
+			<input type="radio" name="gender" id="m" value="남" /> 남
+			<input type="radio" name="gender" id="f" value="여" /> 여
+			<input type="radio" name="gender" id="n" value="안함"/> 선택 안 함
 		</td>
 	</tr>
 	<tr>
@@ -72,6 +75,25 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script type="text/javascript">
+
+let index = {
+	init:function() {
+		var gender = $("#gender").val();
+		
+		switch(gender) {
+		case '남':
+			$("#m").prop('checked', true);
+			break;
+		case '여':
+			$("#f").prop('checked', true);
+			break;
+		case '':
+			$("#n").prop('checked', true);
+			break;
+		}
+	}
+}; index.init();
+	
 	// 비밀번호 확인
 	$("#pwdCheck").focusout(function(){
     	var pass1 = $("#pwd").val();
