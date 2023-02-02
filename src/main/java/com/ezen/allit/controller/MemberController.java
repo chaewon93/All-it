@@ -52,12 +52,12 @@ public class MemberController {
 	/** 아이디 찾기 기능 처리 */
 	@PostMapping("/findId")
 	public String findId(Member member, Model model) {
-		String id = memberService.findById(member.getName(), member.getEmail());
+		Member findMember = memberService.findById(member);
 		//System.out.println("[findId] 아이디 " +id);
 
-		if (id != null) {  // 이름과 이메일을 조건으로 아이디 조회 성공
+		if (findMember.getId() != null) {  // 이름과 이메일을 조건으로 아이디 조회 성공
 			model.addAttribute("message", 1);
-			model.addAttribute("id", id);
+			model.addAttribute("id", findMember.getId());
 		} else {
 			model.addAttribute("message", -1);
 		}
@@ -68,12 +68,12 @@ public class MemberController {
 	/** 비밀번호 찾기 기능 처리 */
 	@PostMapping("/findPw")
 	public String findPw(Member member, Model model) {
-		String pw = memberService.findByPw(member.getId(), member.getName(), member.getEmail());
-		System.out.println("[findPw] 비밀번호 " +pw);
+		Member findMember = memberService.findByPw(member);
+		System.out.println("[findPw] 비밀번호 " +findMember.getPwd());
 
-		if (pw != null) {  // 이름과 이메일을 조건으로 아이디 조회 성공
+		if (findMember.getPwd() != null) {  // 이름과 이메일을 조건으로 아이디 조회 성공
 			model.addAttribute("message", 1);
-			model.addAttribute("pw", pw);
+			model.addAttribute("pw", findMember.getPwd());
 		} else {
 			model.addAttribute("message", -1);
 		}
@@ -109,9 +109,12 @@ public class MemberController {
 	@GetMapping("/info")
 	public void info(Member member, Model model) {
 		String fullAddr = member.getAddress();
+		//System.out.println("[Member info] fullAddr : "+fullAddr);
 		if(fullAddr != null) {
 			String[] addr = fullAddr.split(",");
-			model.addAttribute("addr", addr);
+//			if(addr.length > 1) {
+				model.addAttribute("addr", addr);
+//			}
 		}
 	}
 	

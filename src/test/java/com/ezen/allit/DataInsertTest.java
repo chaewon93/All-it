@@ -158,7 +158,7 @@ public class DataInsertTest {
 		for(int i=0; i<3; i++) {
 			product.setCategory(i+1);
 			product.setName("test item"+i);
-			product.setContent("test item"+i+"입니다.");
+			product.setContent("test item"+i);
 			product.setPrice(i+9864);
 			product.setMdPickyn(0);			
 
