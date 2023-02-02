@@ -78,10 +78,12 @@ public class DataInsertTest {
 			QnA qna = new QnA();
 			Member member = new Member();
 			
-			if(i%3 == 1) {
+			if(i%4 == 1) {
 				qna.setCategory("결제");
-			}else if(i%3 == 2) {
+			}else if(i%4 == 2) {
 				qna.setCategory("상품문의");
+			}else if(i%4 == 3) {
+				qna.setCategory("신고");
 			}else {
 				qna.setCategory("기타");
 			}
@@ -134,7 +136,7 @@ public class DataInsertTest {
 						pro.setCategory(11-j);
 					pro.setName("물건"+i+"-"+j);
 					pro.setContent("좋은 물건");
-					pro.setMdPickyn("n");
+					pro.setMdPickyn(0);
 					pro.setPrice(j * 10000);
 					pro.setSeller(seller);
 					pro.setStatus(0);
@@ -149,7 +151,7 @@ public class DataInsertTest {
 	}
 	
 	@Test
-	//@Disabled
+	@Disabled
 	public void testProductDataInsert() {
 		Product product = new Product();
 		
@@ -158,7 +160,7 @@ public class DataInsertTest {
 			product.setName("test item"+i);
 			product.setContent("test item"+i+"입니다.");
 			product.setPrice(i+9864);
-			product.setMdPickyn("n");			
+			product.setMdPickyn(0);			
 
 			prodRepo.save(product);
 		}

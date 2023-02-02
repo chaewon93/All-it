@@ -33,7 +33,8 @@
 	</tr>	
 	<tr>
 		<th>
-		<a th:href="@{/admin/deleteReply(qno=${qna.qno})}" th:text="답변삭제"></a>
+		<input type="button" value="뒤로가기" onclick="history.back()"> <br>
+		<a th:if="${qna.status} == '1'" th:href="@{/admin/deleteReply(qno=${qna.qno})}" th:text="답변삭제"></a>
 		</th>
 	</tr>
 

@@ -1,9 +1,12 @@
 package com.ezen.allit.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.Product;
 
 public interface MemberRepository extends JpaRepository<Member, String> {
 	
@@ -15,4 +18,5 @@ public interface MemberRepository extends JpaRepository<Member, String> {
 	@Query(value = "SELECT pwd FROM member m WHERE m.id = ?1 AND m.name = ?2 AND m.email = ?3", nativeQuery = true)
 	String findPw(String id, String name, String email);
 
+	Page<Member> findMemberByIdContaining(String searchKeyword, PageRequest pageRequest);
 }

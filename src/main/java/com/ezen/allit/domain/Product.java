@@ -31,6 +31,7 @@ public class Product {
 	private int hit;				   				 // 좋아요
 	private int status;  			  				 // 등록상태(0:등록신청, 1:등록완료)
 	private int mdPickyn; 				  		     // MD픽(0:미등록, 1:등록)
+  
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "sid")
 	private Seller seller;		 	   				 // 판매자정보
