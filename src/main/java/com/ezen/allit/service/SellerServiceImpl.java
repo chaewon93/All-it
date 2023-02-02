@@ -59,7 +59,7 @@ public class SellerServiceImpl implements SellerService {
 	/*
 	 * 판매자 상품목록조회
 	 */
-	@Transactional
+/*	@Transactional
 	public Page<Product> getProductList(Pageable pageable, Seller seller) {
 		int page = pageable.getPageNumber() - 1;
 		int pageSize = 3;
@@ -79,7 +79,7 @@ public class SellerServiceImpl implements SellerService {
 		
         return product;
 	}
-	
+*/	
 	/*
 	 * 판매자 상품조회
 	 */
@@ -104,13 +104,13 @@ public class SellerServiceImpl implements SellerService {
 	public Page<Product> search(Seller seller, String searchKeyword, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
 		int pageSize = 3;
-		pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno"));
 		
 		Page<Product> product = 
-				productRepo.findBySellerIdAndNameContaining(seller.getId(), searchKeyword, pageable);
+				productRepo.findBySellerIdAndNameContaining(seller.getId(), searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno"));
 		
 		return product;
 	}
+
 	
 	/*
 	 * 판매자 상품등록

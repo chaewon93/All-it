@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<form th:action="@{/updateCusto}" method="post" name="custo">
+<form th:action="@{/admin/updateCusto}" method="post" name="custo">
 <table >
 	<input type="hidden" name="cno" th:value="${custo.cno}"/>
 	<tr>
@@ -36,7 +36,7 @@
 	</tr>
 	<tr>
 		<th>
-		<a th:href="@{/deleteCusto(cno=${custo.cno})}" th:text="답변삭제"></a>
+		<a th:href="@{/admin/deleteCusto(cno=${custo.cno})}" th:text="답변삭제"></a>
 		</th>
 	</tr>		
 </table>

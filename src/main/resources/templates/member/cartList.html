@@ -10,42 +10,37 @@
 <body th:align="center">
 <h1>장바구니</h1>
 <article style="margin-bottom: 20px">
-	<h2>Cart List</h2>
 	<form name="formm" id="theform" method="post">
 		<h3 th:if="${cartList.size() == 0}" style="color: red; text-align: center;">장바구니가 비었습니다.</h3>
 		<th:block th:unless="${cartList.size() == 0}">
-			<table id="cartList">
+			<table id="cartList" border="1" align="center">
 				<tr>
 					<th>상품명</th>
 					<th>수 량</th>
 					<th>가 격</th>
-					<th>주문일</th>
 					<th>삭 제</th>
 				</tr>
-
-				<tr th:each="cartVO : ${cartList}">
-					<td><a th:href="@{ product_detail?pseq=${cartVO.pseq} }">
-							<h3 th:text="${cartVO.pname}"></h3>
+				<th:block th:each="cart : ${cartList}">
+				<tr th:each="prod : ${prodList}">
+					<td><a th:href="@{ |/product/detail/${ prod.pno }| }">
+							<h3 th:text="${prod.name}"></h3>
 					</a></td>
-					<td th:text="${cartVO.quantity}"></td>
-					<td th:text="${cartVO.price2*cartVO.quantity}" type="currency" /></td>
-					<td th:text="${cartVO.indate}" type="date" /></td>
-					<td><input type="checkbox" name="cseq" id="cseq" th:value="${cartVO.cseq}"></td>
+					<td th:text="${cart.quantity}"></td>
+					<td th:text="${#numbers.formatInteger((prod.price*cart.quantity), 1, 'COMMA')}">원</td>
+					<td><input type="checkbox" name="cno" id="cno" th:value="${cart.cno}"></td>
 				</tr>
-
+				</th:block>
 				<tr>
-					<th colspan="2">총 액</th>
-					<th colspan="2" th:value="${totalPrice}" type="currency" /><br></th>
-					<th><a href="#" onclick="go_cart_delete()"><h3>삭제하기</h3></a></th>
+					<th>총 액</th>
+					<th colspan="2" th:text="${#numbers.formatInteger(totalPrice, 1, 'COMMA')}">원</th>
+					<th><a href="#" onclick="go_cart_delete()" class="btn btn-light"><h3>삭제하기</h3></a></th>
 				</tr>
 			</table>
 		</th:block>
 		<div class="clear"></div>
 		<div id="buttons" style="float: right">
-			<input type="button" value="쇼핑 계속하기" class="cancel"
-				onclick="location.href='index'">
-			<input th:if="${cartList.size() != 0}" type="button" value="주문하기" class="submit"
-				onclick="go_order_insert()">
+			<input type="button" value="쇼핑 계속하기" class="btn btn-light" onclick="location.href='index'">
+			<input th:if="${cartList.size() != 0}" type="button" value="주문하기" class="btn btn-light" onclick="go_order_insert()">
 		</div>
 	</form>
 </article>

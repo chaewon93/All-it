@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.ezen.allit.domain.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
+	
 	// 상품검색
 	Page<Product> findByNameContaining(String searchKeyword, Pageable pageable);
 	

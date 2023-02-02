@@ -13,8 +13,8 @@ public interface SellerService {
 
 	public Seller findByIdAndPwd(String id, String pwd);
 	
-	void saveSeller(Seller seller);
-	
+//	void saveSeller(Seller seller);
+
 	Page<Product> getProductList(Pageable pageable, Seller seller);
 	
 	Page<Product> search(Seller seller, String searchKeyword, Pageable pageable);

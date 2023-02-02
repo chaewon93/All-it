@@ -7,7 +7,7 @@
 	<a th:href="@{ /seller/(page=1, searchKeyword = ${ param.searchKeyword }) }">First</a>
 	
 	<!-- productList.getNumber() 사용자:2페이지 getNumber()=1 -->
-	<a th:href="${ productList.first } ? '#' : @{ /seller/(page=${ productList.number }, searchKeyword = ${ param.searchKeyword }) }">prev</a>
+	<a th:href="${ productList?.first } ? '#' : @{ /seller/(page=${ productList?.number }, searchKeyword = ${ param.searchKeyword }) }">prev</a>
 	
 	<!-- 페이지 번호 링크(현재 페이지는 숫자만) -->
 	<!-- for(int page=startPage; page<=endPage; page++)-->
@@ -28,7 +28,7 @@
 	</span>
 	
 	<!-- 사용자: 2페이지, getNumber: 1, 3페이지-->
-	<a th:href="${ productList.last } ? '#' : @{ /seller/(page=${ productList.number + 2 }, searchKeyword = ${ param.searchKeyword }) }">next</a>
+	<a th:href="${ productList.last } ? '#' : @{ /seller/(page=${ productList?.number + 2 }, searchKeyword = ${ param.searchKeyword }) }">next</a>
 	
 	<!-- 마지막 페이지로 이동 -->
 	<!-- 상품데이터가 하나도 없을 경우 -->

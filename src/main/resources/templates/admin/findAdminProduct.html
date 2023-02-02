@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function(){
+	$("#regAll").change(function(){
+		  if($("#regAll").is(":checked")){
+		 	 $(".test").prop("checked", true);
+		  }else{
+		  	$(".test").prop("checked", false);
+		  }
+		});
+	
+	$(".test").change(function(){
+		  if($(".test:checked").length == $(".test").length){
+		  	$("#regAll").prop("checked", true);
+		   }else{
+		  	$("#regAll").prop("checked", false);
+		  }
+		});
+});
+
+function reg_product(){
+	document.getElementById("theform").action = "/admin/regPro";
+	document.getElementById("theform").submit();
+}
+
+function delete_product(){
+	document.getElementById("theform").action = "/admin/deletePro";
+	document.getElementById("theform").submit();	
+}
+
+</script>
+</head>
+<body>
+
+<form action="/admin/regPro" method="post" id="theform">	
+<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
+
+<tr>
+	<th bgcolor="orange" width="100">번호</th>
+	<th bgcolor="orange" width="100">카테고리</th>
+	<th bgcolor="orange" width="100">상품명</th>
+	<th bgcolor="orange" width="200">내용</th>
+	<th bgcolor="orange" width="150">등록일</th>
+	<th bgcolor="orange" width="150">가격</th>
+	<th bgcolor="orange" width="100">할인률</th>
+	<th bgcolor="orange" width="100">판매자</th>
+	<th bgcolor="orange" width="100">이미지</th>
+	<th bgcolor="orange" width="100">체크<br>
+		<input type="checkbox" name="checkAll" id="regAll">
+	</th>
+</tr>
+<tr th:each="pro, state : ${proList}">
+	<td th:text="${state.count}"></td>
+	<td th:switch="${pro.category}">
+			<p th:case="1" th:text="패션"></p>
+			<p th:case="2" th:text="식품"></p>
+			<p th:case="3" th:text="주방용품"></p>
+			<p th:case="4" th:text="생활용품"></p>
+			<p th:case="5" th:text="인테리어"></p>
+			<p th:case="6" th:text="가전"></p>
+			<p th:case="7" th:text="스포츠/레저"></p>
+			<p th:case="8" th:text="도서/음반/DVD"></p>
+			<p th:case="9" th:text="반려동물용품"></p>
+			<p th:case="10" th:text="건강식품"></p>
+	</td>
+	<td align="left"><a th:href="@{/(pro=${pro.pno})}" th:text="${pro.name}"></a></td>
+	<td th:text="${pro.content}"></td>
+	<td th:text="${pro.regDate}"></td>
+	<td th:text="${pro.price}"></td>
+	<td th:text="${pro.discount}"></td>	
+	<td th:text="${pro.seller.id}"></td>
+	<td th:text="${pro.imageName}"></td>
+	<td><input type="checkbox" name="pno" class="test" th:value="${pro.pno}"></td>
+</tr>
+<tr>	
+	<td colspan="11" align="right"><input type="button" value="승인" class="submit" onclick="reg_product()"></td>
+</tr>
+<tr>
+	<td colspan="11" align="right"><input type="button" value="삭제" class="delete" onclick="delete_product()"></td>
+</tr>
+
+</table>
+</form>
+<a th:href="@{/admin/adminMain}">관리자 메인으로</a> <br>
+<a th:href="@{/admin/getQnAList}">QnA 조회</a> <br>
+<a th:href="@{/admin/getNoQnAList}">미답변 QnA 조회</a> <br>
+	
+</body>
+</html>

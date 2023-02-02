@@ -9,10 +9,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.ezen.allit.domain.Grade;
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
 import com.ezen.allit.repository.MemberRepository;
+import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.repository.QnARepository;
 import com.ezen.allit.repository.SellerRepository;
 
@@ -28,6 +30,10 @@ public class DataInsertTest {
 	
 	@Autowired
 	private QnARepository qnaRepo;
+	
+	@Autowired
+	private ProductRepository prodRepo;
+
 	
 	@Test
 	@Disabled
@@ -117,6 +123,44 @@ public class DataInsertTest {
 				seller.setRole(Role.TEMP);
 			
 			sellerRepo.save(seller);
+
+			if(i%3 != 0) {
+				for(int j = 1; j<6; j++) {
+					Product pro = new Product();
+					
+					if(j<6)
+						pro.setCategory(j);
+					else
+						pro.setCategory(11-j);
+					pro.setName("물건"+i+"-"+j);
+					pro.setContent("좋은 물건");
+					pro.setMdPickyn("n");
+					pro.setPrice(j * 10000);
+					pro.setSeller(seller);
+					pro.setStatus(0);
+					pro.setDiscount(j);
+					
+					prodRepo.save(pro);
+				}
+			}
+
+
 		}		
+	}
+	
+	@Test
+	//@Disabled
+	public void testProductDataInsert() {
+		Product product = new Product();
+		
+		for(int i=0; i<3; i++) {
+			product.setCategory(i+1);
+			product.setName("test item"+i);
+			product.setContent("test item"+i+"입니다.");
+			product.setPrice(i+9864);
+			product.setMdPickyn("n");			
+
+			prodRepo.save(product);
+		}
 	}
 }

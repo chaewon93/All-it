@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.service.ProductService;
@@ -23,15 +24,18 @@ public class ProductController {
 	/** 신상품 조회 */
 	@GetMapping("/newItem")
 	public String newItemList(Model model, @PageableDefault(page = 1) Pageable pageable,
-							String searchKeyword) {		
+							@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword) {		
 		
 		Page<Product> productList = null;
-		if(searchKeyword == null) {
+
+		if(searchKeyword.equals("")) {
+			System.out.println("검색 키워드 없음");
 			productList = productService.getProductList(pageable);
 		} else {
+			System.out.printf("검색 키워드: [%s]\n", searchKeyword);
 			productList = productService.search(searchKeyword, pageable);
 		}
-		
+
 		int naviSize = 10; // 페이지네이션 갯수
 		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
 		int endPage = ((startPage + naviSize - 1) < productList.getTotalPages()) ? startPage + naviSize - 1 : productList.getTotalPages();
@@ -39,14 +43,14 @@ public class ProductController {
 		model.addAttribute("productList", productList);
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
-		
+
 		return "product/newItem";
 	}
 	
 	/** 베스트상품 조회 */
 	
 	/** 상품 상세조회 */
-	@GetMapping("/detail")
+	@GetMapping("/detail/{pno}")
 	public String getProduct(@PathVariable int pno, Model model,
 							@PageableDefault(page = 1) Pageable pageable) {
 		Product theProduct = productService.getProduct(pno);
