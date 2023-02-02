@@ -108,6 +108,9 @@ public class SellerController {
 				totalRating += review.getRating();
 			}
 			theProduct.setRating((float)totalRating/reviewList.size());			
+		} 
+		if(reviewList.isEmpty()) {
+			theProduct.setRating(0);
 		}
 		
 		model.addAttribute("product", theProduct);

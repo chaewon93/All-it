@@ -11,7 +11,7 @@
 		<span>현재 로그인:</span><input type="text" th:value="${ session.seller.id }" name="seller" id="seller">
 		<label for="sel1">카테고리</label>
 		<select class="form-control" name="category" id="category">
-			<option>==카테고리==</option>
+			<option th:value="0">==카테고리==</option>
 			<option th:value="1">패션</option>
 			<option th:value="2">식품</option>
 			<option th:value="3">주방용품</option>
@@ -21,7 +21,7 @@
 			<option th:value="7">스포츠/레저</option>
 			<option th:value="8">도서/음반/DVD</option>
 			<option th:value="9">반려동물용품</option>
-			<option th:value="10">건강식품</option>	
+			<option th:value="10">건강식품</option>
 		</select>
 		<label for="name">상품명</label>
 		<input type="text" class="form-control" name="name" id="name"/>
@@ -32,9 +32,41 @@
 		<label for="image">이미지 업로드</label>
 		<input type="file" class="form-control-file border" name="imageFile" id="imageFile">
 	</div>
-	<button type="submit" class="btn btn-primary">상품등록</button>
+	<button type="submit" class="btn btn-primary" name="save" id="save">상품등록</button>
 </form>
 <!-- 내용 섹션 끝 -->
+
+<script type="text/javascript">
+$("#save").click(function() {
+	let category = $("#category").val();
+	let name = $("#name").val();
+	let price = $("#price").val();
+	let content = $("#content").val();
+	let imageFile = $("#imageFile").val();
+	
+	if(category == 0) {
+		alert('카테고리를 선택해주세요');
+		return false;
+	}
+	if(name == "") {
+		alert('상품명을 입력해주세요');
+		return false;
+	}
+	if(price == "") {
+		alert('판매가를 입력해주세요');
+		return false;
+	}
+	if(content == "") {
+		alert('상품에 대한 설명을 입력해주세요');
+		return false;
+	}
+	if(imageFile == "") {
+		alert('이미지 파일을 포함해주세요');
+		return false;
+	}
+})
+
+</script>
 
 <div th:replace="~{ /fragments/footer.html :: footer }"></div>
 <!-- footer replace -->

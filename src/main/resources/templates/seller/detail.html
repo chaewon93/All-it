@@ -35,8 +35,8 @@
 		<label for="content">상품설명</label>
 		<textarea class="form-control" th:text="${ product.content }" rows="5" name="content" id="content"></textarea>
 		<label for="image">이미지 업로드</label>
-		<input type="file" class="form-control-file border" name="imageFile" id="imageFile"/>
 		<input type="hidden" th:value="${ product.imageName }" name="imageName" id="imageName">
+		<input type="file" class="form-control-file border" name="imageFile" id="imageFile"/>
 	</div>
 	<button type="submit" class="btn btn-light" id="modify">상품수정</button>
 	<button type="button" class="btn btn-light" id="delete">삭제</button>
@@ -51,6 +51,7 @@
 		<input type="text" id="mid" th:value="${ #authentication.principal.member.id }">
 		<input type="text" id="sid" th:value="${ #authentication.principal.seller.id }">
 		 -->
+		 
 		<span>판매자:</span><input type="text" id="sid" th:value="${ product.seller.id }">
 		<span>현재 로그인:</span><input type="text" th:value="${ session.seller.id }" name="seller" id="seller">
 		<span>상품번호:</span><input type="text" id="save-pno" th:value="${ product.pno }">
@@ -76,11 +77,11 @@
 <!-- 댓글 출력 섹션 시작 -->
 <div class="card">
 	<div class="card-header">댓글</div>
-	<ul class="list-group" id="reply--box" th:each="review : ${ product.review }">
+	<ul class="list-group" id="reply--box" th:each="review, reviewNum : ${ product.review }">
 		<li class="list-group-item d-flex justify-content-between" id="reply--1">
 	  		<div> 
 	  			<!-- <p th:text="${ review.member.id }"></p> -->
-	  			<span>리뷰번호:</span><input type="text" th:value="${ review.rvno }" name="rvno" id="rvno">
+	  			<span>리뷰번호:</span><input type="text" th:value="${ reviewNum.count }" name="rvno" id="rvno">
 		  		<span th:text="${ review.rating }"></span>점 <span th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span> <br>
 		  		<!-- <p th:text="${ review.seller.id }"></p> -->
 		  		<span>상품명:</span><span th:text="${ review.product.name }"></span>
@@ -99,6 +100,35 @@
 
 <!-- 자바스트립트 섹션 시작 -->
 <script type="text/javascript">
+$("#modify").click(function() {
+	let category = $("#category").val();
+	let name = $("#name").val();
+	let price = $("#price").val();
+	let content = $("#content").val();
+	let imageFile = $("#imageFile").val();
+	
+	if(category == 0) {
+		alert('카테고리를 선택해주세요');
+		return false;
+	}
+	if(name == "") {
+		alert('상품명을 입력해주세요');
+		return false;
+	}
+	if(price == "") {
+		alert('판매가를 입력해주세요');
+		return false;
+	}
+	if(content == "") {
+		alert('상품에 대한 설명을 입력해주세요');
+		return false;
+	}
+	if(imageFile == "") {
+		alert('이미지 파일을 포함해주세요');
+		return false;
+	}
+})
+
 let index = {
 	init:function() {
 		$("#delete").on("click", ()=>{
@@ -140,7 +170,7 @@ let index = {
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 		}).done(function(response){ // 처리 성공 시
 			alert('좋아요가 완료되었습니다');
-			location.href="/seller/";
+			location.href="/seller/product/"+pno;
 		}).fail(function(error){ // 처리 실패 시
 			alert(JSON.stringify(error));
 		});
@@ -153,6 +183,7 @@ let index = {
 			content: $("#reply-content").val(),
 			rating: $("#rating").val()
 		}
+		let pno = $("#pno").val();
 		console.log("data = " + data);
 		$.ajax({
 			type: "post",
@@ -161,7 +192,7 @@ let index = {
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 		}).done(function(response){ // 처리 성공 시
 			alert('댓글이 작성되었습니다');
-			location.href="/seller/";
+			location.href="/seller/product/"+pno;
 		}).fail(function(error){ // 처리 실패 시
 			alert(JSON.stringify(error));
 		});
@@ -169,13 +200,13 @@ let index = {
 	
 	deleteReview:function() {
 		let rvno = $("#rvno").val();
+		let pno = $("#pno").val();
 		$.ajax({
 			type: "delete",
 			url: '/review/delete/'+rvno,
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 		}).done(function(response){ // 처리 성공 시
 			alert('댓글이 삭제되었습니다');
-			location.href="/seller/";
 		}).fail(function(error){ // 처리 실패 시
 			alert(JSON.stringify(error));
 		});
@@ -183,13 +214,14 @@ let index = {
 	
 	hitReview:function() {
 		let rvno = $("#rvno").val();
+		let pno = $("#pno").val();
 		$.ajax({
 			type: "put",
 			url: '/review/hit/'+rvno,
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 		}).done(function(response){ // 처리 성공 시
 			alert('댓글 좋아요가 완료되었습니다');
-			location.href="/seller/";
+			location.href="/seller/product/"+pno;
 		}).fail(function(error){ // 처리 실패 시
 			alert(JSON.stringify(error));
 		});
