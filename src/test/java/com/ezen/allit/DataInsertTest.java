@@ -88,7 +88,7 @@ public class DataInsertTest {
 				qna.setMember(member);
 			}
 			qna.setQno(i);
-			qna.setStatus("0");
+			qna.setStatus(0);
 			
 			qnaRepo.save(qna);
 		}		

@@ -36,9 +36,11 @@
 		<textarea class="form-control" th:text="${ product.content }" rows="5" name="content" id="content"></textarea>
 		<label for="image">이미지 업로드</label>
 		<input type="file" class="form-control-file border" name="imageFile" id="imageFile"/>
+		<input type="hidden" th:value="${ product.imageName }" name="imageName" id="imageName">
 	</div>
 	<button type="submit" class="btn btn-light" id="modify">상품수정</button>
 	<button type="button" class="btn btn-light" id="delete">삭제</button>
+	<button type="button" class="btn btn-light" id="hit">좋아요</button>
 </form>
 <!-- 내용 섹션 끝 -->
 
@@ -65,7 +67,7 @@
 				<option th:value="5">5</option>	
 			</select>
 			<!-- <input type="file" class="form-control-file border" name="reviewImageFile" id="reviewImageFile"/> -->
-			<button type="button" class="btn btn-primary" id="save">등록</button>
+			<button type="button" class="btn btn-primary" id="reviewSave">등록</button>
 		</div>
 	</form>
 </div>
@@ -88,6 +90,7 @@
 	  		<div class="d-flex">
 	  			<!-- <div class="font-italic" th:text="${ review.member.id }"></div> &nbsp; -->
 	  			<button class="badge" id="reviewDelete" style="color: black">삭제</button>
+	  			<button class="badge" id="reviewHit" style="color: black">좋아요</button>
 	  		</div>
 	  	</li>
 	</ul>
@@ -101,11 +104,17 @@ let index = {
 		$("#delete").on("click", ()=>{
 			this.deleteByPno();
 		});
-		$("#save").on("click", () =>{
-			this.save();
+		$("#hit").on("click", ()=>{
+			this.hit();
+		});
+		$("#reviewSave").on("click", () =>{
+			this.saveReview();
 		});
 		$("#reviewDelete").on("click", () =>{
 			this.deleteReview();
+		});
+		$("#reviewHit").on("click", () =>{
+			this.hitReview();
 		});
 	},
 
@@ -123,7 +132,21 @@ let index = {
 		});
 	},
 	
-	save:function() {
+	hit:function() {
+		let pno = $("#pno").val();
+		$.ajax({
+			type: "put",
+			url: "/seller/product/hit/"+pno,
+			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+		}).done(function(response){ // 처리 성공 시
+			alert('좋아요가 완료되었습니다');
+			location.href="/seller/";
+		}).fail(function(error){ // 처리 실패 시
+			alert(JSON.stringify(error));
+		});
+	},
+	
+	saveReview:function() {
 		let data = {
 			//sid: $("#sid").val(),
 			pno: $("#save-pno").val(),
@@ -152,6 +175,20 @@ let index = {
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 		}).done(function(response){ // 처리 성공 시
 			alert('댓글이 삭제되었습니다');
+			location.href="/seller/";
+		}).fail(function(error){ // 처리 실패 시
+			alert(JSON.stringify(error));
+		});
+	},
+	
+	hitReview:function() {
+		let rvno = $("#rvno").val();
+		$.ajax({
+			type: "put",
+			url: '/review/hit/'+rvno,
+			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+		}).done(function(response){ // 처리 성공 시
+			alert('댓글 좋아요가 완료되었습니다');
 			location.href="/seller/";
 		}).fail(function(error){ // 처리 실패 시
 			alert(JSON.stringify(error));

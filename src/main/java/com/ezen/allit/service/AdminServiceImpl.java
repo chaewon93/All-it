@@ -64,7 +64,7 @@ public class AdminServiceImpl implements AdminService {
 		System.out.println(rep);
 		System.out.println("-------------------------------------");		
 		
-		qna.setStatus("1");
+		qna.setStatus(1);
 		qna.setReply(rep);
 					
 		repRepo.save(rep);
@@ -99,7 +99,7 @@ public class AdminServiceImpl implements AdminService {
 		int rno = qna.getReply().getRno();
 		
 		qna.setReply(null);
-		qna.setStatus("0");
+		qna.setStatus(0);
 		
 		repRepo.deleteById(rno);
 	}

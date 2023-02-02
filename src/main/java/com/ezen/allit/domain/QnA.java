@@ -20,7 +20,7 @@ public class QnA {
 	private int qno;		 // 질문 일련번호
 	private String category; // 질문분류
 	private String content;  // 내용
-	private String status;   // 답변유무
+	private int status;  	 // 답변유무(0:미답변, 1:답변완료)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "sid")
 	private Seller seller;   // 판매자정보

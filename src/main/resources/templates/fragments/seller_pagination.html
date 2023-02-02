@@ -11,12 +11,19 @@
 	
 	<!-- 페이지 번호 링크(현재 페이지는 숫자만) -->
 	<!-- for(int page=startPage; page<=endPage; page++)-->
-	<span th:each="page: ${ #numbers.sequence(startPage, endPage) }">
-		<!-- 요청페이지가 현재페이지면 링크 X -->
-		<span th:if="${ page == productList.number + 1 }" th:text="${ page }"></span>
-		<!-- 요청페이지가 현재페이지가 아니면 링크 O -->
-		<span th:unless="${ page == productList.number + 1} ">
-			<a th:href="@{ /seller/(page=${ page }, searchKeyword = ${ param.searchKeyword }) }" th:text="${ page }"></a>
+	<!-- 상품데이터가 하나도 없을 경우 -->
+	<span th:if="${ productList.totalElements == 0 }">
+		<span th:text="1"></span>
+	</span>
+	<!-- 상품데이터가 하나라도 있을 경우 -->
+	<span th:unless="${ productList.totalElements == 0 }">
+		<span th:each="page: ${ #numbers.sequence(startPage, endPage) }">
+			<!-- 요청페이지가 현재페이지면 링크 X -->
+			<span th:if="${ page == productList.number + 1 }" th:text="${ page }"></span>
+			<!-- 요청페이지가 현재페이지가 아니면 링크 O -->
+			<span th:unless="${ page == productList.number + 1} ">
+				<a th:href="@{ /seller/(page=${ page }, searchKeyword = ${ param.searchKeyword }) }" th:text="${ page }"></a>
+			</span>
 		</span>
 	</span>
 	
@@ -24,5 +31,12 @@
 	<a th:href="${ productList.last } ? '#' : @{ /seller/(page=${ productList.number + 2 }, searchKeyword = ${ param.searchKeyword }) }">next</a>
 	
 	<!-- 마지막 페이지로 이동 -->
-	<a th:href="@{ /seller/(page=${ productList.totalPages }, searchKeyword = ${ param.searchKeyword }) }">Last</a>
+	<!-- 상품데이터가 하나도 없을 경우 -->
+	<span th:if="${ productList.totalElements == 0 }">
+		<a th:href="@{ /seller/(page=1, searchKeyword = ${ param.searchKeyword }) }">Last</a>
+	</span>
+	<!-- 상품데이터가 하나라도 있을 경우 -->
+	<span th:unless="${ productList.totalElements == 0 }">
+		<a th:href="@{ /seller/(page=${ productList.totalPages }, searchKeyword = ${ param.searchKeyword }) }">Last</a>
+	</span>
 </div>

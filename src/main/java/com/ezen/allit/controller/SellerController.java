@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Product;
+import com.ezen.allit.domain.Review;
 import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
 import com.ezen.allit.service.SellerService;
@@ -55,7 +56,6 @@ public class SellerController {
 				return "admin/adminMain";
 			}
 			session.setAttribute("seller", theSeller);
-			System.out.println("컨트롤러 로그인 처리 중 seller = " + theSeller);
 			return "redirect:/seller/";
 		} else {
 			
@@ -69,16 +69,15 @@ public class SellerController {
 	@RequestMapping("/")
 	public String mainView(Model model, @PageableDefault(page = 1) Pageable pageable,
 									String searchKeyword,
+									String sid,
 									HttpSession session) {
 		Seller seller = (Seller) session.getAttribute("seller");
-		System.out.println("컨트롤러 메인화면 처리1 중 seller = " + seller);
 		Page<Product> productList = null;
-		if(searchKeyword == null) {
+		if(searchKeyword == null || searchKeyword.equals("")) {
 			productList = sellerService.getProductList(pageable, seller);
 		} else {
 			productList = sellerService.search(seller, searchKeyword, pageable);
 		}
-		System.out.println("컨트롤러 메인화면 처리3 중 productList = " + productList);
 		
 		int naviSize = 10; // 페이지네이션 갯수
 		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
@@ -98,6 +97,19 @@ public class SellerController {
 	public String getProduct(@PathVariable int pno, Model model,
 							@PageableDefault(page = 1) Pageable pageable) {
 		Product theProduct = sellerService.getProduct(pno);
+	
+		/* 별점 평균 구하기 */
+		List<Review> reviewList = theProduct.getReview();
+		if(reviewList != null) {
+			Review review = null;
+			int totalRating = 0;
+			for(int i=0; i<reviewList.size(); i++) {
+				review = reviewList.get(i);
+				totalRating += review.getRating();
+			}
+			theProduct.setRating((float)totalRating/reviewList.size());			
+		}
+		
 		model.addAttribute("product", theProduct);
 		model.addAttribute("page", pageable.getPageNumber());
 		
@@ -109,7 +121,7 @@ public class SellerController {
 	 */
 	@PostMapping("/product/insert")
 	public String insertProduct(Product product, MultipartFile imageFile) throws Exception {
-		product.setMdPickyn("n");
+		product.setMdPickyn(0);
 		sellerService.saveProduct(product, imageFile);
 		
 		return "redirect:/seller/";
@@ -120,6 +132,7 @@ public class SellerController {
 	 */
 	@PostMapping("/product/modify")
 	public String modifyProduct(int pno, Product product, MultipartFile imageFile) throws Exception {
+		System.out.println("product = " + product);
 		sellerService.modifyProduct(pno, product, imageFile);
 		
 		return "redirect:/seller/";
