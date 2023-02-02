@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +35,17 @@ public class SellerApiController {
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 	
+	
+	/*
+	 * 상품 좋아요
+	 */
+	@PutMapping("/seller/product/hit/{pno}")
+	public ResponseDto<Integer> hitProduct(@PathVariable int pno) {
+		sellerService.hitProduct(pno);
+		
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}
+	
 	/*
 	 * 리뷰작성
 	 */
@@ -50,6 +62,16 @@ public class SellerApiController {
 	@DeleteMapping("/review/delete/{rvno}")
 	public ResponseDto<Integer> deleteReview(@PathVariable int rvno) {
 		reviewService.deleteReview(rvno);
+		
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}
+	
+	/*
+	 * 리뷰삭제
+	 */
+	@PutMapping("/review/hit/{rvno}")
+	public ResponseDto<Integer> hitReview(@PathVariable int rvno) {
+		reviewService.hitReview(rvno);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}

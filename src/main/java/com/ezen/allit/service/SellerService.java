@@ -14,17 +14,14 @@ public interface SellerService {
 	public Seller findByIdAndPwd(String id, String pwd);
 	
 //	void saveSeller(Seller seller);
-	
-//	Page<Seller> getProductList(Pageable pageable, Seller seller);
-	
-//	Page<Seller> search(Seller seller, String searchKeyword, Pageable pageable);
 
-//	Page<Product> getProductList(Pageable pageable, Seller seller);
-
-//	Page<Product> search(Seller seller, String searchKeyword, Pageable pageable);
+	Page<Product> getProductList(Pageable pageable, Seller seller);
+	
+	Page<Product> search(Seller seller, String searchKeyword, Pageable pageable);
 	
 	Product getProduct(int pno);
 	
+	void hitProduct(int pno);
 	
 	Seller getSeller(Seller seller);
 
