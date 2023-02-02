@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Product;
+import com.ezen.allit.domain.Review;
 import com.ezen.allit.dto.ReviewSaveRequestDto;
 import com.ezen.allit.repository.ReviewRepository;
 
@@ -37,6 +38,15 @@ public class ReviewServiceImpl implements ReviewService {
 	@Transactional
 	public void deleteReview(int rvno) {
 		reviewRepo.deleteById(rvno);
+	}
+	
+	/*
+	 * 리뷰 좋아요
+	 */
+	@Transactional
+	public void hitReview(int rvno) {
+		Review review = reviewRepo.findById(rvno).get();
+		review.setHit(review.getHit()+1);		
 	}
 	
 //	/*
