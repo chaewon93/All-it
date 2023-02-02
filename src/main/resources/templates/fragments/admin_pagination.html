@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<div th:fragment="pagination">
+<!-- 	 
+	<span th:if="${not #strings.isEmpty(proList)}" th:with="list='proList', url='/admin/findAdminProduct'"></span>
+	<span th:if="${not #strings.isEmpty(memberList)}" th:with="list='memberList', url='/admin/getMemberList'"></span>
+ -->
+	<!-- 첫번째 페이지로 이동 -->
+	<!-- @{ /seller/?page=1 }과 같음 -->
+	<a th:if="${!list?.first}" th:href="@{ ${url}(page=1, searchKeyword = ${ param.searchKeyword }, a=${a}) }">First</a>
+	
+	<!-- productList.getNumber() 사용자:2페이지 getNumber()=1 -->
+	<a th:if="${!list?.first}" th:href="@{ ${url}(page=${ list?.number }, searchKeyword = ${ param.searchKeyword }, a=${a}) }">prev</a>
+	
+	<!-- 페이지 번호 링크(현재 페이지는 숫자만) -->
+	<!-- for(int page=startPage; page<=endPage; page++)-->
+	<span th:each="page: ${ #numbers.sequence(startPage, endPage) }">
+		<!-- 요청페이지가 현재페이지면 링크 X -->
+		<span th:if="${ page == list?.number + 1 }" th:text="${ page }"></span>
+		<!-- 요청페이지가 현재페이지가 아니면 링크 O -->
+		<span th:unless="${ page == list?.number + 1} ">
+			<a th:href="@{ ${url}(page=${ page }, searchKeyword = ${ param.searchKeyword },a=${a}) }" th:text="${ page }"></a>
+		</span>
+	</span>
+	
+	<!-- 사용자: 2페이지, getNumber: 1, 3페이지-->
+	<a th:if="${!list?.last}" th:href="@{ ${url}(page=${ list?.number + 2 }, searchKeyword = ${ param.searchKeyword }, a=${a}) }">next</a>
+	
+	<!-- 마지막 페이지로 이동 -->
+	<a th:if="${!list?.last}" th:href="@{ ${url}(page=${ list.totalPages }, searchKeyword = ${ param.searchKeyword }, a=${a}) }">Last</a>
+</div>

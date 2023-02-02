@@ -55,7 +55,7 @@ function delete_product(){
 		<input type="checkbox" name="checkAll" id="regAll">
 	</th>
 </tr>
-<tr th:each="pro, state : ${proList}">
+<tr th:each="pro, state : ${list}">
 	<td th:text="${state.count}"></td>
 	<td th:switch="${pro.category}">
 			<p th:case="1" th:text="패션"></p>
@@ -78,7 +78,7 @@ function delete_product(){
 	<td th:text="${pro.imageName}"></td>
 	<td><input type="checkbox" name="pno" class="test" th:value="${pro.pno}"></td>
 </tr>
-<tr>	
+<tr th:if="${a}==0">	
 	<td colspan="11" align="right"><input type="button" value="승인" class="submit" onclick="reg_product()"></td>
 </tr>
 <tr>
@@ -87,9 +87,13 @@ function delete_product(){
 
 </table>
 </form>
+
+<div th:replace="~{ /fragments/admin_pagination.html :: pagination }"></div>
+<!-- pagination replace -->
+<hr>
 <a th:href="@{/admin/adminMain}">관리자 메인으로</a> <br>
-<a th:href="@{/admin/getQnAList}">QnA 조회</a> <br>
-<a th:href="@{/admin/getNoQnAList}">미답변 QnA 조회</a> <br>
-	
+<a th:if="${a}==0" th:href="@{/admin/findAdminProduct(a=1)}">등록 상품 조회</a>
+<a th:if="${a}==1" th:href="@{/admin/findAdminProduct(a=0)}">등록 대기 상품 조회</a> <br>
+
 </body>
 </html>

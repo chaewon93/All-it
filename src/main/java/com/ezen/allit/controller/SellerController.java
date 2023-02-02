@@ -109,7 +109,7 @@ public class SellerController {
 	 */
 	@PostMapping("/product/insert")
 	public String insertProduct(Product product, MultipartFile imageFile) throws Exception {
-		product.setMdPickyn("n");
+		product.setMdPickyn(0);
 		sellerService.saveProduct(product, imageFile);
 		
 		return "redirect:/seller/";

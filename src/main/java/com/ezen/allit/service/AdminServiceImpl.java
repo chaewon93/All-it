@@ -13,10 +13,13 @@ import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Reply;
+import com.ezen.allit.domain.Role;
+import com.ezen.allit.domain.Seller;
 import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.repository.QnARepository;
 import com.ezen.allit.repository.ReplyRepository;
+import com.ezen.allit.repository.SellerRepository;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -33,73 +36,54 @@ public class AdminServiceImpl implements AdminService {
 	@Autowired
 	private ProductRepository proRepo;
 	
-	@Override
-	public List<Member> getMemberList() {
+	@Autowired
+	private SellerRepository sellerRepo;
 
-		List<Member> getMemberList = memberRepo.findAll();
-		if(!getMemberList.isEmpty())
-			return getMemberList;
+	// 관리자 QnA 전체 조회
+	@Override
+	public Page<QnA> getQnAList(Pageable pageable) {
+
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 6;
+		
+		Page<QnA> qnaList = 
+				qnaRepo.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "qno")));
+
+		if(!qnaList.isEmpty())
+			return qnaList;
 		else return null;
 	}
 
-	@Override
-	public List<QnA> getQnAList() {
-
-		List<QnA> getQnAList = qnaRepo.findAll();
-		
-		System.out.println("-------------------------------------");
-		System.out.println(getQnAList);
-		System.out.println("-------------------------------------");
-		
-		if(!getQnAList.isEmpty())
-			return getQnAList;
-		else return null;
-	}
-
+	// 관리자 QnA 답변(Reply) 작성
 	@Override
 	public void insertReply(QnA temp, Reply rep) {
 
 		QnA qna = qnaRepo.findQnAByQno(temp.getQno());
-		
-		System.out.println("------------------------------------- QnA");
-		System.out.println(qna);
-		System.out.println("------------------------------------- QnA");		
-		
+
 		rep.setMember(qna.getMember());
 		rep.setProduct(qna.getProduct());
 		rep.setSeller(qna.getSeller());
-		
-		System.out.println("-------------------------------------");
-		System.out.println(rep);
-		System.out.println("-------------------------------------");		
-		
-		qna.setStatus("1");
+
+		qna.setStatus(1);
 		qna.setReply(rep);
 					
 		repRepo.save(rep);
 		qnaRepo.save(qna);
 		
-		System.out.println("------------------------------------- finally QnA");
-		System.out.println(qna);
-		System.out.println("------------------------------------- finally QnA");			
-		
-		
 	}
-
+	
+	// 관리자 QnA 답변(Reply) 수정
 	@Override
 	public void updateReply(Reply rep) {
 		
 		Reply repl = repRepo.findReplyByRno(rep.getRno());
-		
-		System.out.println("------------------------------------- repl");
-		System.out.println(repl);
-		System.out.println("------------------------------------- repl");		
-		
+	
 		repl.setContent(rep.getContent());
 		
 		repRepo.save(repl);
 	}
 
+	// 관리자 QnA 답변(Reply) 삭제
 	@Override
 	public void deleteReply(int qno) {
 
@@ -108,16 +92,17 @@ public class AdminServiceImpl implements AdminService {
 		int rno = qna.getReply().getRno();
 		
 		qna.setReply(null);
-		qna.setStatus("0");
+		qna.setStatus(0);
 		
 		repRepo.deleteById(rno);
 	}
 
+	// 관리자 등록 상태에 따른 상품 조회(대기 or 등록)
 	@Override
 	public Page<Product> findProductByStatus(int status, Pageable pageable) {
 		
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 5;
+		int pageSize = 7;
 		
 		Page<Product> product = 
 				proRepo.findProductByStatus(status, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
@@ -126,6 +111,116 @@ public class AdminServiceImpl implements AdminService {
 		return product;
 	}
 	
-	
+	// 관리자 등록 상태에 따른 상품 조회(대기 or 등록)와 키워드(name) 검색
+//	@Override
+//	public Page<Product> searchByAdminPro(int status, String searchKeyword, Pageable pageable) {
+//		int page = pageable.getPageNumber() - 1;
+//
+//		int pageSize = 7;
+//
+//		Page<Product> product = 
+//				proRepo.findByStatusAndNameContaining(status, searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+//		
+//		return product;
+//	}
+
+	// 관리자 회원 조회와 키워드(id) 검색
+	@Override
+	public Page<Member> searchByAdminMem(String searchKeyword, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+
+		int pageSize = 7;
+
+		Page<Member> member = 
+				memberRepo.findMemberByIdContaining(searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
+		
+		return member;
+	}
+
+	// 관리자 회원 조회
+	@Override
+	public Page<Member> getMemberList(Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 6;
+
+		Page<Member> member = 
+				memberRepo.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
+
+        return member;
+	}
+
+//	@Override
+//	public Page<QnA> searchByAdminQna(String searchKeyword, Pageable pageable) {
+//		int page = pageable.getPageNumber() - 1;
+//		int pageSize = 6;
+//
+//		Page<QnA> qna = 
+//				qnaRepo.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "qno")));
+//
+//        return qna;
+//	}
+
+	@Override
+	public Page<QnA> findQnAByStatus(int status, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 6;
+
+		Page<QnA> qna = 
+				qnaRepo.findNoQnAByStatus(status ,PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "qno")));
+
+        return qna;
+	}
+
+//	@Override
+//	public Page<QnA> searchByAdminQnaStatus(int status, String searchKeyword, Pageable pageable) {
+//		int page = pageable.getPageNumber() - 1;
+//		int pageSize = 6;
+//
+//		Page<QnA> qna = 
+//				qnaRepo.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "qno")));
+//
+//        return qna;
+//	}
+
+	@Override
+	public Page<QnA> findQnAByCategoryContaining(String cate, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 6;
+		
+		Page<QnA> qna = 
+				qnaRepo.findCateQnAByCategoryContaining(cate, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "qno")));
+
+        return qna;
+	}
+
+	@Override
+	public Page<Seller> findSellerByRole(Role role, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 6;
+		
+		Page<Seller> seller = 
+				sellerRepo.findSellerByRole(role, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
+		return seller;
+	}
+
+	@Override
+	public Page<Seller> findSellerByRoleNot(Role role, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 6;
+		
+		Page<Seller> seller = 
+				sellerRepo.findSellerByRoleNot(role, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
+		return seller;
+	}
+
+	@Override
+	public Page<Seller> findAllSeller(Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 6;
+		
+		Page<Seller> seller = 
+				sellerRepo.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
+		return seller;
+	}
 
 }

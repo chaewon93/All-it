@@ -5,7 +5,11 @@
 <title>Insert title here</title>
 </head>
 <body>
-	
+<a th:href="@{/admin/findQnA(cate='결제')}">결제</a> <br>
+<a th:href="@{/admin/findQnA(cate='상품')}">상품</a> <br>
+<a th:href="@{/admin/findQnA(cate='신고')}">신고</a> <br>
+<a th:href="@{/admin/findQnA(cate='기타')}">기타</a> <br>
+<a th:href="@{/admin/findQnA(cate='모두 보기')}">모두 보기</a> <br>	
 <table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
 <tr>
 	<th bgcolor="orange" width="100">번호</th>
@@ -19,7 +23,7 @@
 	<th bgcolor="orange" width="100">답변</th>
 </tr>
 
-<tr th:each="qna, state : ${qnaList}">
+<tr th:each="qna, state : ${list}">
 	<td th:text="${state.count}"></td>
 	<td th:text="${qna.category}"></td>
 	<td align="left"><a th:href="@{/admin/getQnADetail(qno=${qna.qno})}" th:text="${qna.content}"></a></td>
@@ -32,6 +36,10 @@
 </tr>
 
 </table>
+
+<div th:replace="~{ /fragments/admin_pagination.html :: pagination }"></div>
+<!-- pagination replace -->
+<hr>
 <a th:href="@{/admin/adminMain}">관리자 메인으로</a> <br>
 <a th:href="@{/admin/getQnAList}">QnA 조회</a> <br>
 <a th:href="@{/admin/getNoQnAList}">미답변 QnA 조회</a> <br>
