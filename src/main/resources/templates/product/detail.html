@@ -6,7 +6,7 @@
 <!-- 내용 섹션 시작 -->
 <form method="post" id="productDetail">
 	<div class="form-group">
-		<input type="hidden" th:value="${ session['member']?.id }" name="mid" id="mid"><!-- th:if="${ session['member'].id } ne null" -->
+		<input type="hidden" th:value="${ session['user']?.id }" name="mid" id="mid"><!-- th:if="${ session['user'].id } ne null" -->
 		<input type="hidden" th:value="${ product.pno }" name="pno" id="pno">
 		<input type="hidden" th:value="${ product.imageName }" name="imageName" id="imageName">
 		<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="350"><br>
