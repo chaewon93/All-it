@@ -64,8 +64,8 @@ function delete_product(){
 			<p th:case="4" th:text="생활용품"></p>
 			<p th:case="5" th:text="인테리어"></p>
 			<p th:case="6" th:text="가전"></p>
-			<p th:case="7" th:text="스포츠/레저"></p>
-			<p th:case="8" th:text="도서/음반/DVD"></p>
+			<p th:case="7" th:text="|스포츠/레저|"></p>
+			<p th:case="8" th:text="|도서/음반/DVD|"></p>
 			<p th:case="9" th:text="반려동물용품"></p>
 			<p th:case="10" th:text="건강식품"></p>
 	</td>
@@ -74,7 +74,7 @@ function delete_product(){
 	<td th:text="${pro.regDate}"></td>
 	<td th:text="${pro.price}"></td>
 	<td th:text="${pro.discount}"></td>	
-	<td th:text="${pro.seller.id}"></td>
+	<td th:text="${pro.seller?.id}"></td>
 	<td th:text="${pro.imageName}"></td>
 	<td><input type="checkbox" name="pno" class="test" th:value="${pro.pno}"></td>
 </tr>

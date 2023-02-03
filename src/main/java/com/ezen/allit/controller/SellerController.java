@@ -97,6 +97,9 @@ public class SellerController {
 	public String getProduct(@PathVariable int pno, Model model,
 							@PageableDefault(page = 1) Pageable pageable) {
 		Product theProduct = sellerService.getProduct(pno);
+		
+		/* 조회수 증가 */
+		sellerService.updateCount(theProduct.getPno());
 	
 		/* 별점 평균 구하기 */
 		List<Review> reviewList = theProduct.getReview();
@@ -108,6 +111,9 @@ public class SellerController {
 				totalRating += review.getRating();
 			}
 			theProduct.setRating((float)totalRating/reviewList.size());			
+		} 
+		if(reviewList.isEmpty()) {
+			theProduct.setRating(0);
 		}
 		
 		model.addAttribute("product", theProduct);

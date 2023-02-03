@@ -13,7 +13,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	
 	Page<Product> findProductByStatus(int status, Pageable pageable);
 	
-//	Page<Product> findByStatusAndNameContaining(int status, String searchKeyword, PageRequest pageRequest);
+	Page<Product> findByStatusAndNameContaining(int status, String searchKeyword, Pageable pageable);
   
 	// 판매자별 상품검색
 	Page<Product> findBySellerIdAndNameContaining(String id, String searchKeyword, Pageable pageable);

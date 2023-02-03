@@ -47,6 +47,9 @@ public class Member {
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"member"})
 	private List<QnA> qnaList = new ArrayList<>();				 // 연관관계 설정
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	@JsonIgnoreProperties({"member"})
+	private List<Hit> hits = new ArrayList<>();	  	   			 // 연관관계 설정용
 	private Grade grade;	   		 		    			 	 // 회원등급
 	@CreationTimestamp
 	private Date regDate;			 	   		 		     	 // 가입일
