@@ -48,15 +48,15 @@ $("#save").click(function() {
 		alert('카테고리를 선택해주세요');
 		return false;
 	}
-	if(name == "") {
+	if(name.trim() == "") {
 		alert('상품명을 입력해주세요');
 		return false;
 	}
-	if(price == "") {
+	if(price.trim() == "") {
 		alert('판매가를 입력해주세요');
 		return false;
 	}
-	if(content == "") {
+	if(content.trim() == "") {
 		alert('상품에 대한 설명을 입력해주세요');
 		return false;
 	}

@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Product;
+import com.ezen.allit.dto.HitSaveRequestDto;
 import com.ezen.allit.dto.ResponseDto;
+import com.ezen.allit.dto.ReviewDeleteRequestDto;
 import com.ezen.allit.dto.ReviewSaveRequestDto;
 import com.ezen.allit.service.ProductService;
 import com.ezen.allit.service.ReviewService;
@@ -35,13 +37,12 @@ public class SellerApiController {
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 	
-	
 	/*
 	 * 상품 좋아요
 	 */
 	@PutMapping("/seller/product/hit/{pno}")
-	public ResponseDto<Integer> hitProduct(@PathVariable int pno) {
-		sellerService.hitProduct(pno);
+	public ResponseDto<Integer> hitProduct(@RequestBody HitSaveRequestDto hitSaveRequestDto) {
+		sellerService.hitProduct(hitSaveRequestDto);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
@@ -57,21 +58,32 @@ public class SellerApiController {
 	}
 	
 	/*
+	 * 리뷰수정
+	 */
+//	@PutMapping("/review/modify/{pno}")
+//	public ResponseDto<Integer> modifyReview(@RequestBody ReviewSaveRequestDto reviewSaveRequestDto) {
+//		reviewService.modifyReview(reviewSaveRequestDto);
+//		
+//		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+//	}
+	
+	/*
 	 * 리뷰삭제
 	 */
-	@DeleteMapping("/review/delete/{rvno}")
-	public ResponseDto<Integer> deleteReview(@PathVariable int rvno) {
+	@DeleteMapping("/review/delete/{pno}/{rvno}")
+	public ResponseDto<Integer> deleteReview(@PathVariable int pno,
+											@PathVariable int rvno) {
 		reviewService.deleteReview(rvno);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 	
 	/*
-	 * 리뷰삭제
+	 * 리뷰 좋아요
 	 */
 	@PutMapping("/review/hit/{rvno}")
-	public ResponseDto<Integer> hitReview(@PathVariable int rvno) {
-		reviewService.hitReview(rvno);
+	public ResponseDto<Integer> hitReview(@RequestBody HitSaveRequestDto hitSaveRequestDto) {
+		reviewService.hitReview(hitSaveRequestDto);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
