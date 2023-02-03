@@ -4,10 +4,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.Seller;
+import com.ezen.allit.dto.HitSaveRequestDto;
 
 public interface SellerService {
 
@@ -23,7 +25,7 @@ public interface SellerService {
 	
 	void updateCount(int pno);
 	
-	void hitProduct(int pno);
+	void hitProduct(HitSaveRequestDto hitSaveRequestDto);
 	
 	Seller getSeller(Seller seller);
 

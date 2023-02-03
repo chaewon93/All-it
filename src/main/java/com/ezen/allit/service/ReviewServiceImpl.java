@@ -3,17 +3,25 @@ package com.ezen.allit.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.Review;
+import com.ezen.allit.domain.Seller;
+import com.ezen.allit.dto.HitSaveRequestDto;
+import com.ezen.allit.dto.ReviewDeleteRequestDto;
 import com.ezen.allit.dto.ReviewSaveRequestDto;
+import com.ezen.allit.repository.HitRepository;
 import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.repository.ReviewRepository;
+import com.ezen.allit.repository.SellerRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +30,8 @@ import lombok.RequiredArgsConstructor;
 public class ReviewServiceImpl implements ReviewService {
 	private final ReviewRepository reviewRepo;
 	private final ProductRepository productRepo;
+	private final SellerRepository sellerRepo;
+	private final HitRepository hitRepo;
 
 	/*
 	 * 리뷰작성
@@ -55,9 +65,19 @@ public class ReviewServiceImpl implements ReviewService {
 	 * 리뷰 좋아요
 	 */
 	@Transactional
-	public void hitReview(int rvno) {
-		Review review = reviewRepo.findById(rvno).get();
-		review.setHit(review.getHit()+1);		
+	public void hitReview(HitSaveRequestDto hitSaveRequestDto) {
+		Optional<Hit> hit = hitRepo.findByReviewRvnoAndSellerId(hitSaveRequestDto.getRvno(), hitSaveRequestDto.getSid());
+		Review review = reviewRepo.findById(hitSaveRequestDto.getRvno()).get();
+		Seller seller = sellerRepo.findById(hitSaveRequestDto.getSid()).get();
+		
+		/* 이전에 좋아요 누른 기록이 없으면 좋아요, 있으면 좋아요 취소 */
+		if(hit.isEmpty()) {
+			hitRepo.save(new Hit(review, seller));
+			review.setHit(review.getHit()+1);
+		} else {
+			hitRepo.deleteById(hit.get().getHno());
+			review.setHit(review.getHit()-1);
+		}
 	}
 	
 //	/*
