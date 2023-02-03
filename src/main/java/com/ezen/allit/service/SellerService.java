@@ -21,6 +21,8 @@ public interface SellerService {
 	
 	Product getProduct(int pno);
 	
+	void updateCount(int pno);
+	
 	void hitProduct(int pno);
 	
 	Seller getSeller(Seller seller);

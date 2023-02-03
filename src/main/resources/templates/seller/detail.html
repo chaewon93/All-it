@@ -11,9 +11,10 @@
 		<span>판매자:</span><input type="text" id="sid" th:value="${ product.seller.id }">
 		<span>현재 로그인:</span><input type="text" th:value="${ session.seller.id }" name="seller" id="seller">
 		<span>상품번호:</span><input type="text" th:value="${ product.pno }" name="pno" id="pno">
-		<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="350">
-		<p th:text="${ product.rating }" style="color: purple;"></p>
-		<p th:text="${ product.hit }" style="color: aqua;"></p>
+		<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="350"><br>
+		<span>조회수: </span><span th:text="${ product.count }" style="color: green;"></span>
+		<span>별점: </span><span th:text="${ product.rating }" style="color: purple;"></span>
+		<span>좋아요: </span><span th:text="${ product.hit }" style="color: aqua;"></span>
 		<label for="sel1">카테고리</label>
 		<select class="form-control" name="category" id="category">
 			<option>==카테고리==</option>
@@ -77,11 +78,11 @@
 <!-- 댓글 출력 섹션 시작 -->
 <div class="card">
 	<div class="card-header">댓글</div>
-	<ul class="list-group" id="reply--box" th:each="review, reviewNum : ${ product.review }">
+	<ul class="list-group" id="reply--box" th:each="review : ${ product.review }">
 		<li class="list-group-item d-flex justify-content-between" id="reply--1">
 	  		<div> 
 	  			<!-- <p th:text="${ review.member.id }"></p> -->
-	  			<span>리뷰번호:</span><input type="text" th:value="${ reviewNum.count }" name="rvno" id="rvno">
+	  			<span>리뷰번호:</span><input type="text" th:value="${ review.rvno }" name="rvno" id="rvno">
 		  		<span th:text="${ review.rating }"></span>점 <span th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span> <br>
 		  		<!-- <p th:text="${ review.seller.id }"></p> -->
 		  		<span>상품명:</span><span th:text="${ review.product.name }"></span>
@@ -90,6 +91,7 @@
 	  		</div>
 	  		<div class="d-flex">
 	  			<!-- <div class="font-italic" th:text="${ review.member.id }"></div> &nbsp; -->
+	  			<button class="badge" id="reviewModify" style="color: black">수정</button>
 	  			<button class="badge" id="reviewDelete" style="color: black">삭제</button>
 	  			<button class="badge" id="reviewHit" style="color: black">좋아요</button>
 	  		</div>
@@ -111,15 +113,15 @@ $("#modify").click(function() {
 		alert('카테고리를 선택해주세요');
 		return false;
 	}
-	if(name == "") {
+	if(name.trim() == "") {
 		alert('상품명을 입력해주세요');
 		return false;
 	}
-	if(price == "") {
+	if(price.trim() == "") {
 		alert('판매가를 입력해주세요');
 		return false;
 	}
-	if(content == "") {
+	if(content.trim() == "") {
 		alert('상품에 대한 설명을 입력해주세요');
 		return false;
 	}
@@ -139,6 +141,9 @@ let index = {
 		});
 		$("#reviewSave").on("click", () =>{
 			this.saveReview();
+		});
+		$("#reviewModify").on("click", () =>{
+			this.modifyReview();
 		});
 		$("#reviewDelete").on("click", () =>{
 			this.deleteReview();
@@ -169,8 +174,7 @@ let index = {
 			url: "/seller/product/hit/"+pno,
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 		}).done(function(response){ // 처리 성공 시
-			alert('좋아요가 완료되었습니다');
-			location.href="/seller/product/"+pno;
+			window.location.reload();
 		}).fail(function(error){ // 처리 실패 시
 			alert(JSON.stringify(error));
 		});
@@ -183,45 +187,77 @@ let index = {
 			content: $("#reply-content").val(),
 			rating: $("#rating").val()
 		}
-		let pno = $("#pno").val();
-		console.log("data = " + data);
-		$.ajax({
-			type: "post",
-			url: '/review/save/${data.pno}',
-			data: JSON.stringify(data),
-			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
-		}).done(function(response){ // 처리 성공 시
-			alert('댓글이 작성되었습니다');
-			location.href="/seller/product/"+pno;
-		}).fail(function(error){ // 처리 실패 시
-			alert(JSON.stringify(error));
-		});
+		if(!data.content || data.content.trim() == "") {
+			alert('내용을 입력해주세요');
+			return false;
+		} else {	
+			$.ajax({
+				type: "post",
+				url: '/review/save/${data.pno}',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('댓글이 작성되었습니다');
+				window.location.reload();
+			}).fail(function(error){ // 처리 실패 시
+				alert(JSON.stringify(error));
+			});
+		}
+	},
+	
+	modifyReview:function() {
+		let data = {
+			//sid: $("#sid").val(),
+			pno: $("#save-pno").val(),
+			content: $("#reply-content").val(),
+			rating: $("#rating").val(),
+			rvno: $("#rvno").val()
+		}
+		if(!data.content || data.content.trim() === "") {
+			alert('내용을 입력해주세요');
+			return false;
+		} else {	
+			$.ajax({
+				type: "put",
+				url: '/review/modify/${data.pno}',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('댓글이 수정되었습니다');
+				window.location.reload();
+			}).fail(function(error){ // 처리 실패 시
+				alert(JSON.stringify(error));
+			});
+		}
 	},
 	
 	deleteReview:function() {
 		let rvno = $("#rvno").val();
 		let pno = $("#pno").val();
-		$.ajax({
-			type: "delete",
-			url: '/review/delete/'+rvno,
-			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
-		}).done(function(response){ // 처리 성공 시
-			alert('댓글이 삭제되었습니다');
-		}).fail(function(error){ // 처리 실패 시
-			alert(JSON.stringify(error));
-		});
+		const check = confirm("삭제하시겠습니까?");
+		if(check === true) {	
+			$.ajax({
+				type: "delete",
+				url: '/review/delete/'+pno+"/"+rvno,
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('댓글이 삭제되었습니다');
+				window.location.reload();
+			}).fail(function(error){ // 처리 실패 시
+				alert(JSON.stringify(error));
+			});
+		}
 	},
 	
 	hitReview:function() {
 		let rvno = $("#rvno").val();
-		let pno = $("#pno").val();
+		let pno = $("#pno").val();		
 		$.ajax({
 			type: "put",
 			url: '/review/hit/'+rvno,
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 		}).done(function(response){ // 처리 성공 시
-			alert('댓글 좋아요가 완료되었습니다');
-			location.href="/seller/product/"+pno;
+			window.location.reload();
 		}).fail(function(error){ // 처리 실패 시
 			alert(JSON.stringify(error));
 		});

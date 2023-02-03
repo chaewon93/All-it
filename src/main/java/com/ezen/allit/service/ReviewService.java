@@ -8,6 +8,9 @@ public interface ReviewService {
 	// 리뷰작성
 	void saveReview(ReviewSaveRequestDto reviewSaveRequestDto);
 
+	// 리뷰수정
+//	void modifyReview(ReviewSaveRequestDto reviewSaveRequestDto, int rvno);
+	
 	// 리뷰삭제	
 	void deleteReview(int rvno);
 	

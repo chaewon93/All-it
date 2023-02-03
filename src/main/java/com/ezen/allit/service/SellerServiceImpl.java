@@ -88,6 +88,15 @@ public class SellerServiceImpl implements SellerService {
 	}
 	
 	/*
+	 * 상품 조회수 증가
+	 */
+	@Transactional
+	public void updateCount(int pno) {
+		Product product = productRepo.findById(pno).get();
+		product.setCount(product.getCount()+1);
+	}
+	
+	/*
 	 * 상품 좋아요
 	 */
 	@Transactional

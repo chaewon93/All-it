@@ -57,10 +57,21 @@ public class SellerApiController {
 	}
 	
 	/*
+	 * 리뷰수정
+	 */
+//	@PutMapping("/review/modify/{pno}")
+//	public ResponseDto<Integer> modifyReview(@RequestBody ReviewSaveRequestDto reviewSaveRequestDto) {
+//		reviewService.modifyReview(reviewSaveRequestDto);
+//		
+//		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+//	}
+	
+	/*
 	 * 리뷰삭제
 	 */
-	@DeleteMapping("/review/delete/{rvno}")
-	public ResponseDto<Integer> deleteReview(@PathVariable int rvno) {
+	@DeleteMapping("/review/delete/{pno}/{rvno}")
+	public ResponseDto<Integer> deleteReview(@PathVariable int rvno,
+											@PathVariable int pno) {
 		reviewService.deleteReview(rvno);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);

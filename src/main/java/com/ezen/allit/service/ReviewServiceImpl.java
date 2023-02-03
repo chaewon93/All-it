@@ -2,6 +2,7 @@ package com.ezen.allit.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.Review;
 import com.ezen.allit.dto.ReviewSaveRequestDto;
+import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.repository.ReviewRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 	private final ReviewRepository reviewRepo;
+	private final ProductRepository productRepo;
 
 	/*
 	 * 리뷰작성
@@ -31,6 +34,14 @@ public class ReviewServiceImpl implements ReviewService {
 	public void saveReview(ReviewSaveRequestDto reviewSaveRequestDto) {
 		reviewRepo.saveReview(reviewSaveRequestDto.getContent(), reviewSaveRequestDto.getImageName(), reviewSaveRequestDto.getRating(), reviewSaveRequestDto.getPno());
 	}
+	
+	/*
+	 * 리뷰수정
+	 */
+//	@Transactional
+//	public void modifyReview(ReviewSaveRequestDto reviewSaveRequestDto {
+//
+//	}
 	
 	/*
 	 * 리뷰삭제
