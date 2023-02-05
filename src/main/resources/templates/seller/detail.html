@@ -47,7 +47,7 @@
 
 <!-- 댓글 작성 섹션 시작 -->
 <div class="card">
-	<form>
+	<form id="reply-save-form">
 		<!-- 
 		<input type="text" id="mid" th:value="${ #authentication.principal.member.id }">
 		<input type="text" id="sid" th:value="${ #authentication.principal.seller.id }">
@@ -77,26 +77,46 @@
 <!-- 댓글 출력 섹션 시작 -->
 <div class="card">
 	<div class="card-header">댓글</div>
-	<ul class="list-group" id="reply--box" th:each="review, stat : ${ product.review }">
+	<ul class="list-group" id="reply--box" th:each="review : ${ product.review }">
 		<li class="list-group-item d-flex justify-content-between" id="reply--1">
 	  		<div> 
 	  			<!-- <p th:text="${ review.member.id }"></p> -->
-
-	  			<span>리뷰번호:</span><input type="text" th:value="${ review.rvno }" th:id="'rvno'+${stat.count}"> <br>
-				<span>평점:</span><span th:text="${ review.rating }"></span>점 <br>
+				<span>평점:</span><span th:text="${ review.rating }" id="review-rating"></span>점 <br>
 				<span>작성일:</span><span th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span> <br>
 		  		<span>상품명:</span><span th:text="${ review.product.name }"></span> <br>
-		  		<span>리뷰:</span><span th:text="${ review.content }"></span> <br>
+		  		<span>리뷰:</span><span th:text="${ review.content }" id="review-content"></span> <br>
 		  		<span>좋아요 </span><span th:text="${ review.hit }"></span>개
 	  		</div>
 	  		<div class="d-flex">
 	  			<!-- <div class="font-italic" th:text="${ review.member.id }"></div> &nbsp; -->
-	  			<button class="badge" id="reviewModify" style="color: black">수정</button>
-				<button class="badge" id="reviewDelete" style="color: black" th:onClick="'javascript:index.deleteReview(pno.value, rvno'+${stat.count}+');'">삭제</button>
-	  			<button class="badge" id="reviewHit" style="color: black">좋아요</button>	  			
+				<!-- <button class="badge" id="reviewModify" style="color: black" th:onclick="'javascript:index.modifyReview(pno.value, seller.value, ' +${ review.content }+ ', ' +${ review.rating }+ ', ' +${ review.rvno }+ ');'">수정</button> -->
+	  			<button class="badge" id="reviewModifyView" style="color: black" th:onclick="'javascript:index.modifyReviewView(pno.value, seller.value, ' +${ review.rating }+ ', ' +${ review.rvno }+');'">수정</button>
+	  			<button class="badge" id="reviewDelete" style="color: black" th:onclick="'javascript:index.deleteReview(pno.value, ' +${ review.rvno }+ ');'">삭제</button>
+	  			<button class="badge" id="reviewHit" style="color: black" th:onclick="'javascript:index.hitReview(pno.value, seller.value, ' +${ review.rvno }+ ');'">좋아요</button>
 	  		</div>
 	  	</li>
+	    <div id="reply-modifying" style="display: none">
+  			<div class="card-body">
+				<textarea class="form-control" id="modifying-content" rows=""></textarea>
+			</div>
+			<div class="card-footer">
+				<select class="form-control" name="rating" id="modifying-rating">
+					<option th:value="1">1</option>
+					<option th:value="2">2</option>
+					<option th:value="3">3</option>
+					<option th:value="4">4</option>
+					<option th:value="5">5</option>	
+				</select>
+				<!-- <input type="file" class="form-control-file border" name="reviewImageFile" id="reviewImageFile"/> -->
+				<input type="text" id="modifying-sid">
+				<input type="text" id="modifying-rvno">
+				<!-- <button type="button" class="btn btn-primary" id="reviewModify" th:onclick="'javascript:index.modifyReview(pno.value, seller.value, ' +${ review.rvno }+ ', ' +${ review.content }+ ', ' +${ review.rating }+ ');'">수정</button> -->
+				<button type="button" class="btn btn-primary" id="reviewModify">수정</button>
+				<button type="button" class="btn btn-primary" id="reviewCancle" th:onclick="'javascript:index.cancleReview();'">취소</button>
+			</div>
+  		</div>
 	</ul>
+
 </div>
 <!-- 댓글 출력 섹션 끝 -->
 
@@ -145,16 +165,13 @@ let index = {
 		$("#reviewModify").on("click", () =>{
 			this.modifyReview();
 		});
-		$("#reviewHit").on("click", () =>{
-			this.hitReview();
-		});
 	},
 
 	deleteByPno:function() {
-		let pno = $("#pno").val();
+		let pno = $("#pno").val()
 		$.ajax({
 			type: "delete",
-			url: "/seller/product/delete/"+pno,
+			url: '/seller/product/delete/'+pno,
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 		}).done(function(response){ // 처리 성공 시
 			alert('삭제가 완료되었습니다');
@@ -184,11 +201,11 @@ let index = {
 	saveReview:function() {
 		let data = {
 			//sid: $("#sid").val(),
-			pno: $("#save-pno").val(),
+			pno: $("#pno").val(),
 			content: $("#reply-content").val(),
 			rating: $("#rating").val()
 		}
-		if(!data.content || data.content.trim() == "") {
+		if(data.content.trim() == "") {
 			alert('내용을 입력해주세요');
 			return false;
 		} else {	
@@ -206,21 +223,45 @@ let index = {
 		}
 	},
 	
-	modifyReview:function() {
+	modifyReviewView:function(pno, sid, rating, rvno) {
+		// $("#reply-modifying").appendTo($(this).parent());
+		
+		document.getElementById("modifying-sid").value = sid;
+		document.getElementById("modifying-rating").value = rating;
+		document.getElementById("modifying-rvno").value = rvno;
+		
+		$("#reply-modifying").css("display", "block");
+		//$(this).closest("li").next().css("display", "block");
+		// let one = parent.nextElementSibling;
+		// console.log("one = ", one);
+		// parent.css("display", "block");
+		// $(this).parentNode.parentNode.nextSibling.css("display", "block");
+	},
+/*
+	modifyReview:function(pno, sid, rvno, content, rating) {
 		let data = {
-			//sid: $("#sid").val(),
-			pno: $("#save-pno").val(),
-			content: $("#reply-content").val(),
-			rating: $("#rating").val(),
-			rvno: $("#rvno").val()
+			pno: pno,
+			sid: sid,
+			rvno: rvno,
+			content: content,
+			rating: rating
 		}
-		if(!data.content || data.content.trim() === "") {
+*/
+		modifyReview:function() {
+			let data = {
+				pno: $("#pno").val(),
+				sid:  $("#modifying-sid").val(),
+				rvno:  $("#modifying-rvno").val(),
+				content:  $("#modifying-content").val(),
+				rating:  $("#modifying-rating").val()
+			}
+		if(data.content.trim() == "") {
 			alert('내용을 입력해주세요');
 			return false;
 		} else {	
 			$.ajax({
 				type: "put",
-				url: '/review/modify/${data.pno}',
+				url: '/review/modify/${data.pno}/${data.rvno}',
 				data: JSON.stringify(data),
 				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 			}).done(function(response){ // 처리 성공 시
@@ -231,17 +272,25 @@ let index = {
 			});
 		}
 	},
+	
+	cancleReview:function() {
+		// $(this).parent().parent().css("display", "none");
+		document.getElementById("modifying-content").value = "";
+		$("#reply-modifying").css("display", "none");
+	},
 
 	deleteReview:function(pno, rvno) {
-		console.log('pno = ', pno);
-		console.log('rvno = ', rvno);
-		console.log('rvno = ', rvno.value);
-		console.log('url = ', '/review/delete/'+pno+'/'+rvno.value);
+		let data = {
+			pno: pno,
+			rvno: rvno
+		}
+		console.log("data = ", data);
 		const check = confirm("삭제하시겠습니까?");
 		if(check === true) {	
 			$.ajax({
 				type: "delete",
-				url: '/review/delete/'+pno+'/'+rvno.value,
+				url: '/review/delete/${data.pno}/${data.rvno}',
+				data: JSON.stringify(data),
 				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 			}).done(function(response){ // 처리 성공 시
 				alert('댓글이 삭제되었습니다');
@@ -252,14 +301,16 @@ let index = {
 		}
 	}, 
 
-	hitReview:function() {
+	hitReview:function(pno, sid, rvno) {
 		let data = {
-			rvno: $("#rvno").val(),
-			sid: $("#sid").val()
-		}	
+			pno: pno,
+			sid: sid,
+			rvno: rvno
+		}
+		console.log("data = ", data);
 		$.ajax({
 			type: "put",
-			url: '/review/hit/${data.rvno}',
+			url: '/review/hit/${data.pno}/${data.rvno}',
 			data: JSON.stringify(data),
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 		}).done(function(response){ // 처리 성공 시
@@ -271,31 +322,6 @@ let index = {
 }
 
 index.init();
-
-/*
-function deleteReview() {
-	let data = {
-		rvnoId: $("#reviewId").val(),
-		rvno: $("#rvno").val(),
-		pno: $("#pno").val()
-	}		
-	console.log('data = ', data);
-	const check = confirm("삭제하시겠습니까?");
-	if(check === true) {	
-		$.ajax({
-			type: "delete",
-			url: '/review/delete/${data.pno}/${data.rvno}',
-			data: JSON.stringify(data),
-			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
-		}).done(function(response){ // 처리 성공 시
-			alert('댓글이 삭제되었습니다');
-			window.location.reload();
-		}).fail(function(error){ // 처리 실패 시
-			alert(JSON.stringify(error));
-		});
-	}
-}
-*/
 
 </script>
 <!-- 자바스트립트 섹션 끝 -->

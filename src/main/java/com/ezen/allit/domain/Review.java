@@ -34,13 +34,13 @@ public class Review {
 	private String imageName;						 // 이미지
 	private int rating;							 	 // 별점
 	private int hit;							 	 // 좋아요
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "pno")
 	private Product product;						 // 상품 정보
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sid")
 	private Seller seller;							 // 판매자 정보
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "mid")
 	private Member member;							 // 작성자 정보
 	@OneToMany(mappedBy = "review", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)

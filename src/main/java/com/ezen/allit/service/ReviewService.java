@@ -4,6 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.dto.HitSaveRequestDto;
 import com.ezen.allit.dto.ReviewDeleteRequestDto;
+import com.ezen.allit.dto.ReviewModifyRequestDto;
 import com.ezen.allit.dto.ReviewSaveRequestDto;
 
 public interface ReviewService {
@@ -11,10 +12,10 @@ public interface ReviewService {
 	void saveReview(ReviewSaveRequestDto reviewSaveRequestDto);
 
 	// 리뷰수정
-//	void modifyReview(ReviewSaveRequestDto reviewSaveRequestDto, int rvno);
+	void modifyReview(ReviewModifyRequestDto reviewModifyRequestDto);
 	
 	// 리뷰삭제	
-	void deleteReview(int rvno);
+	void deleteReview(ReviewDeleteRequestDto reviewDeleteRequestDto);
 	
 	// 리뷰 좋아요
 	void hitReview(HitSaveRequestDto hitSaveRequestDto);

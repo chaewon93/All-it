@@ -17,6 +17,7 @@ import com.ezen.allit.domain.Review;
 import com.ezen.allit.domain.Seller;
 import com.ezen.allit.dto.HitSaveRequestDto;
 import com.ezen.allit.dto.ReviewDeleteRequestDto;
+import com.ezen.allit.dto.ReviewModifyRequestDto;
 import com.ezen.allit.dto.ReviewSaveRequestDto;
 import com.ezen.allit.repository.HitRepository;
 import com.ezen.allit.repository.ProductRepository;
@@ -48,17 +49,19 @@ public class ReviewServiceImpl implements ReviewService {
 	/*
 	 * 리뷰수정
 	 */
-//	@Transactional
-//	public void modifyReview(ReviewSaveRequestDto reviewSaveRequestDto {
-//
-//	}
+	@Transactional
+	public void modifyReview(ReviewModifyRequestDto reviewModifyRequestDto) {
+		Review review = reviewRepo.findById(reviewModifyRequestDto.getRvno()).get();
+		review.setContent(reviewModifyRequestDto.getContent());
+		review.setRating(reviewModifyRequestDto.getRating());
+	}
 	
 	/*
 	 * 리뷰삭제
 	 */
 	@Transactional
-	public void deleteReview(int rvno) {
-		reviewRepo.deleteById(rvno);
+	public void deleteReview(ReviewDeleteRequestDto reviewDeleteRequestDto) {
+		reviewRepo.deleteById(reviewDeleteRequestDto.getRvno());
 	}
 	
 	/*

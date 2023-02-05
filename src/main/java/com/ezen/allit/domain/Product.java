@@ -37,10 +37,10 @@ public class Product {
 	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"product"})
 	private List<Review> review = new ArrayList<>(); // 후기정보
-	@OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"product"})
 	private List<QnA> qna = new ArrayList<>();		 // 문의정보
-	@OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"product"})
 	private List<Reply> reply = new ArrayList<>();	 // 후기정보
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -49,7 +49,7 @@ public class Product {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "odno")
 	private OrdersDetail ordersDetail; 				 // 연관관계 설정용
-	@OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"product"})
 	private List<Hit> hits = new ArrayList<>();	  	 // 연관관계 설정용
 	@CreationTimestamp

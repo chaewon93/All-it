@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -90,7 +91,10 @@ public class SellerServiceImpl implements SellerService {
 	 */
 	@Transactional
 	public Product getProduct(int pno) {
-		return productRepo.findById(pno).get();
+//		Product product = productRepo.findById(pno).get();
+//		return productRepo.findByPnoOrderByReviewRvnoDesc(pno, product.getReview());
+		
+		return productRepo.findByPno(pno, Sort.by(Direction.DESC ,"review"));
 	}
 	
 	/*
