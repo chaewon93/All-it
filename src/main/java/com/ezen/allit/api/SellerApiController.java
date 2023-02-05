@@ -13,6 +13,7 @@ import com.ezen.allit.domain.Product;
 import com.ezen.allit.dto.HitSaveRequestDto;
 import com.ezen.allit.dto.ResponseDto;
 import com.ezen.allit.dto.ReviewDeleteRequestDto;
+import com.ezen.allit.dto.ReviewModifyRequestDto;
 import com.ezen.allit.dto.ReviewSaveRequestDto;
 import com.ezen.allit.service.ProductService;
 import com.ezen.allit.service.ReviewService;
@@ -60,20 +61,19 @@ public class SellerApiController {
 	/*
 	 * 리뷰수정
 	 */
-//	@PutMapping("/review/modify/{pno}")
-//	public ResponseDto<Integer> modifyReview(@RequestBody ReviewSaveRequestDto reviewSaveRequestDto) {
-//		reviewService.modifyReview(reviewSaveRequestDto);
-//		
-//		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
-//	}
+	@PutMapping("/review/modify/{pno}/{rvno}")
+	public ResponseDto<Integer> modifyReview(@RequestBody ReviewModifyRequestDto reviewModifyRequestDto) {
+		reviewService.modifyReview(reviewModifyRequestDto);
+		
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}
 	
 	/*
 	 * 리뷰삭제
 	 */
 	@DeleteMapping("/review/delete/{pno}/{rvno}")
-	public ResponseDto<Integer> deleteReview(@PathVariable int pno,
-											@PathVariable int rvno) {
-		reviewService.deleteReview(rvno);
+	public ResponseDto<Integer> deleteReview(@RequestBody ReviewDeleteRequestDto reviewDeleteRequestDto) {
+		reviewService.deleteReview(reviewDeleteRequestDto);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
@@ -81,7 +81,7 @@ public class SellerApiController {
 	/*
 	 * 리뷰 좋아요
 	 */
-	@PutMapping("/review/hit/{rvno}")
+	@PutMapping("/review/hit/{pno}/{rvno}")
 	public ResponseDto<Integer> hitReview(@RequestBody HitSaveRequestDto hitSaveRequestDto) {
 		reviewService.hitReview(hitSaveRequestDto);
 		

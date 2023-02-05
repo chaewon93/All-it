@@ -13,7 +13,7 @@ public class Cart {
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	private int cno;		 // 장바구니 일련번호
 	private int quantity;	 // 수량
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "mid")
 	private Member member;	 // member 정보
 	@OneToOne(fetch = FetchType.LAZY)
