@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.ezen.allit.domain.Coupon;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
@@ -375,16 +374,16 @@ public class AdminController {
 		return "admin/createCoupon";
 	}
 	
-	@PostMapping("createCoupon")
-	public String createCoupon(Coupon coupon, Date date) {
-		
-		System.out.println("----------------쿠폰 생성 중");
-		System.out.println(coupon);
-		System.out.println(date);
-		System.out.println("----------------쿠폰 생성 중");
-		
-		
-		return "admin/adminMain";
-	}
+//	@PostMapping("createCoupon")
+//	public String createCoupon(Coupon coupon, Date date) {
+//		
+//		System.out.println("----------------쿠폰 생성 중");
+//		System.out.println(coupon);
+//		System.out.println(date);
+//		System.out.println("----------------쿠폰 생성 중");
+//		
+//		
+//		return "admin/adminMain";
+//	}
 
 }

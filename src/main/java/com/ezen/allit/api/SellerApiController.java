@@ -2,6 +2,7 @@ package com.ezen.allit.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,6 +15,7 @@ import com.ezen.allit.dto.HitSaveRequestDto;
 import com.ezen.allit.dto.ResponseDto;
 import com.ezen.allit.dto.ReviewDeleteRequestDto;
 import com.ezen.allit.dto.ReviewModifyRequestDto;
+import com.ezen.allit.dto.ReviewReplySaveRequestDto;
 import com.ezen.allit.dto.ReviewSaveRequestDto;
 import com.ezen.allit.service.ProductService;
 import com.ezen.allit.service.ReviewService;
@@ -27,7 +29,7 @@ public class SellerApiController {
 	private final SellerService sellerService;
 	private final ReviewService reviewService;
 	private final ProductService productService;
-	
+
 	/*
 	 * 상품삭제
 	 */
@@ -84,6 +86,16 @@ public class SellerApiController {
 	@PutMapping("/review/hit/{pno}/{rvno}")
 	public ResponseDto<Integer> hitReview(@RequestBody HitSaveRequestDto hitSaveRequestDto) {
 		reviewService.hitReview(hitSaveRequestDto);
+		
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}
+	
+	/*
+	 * 리뷰답글작성
+	 */
+	@PostMapping("/review/save/{pno}/reply/{rvno}")
+	public ResponseDto<Integer> saveReviewReply(@RequestBody ReviewReplySaveRequestDto reviewSaveRequestDto) {
+		reviewService.saveReviewReply(reviewSaveRequestDto);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}

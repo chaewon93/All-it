@@ -7,11 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReviewModifyRequestDto {
-	private int pno;
+public class ReviewReplySaveRequestDto {
 	private int rvno;
 	private String content;
-	private int rating;
-//	private int mid;
-//	private String imageName;
+	private int pno;
 }

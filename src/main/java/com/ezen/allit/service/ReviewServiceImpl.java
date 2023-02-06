@@ -18,6 +18,7 @@ import com.ezen.allit.domain.Seller;
 import com.ezen.allit.dto.HitSaveRequestDto;
 import com.ezen.allit.dto.ReviewDeleteRequestDto;
 import com.ezen.allit.dto.ReviewModifyRequestDto;
+import com.ezen.allit.dto.ReviewReplySaveRequestDto;
 import com.ezen.allit.dto.ReviewSaveRequestDto;
 import com.ezen.allit.repository.HitRepository;
 import com.ezen.allit.repository.ProductRepository;
@@ -81,6 +82,14 @@ public class ReviewServiceImpl implements ReviewService {
 			hitRepo.deleteById(hit.get().getHno());
 			review.setHit(review.getHit()-1);
 		}
+	}
+	
+	/*
+	 * 리뷰답글작성
+	 */
+	@Transactional
+	public void saveReviewReply(ReviewReplySaveRequestDto reviewReplySaveRequestDto) {
+		reviewRepo.saveReviewReply(reviewReplySaveRequestDto.getContent(), reviewReplySaveRequestDto.getPno(), reviewReplySaveRequestDto.getRvno());
 	}
 	
 //	/*

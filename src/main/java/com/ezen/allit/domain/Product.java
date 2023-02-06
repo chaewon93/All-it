@@ -36,6 +36,7 @@ public class Product {
 	private Seller seller;		 	   				 // 판매자정보
 	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"product"})
+	@OrderBy(value = "rvno DESC")
 	private List<Review> review = new ArrayList<>(); // 후기정보
 	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"product"})
