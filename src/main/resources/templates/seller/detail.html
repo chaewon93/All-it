@@ -41,9 +41,72 @@
 	</div>
 	<button type="submit" class="btn btn-light" id="modify">상품수정</button>
 	<button type="button" class="btn btn-light" id="delete">삭제</button>
-	<button type="button" class="btn btn-light" id="hit">좋아요</button>
+	<button type="button" class="btn btn-light" id="hit">좋아요</button> <br> <br>
 </form>
 <!-- 내용 섹션 끝 -->
+
+<!-- 댓글 출력 섹션 시작 -->
+<div class="card">
+	<div class="card-header">
+		<span>댓글</span>
+	</div>
+	<ul class="list-group" id="reply--box" th:each="review : ${ product.review }">
+		<li class="list-group-item d-flex justify-content-between" id="reply--1">
+	  		<div> 
+				<span>평점:</span><span th:text="${ review.rating }" id="review-rating"></span>점 <br>
+				<span>작성일:</span><span th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span> <br>
+		  		<span>상품명:</span><span th:text="${ review.product.name }"></span> <br>
+		  		<span>리뷰:</span><span th:text="${ review.content }" id="review-content"></span> <br>
+		  		<span>좋아요 </span><span th:text="${ review.hit }"></span>개
+	  			<!-- <p th:text="${ review.member.id }"></p> -->
+	  		</div>
+	  		<div class="d-flex">
+	  			<!-- <div class="font-italic" th:text="${ review.member.id }"></div> &nbsp; -->
+				<button class="badge" id="reviewModifyView" style="color: black" th:onclick="'javascript:index.modifyReviewView(this, ' +${ review.rating }+ ', ' +${ review.rvno }+');'">수정</button>
+	  			<button class="badge" id="reviewDelete" style="color: black" th:onclick="'javascript:index.deleteReview(pno.value, ' +${ review.rvno }+ ');'">삭제</button>
+	  			<button class="badge" id="reviewHit" style="color: black" th:onclick="'javascript:index.hitReview(pno.value, seller.value, ' +${ review.rvno }+ ');'">좋아요</button>
+	  			<button class="badge" id="reviewReplyView" style="color: black" th:onclick="'javascript:index.replyReviewView(this, ' +${ review.rvno } + ');'">답글</button>
+	  		</div>
+	  	</li>
+	  	
+	  	<!-- 댓글 수정 섹션 시작 -->
+	    <div id="review-modifying" style="display: none">
+  			<div class="card-body">
+				<textarea class="form-control" id="modifying-content" rows=""></textarea>
+			</div>
+			<div class="card-footer">
+				<select class="form-control" name="rating" id="modifying-rating">
+					<option th:value="1">1</option>
+					<option th:value="2">2</option>
+					<option th:value="3">3</option>
+					<option th:value="4">4</option>
+					<option th:value="5">5</option>	
+				</select>
+				<input type="text" id="modifying-rvno">
+				<!-- <input type="file" class="form-control-file border" name="reviewImageFile" id="reviewImageFile"/> -->
+				<button type="button" class="btn btn-primary" id="reviewModify" th:onclick="'javascript:index.modifyReview(this, pno.value);'">수정</button>
+				<button type="button" class="btn btn-primary" id="reviewCancle" th:onclick="'javascript:index.cancleReview(this);'">취소</button>
+			</div>
+  		</div>
+  		<!-- 댓글 수정 섹션 끝 -->
+  		
+  		<!-- 답글 작성 섹션 시작 -->
+	    <div id="review-reply" style="display: none">
+  			<div class="card-body">
+				<textarea class="form-control" id="reply-content" rows=""></textarea>
+			</div>
+			<div class="card-footer">
+				<input type="text" id="reply-rvno">
+				<!-- <input type="file" class="form-control-file border" name="reviewImageFile" id="reviewImageFile"/> -->
+				<button type="button" class="btn btn-primary" id="reviewReply" th:onclick="'javascript:index.replyReview(this, pno.value);'">작성</button>
+				<button type="button" class="btn btn-primary" id="reviewCancle" th:onclick="'javascript:index.cancleReview(this);'">취소</button>
+			</div>
+  		</div>
+  		<!-- 답글 작성 섹션 끝 -->
+  		
+	</ul>
+</div>  <br>
+<!-- 댓글 출력 섹션 끝 -->
 
 <!-- 댓글 작성 섹션 시작 -->
 <div class="card">
@@ -74,51 +137,6 @@
 </div>
 <br>
 <!-- 댓글 작성 섹션 끝 -->
-<!-- 댓글 출력 섹션 시작 -->
-<div class="card">
-	<div class="card-header">댓글</div>
-	<ul class="list-group" id="reply--box" th:each="review : ${ product.review }">
-		<li class="list-group-item d-flex justify-content-between" id="reply--1">
-	  		<div> 
-	  			<!-- <p th:text="${ review.member.id }"></p> -->
-				<span>평점:</span><span th:text="${ review.rating }" id="review-rating"></span>점 <br>
-				<span>작성일:</span><span th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span> <br>
-		  		<span>상품명:</span><span th:text="${ review.product.name }"></span> <br>
-		  		<span>리뷰:</span><span th:text="${ review.content }" id="review-content"></span> <br>
-		  		<span>좋아요 </span><span th:text="${ review.hit }"></span>개
-	  		</div>
-	  		<div class="d-flex">
-	  			<!-- <div class="font-italic" th:text="${ review.member.id }"></div> &nbsp; -->
-				<!-- <button class="badge" id="reviewModify" style="color: black" th:onclick="'javascript:index.modifyReview(pno.value, seller.value, ' +${ review.content }+ ', ' +${ review.rating }+ ', ' +${ review.rvno }+ ');'">수정</button> -->
-	  			<button class="badge" id="reviewModifyView" style="color: black" th:onclick="'javascript:index.modifyReviewView(pno.value, seller.value, ' +${ review.rating }+ ', ' +${ review.rvno }+');'">수정</button>
-	  			<button class="badge" id="reviewDelete" style="color: black" th:onclick="'javascript:index.deleteReview(pno.value, ' +${ review.rvno }+ ');'">삭제</button>
-	  			<button class="badge" id="reviewHit" style="color: black" th:onclick="'javascript:index.hitReview(pno.value, seller.value, ' +${ review.rvno }+ ');'">좋아요</button>
-	  		</div>
-	  	</li>
-	    <div id="reply-modifying" style="display: none">
-  			<div class="card-body">
-				<textarea class="form-control" id="modifying-content" rows=""></textarea>
-			</div>
-			<div class="card-footer">
-				<select class="form-control" name="rating" id="modifying-rating">
-					<option th:value="1">1</option>
-					<option th:value="2">2</option>
-					<option th:value="3">3</option>
-					<option th:value="4">4</option>
-					<option th:value="5">5</option>	
-				</select>
-				<!-- <input type="file" class="form-control-file border" name="reviewImageFile" id="reviewImageFile"/> -->
-				<input type="text" id="modifying-sid">
-				<input type="text" id="modifying-rvno">
-				<!-- <button type="button" class="btn btn-primary" id="reviewModify" th:onclick="'javascript:index.modifyReview(pno.value, seller.value, ' +${ review.rvno }+ ', ' +${ review.content }+ ', ' +${ review.rating }+ ');'">수정</button> -->
-				<button type="button" class="btn btn-primary" id="reviewModify">수정</button>
-				<button type="button" class="btn btn-primary" id="reviewCancle" th:onclick="'javascript:index.cancleReview();'">취소</button>
-			</div>
-  		</div>
-	</ul>
-
-</div>
-<!-- 댓글 출력 섹션 끝 -->
 
 <!-- 자바스트립트 섹션 시작 -->
 <script type="text/javascript">
@@ -162,9 +180,6 @@ let index = {
 		$("#reviewSave").on("click", () =>{
 			this.saveReview();
 		});
-		$("#reviewModify").on("click", () =>{
-			this.modifyReview();
-		});
 	},
 
 	deleteByPno:function() {
@@ -194,7 +209,7 @@ let index = {
 		}).done(function(response){ // 처리 성공 시
 			window.location.reload();
 		}).fail(function(error){ // 처리 실패 시
-			alert('에러');
+			alert(JSON.stringify(error));
 		});
 	},
 	
@@ -222,43 +237,20 @@ let index = {
 			});
 		}
 	},
-	
-	modifyReviewView:function(pno, sid, rating, rvno) {
-		// $("#reply-modifying").appendTo($(this).parent());
-		
-		document.getElementById("modifying-sid").value = sid;
-		document.getElementById("modifying-rating").value = rating;
-		document.getElementById("modifying-rvno").value = rvno;
-		
-		$("#reply-modifying").css("display", "block");
-		//$(this).closest("li").next().css("display", "block");
-		// let one = parent.nextElementSibling;
-		// console.log("one = ", one);
-		// parent.css("display", "block");
-		// $(this).parentNode.parentNode.nextSibling.css("display", "block");
+
+	modifyReviewView:function(btn, rating, rvno) {
+		btn.parentElement.parentElement.nextElementSibling.firstElementChild.nextElementSibling.firstElementChild.value = rating;
+		btn.parentElement.parentElement.nextElementSibling.firstElementChild.nextElementSibling.firstElementChild.nextElementSibling.value = rvno;
+		btn.parentElement.parentElement.nextElementSibling.style.display = 'block';
 	},
-/*
-	modifyReview:function(pno, sid, rvno, content, rating) {
+
+	modifyReview:function(btn, pno) {
 		let data = {
 			pno: pno,
-			sid: sid,
-			rvno: rvno,
-			content: content,
-			rating: rating
+			content: btn.parentElement.previousElementSibling.firstElementChild.value, 
+			rating: btn.parentElement.firstElementChild.value,
+			rvno: btn.parentElement.firstElementChild.nextElementSibling.value
 		}
-*/
-		modifyReview:function() {
-			let data = {
-				pno: $("#pno").val(),
-				sid:  $("#modifying-sid").val(),
-				rvno:  $("#modifying-rvno").val(),
-				content:  $("#modifying-content").val(),
-				rating:  $("#modifying-rating").val()
-			}
-		if(data.content.trim() == "") {
-			alert('내용을 입력해주세요');
-			return false;
-		} else {	
 			$.ajax({
 				type: "put",
 				url: '/review/modify/${data.pno}/${data.rvno}',
@@ -270,13 +262,35 @@ let index = {
 			}).fail(function(error){ // 처리 실패 시
 				alert(JSON.stringify(error));
 			});
-		}
 	},
 	
-	cancleReview:function() {
-		// $(this).parent().parent().css("display", "none");
+	replyReviewView:function(btn, rvno) {
+		btn.parentElement.parentElement.nextElementSibling.nextElementSibling.firstElementChild.nextElementSibling.firstElementChild.value = rvno;
+		btn.parentElement.parentElement.nextElementSibling.nextElementSibling.style.display = 'block';
+	},
+	
+	replyReview:function(btn, pno) {
+		let data = {
+			pno: pno,
+			content: btn.parentElement.previousElementSibling.firstElementChild.value, 
+			rvno: btn.parentElement.firstElementChild.value
+		}
+			$.ajax({
+				type: "post",
+				url: '/review/save/${data.pno}/reply/${data.rvno}',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('답글이 작성되었습니다');
+				window.location.reload();
+			}).fail(function(error){ // 처리 실패 시
+				alert(JSON.stringify(error));
+			});
+	},
+	
+	cancleReview:function(btn) {
 		document.getElementById("modifying-content").value = "";
-		$("#reply-modifying").css("display", "none");
+		btn.parentElement.parentElement.style.display = 'none';
 	},
 
 	deleteReview:function(pno, rvno) {

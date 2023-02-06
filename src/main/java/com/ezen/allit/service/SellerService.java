@@ -1,5 +1,7 @@
 package com.ezen.allit.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -8,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Product;
+import com.ezen.allit.domain.Review;
 import com.ezen.allit.domain.Seller;
 import com.ezen.allit.dto.HitSaveRequestDto;
 

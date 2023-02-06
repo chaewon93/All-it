@@ -15,7 +15,7 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"product", "review"})
 @Entity
 @NoArgsConstructor
 public class Hit {

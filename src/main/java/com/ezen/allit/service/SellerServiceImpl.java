@@ -11,11 +11,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Product;
+import com.ezen.allit.domain.Review;
 import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
 import com.ezen.allit.dto.HitSaveRequestDto;
@@ -32,6 +34,7 @@ public class SellerServiceImpl implements SellerService {
 	private final SellerRepository sellerRepo;
 	private final ProductRepository productRepo;
 	private final HitRepository hitRepo;
+	private final ReviewRepository reviewRepo;
 //	private final BCryptPasswordEncoder encoder;
   
 	/*
@@ -90,13 +93,10 @@ public class SellerServiceImpl implements SellerService {
 	 * 판매자 상품조회
 	 */
 	@Transactional
-	public Product getProduct(int pno) {
-//		Product product = productRepo.findById(pno).get();
-//		return productRepo.findByPnoOrderByReviewRvnoDesc(pno, product.getReview());
-		
-		return productRepo.findByPno(pno, Sort.by(Direction.DESC ,"review"));
+	public Product getProduct(int pno) {		
+		return productRepo.findById(pno).get();
 	}
-	
+
 	/*
 	 * 상품 조회수 증가
 	 */

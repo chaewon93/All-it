@@ -26,7 +26,5 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	// 판매자별 상품조회
 	Page<Product> findAllBySellerId(String id, Pageable pageable);
 	
-	// 상품 조회(댓글정렬)
-//	Product findByPnoOrderByReviewRvnoDesc(int pno, int rvno);
-	Product findByPno(int pno, Sort sort);
+	
 }

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -30,8 +31,10 @@ public class Review {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int rvno;								 // 리뷰 일련번호
+	private int prvno;								 // 부모리뷰 일련번호
 	private String content;							 // 내용
 	private String imageName;						 // 이미지
+	@Column()
 	private int rating;							 	 // 별점
 	private int hit;							 	 // 좋아요
 	@ManyToOne(fetch = FetchType.LAZY)

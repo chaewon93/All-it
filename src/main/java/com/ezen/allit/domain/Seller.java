@@ -14,7 +14,7 @@ import lombok.*;
 
 @Getter
 @Setter
-@ToString(exclude = {"product", "review", "qna", "reply"})
+@ToString(exclude = {"product", "review", "qna", "reply", "hits"})
 @Entity
 public class Seller {
 	@Id
