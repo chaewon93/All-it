@@ -50,11 +50,12 @@
 	<div class="card-header">
 		<span>댓글</span>
 	</div>
-	<ul class="list-group" id="reply--box" th:each="review : ${ product.review }">
+	<ul class="list-group" id="reply--box" th:each="review : ${ product.review }" th:if="${ review.prvno == 0 }">
 		<li class="list-group-item d-flex justify-content-between" id="reply--1">
 	  		<div> 
 				<span>평점:</span><span th:text="${ review.rating }" id="review-rating"></span>점 <br>
-				<span>작성일:</span><span th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span> <br>
+				<span>작성일:</span><span th:if="${ review.modDate == null }" th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span>
+								  <span th:if="${ review.modDate != null }" th:text="${ #dates.format(review.modDate, 'yyyy-MM-dd') }+(' (수정됨)')"></span> <br>
 		  		<span>상품명:</span><span th:text="${ review.product.name }"></span> <br>
 		  		<span>리뷰:</span><span th:text="${ review.content }" id="review-content"></span> <br>
 		  		<span>좋아요 </span><span th:text="${ review.hit }"></span>개
@@ -120,7 +121,7 @@
 		<span>상품번호:</span><input type="text" id="save-pno" th:value="${ product.pno }">
 		
 		<div class="card-body">
-			<textarea class="form-control" id="reply-content" rows=""></textarea>
+			<textarea class="form-control" id="review-save-content" rows=""></textarea>
 		</div>
 		<div class="card-footer">
 			<select class="form-control" name="rating" id="rating">
@@ -181,7 +182,8 @@ let index = {
 			this.saveReview();
 		});
 	},
-
+	
+	// 글 삭제
 	deleteByPno:function() {
 		let pno = $("#pno").val()
 		$.ajax({
@@ -196,6 +198,7 @@ let index = {
 		});
 	},
 	
+	// 글 좋아요
 	hit:function() {
 		let data = {
 			pno: $("#pno").val(),
@@ -213,11 +216,12 @@ let index = {
 		});
 	},
 	
+	// 댓글 작성
 	saveReview:function() {
 		let data = {
 			//sid: $("#sid").val(),
 			pno: $("#pno").val(),
-			content: $("#reply-content").val(),
+			content: $("#review-save-content").val(),
 			rating: $("#rating").val()
 		}
 		if(data.content.trim() == "") {
@@ -238,12 +242,14 @@ let index = {
 		}
 	},
 
+	// 댓글 수정버튼
 	modifyReviewView:function(btn, rating, rvno) {
 		btn.parentElement.parentElement.nextElementSibling.firstElementChild.nextElementSibling.firstElementChild.value = rating;
 		btn.parentElement.parentElement.nextElementSibling.firstElementChild.nextElementSibling.firstElementChild.nextElementSibling.value = rvno;
 		btn.parentElement.parentElement.nextElementSibling.style.display = 'block';
 	},
 
+	// 댓글 수정
 	modifyReview:function(btn, pno) {
 		let data = {
 			pno: pno,
@@ -264,11 +270,13 @@ let index = {
 			});
 	},
 	
+	// 답글 버튼
 	replyReviewView:function(btn, rvno) {
 		btn.parentElement.parentElement.nextElementSibling.nextElementSibling.firstElementChild.nextElementSibling.firstElementChild.value = rvno;
 		btn.parentElement.parentElement.nextElementSibling.nextElementSibling.style.display = 'block';
 	},
 	
+	// 답글 작성
 	replyReview:function(btn, pno) {
 		let data = {
 			pno: pno,
@@ -288,11 +296,13 @@ let index = {
 			});
 	},
 	
+	// 댓글 수정/답글 작성 취소
 	cancleReview:function(btn) {
 		document.getElementById("modifying-content").value = "";
 		btn.parentElement.parentElement.style.display = 'none';
 	},
 
+	// 댓글 삭제
 	deleteReview:function(pno, rvno) {
 		let data = {
 			pno: pno,
@@ -315,6 +325,7 @@ let index = {
 		}
 	}, 
 
+	// 댓글 좋아요
 	hitReview:function(pno, sid, rvno) {
 		let data = {
 			pno: pno,

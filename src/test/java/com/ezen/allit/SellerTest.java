@@ -1,4 +1,4 @@
-package com.ezen.allit.test;
+package com.ezen.allit;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ public class SellerTest {
 	
 	@Test
 	public void insert() {
-		for(int i=1; i<=9; i++) {
+		for(int i=1; i<=5; i++) {
 			Seller seller = new Seller();
 			seller.setId("a"+i);
 			seller.setPwd("a"+i);
