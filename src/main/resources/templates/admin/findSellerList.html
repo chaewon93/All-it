@@ -24,14 +24,30 @@ $(document).ready(function(){
 		});
 });
 
-function reg_seller(){
-	document.getElementById("theform").action = "/admin/regSeller";
-	document.getElementById("theform").submit();
+function change_seller(){
+	var chk_arr = [];
+	$("input:checkbox[name='sellerId']:checked").each(function(){
+		var chk = $(this).val();
+		chk_arr.push(chk);
+	})
+	var check =	confirm(chk_arr+" 등록 상태 변경 확인?")
+	if(check){
+		document.getElementById("theform").action = "/admin/changeSeller";
+		document.getElementById("theform").submit();		
+	}
 }
 
 function delete_seller(){
-	document.getElementById("theform").action = "/admin/deleteSeller";
-	document.getElementById("theform").submit();	
+	var chk_arr = [];
+	$("input:checkbox[name='sellerId']:checked").each(function(){
+		var chk = $(this).val();
+		chk_arr.push(chk);
+	})
+	var check =	confirm(chk_arr+" 삭제 확인?")
+	if(check){
+		document.getElementById("theform").action = "/admin/deleteSeller";
+		document.getElementById("theform").submit();			
+	}
 }
 
 </script>
@@ -50,7 +66,7 @@ function delete_seller(){
 	<th bgcolor="orange" width="100">우편번호</th>
 	<th bgcolor="orange" width="100">전화번호</th>
 	<th bgcolor="orange" width="100">사업자등록번호</th>
-	<th bgcolor="orange" width="100">입점상태</th>
+	<th bgcolor="orange" width="200">입점상태</th>
 	<th th:if="${b}==1" bgcolor="orange" width="100">체크<br>
 		<input type="checkbox" name="checkAll" id="regAll">
 	</th>
@@ -66,17 +82,19 @@ function delete_seller(){
 	<td th:text="${seller.zipcode}"></td>
 	<td th:text="${seller.phone}"></td>
 	<td th:text="${seller.regno}"></td>
-	<td th:text="${seller.role}"></td>
+	<td th:switch="${#strings.toString(seller.role)}">
+		<p th:case="TEMP" th:text="대기중" style="color:red;"></p>
+		<p th:case="SELLER" th:text="판매자" style="color:blue;"></p>
+		<p th:case="ADMIN" th:text="관리자"></p>
+	</td>
 	<td th:if="${b}==1"><input type="checkbox" name="sellerId" class="test" th:value="${seller.id}"></td>
-</tr>
-<tr th:if="${a}==4">	
-	<td colspan="11" align="right"><input type="button" value="승인" class="submit" onclick="reg_seller()"></td>
-</tr>
-<tr th:if="${a}==2">
-	<td colspan="11" align="right"><input type="button" value="삭제" class="delete" onclick="delete_seller()"></td>
 </tr>
 
 </table>
+<div align="center">
+	<input th:if="${a}==4 or ${a}==3 or ${a}==2" type="button" value="변경" onclick="change_seller()">
+	<input th:if="${a}==2" type="button" value="삭제" onclick="delete_seller()">
+</div>
 </form>
 <div th:replace="~{ /fragments/admin_pagination.html :: pagination }"></div>
 <!-- pagination replace -->

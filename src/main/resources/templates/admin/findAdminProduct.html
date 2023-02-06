@@ -25,13 +25,42 @@ $(document).ready(function(){
 });
 
 function reg_product(){
-	document.getElementById("theform").action = "/admin/regPro";
-	document.getElementById("theform").submit();
+	var chk_arr = [];
+	$("input:checkbox[name='pno']:checked").each(function(){
+		var chk = $(this).val();
+		chk_arr.push(chk);
+	})
+	var check =	confirm(chk_arr+" 등록 확인?")
+	if(check){
+		document.getElementById("theform").action = "/admin/regPro";
+		document.getElementById("theform").submit();		
+	}
+}
+
+function changeProMDPick(){
+	var chk_arr = [];
+	$("input:checkbox[name='pno']:checked").each(function(){
+		var chk = $(this).val();
+		chk_arr.push(chk);
+	})
+	var check =	confirm(chk_arr+" 변경 확인?")
+	if(check){
+		document.getElementById("theform").action = "/admin/changeProMDPick";
+		document.getElementById("theform").submit();				
+	}
 }
 
 function delete_product(){
-	document.getElementById("theform").action = "/admin/deletePro";
-	document.getElementById("theform").submit();	
+	var chk_arr = [];
+	$("input:checkbox[name='pno']:checked").each(function(){
+		var chk = $(this).val();
+		chk_arr.push(chk);
+	})
+	var check =	confirm(chk_arr+" 삭제 확인?")
+	if(check){
+		document.getElementById("theform").action = "/admin/deletePro";
+		document.getElementById("theform").submit();		
+	}
 }
 
 </script>
@@ -44,6 +73,7 @@ function delete_product(){
 <tr>
 	<th bgcolor="orange" width="100">번호</th>
 	<th bgcolor="orange" width="100">카테고리</th>
+	<th bgcolor="orange" width="100">상품 번호</th>
 	<th bgcolor="orange" width="100">상품명</th>
 	<th bgcolor="orange" width="200">내용</th>
 	<th bgcolor="orange" width="150">등록일</th>
@@ -51,9 +81,11 @@ function delete_product(){
 	<th bgcolor="orange" width="100">할인률</th>
 	<th bgcolor="orange" width="100">판매자</th>
 	<th bgcolor="orange" width="100">이미지</th>
+	<th th:if="${a}==1" bgcolor="orange" width="100">MDPick 등록 여부</th>
 	<th bgcolor="orange" width="100">체크<br>
 		<input type="checkbox" name="checkAll" id="regAll">
 	</th>
+	
 </tr>
 <tr th:each="pro, state : ${list}">
 	<td th:text="${state.count}"></td>
@@ -69,23 +101,26 @@ function delete_product(){
 			<p th:case="9" th:text="반려동물용품"></p>
 			<p th:case="10" th:text="건강식품"></p>
 	</td>
-	<td align="left"><a th:href="@{/(pro=${pro.pno})}" th:text="${pro.name}"></a></td>
+	<td th:text="${pro.pno}"></td>
+	<td align="left"><a th:href="@{|/product/detail/${pro.pno}|}" th:text="${pro.name}"></a></td>
 	<td th:text="${pro.content}"></td>
 	<td th:text="${pro.regDate}"></td>
 	<td th:text="${pro.price}"></td>
 	<td th:text="${pro.discount}"></td>	
 	<td th:text="${pro.seller?.id}"></td>
 	<td th:text="${pro.imageName}"></td>
-	<td><input type="checkbox" name="pno" class="test" th:value="${pro.pno}"></td>
+	<td th:if="${a}==1" th:switch="${pro.mdPickyn}" align="center">
+		<p th:case="0" th:text="미등록" style="color:red;"></p>
+		<p th:case="1" th:text="등록완료" style="color:blue;"></p>
+	</td>
+	<td align="center"><input type="checkbox" name="pno" class="test" th:value="${pro.pno}"></td>
 </tr>
-<tr th:if="${a}==0">	
-	<td colspan="11" align="right"><input type="button" value="승인" class="submit" onclick="reg_product()"></td>
-</tr>
-<tr>
-	<td colspan="11" align="right"><input type="button" value="삭제" class="delete" onclick="delete_product()"></td>
-</tr>
-
 </table>
+<div align="center">
+	<input th:if="${a}==0" type="button" value="승인" onclick="reg_product()">
+	<input type="button" value="삭제" onclick="delete_product()">
+	<input th:if="${a}==1" type="button" value="MDPick 변경" onclick="changeProMDPick()">
+</div>
 </form>
 
 <div th:replace="~{ /fragments/admin_pagination.html :: pagination }"></div>

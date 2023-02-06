@@ -29,7 +29,7 @@
 	<td align="left"><a th:href="@{/admin/getQnADetail(qno=${qna.qno})}" th:text="${qna.content}"></a></td>
 	<td th:text="${qna.regDate}"></td>
 	<td th:text="${qna.status}"></td>
-	<td th:text="${qna.member.id}"></td>
+	<td th:text="${qna.member?.id}"></td>
 	<td th:text="${qna.product}"></td>
 	<td th:text="${qna.seller}"></td>
 	<td th:text="${qna.reply?.content}"></td>

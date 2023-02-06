@@ -22,14 +22,9 @@
 	<th bgcolor="orange" width="150">내용</th>
 </tr>
 
-<tr th:if="${#lists.isEmpty(list)}" th:each="custo, state : ${list}">
-	<td th:text="${state.count}"></td>
-	<td th:text="${custo.category}"></td>
-	<td th:text="${custo.title}"></td>
-	<td align="left"><a th:href="@{/admin/getCustoDetail(cno=${custo.cno})}" th:text="${custo.content}"></a></td>
-</tr>
-<tr th:if="${!#lists.isEmpty(list)}" th:each="cate, state : ${list}">
-	<td th:text="${state.count}"></td>
+<tr th:each="cate, state : ${list}">
+<td align="left"><a th:href="@{/admin/getCustoDetail(cno=${cate.cno})}" th:text="${state.count}"></a></td>
+<!--  	<td th:text="${state.count}"></td>	-->
 	<td th:text="${cate.category}"></td>
 	<td th:text="${cate.title}"></td>
 	<td align="left"><a th:href="@{/admin/getCustoDetail(cno=${cate.cno})}" th:text="${cate.content}"></a></td>
