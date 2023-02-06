@@ -97,6 +97,9 @@ public class SellerController {
 	public String getProduct(@PathVariable int pno, Model model,
 							@PageableDefault(page = 1) Pageable pageable) {
 		Product theProduct = sellerService.getProduct(pno);
+		
+		/* 조회수 증가 */
+		sellerService.updateCount(theProduct.getPno());
 	
 		/* 별점 평균 구하기 */
 		List<Review> reviewList = theProduct.getReview();
@@ -107,7 +110,11 @@ public class SellerController {
 				review = reviewList.get(i);
 				totalRating += review.getRating();
 			}
-			theProduct.setRating((float)totalRating/reviewList.size());			
+			float rating = (float)totalRating/reviewList.size();
+			theProduct.setRating(getRating(rating, 1));
+		} 
+		if(reviewList.isEmpty()) {
+			theProduct.setRating(0);
 		}
 		
 		model.addAttribute("product", theProduct);
@@ -136,6 +143,15 @@ public class SellerController {
 		sellerService.modifyProduct(pno, product, imageFile);
 		
 		return "redirect:/seller/";
+	}
+	
+	/*
+	 * 별점 자릿수 계산 매서드
+	 */
+	public static float getRating(float rating, int position) {
+		float num = (float) Math.pow(10.0, position);
+		
+		return (Math.round(rating * num) / num);
 	}
 
 }

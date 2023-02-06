@@ -8,12 +8,13 @@
 <form method="post" th:action="@{ /seller/product/modify }" id="productDetail" enctype="multipart/form-data">
 	<div class="form-group">
 		<!-- <input type="text" th:value="${ #authentication.principal.seller.id }" name="seller" id="seller"> -->
-		<span>판매자:</span><input type="text" id="sid" th:value="${ product.seller.id }">
+		<span>판매자:</span><input type="text" th:value="${ product.seller.id }" name="sid" id="sid">
 		<span>현재 로그인:</span><input type="text" th:value="${ session.seller.id }" name="seller" id="seller">
 		<span>상품번호:</span><input type="text" th:value="${ product.pno }" name="pno" id="pno">
-		<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="350">
-		<p th:text="${ product.rating }" style="color: purple;"></p>
-		<p th:text="${ product.hit }" style="color: aqua;"></p>
+		<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="350"><br>
+		<span>조회수: </span><span th:text="${ product.count }" style="color: green;"></span><br>
+		<span>별점: </span><span th:text="${ product.rating }" style="color: purple;"></span><br>
+		<span>좋아요: </span><span th:text="${ product.hit }" style="color: aqua;"></span><br>
 		<label for="sel1">카테고리</label>
 		<select class="form-control" name="category" id="category">
 			<option>==카테고리==</option>
@@ -35,8 +36,8 @@
 		<label for="content">상품설명</label>
 		<textarea class="form-control" th:text="${ product.content }" rows="5" name="content" id="content"></textarea>
 		<label for="image">이미지 업로드</label>
-		<input type="file" class="form-control-file border" name="imageFile" id="imageFile"/>
 		<input type="hidden" th:value="${ product.imageName }" name="imageName" id="imageName">
+		<input type="file" class="form-control-file border" name="imageFile" id="imageFile"/>
 	</div>
 	<button type="submit" class="btn btn-light" id="modify">상품수정</button>
 	<button type="button" class="btn btn-light" id="delete">삭제</button>
@@ -46,13 +47,13 @@
 
 <!-- 댓글 작성 섹션 시작 -->
 <div class="card">
-	<form>
+	<form id="reply-save-form">
 		<!-- 
 		<input type="text" id="mid" th:value="${ #authentication.principal.member.id }">
 		<input type="text" id="sid" th:value="${ #authentication.principal.seller.id }">
 		 -->
-		<span>판매자:</span><input type="text" id="sid" th:value="${ product.seller.id }">
-		<span>현재 로그인:</span><input type="text" th:value="${ session.seller.id }" name="seller" id="seller">
+		<span>판매자:</span><input type="text" th:value="${ product.seller.id }" name="sid" id="sid">
+		<span>현재 로그인:</span><input type="text" th:value="${ session.seller.id }" name="sellerr" id="sellerr">
 		<span>상품번호:</span><input type="text" id="save-pno" th:value="${ product.pno }">
 		
 		<div class="card-body">
@@ -80,25 +81,76 @@
 		<li class="list-group-item d-flex justify-content-between" id="reply--1">
 	  		<div> 
 	  			<!-- <p th:text="${ review.member.id }"></p> -->
-	  			<span>리뷰번호:</span><input type="text" th:value="${ review.rvno }" name="rvno" id="rvno">
-		  		<span th:text="${ review.rating }"></span>점 <span th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span> <br>
-		  		<!-- <p th:text="${ review.seller.id }"></p> -->
-		  		<span>상품명:</span><span th:text="${ review.product.name }"></span>
-		  		<span>리뷰:</span><span th:text="${ review.content }"></span>
+				<span>평점:</span><span th:text="${ review.rating }" id="review-rating"></span>점 <br>
+				<span>작성일:</span><span th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span> <br>
+		  		<span>상품명:</span><span th:text="${ review.product.name }"></span> <br>
+		  		<span>리뷰:</span><span th:text="${ review.content }" id="review-content"></span> <br>
 		  		<span>좋아요 </span><span th:text="${ review.hit }"></span>개
 	  		</div>
 	  		<div class="d-flex">
 	  			<!-- <div class="font-italic" th:text="${ review.member.id }"></div> &nbsp; -->
-	  			<button class="badge" id="reviewDelete" style="color: black">삭제</button>
-	  			<button class="badge" id="reviewHit" style="color: black">좋아요</button>
+				<!-- <button class="badge" id="reviewModify" style="color: black" th:onclick="'javascript:index.modifyReview(pno.value, seller.value, ' +${ review.content }+ ', ' +${ review.rating }+ ', ' +${ review.rvno }+ ');'">수정</button> -->
+	  			<button class="badge" id="reviewModifyView" style="color: black" th:onclick="'javascript:index.modifyReviewView(pno.value, seller.value, ' +${ review.rating }+ ', ' +${ review.rvno }+');'">수정</button>
+	  			<button class="badge" id="reviewDelete" style="color: black" th:onclick="'javascript:index.deleteReview(pno.value, ' +${ review.rvno }+ ');'">삭제</button>
+	  			<button class="badge" id="reviewHit" style="color: black" th:onclick="'javascript:index.hitReview(pno.value, seller.value, ' +${ review.rvno }+ ');'">좋아요</button>
 	  		</div>
 	  	</li>
+	    <div id="reply-modifying" style="display: none">
+  			<div class="card-body">
+				<textarea class="form-control" id="modifying-content" rows=""></textarea>
+			</div>
+			<div class="card-footer">
+				<select class="form-control" name="rating" id="modifying-rating">
+					<option th:value="1">1</option>
+					<option th:value="2">2</option>
+					<option th:value="3">3</option>
+					<option th:value="4">4</option>
+					<option th:value="5">5</option>	
+				</select>
+				<!-- <input type="file" class="form-control-file border" name="reviewImageFile" id="reviewImageFile"/> -->
+				<input type="text" id="modifying-sid">
+				<input type="text" id="modifying-rvno">
+				<!-- <button type="button" class="btn btn-primary" id="reviewModify" th:onclick="'javascript:index.modifyReview(pno.value, seller.value, ' +${ review.rvno }+ ', ' +${ review.content }+ ', ' +${ review.rating }+ ');'">수정</button> -->
+				<button type="button" class="btn btn-primary" id="reviewModify">수정</button>
+				<button type="button" class="btn btn-primary" id="reviewCancle" th:onclick="'javascript:index.cancleReview();'">취소</button>
+			</div>
+  		</div>
 	</ul>
+
 </div>
 <!-- 댓글 출력 섹션 끝 -->
 
 <!-- 자바스트립트 섹션 시작 -->
 <script type="text/javascript">
+$("#modify").click(function() {
+	let category = $("#category").val();
+	let name = $("#name").val();
+	let price = $("#price").val();
+	let content = $("#content").val();
+	let imageFile = $("#imageFile").val();
+	
+	if(category == 0) {
+		alert('카테고리를 선택해주세요');
+		return false;
+	}
+	if(name.trim() == "") {
+		alert('상품명을 입력해주세요');
+		return false;
+	}
+	if(price.trim() == "") {
+		alert('판매가를 입력해주세요');
+		return false;
+	}
+	if(content.trim() == "") {
+		alert('상품에 대한 설명을 입력해주세요');
+		return false;
+	}
+	if(imageFile == "") {
+		alert('이미지 파일을 포함해주세요');
+		return false;
+	}
+})
+
 let index = {
 	init:function() {
 		$("#delete").on("click", ()=>{
@@ -110,19 +162,16 @@ let index = {
 		$("#reviewSave").on("click", () =>{
 			this.saveReview();
 		});
-		$("#reviewDelete").on("click", () =>{
-			this.deleteReview();
-		});
-		$("#reviewHit").on("click", () =>{
-			this.hitReview();
+		$("#reviewModify").on("click", () =>{
+			this.modifyReview();
 		});
 	},
 
 	deleteByPno:function() {
-		let pno = $("#pno").val();
+		let pno = $("#pno").val()
 		$.ajax({
 			type: "delete",
-			url: "/seller/product/delete/"+pno,
+			url: '/seller/product/delete/'+pno,
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 		}).done(function(response){ // 처리 성공 시
 			alert('삭제가 완료되었습니다');
@@ -133,63 +182,139 @@ let index = {
 	},
 	
 	hit:function() {
-		let pno = $("#pno").val();
+		let data = {
+			pno: $("#pno").val(),
+			sid: $("#sid").val()
+		}
 		$.ajax({
 			type: "put",
-			url: "/seller/product/hit/"+pno,
+			url: '/seller/product/hit/${data.pno}',
+			data: JSON.stringify(data),
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 		}).done(function(response){ // 처리 성공 시
-			alert('좋아요가 완료되었습니다');
-			location.href="/seller/";
+			window.location.reload();
 		}).fail(function(error){ // 처리 실패 시
-			alert(JSON.stringify(error));
+			alert('에러');
 		});
 	},
 	
 	saveReview:function() {
 		let data = {
 			//sid: $("#sid").val(),
-			pno: $("#save-pno").val(),
+			pno: $("#pno").val(),
 			content: $("#reply-content").val(),
 			rating: $("#rating").val()
 		}
-		console.log("data = " + data);
+		if(data.content.trim() == "") {
+			alert('내용을 입력해주세요');
+			return false;
+		} else {	
+			$.ajax({
+				type: "post",
+				url: '/review/save/${data.pno}',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('댓글이 작성되었습니다');
+				window.location.reload();
+			}).fail(function(error){ // 처리 실패 시
+				alert(JSON.stringify(error));
+			});
+		}
+	},
+	
+	modifyReviewView:function(pno, sid, rating, rvno) {
+		// $("#reply-modifying").appendTo($(this).parent());
+		
+		document.getElementById("modifying-sid").value = sid;
+		document.getElementById("modifying-rating").value = rating;
+		document.getElementById("modifying-rvno").value = rvno;
+		
+		$("#reply-modifying").css("display", "block");
+		//$(this).closest("li").next().css("display", "block");
+		// let one = parent.nextElementSibling;
+		// console.log("one = ", one);
+		// parent.css("display", "block");
+		// $(this).parentNode.parentNode.nextSibling.css("display", "block");
+	},
+/*
+	modifyReview:function(pno, sid, rvno, content, rating) {
+		let data = {
+			pno: pno,
+			sid: sid,
+			rvno: rvno,
+			content: content,
+			rating: rating
+		}
+*/
+		modifyReview:function() {
+			let data = {
+				pno: $("#pno").val(),
+				sid:  $("#modifying-sid").val(),
+				rvno:  $("#modifying-rvno").val(),
+				content:  $("#modifying-content").val(),
+				rating:  $("#modifying-rating").val()
+			}
+		if(data.content.trim() == "") {
+			alert('내용을 입력해주세요');
+			return false;
+		} else {	
+			$.ajax({
+				type: "put",
+				url: '/review/modify/${data.pno}/${data.rvno}',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('댓글이 수정되었습니다');
+				window.location.reload();
+			}).fail(function(error){ // 처리 실패 시
+				alert(JSON.stringify(error));
+			});
+		}
+	},
+	
+	cancleReview:function() {
+		// $(this).parent().parent().css("display", "none");
+		document.getElementById("modifying-content").value = "";
+		$("#reply-modifying").css("display", "none");
+	},
+
+	deleteReview:function(pno, rvno) {
+		let data = {
+			pno: pno,
+			rvno: rvno
+		}
+		console.log("data = ", data);
+		const check = confirm("삭제하시겠습니까?");
+		if(check === true) {	
+			$.ajax({
+				type: "delete",
+				url: '/review/delete/${data.pno}/${data.rvno}',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('댓글이 삭제되었습니다');
+				window.location.reload();
+			}).fail(function(error){ // 처리 실패 시
+				alert(JSON.stringify(error));
+			});
+		}
+	}, 
+
+	hitReview:function(pno, sid, rvno) {
+		let data = {
+			pno: pno,
+			sid: sid,
+			rvno: rvno
+		}
+		console.log("data = ", data);
 		$.ajax({
-			type: "post",
-			url: '/review/save/${data.pno}',
+			type: "put",
+			url: '/review/hit/${data.pno}/${data.rvno}',
 			data: JSON.stringify(data),
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 		}).done(function(response){ // 처리 성공 시
-			alert('댓글이 작성되었습니다');
-			location.href="/seller/";
-		}).fail(function(error){ // 처리 실패 시
-			alert(JSON.stringify(error));
-		});
-	},
-	
-	deleteReview:function() {
-		let rvno = $("#rvno").val();
-		$.ajax({
-			type: "delete",
-			url: '/review/delete/'+rvno,
-			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
-		}).done(function(response){ // 처리 성공 시
-			alert('댓글이 삭제되었습니다');
-			location.href="/seller/";
-		}).fail(function(error){ // 처리 실패 시
-			alert(JSON.stringify(error));
-		});
-	},
-	
-	hitReview:function() {
-		let rvno = $("#rvno").val();
-		$.ajax({
-			type: "put",
-			url: '/review/hit/'+rvno,
-			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
-		}).done(function(response){ // 처리 성공 시
-			alert('댓글 좋아요가 완료되었습니다');
-			location.href="/seller/";
+			window.location.reload();
 		}).fail(function(error){ // 처리 실패 시
 			alert(JSON.stringify(error));
 		});

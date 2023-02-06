@@ -22,13 +22,13 @@ public class QnA {
 	private String content;  // 내용
 	private int status;      // 답변유무(0:미답변, 1:답변)
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sid")
 	private Seller seller;   // 판매자정보
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "pno")
 	private Product product; // 상품정보
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "mid")
 	private Member member;   // 질문자정보
 	@OneToOne(fetch = FetchType.EAGER)

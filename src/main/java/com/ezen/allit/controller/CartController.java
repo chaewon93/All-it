@@ -24,13 +24,13 @@ import com.ezen.allit.service.CartService;
 
 @Controller
 @RequestMapping("/cart/")
-@SessionAttributes("member")
+@SessionAttributes("user")
 public class CartController {
 	
 	@Autowired
 	private CartService cartService;
 	
-	@ModelAttribute("member")
+	@ModelAttribute("user")
 	public Member setMember() {
 		return new Member();
 	}
@@ -40,7 +40,7 @@ public class CartController {
 	@PostMapping("/insert")
 	//public int insertCart(@ModelAttribute("member") Member member, Cart cart, @RequestBody(required=false) Map<String, Object> param) {
 	public String insertCart(@RequestBody Map<String, Object> param,
-						@ModelAttribute("member") Member member) {
+						@ModelAttribute("user") Member member) {
 		
 		//System.out.println("====[member]==== : "+member);
 		//System.out.println("====[param]==== : "+param);
@@ -71,13 +71,13 @@ public class CartController {
 	/** 장바구니 조회 처리 */
 	@GetMapping("/cartList")
 	public String getCartList(Model model,
-							@ModelAttribute("member") Member member) {
-		System.out.println("=============[getCartList()]===============");
-		System.out.println("member : "+member);
+							@ModelAttribute("user") Member member) {
+		//System.out.println("=============[getCartList()]===============");
+		//System.out.println("member : "+member);
 		
 		int totalPrice = 0;
 		List<Cart> cartList = cartService.getCartList(member);
-		System.out.println("cartList : "+cartList);
+		//System.out.println("cartList : "+cartList);
 		
 		for(int i=0; i<cartList.size(); i++) {
 			totalPrice += cartList.get(i).getProduct().getPrice() * cartList.get(i).getQuantity();
@@ -110,7 +110,7 @@ public class CartController {
 	@ResponseBody
 	@PostMapping("/modCart")
 	public String modifyCart(@RequestBody Map<String, Object> param,
-						@ModelAttribute("member") Member member) {
+						@ModelAttribute("user") Member member) {
 		//System.out.println("=============[modifyCart()]===============");
 		Cart cart = new Cart();
 		Product product = new Product();
