@@ -1,11 +1,13 @@
 package com.ezen.allit.controller;
 
-import java.util.*;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.ezen.allit.domain.CustomerCenter;
+import com.ezen.allit.domain.Coupon;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
@@ -26,6 +28,7 @@ import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.repository.QnARepository;
 import com.ezen.allit.repository.SellerRepository;
 import com.ezen.allit.service.AdminService;
+import com.ezen.allit.service.CouponService;
 import com.ezen.allit.service.SellerService;
 
 @Controller
@@ -49,6 +52,9 @@ public class AdminController {
 	
 	@Autowired
 	private SellerService sellerService;
+	
+	@Autowired
+	private CouponService couponService;
 	
 	// 관리자 고객 조회
 	@GetMapping("/getMemberList")
@@ -233,6 +239,7 @@ public class AdminController {
 			b = 1;
 		}else if(a==3) {	// 판매자 조회
 			sellerList = adminService.findSellerByRole(Role.SELLER, pageable);
+			b = 1;
 		}else if(a==4) {	// 판매대기자 조회
 			sellerList = adminService.findSellerByRole(Role.TEMP, pageable);
 			b = 1;
@@ -253,8 +260,8 @@ public class AdminController {
 	}
 	
 	// 관리자 판매대기자를 판매자로 등록
-	@PostMapping("regSeller")
-	public String regSeller(@RequestParam(value = "sellerId") String[] sellerId, RedirectAttributes re) {
+	@PostMapping("changeSeller")
+	public String changeSeller(@RequestParam(value = "sellerId") String[] sellerId, RedirectAttributes re) {
 		// model은 주로 페이지(view)로 보낼 때 사용...
 		// RedirectAttributes은 컨트롤러로 보낼 때 사용...
 		
@@ -263,11 +270,13 @@ public class AdminController {
 			Seller seller = sellerRepo.findById(sellerId[i]).get();
 			if(seller.getRole().equals(Role.TEMP)) {
 				seller.setRole(Role.SELLER);
+			}else if(seller.getRole().equals(Role.SELLER)) {
+				seller.getRole().equals(Role.TEMP);
 			}
 			sellerRepo.save(seller);
 		}
 		re.addAttribute("a", 0);
-		String pass = "redirect:/admin/findSellerList"; 
+		String pass = "redirect:/admin/findSellerList?a=2"; 
 		return pass;
 	}
 	
@@ -332,6 +341,25 @@ public class AdminController {
 		return pass;
 	}	
 	
+	// 관리자 등록 대기 상품 등록
+	@PostMapping("changeProMDPick")
+	public String changeProMDPick(@RequestParam(value = "pno") int[] pno) {
+		// model은 주로 페이지(view)로 보낼 때 사용...
+		
+		for(int i=0; i<pno.length; i++) {
+			
+			Product product = proRepo.findById(pno[i]).get();
+			if(product.getMdPickyn() == 0) {
+				product.setMdPickyn(1);
+			}else {
+				product.setMdPickyn(0);
+			}
+			proRepo.save(product);
+		}
+		String pass = "redirect:findAdminProduct?a=1"; 
+		return pass;
+	}	
+	
 	// 관리자 상품 삭제
 	@PostMapping("deletePro")
 	public String deletePro(@RequestParam(value = "pno") int[] pno) {
@@ -345,5 +373,27 @@ public class AdminController {
 		
 		return "redirect:findAdminProduct";
 	}
+	
+	@GetMapping("createCoupon")
+	public String createCouponView() {
+		return "admin/createCoupon";
+	}
+	
+	@PostMapping("createCoupon")
+	public String createCoupon(Coupon coupon) {
 
+		couponService.createCoupon(coupon);
+		
+		return "admin/adminMain";
+	}
+	
+	@Scheduled(cron="0 0 0 1 * *")
+	public void checkFirst() {
+		
+		List<Member> memList = memRepo.findAll();
+		
+		for(Member member : memList) {
+			couponService.insertMemCoupon(member, 3);
+		}		
+	}
 }

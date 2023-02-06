@@ -1,0 +1,61 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+
+<head>
+	<title>All it - I have a All it</title>
+	<meta charset="UTF-8"/>
+</head>
+
+<body th:align="center">
+<h1>쿠폰생성</h1>
+<form method="post" th:action="@{/admin/createCoupon}">
+<table th:align="center" border="1" th:cellpadding="0" th:cellspacing="0">
+	
+	<tr>
+		<td>쿠폰 설명(이름)</td>
+		<td><input type="text" name="couContent" id="couContent" required="required"/>
+		<input type="hidden" name="regId" id="regId" th:value="${session['admin'].id}"/>
+		<p th:text="${session['admin'].id}"></p></td>	
+	</tr>
+
+	<tr>
+		<td>쿠폰 종료일</td>
+		<td><input type="date" name="endDate" id="endDate" required="required"/></td>
+	</tr>
+	<tr>
+		<td>사용 가능 기간</td>
+		<td><input type="text" name="period" id="period" required="required"/></td>
+	</tr>
+	<tr>
+		<td>할인 금액</td>
+		<td>
+			<input type="radio" name="dis" id="dis1"  value="할인금액" checked="checked"/>할인금액
+			<input type="radio" name="dis" id="dis2" value="할인율" /> 할 인 율
+			<br>
+			<input type="text" name="discount" id="discount">
+		</td>
+	</tr>
+	<tr>
+		<td>최소 사용 금액</td>
+		<td><input type="text" name="minPrice" id="minPrice" placeholder="0"/></td>
+	</tr>
+	<tr>
+		<td>최대 할인 금액</td>
+		<td>
+			<input type="text" id="maxValue" name="maxValue" placeholder="0"/>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" align="center">
+			<input type="submit" value="생성"/>
+		</td>
+	</tr>
+	 
+</table>
+</form>
+</body>
+
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+</html>

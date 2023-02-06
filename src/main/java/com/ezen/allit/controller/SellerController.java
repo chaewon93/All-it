@@ -52,7 +52,7 @@ public class SellerController {
 		Seller theSeller = sellerService.findByIdAndPwd(seller.getId(), seller.getPwd());
 		if(theSeller != null) {
 			if(theSeller.getRole().equals(Role.ADMIN)) {
-				session.setAttribute("seller", theSeller);
+				session.setAttribute("admin", theSeller);
 				return "admin/adminMain";
 			}
 			session.setAttribute("seller", theSeller);

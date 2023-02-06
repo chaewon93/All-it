@@ -14,7 +14,7 @@ import lombok.*;
 
 @Getter
 @Setter
-@ToString(exclude = {"qnaList", "orders", "ordersDetail", "review", "cart"})
+@ToString(exclude = {"qnaList", "orders", "ordersDetail", "review", "cart", "memCoupon"})
 @NoArgsConstructor
 @Entity
 public class Member {
@@ -47,8 +47,10 @@ public class Member {
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"member"})
 	private List<QnA> qnaList = new ArrayList<>();				 // 연관관계 설정
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	@JsonIgnoreProperties({"member"})
+	private List<MemCoupon> memCoupon = new ArrayList<>();
 	private Grade grade;	   		 		    			 	 // 회원등급
-	@CreationTimestamp
 	private Date regDate;			 	   		 		     	 // 가입일
 	
 	@Builder

@@ -1,5 +1,7 @@
 package com.ezen.allit.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +13,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
+import com.ezen.allit.domain.MemCoupon;
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.service.CouponService;
 import com.ezen.allit.service.MemberService;
 
 @Controller
@@ -21,6 +25,9 @@ public class MemberController {
 	
 	@Autowired
 	private MemberService memberService;
+	
+	@Autowired
+	private CouponService couponService;
 	
 	/** 메인 페이지 */
 /*	@GetMapping("/index")
@@ -34,9 +41,9 @@ public class MemberController {
 	public String login(Member member, Model model) {
 		Member findMember = memberService.getMember(member);
 		
-		//System.out.println("findMember is " + findMember);
+		System.out.println("findMember is " + findMember);
 		//System.out.println("입력한 비밀번호 : "+member.getPwd());
-		
+		System.out.println(findMember.getMemCoupon());
 		if(findMember != null && findMember.getPwd().equals(member.getPwd())) {
 			model.addAttribute("member", findMember);
 			
@@ -86,6 +93,8 @@ public class MemberController {
 	@PostMapping("/join")
 	public String join(Member member) {
 		memberService.saveMember(member);
+		
+		couponService.insertMemCoupon(member, 1);
 		
 		return "redirect:/member-login";
 	}
@@ -141,4 +150,17 @@ public class MemberController {
 	 * 	return "redirect:index"; 
 	 * }
 	 */
+	
+	@GetMapping("coupon")
+	public String coupon(Member member, Model model) {
+		List<MemCoupon> memCouList = member.getMemCoupon();
+		model.addAttribute("list", memCouList);
+		
+		
+		System.out.println("-----------------");
+		System.out.println(memCouList);
+		System.out.println("-----------------");
+		
+		return "member/coupon";
+	}
 }

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+</head>
+<body>
+
+<form action="/coupon/deleteCoupon" method="post" id="theform">	
+<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
+
+<tr>
+	<th bgcolor="orange" width="100">번호</th>
+	<th bgcolor="orange" width="100">쿠폰 번호</th>
+	<th bgcolor="orange" width="100">쿠폰 설명</th>
+	<th bgcolor="orange" width="100">등록일</th>
+	<th bgcolor="orange" width="100">만료일</th>
+	<th bgcolor="orange" width="100">만료일</th>
+
+</tr>
+<tr th:each="pro, state : ${list}">
+	<td th:text="${state.count}"></td>
+	<td th:text="${pro.coupon.couName}"></td>
+	<td th:text="${pro.coupon.couContent}"></td>
+	<td th:text="${pro.createMemCouDate}"></td>
+	<td th:text="${pro.endMemCouDate}"></td>
+	<td th:text="${pro}"></td>
+</tr>
+
+</table>
+</form>
+
+<div>
+
+<form action="/coupon/deleteCoupon" method="post" id="theform">	
+<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
+
+	<tr>
+		<th bgcolor="orange" width="100">번호</th>
+		<th bgcolor="orange" width="100">쿠폰 번호</th>
+		<th bgcolor="orange" width="100">쿠폰 설명</th>
+		<th bgcolor="orange" width="100">등록일</th>
+		<th bgcolor="orange" width="100">만료일</th>
+	
+	</tr>
+	<tr th:each="pro, state : ${list}">
+		<td th:text="${state.count}"></td>
+		<td th:text="${pro.coupon.couName}"></td>
+		<td th:text="${pro.coupon.couContent}"></td>
+		<td th:text="${pro.createMemCouDate}"></td>
+		<td th:text="${pro.endMemCouDate}"></td>
+	</tr>
+
+</table>
+</form>
+
+</div>
+
+<!-- <div th:replace="~{ /fragments/admin_pagination.html :: pagination }"></div>  -->
+<!-- pagination replace -->
+<hr>
+
+</body>
+</html>
