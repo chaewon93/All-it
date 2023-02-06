@@ -51,4 +51,5 @@ public class Review {
 	private List<Hit> hits = new ArrayList<>();	  	 // 연관관계 설정용
 	@CreationTimestamp
 	private Date regDate;							 // 작성일
+	private Date modDate;							 // 수정일
 }
