@@ -4,8 +4,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -13,10 +15,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Product;
+import com.ezen.allit.domain.Review;
 import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
+import com.ezen.allit.dto.HitSaveRequestDto;
+import com.ezen.allit.repository.HitRepository;
 import com.ezen.allit.repository.ProductRepository;
+import com.ezen.allit.repository.ReviewRepository;
 import com.ezen.allit.repository.SellerRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +33,8 @@ import lombok.RequiredArgsConstructor;
 public class SellerServiceImpl implements SellerService {
 	private final SellerRepository sellerRepo;
 	private final ProductRepository productRepo;
+	private final HitRepository hitRepo;
+	private final ReviewRepository reviewRepo;
 //	private final BCryptPasswordEncoder encoder;
   
 	/*
@@ -84,17 +93,36 @@ public class SellerServiceImpl implements SellerService {
 	 * 판매자 상품조회
 	 */
 	@Transactional
-	public Product getProduct(int pno) {
+	public Product getProduct(int pno) {		
 		return productRepo.findById(pno).get();
+	}
+
+	/*
+	 * 상품 조회수 증가
+	 */
+	@Transactional
+	public void updateCount(int pno) {
+		Product product = productRepo.findById(pno).get();
+		product.setCount(product.getCount()+1);
 	}
 	
 	/*
 	 * 상품 좋아요
 	 */
 	@Transactional
-	public void hitProduct(int pno) {
-		Product product = productRepo.findById(pno).get();
-		product.setHit(product.getHit()+1);
+	public void hitProduct(HitSaveRequestDto hitSaveRequestDto) {
+		Optional<Hit> hit = hitRepo.findByProductPnoAndSellerId(hitSaveRequestDto.getPno(), hitSaveRequestDto.getSid());
+		Product product = productRepo.findById(hitSaveRequestDto.getPno()).get();
+		Seller seller = sellerRepo.findById(hitSaveRequestDto.getSid()).get();
+		
+		/* 이전에 좋아요 누른 기록이 없으면 좋아요, 있으면 좋아요 취소 */
+		if(hit.isEmpty()) {
+			hitRepo.save(new Hit(product, seller));
+			product.setHit(product.getHit()+1);
+		} else {
+			hitRepo.deleteById(hit.get().getHno());
+			product.setHit(product.getHit()-1);			
+		}
 	}
 	
 	/*

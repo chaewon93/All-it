@@ -151,7 +151,7 @@ public class DataInsertTest {
 	}
 	
 	@Test
-	@Disabled
+//	@Disabled
 	public void testProductDataInsert() {
 		Product product = new Product();
 		

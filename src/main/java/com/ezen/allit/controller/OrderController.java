@@ -10,10 +10,10 @@ import com.ezen.allit.domain.Member;
 
 @Controller
 @RequestMapping("/order/")
-@SessionAttributes("member")
+@SessionAttributes("user")
 public class OrderController {
 	
-	@ModelAttribute("member")
+	@ModelAttribute("user")
 	public Member setMember() {
 		return new Member();
 	}

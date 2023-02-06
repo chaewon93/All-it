@@ -15,7 +15,7 @@
 		<td>아이디*</td>
 		<td>
 			<input type="text" id="id" name="id" required="required"/>
-			<input type="button" id="checkBtn" value="중복확인" onclick="idCheck()">
+			<input type="button" id="checkBtn" value="중복확인" onclick="idCheck()" class="btn btn-light">
 			<br><font id="checkId" size="2"></font>
 		</td>
 	</tr>
@@ -44,10 +44,10 @@
 		<td>주소*</td>
 		<td>
 			<input type="text" id="zipcode" name="zipcode" required="required" placeholder="우편번호"/>
-			<input type="button" id="kakaoAddr" value="우편번호 찾기"><br>
+			<input type="button" id="kakaoAddr" value="우편번호 찾기" class="btn btn-light"><br>
 			<input type="text" id="addr" name="address" required="required" placeholder="주소"/><br>
 			<input type="text" id="addrDetail" name="address" required="required" placeholder="상세주소"/>
-			<input type="text" id="addrExtra" name="address" required="required" placeholder="참고항목"/>
+			<!-- <input type="text" id="addrExtra" name="address" required="required" placeholder="참고항목"/> -->
 		</td>
 	</tr>
 	<tr>
@@ -64,8 +64,8 @@
 	</tr>
 	<tr>
 		<td colspan="2" align="center">
-			<input type="submit" value="가입"/>
-			<input type="reset" value="취소">
+			<input type="submit" value="가입" class="btn btn-primary"/>
+			<input type="reset" value="취소" class="btn btn-primary">
 		</td>
 	</tr>
 </table>
@@ -77,24 +77,29 @@
 	$("#checkBtn").click(function(){
 		var userId = $("#id").val(); // input_id에 입력되는 값
 		
-		$.ajax({
-			url : "/member/idCheck",
-			type : "post",
-			data : {userId: userId},
-			dataType : 'json',
-			success : function(result){
-				if(result == 0){
-					$("#checkId").html('사용할 수 없는 아이디입니다.');
-					$("#checkId").attr('color','red');
-				} else{
-					$("#checkId").html('사용할 수 있는 아이디입니다.');
-					$("#checkId").attr('color','green');
-				} 
-			},
-			error : function(){
-				alert("서버 요청 실패");
-			}
-		});
+		if(userId == "") {
+			alert("아이디를 입력해주세요.");
+			return false;
+		} else {
+			$.ajax({
+				url : "/member/idCheck",
+				type : "post",
+				data : {userId: userId},
+				dataType : 'json',
+				success : function(result){
+					if(result == 0){
+						$("#checkId").html('사용할 수 없는 아이디입니다.');
+						$("#checkId").attr('color','red');
+					} else{
+						$("#checkId").html('사용할 수 있는 아이디입니다.');
+						$("#checkId").attr('color','green');
+					} 
+				},
+				error : function(){
+					alert("서버 요청 실패");
+				}
+			});
+		}
 	});
 	
 	// 비밀번호 확인
@@ -131,7 +136,7 @@
                 } else { // 사용자가 지번 주소를 선택했을 경우(J)
                     addr = data.jibunAddress;
                 }
-
+			/*
                 // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
                 if(data.userSelectedType === 'R'){
                     // 법정동명이 있을 경우 추가한다. (법정리는 제외)
@@ -145,7 +150,7 @@
                     }
                     // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
                     if(extraAddr !== ''){
-                        extraAddr = ' (' + extraAddr + ')';
+                        extraAddr = '(' + extraAddr + ')';
                     }
                     // 조합된 참고항목을 해당 필드에 넣는다.
                     document.getElementById("addrExtra").value = extraAddr;
@@ -153,7 +158,7 @@
                 } else {
                     document.getElementById("addrExtra").value = '';
                 }
-
+			*/
                 // 우편번호와 주소 정보를 해당 필드에 넣는다.
                 document.getElementById('zipcode').value = data.zonecode;
                 document.getElementById("addr").value = addr;
