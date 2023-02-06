@@ -1,5 +1,7 @@
 package com.ezen.allit.controller;
 
+import java.util.List;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -7,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.ezen.allit.domain.Coupon;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
@@ -27,6 +33,7 @@ import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.repository.QnARepository;
 import com.ezen.allit.repository.SellerRepository;
 import com.ezen.allit.service.AdminService;
+import com.ezen.allit.service.CouponService;
 import com.ezen.allit.service.SellerService;
 
 @Controller
@@ -50,6 +57,9 @@ public class AdminController {
 	
 	@Autowired
 	private SellerService sellerService;
+	
+	@Autowired
+	private CouponService couponService;
 	
 	// 관리자 고객 조회
 	@GetMapping("/getMemberList")
@@ -373,17 +383,22 @@ public class AdminController {
 	public String createCouponView() {
 		return "admin/createCoupon";
 	}
-	
-//	@PostMapping("createCoupon")
-//	public String createCoupon(Coupon coupon, Date date) {
-//		
-//		System.out.println("----------------쿠폰 생성 중");
-//		System.out.println(coupon);
-//		System.out.println(date);
-//		System.out.println("----------------쿠폰 생성 중");
-//		
-//		
-//		return "admin/adminMain";
-//	}
+  
+	@PostMapping("createCoupon")
+	public String createCoupon(Coupon coupon) {
 
+		couponService.createCoupon(coupon);
+		
+		return "admin/adminMain";
+	}
+	
+	@Scheduled(cron="0 0 0 1 * *")
+	public void checkFirst() {
+		
+		List<Member> memList = memRepo.findAll();
+		
+		for(Member member : memList) {
+			couponService.insertMemCoupon(member, 3);
+		}		
+	}
 }
