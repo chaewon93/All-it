@@ -36,7 +36,7 @@ public class DataInsertTest {
 
 	
 	@Test
-	@Disabled
+//	@Disabled
 	public void testDataInsert() {
 		
 		for(int i=1; i<11; i++) {
@@ -71,7 +71,7 @@ public class DataInsertTest {
 	}
 	
 	@Test
-	@Disabled
+//	@Disabled
 	public void testDataInsert1() {
 		
 		for(int i=1; i<11; i++) {
@@ -103,7 +103,7 @@ public class DataInsertTest {
 	}
 	
 	@Test
-	@Disabled
+//	@Disabled
 	public void testDataInsert2() {
 		
 		for(int i=1; i<11; i++) {
@@ -151,7 +151,7 @@ public class DataInsertTest {
 	}
 	
 	@Test
-	@Disabled
+//	@Disabled
 	public void testProductDataInsert() {
 		Product product = new Product();
 		
