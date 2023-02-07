@@ -14,8 +14,8 @@ public interface HitRepository extends JpaRepository<Hit, Integer> {
 	Optional<Hit> findByReviewRvnoAndSellerId(int rvno, String sid);
 	
 	// 상품 좋아요(중복확인)
-//	Optional<Hit> findByProductPnoAndMemberId(int pno, String mid);
+	Optional<Hit> findByProductPnoAndMemberId(int pno, String mid);
 	
 	// 댓글 좋아요(중복확인)
-//	Optional<Hit> findByReviewRvnoAndMemberId(int rvno, String mid);
+	Optional<Hit> findByReviewRvnoAndMemberId(int rvno, String mid);
 }

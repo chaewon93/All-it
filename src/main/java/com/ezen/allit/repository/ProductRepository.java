@@ -1,5 +1,7 @@
 package com.ezen.allit.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -24,4 +26,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	
 	// 판매자별 상품 슬라이싱
 	Slice<Product> findBySellerOrderByPnoDesc(String id, Pageable pageable);
+	
+	// 카테고리별 상품조회
+	Page<Product> findAllByCategory(int category, Pageable pageable);
 }

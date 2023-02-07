@@ -1,5 +1,8 @@
 package com.ezen.allit.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -8,13 +11,31 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ezen.allit.domain.Hit;
+import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Product;
+import com.ezen.allit.domain.Seller;
+import com.ezen.allit.dto.HitSaveRequestDto;
+import com.ezen.allit.repository.HitRepository;
+import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.ProductRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
-	@Autowired
-	private ProductRepository productRepo;
+	private final ProductRepository productRepo;
+
+	public Page<Product> getProductListByCategory(int category, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 9;
+		
+		Page<Product> product =
+				productRepo.findAllByCategory(category, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+		
+		return product;
+	}
 
 	/*
 	 * 상품목록조회
@@ -47,6 +68,15 @@ public class ProductServiceImpl implements ProductService {
 		return productRepo.findById(pno).get();
 	}
 	
+	/*
+	 * 상품 조회수 증가
+	 */
+	@Transactional
+	public void updateCount(int pno) {
+		Product product = productRepo.findById(pno).get();
+		product.setCount(product.getCount()+1);
+	}
+
 	/*
 	 * 상품검색
 	 */

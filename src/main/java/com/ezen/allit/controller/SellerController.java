@@ -69,7 +69,6 @@ public class SellerController {
 	@RequestMapping("/")
 	public String mainView(Model model, @PageableDefault(page = 1) Pageable pageable,
 									String searchKeyword,
-									String sid,
 									HttpSession session) {
 		Seller seller = (Seller) session.getAttribute("seller");
 		Page<Product> productList = null;
