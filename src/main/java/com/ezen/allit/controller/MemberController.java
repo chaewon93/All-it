@@ -165,10 +165,10 @@ public class MemberController {
 	 */
 	
 	@GetMapping("coupon")
-	public String coupon(Member member, Model model) {
+	public String coupon(@ModelAttribute("user")Member member, Model model) {
+		System.out.println(member);
 		List<MemCoupon> memCouList = member.getMemCoupon();
 		model.addAttribute("list", memCouList);
-		
 		
 		System.out.println("-----------------");
 		System.out.println(memCouList);

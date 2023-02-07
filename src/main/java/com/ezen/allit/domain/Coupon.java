@@ -43,11 +43,11 @@ public class Coupon {
 	private int period;				// 기간
 	private String regId;			// 발행인
 	private int discount;			// 할인금액 or 할인율
-	private int status;				// 사용 여부 - memcoup 에서 정해질 것
 	private int minPrice;			// 사용 최소 금액
 	private int maxValue;			// 최대 할인 금액
 	@OneToMany(mappedBy = "coupon", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"coupon"})
 	private List<MemCoupon> memCoupon = new ArrayList<>();
+	private String condition;		// 사용 제한 조건
 	
 }

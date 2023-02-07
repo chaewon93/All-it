@@ -49,6 +49,11 @@ public class Member {
 	private List<QnA> qnaList = new ArrayList<>();				 // 연관관계 설정
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"member"})
+	private List<MemCoupon> memCoupon = new ArrayList<>();
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	@JsonIgnoreProperties({"member"})
+	private List<MemCoupon> memCoupon = new ArrayList<>();
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private List<Hit> hits = new ArrayList<>();	  	   			 // 연관관계 설정용
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"member"})

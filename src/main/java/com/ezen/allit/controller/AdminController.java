@@ -110,6 +110,12 @@ public class AdminController {
 //			qnaList = adminService.searchByAdminQna(searchKeyword, pageable);
 		}		
 		
+		System.out.println("-----------------------------------");
+		System.out.println(qnaList);
+		System.out.println(qnaList.getTotalElements());
+		System.out.println(qnaList.getTotalPages());
+		System.out.println("-----------------------------------");
+		
 		int naviSize = 10; // 페이지네이션 갯수
 		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
 		int endPage = ((startPage + naviSize - 1) < qnaList.getTotalPages()) ? startPage + naviSize - 1 : qnaList.getTotalPages();
@@ -141,6 +147,12 @@ public class AdminController {
 //			qnaList = adminService.searchByAdminQnaStatus(status, searchKeyword, pageable);
 		}		
 
+		System.out.println("-----------------------------------");
+		System.out.println(qnaList);
+		System.out.println(qnaList.getTotalElements());
+		System.out.println(qnaList.getTotalPages());
+		System.out.println("-----------------------------------");
+		
 		int naviSize = 10; // 페이지네이션 갯수
 		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
 		int endPage = ((startPage + naviSize - 1) < qnaList.getTotalPages()) ? startPage + naviSize - 1 : qnaList.getTotalPages();

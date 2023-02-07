@@ -49,9 +49,7 @@ public class AdminServiceImpl implements AdminService {
 		Page<QnA> qnaList = 
 				qnaRepo.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "qno")));
 
-		if(!qnaList.isEmpty())
-			return qnaList;
-		else return null;
+		return qnaList;
 	}
 
 	// 관리자 QnA 답변(Reply) 작성

@@ -15,15 +15,21 @@
 	
 	<!-- 페이지 번호 링크(현재 페이지는 숫자만) -->
 	<!-- for(int page=startPage; page<=endPage; page++)-->
-	<span th:each="page: ${ #numbers.sequence(startPage, endPage) }">
-		<!-- 요청페이지가 현재페이지면 링크 X -->
-		<span th:if="${ page == list?.number + 1 }" th:text="${ page }"></span>
-		<!-- 요청페이지가 현재페이지가 아니면 링크 O -->
-		<span th:unless="${ page == list?.number + 1} ">
-			<a th:href="@{ ${url}(page=${ page }, searchKeyword = ${ param.searchKeyword },a=${a}) }" th:text="${ page }"></a>
+	<!-- 상품데이터가 하나도 없을 경우 -->	
+	<span th:if="${ list.totalElements == 0 }">
+		<span th:text="1"></span>
+	</span>
+	<!-- 상품데이터가 하나라도 있을 경우 -->
+	<span th:unless="${ list.totalElements == 0 }">
+		<span th:each="page: ${ #numbers.sequence(startPage, endPage) }">
+			<!-- 요청페이지가 현재페이지면 링크 X -->
+			<span th:if="${ page == list?.number + 1 }" th:text="${ page }"></span>
+			<!-- 요청페이지가 현재페이지가 아니면 링크 O -->
+			<span th:unless="${ page == list?.number + 1} ">
+				<a th:href="@{ ${url}(page=${ page }, searchKeyword = ${ param.searchKeyword },a=${a}) }" th:text="${ page }"></a>
+			</span>
 		</span>
 	</span>
-	
 	<!-- 사용자: 2페이지, getNumber: 1, 3페이지-->
 	<a th:if="${!list?.last}" th:href="@{ ${url}(page=${ list?.number + 2 }, searchKeyword = ${ param.searchKeyword }, a=${a}) }">next</a>
 	
