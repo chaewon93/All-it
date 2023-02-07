@@ -47,6 +47,12 @@ public class CustomerCenterController {
 		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
 		int endPage = ((startPage + naviSize - 1) < custoList.getTotalPages()) ? startPage + naviSize - 1 : custoList.getTotalPages();
 
+		System.out.println("-----------------------------------");
+		System.out.println(custoList);
+		System.out.println(custoList.getTotalElements());
+		System.out.println(custoList.getTotalPages());
+		System.out.println("-----------------------------------");
+		
 		model.addAttribute("list", custoList);
 		model.addAttribute("url", "/admin/getCusto");
 		model.addAttribute("startPage", startPage);

@@ -47,6 +47,54 @@
 		</td>
 	</tr>
 	<tr>
+		<td>대상 등급</td>
+		<td>
+			<select id="grade" name="grade">
+				<option value="전체" selected="selected">전체</option>
+				<option value="BRONZE">BRONZE</option>
+				<option value="SILVER">SILVER</option>
+				<option value="GOLD">GOLD</option>
+				<option value="VIP">VIP</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>성별</td>
+		<td>
+			<select id="gender" name="gender">
+				<option value="전체" selected="selected">전체</option>
+				<option value="남자">남자</option>
+				<option value="여자">여자</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>성별</td>
+		<td>
+			<select name="category" id="category">
+				<option th:value="0">전체</option>
+				<option th:value="1">패션</option>
+				<option th:value="2">식품</option>
+				<option th:value="3">주방용품</option>
+				<option th:value="4">생활용품</option>
+				<option th:value="5">인테리어</option>
+				<option th:value="6">가전</option>
+				<option th:value="7">스포츠/레저</option>
+				<option th:value="8">도서/음반/DVD</option>
+				<option th:value="9">반려동물용품</option>
+				<option th:value="10">건강식품</option>
+			</select>
+		</td>
+	</tr>		
+	<tr>
+		<td>추천상품</td>
+		<td>
+			<input type="radio" name="mdpick" id="mdpickAll"  value="할인금액" checked="checked"/>상관없음
+			<input type="radio" name="mdpick" id="mdpickYes" value="할인율" />YES
+			<input type="radio" name="mdpick" id="mdpickNo" value="할인율" /> N O
+		</td>
+	</tr>
+	<tr>
 		<td colspan="2" align="center">
 			<input type="submit" value="생성"/>
 		</td>

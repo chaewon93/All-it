@@ -151,11 +151,12 @@ public class DataInsertTest {
 	}
 	
 	@Test
-//	@Disabled
+	@Disabled
 	public void testProductDataInsert() {
-		Product product = new Product();
-		
+
 		for(int i=0; i<3; i++) {
+			Product product = new Product();
+			
 			product.setCategory(i+1);
 			product.setName("test item"+i);
 			product.setContent("test item"+i);

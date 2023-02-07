@@ -39,4 +39,5 @@ public class MemCoupon {
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date endMemCouDate;		// 쿠폰 만료일
+	private int status;				// 사용 여부 0=미사용, 1=사용, 2=만료
 }
