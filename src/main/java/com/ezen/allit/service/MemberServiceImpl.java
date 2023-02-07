@@ -4,15 +4,24 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.Product;
+import com.ezen.allit.dto.HitSaveRequestDto;
+import com.ezen.allit.repository.HitRepository;
 import com.ezen.allit.repository.MemberRepository;
+import com.ezen.allit.repository.ProductRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
-	
-	@Autowired
-	private MemberRepository memberRepo;
+	private final MemberRepository memberRepo;
+	private final ProductRepository productRepo;
+	private final HitRepository hitRepo;
 
 	@Override
 	public Member getMember(Member member) {
@@ -61,5 +70,21 @@ public class MemberServiceImpl implements MemberService {
 		memberRepo.deleteById(id);
 	}
 
+	/** 상품 좋아요 */
+	@Transactional
+	public void hitProduct(HitSaveRequestDto hitSaveRequestDto) {
+		Optional<Hit> hit = hitRepo.findByProductPnoAndMemberId(hitSaveRequestDto.getPno(), hitSaveRequestDto.getMid());
+		Product product = productRepo.findById(hitSaveRequestDto.getPno()).get();
+		Member member = memberRepo.findById(hitSaveRequestDto.getMid()).get();
+		
+		/* 이전에 좋아요 누른 기록이 없으면 좋아요, 있으면 좋아요 취소 */
+		if(hit.isEmpty()) {
+			hitRepo.save(new Hit(product, member));
+			product.setHit(product.getHit()+1);
+		} else {
+			hitRepo.deleteById(hit.get().getHno());
+			product.setHit(product.getHit()-1);			
+		}
+	}
 
 }

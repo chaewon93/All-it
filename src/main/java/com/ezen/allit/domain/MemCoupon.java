@@ -23,7 +23,6 @@ import lombok.ToString;
 @ToString(exclude = "member")
 @Entity
 public class MemCoupon {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int mcid;			// 사용자 쿠폰 번호

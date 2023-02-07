@@ -1,6 +1,7 @@
 package com.ezen.allit.service;
 
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.dto.HitSaveRequestDto;
 
 public interface MemberService {
 	
@@ -15,4 +16,6 @@ public interface MemberService {
 	public Member findByPw(Member member); 
 	
 	public void deleteMember(String id);
+	
+	void hitProduct(HitSaveRequestDto hitSaveRequestDto); // 상품 좋아요
 }

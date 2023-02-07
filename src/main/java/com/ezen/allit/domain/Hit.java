@@ -34,6 +34,16 @@ public class Hit {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "mid")
 	private Member member;
+
+	public Hit(Product product, Member member) {
+		this.product = product;
+		this.member = member;
+	}
+	
+	public Hit(Review review, Member member) {
+		this.review = review;
+		this.member = member;
+	}	
 	
 	public Hit(Product product, Seller seller) {
 		this.product = product;
