@@ -2,6 +2,7 @@ package com.ezen.allit.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -55,6 +56,7 @@ public class ReviewServiceImpl implements ReviewService {
 		Review review = reviewRepo.findById(reviewModifyRequestDto.getRvno()).get();
 		review.setContent(reviewModifyRequestDto.getContent());
 		review.setRating(reviewModifyRequestDto.getRating());
+		review.setModDate(new Date());
 	}
 	
 	/*

@@ -34,7 +34,6 @@ public class DataInsertTest {
 	@Autowired
 	private ProductRepository prodRepo;
 
-	
 	@Test
 //	@Disabled
 	public void testDataInsert() {
@@ -103,7 +102,7 @@ public class DataInsertTest {
 	}
 	
 	@Test
-//	@Disabled
+	@Disabled
 	public void testDataInsert2() {
 		
 		for(int i=1; i<11; i++) {
