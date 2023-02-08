@@ -18,7 +18,7 @@ public interface SellerService {
 
 	public Seller findByIdAndPwd(String id, String pwd);
 	
-//	void saveSeller(Seller seller);
+	void saveSeller(Seller seller);
 
 	Page<Product> getProductList(Pageable pageable, Seller seller);
 	
@@ -37,4 +37,6 @@ public interface SellerService {
 	void modifyProduct(int pno, Product product, MultipartFile imageFile) throws Exception;
 	
 	void deleteProduct(int pno);
+	
+	public int idCheck(String id);
 }

@@ -1,0 +1,47 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
+<head>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+
+<table>
+	<!-- <tr>
+		<th>작성자</th>
+		<td th:text="${qna.member.id}"></td>
+	</tr> -->
+	<tr>
+		<th>제목</th>
+		<td th:text="${qna.title}"></td>
+	</tr>
+	<tr>
+		<th>내용</th>
+		<td><textarea th:text="${qna.content}" cols="40" rows="7" disabled="disabled"></textarea></td>
+	</tr>
+	<tr th:if="${qna.status} == '1'">
+			<th>답변</th>
+			<td><textarea name="content" cols="40" rows="10" th:text="${qna.reply?.content}" readonly="readonly"></textarea>
+			<input type="hidden" name="rno" th:value="${qna.reply?.rno}" ></td>
+	</tr>
+	<tr th:if="${qna.status} == '0'">
+		<th>답변</th>
+		<td><span style="font-weight: bold; color: rgb(255, 195, 81);">잠시만 기다려 주시면 곧 답변 드리겠습니다.</span>
+			<input type="hidden" name="qno" th:value="${qna.qno}" >
+		</td>
+	</tr>	
+	<tr>
+		<td colspan="2" align="center">
+		<input type="button" value="목록" onclick="history.back()" class="btn btn-light"> <br>
+		</td>
+	</tr>
+
+</table>
+
+</body>
+
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+</html>

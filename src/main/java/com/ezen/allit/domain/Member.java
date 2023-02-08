@@ -32,27 +32,35 @@ public class Member {
 	private int point;		   		 		   					 // 포인트
 	private String provider;   		 		   					 // 로그인API 플랫폼
 	private String providerId; 	 				 		   		 // 로그인API 플랫폼상 일련번호
+	
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"member"})
 	private List<Cart> cart = new ArrayList<>(); 				// 연관관계 설정
+	
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"member"})
 	private List<Orders> orders = new ArrayList<>();			 // 연관관계 설정
+	
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"member"})
 	private List<OrdersDetail> ordersDetail = new ArrayList<>(); // 연관관계 설정
+	
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"member"})
 	private List<Review> review = new ArrayList<>(); 			 // 연관관계 설정
+	
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"member"})
 	private List<QnA> qnaList = new ArrayList<>();				 // 연관관계 설정
+	
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"member"})
 	private List<Hit> hits = new ArrayList<>();	  	   			 // 연관관계 설정용
+	
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"member"})
 	private List<MemCoupon> memCoupon = new ArrayList<>();
+	
 	private Grade grade;	   		 		    			 	 // 회원등급
 	private Date regDate;			 	   		 		     	 // 가입일
 	

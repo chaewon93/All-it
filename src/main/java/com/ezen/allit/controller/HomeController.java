@@ -61,7 +61,7 @@ public class HomeController {
 	 */
 	@PostMapping("/sellerApply")
 	public String apply(Seller seller) {
-//		sellerService.saveSeller(seller);
+		sellerService.saveSeller(seller);
 		
 		return "redirect:/";
 

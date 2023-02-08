@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.ezen.allit.domain.Cart;
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.Orders;
 
 @Controller
 @RequestMapping("/order/")
@@ -18,10 +20,24 @@ public class OrderController {
 		return new Member();
 	}
 	
-	@RequestMapping("/orderList")
-	public String insertOrder() {
+	/** 주문/결제 페이지 요청 */
+	@PostMapping("/orderInfo")
+	public String ordersView(Cart cart) {
+		return "mypage/orderInfo";
+	}
+	
+	/** 주문하기 */
+	@PostMapping("/orders")
+	public String insertOrder(Orders order, @ModelAttribute("user") Member member) {
 		
-		return "member/orderList";
+		return "";
+	}
+	
+	/** 주문 목록 */
+	@RequestMapping("/orderList")
+	public String getOrderList() {
+		
+		return "mypage/orderList";
 	}
 
 }

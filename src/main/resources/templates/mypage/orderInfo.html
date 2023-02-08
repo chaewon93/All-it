@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<!-- header replace -->
+
+<!-- 내용 섹션 시작 -->
+<h3>구매자 정보</h3>
+<table id="payerInfo">
+	<tr>
+		<th>이름</th>
+		<td th:text="${ session['user']?.name }">
+	</tr>
+	<tr>
+		<th>이메일</th>
+		<td th:text="${ session['user']?.email }">
+	</tr>
+	<tr>
+		<th>연락처</th>
+		<td th:text="${ session['user']?.phone }">
+	</tr>
+</table>
+
+<h3>받는 사람 정보</h3>
+<button type="button" value="배송정보 변경" class="btn btn-light"></button>
+<table id="payeeInfo">
+	<tr>
+		<th>이름</th>
+		<td th:text="${ session['user']?.name }">
+	</tr>
+	<tr>
+		<th>배송 주소</th>
+		<td th:text="${ session['user']?.address }">
+	</tr>
+	<tr>
+		<th>연락처</th>
+		<td th:text="${ session['user']?.phone }">
+	</tr>
+</table>
+
+<h3>주문 상품</h3>
+<table id="prodInfo">
+	<tr th:each="cart : ${cartList}">
+		<td>
+			<a th:href="@{ |/product/detail/${ cart.product.pno }| }">
+				<img class="img-fluid" th:src="@{ /images/ } + ${ cart.product.imageName }" width="100">
+				<span
+				
+				 th:text="${ cart.product.name }"></span>
+			</a> 
+		</td>
+		<td th:text="${ cart.product.name }">
+		<td th:text="${ cart.quantity }">
+		<td th:text="${ #numbers.formatInteger(cart.product.price, 1, 'COMMA') }+'원'">
+	</tr>
+</table>
+
+<h3>결제 정보</h3>
+<table id="payInfo">
+	<tr>
+		<th>총 상품가격</th>
+		<td th:text="${ totalPrice }">
+	</tr>
+	<tr>
+		<th>할인 쿠폰</th>
+		<td th:text="${  }">
+		<button type="button" value="쿠폰 선택" class="btn btn-light"></button>
+	</tr>
+	<tr>
+		<th>포인트</th>
+		<td th:text="${ session['user']?.point }">
+	</tr>
+	<tr>
+		<th>총 결제금액</th>
+		<td th:text="${ totalPrice }">
+	</tr>
+	<tr>
+		<th>결제방법</th>
+		<td>
+			<input type="radio" name="pay" value="신용/체크카드" checked="checked">신용/체크카드
+			<input type="radio" name="pay" value="계좌이체">계좌이체
+			<input type="radio" name="pay" value="휴대폰">휴대폰
+			<input type="radio" name="pay" value="무통장입금">무통장입금(가상계좌)
+		</td>
+	</tr>
+</table>
+
+<input type="radio" id="check" value="">위 주문 내용을 확인 하였으며, 회원 본인은 개인정보 이용 및 제공 및 결제에 동의합니다.
+
+<input type="submit" value="결제하기" class="btn btn-primary">
+
+
+<!-- 자바스트립트 섹션 시작 -->
+<script type="text/javascript">
+let index = {
+	init:function() {
+		let type = $("#category").val();
+		if(type != null) {
+			switch(type) {
+			case '1' :
+				$("#type").val("패션");
+				break;
+			case '2' :
+				$("#type").val("식품");
+				break;
+			case '3' :
+				$("#type").val("주방용품");
+				break;
+			case '4' :
+				$("#type").val("생활용품");
+				break;
+			case '5' :
+				$("#type").val("인테리어");
+				break;
+			case '6' :
+				$("#type").val("가전");
+				break;
+			case '7' :
+				$("#type").val("스포츠/레저");
+				break;
+			case '8' :
+				$("#type").val("도서/음반/DVD");
+				break;
+			case '9' :
+				$("#type").val("반려동물용품");
+				break;
+			case '10' :
+				$("#type").val("건강식품");
+				break;
+			}
+		}
+		
+		$("#inCart").on("click", ()=>{ // function(){} 대신 ()=>{}를 사용하는 이유는 this를 바인딩 하기 위함
+			this.insertCart();
+
+		});
+//		$("#save").on("click", () =>{
+//			this.save();
+//		});
+	},
+
+	insertCart:function() {
+		let user_id = $("#mid").val();
+		
+		if(user_id == "" || user_id == "undefined") {
+			alert('로그인이 필요한 서비스입니다.');
+			window.location.href="/member-login";
+			return false;
+		} else {
+			// ajax는 기본이 비동기 호출이기 때문에 만약 뒤에 다른 요청이 있으면 그것도 같이 수행
+			// ajax가 통신을 성공하고 서버가 json을 리턴하면 자동으로 자바오브젝트로 변환해줌
+			$.ajax({
+				url: "/cart/insert",
+				type: "post",
+				data: JSON.stringify({
+					mid: $("#mid").val(),
+					pno: $("#pno").val(),
+					quantity : $("#quantity").val()
+				}),
+				dataType: "text",
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+				success: function(data){ // 처리 성공 시
+					//alert("[처리결과]"+data);
+					if(data == 'inCart') {
+						alert('상품이 장바구니에 담겼습니다.');
+						//self.history.go(-1);
+					} else if(data == 'exist') {
+						var chk = confirm('장바구니에 같은 상품이 있습니다. \n그래도 담으시겠습니까?');
+						if(chk) {
+							//location.replace("/cart/modCart");
+							$.ajax({
+								url: "/cart/modCart",
+								type: "post",
+								data: JSON.stringify({
+									mid: $("#mid").val(),
+									pno: $("#pno").val(),
+									quantity : $("#quantity").val(),
+									type: "add"
+								}),
+								dataType: "text",
+								contentType: "application/json; charset=utf-8",
+								success: function(data){
+									if(data == 'modCart') {
+										alert('상품이 장바구니에 담겼습니다.');
+									} else if(data == 'null') {
+										alert('장바구니 조회 중 일시적인 오류입니다.');
+									} else {
+										alert('로그인이 필요한 서비스입니다.');
+									}
+								}, error: function(err){
+									alert("다시 시도해주세요.");				
+									console.log('[modCart() ajax error] '+err);
+								}	
+							});
+						}
+					} else {
+						alert('로그인이 필요한 서비스입니다.');
+					}
+				}
+			}).fail(function(error){ // 처리 실패 시
+				alert("다시 시도해주세요.");
+				console.log("[insertCart() ajax error] "+JSON.stringify(error));
+			});
+		}
+	},
+/*	
+	save:function() {
+		let data = {
+			pno: $("#save-pno").val(),
+			content: $("#reply-content").val(),
+			rating: $("#rating").val()
+		}
+		console.log("data = " + data);
+		$.ajax({
+			type: "post",
+			url: '/review/save/${data.pno}',
+			data: JSON.stringify(data),
+			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+		}).done(function(response){ // 처리 성공 시
+			alert('댓글이 작성되었습니다');
+			location.href="/seller/";
+		}).fail(function(error){ // 처리 실패 시
+			alert(JSON.stringify(error));
+		});
+	}*/
+}
+
+index.init();
+
+</script>
+<!-- 자바스트립트 섹션 끝 -->
+
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+<!-- footer replace -->
+	
