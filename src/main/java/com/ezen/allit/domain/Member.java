@@ -14,7 +14,7 @@ import lombok.*;
 
 @Getter
 @Setter
-@ToString(exclude = {"qnaList", "orders", "ordersDetail", "review", "cart", "memCoupon"})
+@ToString(exclude = {"qnaList", "orders", "ordersDetail", "review", "cart", "hits", "memCoupon"})
 @NoArgsConstructor
 @Entity
 public class Member {

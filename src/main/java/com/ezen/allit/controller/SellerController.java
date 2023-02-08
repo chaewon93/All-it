@@ -76,10 +76,11 @@ public class SellerController {
 	 * 판매자 메인화면 이동
 	 */
 	@RequestMapping("/")
-	public String mainView(Model model, @PageableDefault(page = 1) Pageable pageable,
-									String searchKeyword,
-									String sid,
-									HttpSession session) {
+	public String mainView(Model model,
+						String searchKeyword,
+						HttpSession session,
+						@PageableDefault(page = 1) Pageable pageable) {
+		
 		Seller seller = (Seller) session.getAttribute("seller");
 		Page<Product> productList = null;
 		if(searchKeyword == null || searchKeyword.equals("")) {
@@ -103,7 +104,8 @@ public class SellerController {
 	 * 판매자 상품조회
 	 */
 	@GetMapping("/product/{pno}")
-	public String getProduct(@PathVariable int pno, Model model,
+	public String getProduct(Model model,
+							@PathVariable int pno,
 							@PageableDefault(page = 1) Pageable pageable) {
 		Product theProduct = sellerService.getProduct(pno);
 		

@@ -18,16 +18,16 @@
 		<label for="sel1">카테고리</label>
 		<select class="form-control" name="category" id="category">
 			<option>==카테고리==</option>
-			<option th:value="1" th:selected="${ product.category}=='1'">패션</option>
-			<option th:value="2" th:selected="${ product.category}=='2'">식품</option>
-			<option th:value="3" th:selected="${ product.category}=='3'">주방용품</option>
-			<option th:value="4" th:selected="${ product.category}=='4'">생활용품</option>
-			<option th:value="5" th:selected="${ product.category}=='5'">인테리어</option>
-			<option th:value="6" th:selected="${ product.category}=='6'">가전</option>
-			<option th:value="7" th:selected="${ product.category}=='7'">스포츠/레저</option>
-			<option th:value="8" th:selected="${ product.category}=='8'">도서/음반/DVD</option>
-			<option th:value="9" th:selected="${ product.category}=='9'">반려동물용품</option>
-			<option th:value="10" th:selected="${ product.category}=='10'">건강식품</option>	
+			<option th:value="1" th:selected="${ product.category }=='1'">패션</option>
+			<option th:value="2" th:selected="${ product.category }=='2'">식품</option>
+			<option th:value="3" th:selected="${ product.category }=='3'">주방용품</option>
+			<option th:value="4" th:selected="${ product.category }=='4'">생활용품</option>
+			<option th:value="5" th:selected="${ product.category }=='5'">인테리어</option>
+			<option th:value="6" th:selected="${ product.category }=='6'">가전제품</option>
+			<option th:value="7" th:selected="${ product.category }=='7'">스포츠/레저</option>
+			<option th:value="8" th:selected="${ product.category }=='8'">도서/음반/DVD</option>
+			<option th:value="9" th:selected="${ product.category }=='9'">반려동물용품</option>
+			<option th:value="10" th:selected="${ product.category }=='10'">건강식품</option>	
 		</select>
 		<label for="name">상품명</label>
 		<input type="text" class="form-control" th:value="${ product.name }" name="name" id="name"/>
@@ -41,7 +41,7 @@
 	</div>
 	<button type="submit" class="btn btn-light" id="modify">상품수정</button>
 	<button type="button" class="btn btn-light" id="delete">삭제</button>
-	<button type="button" class="btn btn-light" id="hit">좋아요</button> <br> <br>
+	<!-- <button type="button" class="btn btn-light" id="hit">좋아요</button> <br> <br> -->
 </form>
 <!-- 내용 섹션 끝 -->
 
@@ -62,11 +62,12 @@
 	  			<!-- <p th:text="${ review.member.id }"></p> -->
 	  		</div>
 	  		<div class="d-flex">
-	  			<!-- <div class="font-italic" th:text="${ review.member.id }"></div> &nbsp; -->
+	  			<!-- 
 				<button class="badge" id="reviewModifyView" style="color: black" th:onclick="'javascript:index.modifyReviewView(this, ' +${ review.rating }+ ', ' +${ review.rvno }+');'">수정</button>
 	  			<button class="badge" id="reviewDelete" style="color: black" th:onclick="'javascript:index.deleteReview(pno.value, ' +${ review.rvno }+ ');'">삭제</button>
 	  			<button class="badge" id="reviewHit" style="color: black" th:onclick="'javascript:index.hitReview(pno.value, seller.value, ' +${ review.rvno }+ ');'">좋아요</button>
 	  			<button class="badge" id="reviewReplyView" style="color: black" th:onclick="'javascript:index.replyReviewView(this, ' +${ review.rvno } + ');'">답글</button>
+	  			 -->
 	  		</div>
 	  	</li>
 	  	
@@ -111,7 +112,7 @@
 
 <!-- 댓글 작성 섹션 시작 -->
 <div class="card">
-	<form id="reply-save-form">
+	<form id="review-save-form">
 		<!-- 
 		<input type="text" id="mid" th:value="${ #authentication.principal.member.id }">
 		<input type="text" id="sid" th:value="${ #authentication.principal.seller.id }">
@@ -183,7 +184,7 @@ let index = {
 		});
 	},
 	
-	// 글 삭제
+	// 상품 삭제
 	deleteByPno:function() {
 		let pno = $("#pno").val()
 		$.ajax({
@@ -198,7 +199,7 @@ let index = {
 		});
 	},
 	
-	// 글 좋아요
+	// 상품 좋아요
 	hit:function() {
 		let data = {
 			pno: $("#pno").val(),
@@ -216,7 +217,7 @@ let index = {
 		});
 	},
 	
-	// 댓글 작성
+	// 리뷰 작성
 	saveReview:function() {
 		let data = {
 			//sid: $("#sid").val(),
@@ -270,13 +271,13 @@ let index = {
 			});
 	},
 	
-	// 답글 버튼
+	// 리뷰 답글 버튼
 	replyReviewView:function(btn, rvno) {
 		btn.parentElement.parentElement.nextElementSibling.nextElementSibling.firstElementChild.nextElementSibling.firstElementChild.value = rvno;
 		btn.parentElement.parentElement.nextElementSibling.nextElementSibling.style.display = 'block';
 	},
 	
-	// 답글 작성
+	// 리뷰 답글 작성
 	replyReview:function(btn, pno) {
 		let data = {
 			pno: pno,
@@ -296,13 +297,13 @@ let index = {
 			});
 	},
 	
-	// 댓글 수정/답글 작성 취소
+	// 리뷰 수정/답글 작성 취소
 	cancleReview:function(btn) {
 		document.getElementById("modifying-content").value = "";
 		btn.parentElement.parentElement.style.display = 'none';
 	},
 
-	// 댓글 삭제
+	// 리뷰 삭제
 	deleteReview:function(pno, rvno) {
 		let data = {
 			pno: pno,
@@ -325,7 +326,7 @@ let index = {
 		}
 	}, 
 
-	// 댓글 좋아요
+	// 리뷰 좋아요
 	hitReview:function(pno, sid, rvno) {
 		let data = {
 			pno: pno,

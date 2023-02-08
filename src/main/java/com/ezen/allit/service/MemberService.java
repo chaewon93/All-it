@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.QnA;
+import com.ezen.allit.dto.HitSaveRequestDto;
 
 public interface MemberService {
 	
@@ -21,6 +22,7 @@ public interface MemberService {
 	
 	public void deleteMember(String id);
 	
+
 	/* <== 1:1문의(QnA) ==> */
 	public void saveQna(QnA qna);
 	
@@ -28,4 +30,5 @@ public interface MemberService {
 	
 	public QnA getQnaDetail(int qno);
 	
+	void hitProduct(HitSaveRequestDto hitSaveRequestDto); // 상품 좋아요
 }
