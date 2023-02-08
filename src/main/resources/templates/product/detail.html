@@ -326,7 +326,10 @@ let index = {
 			content: $("#review-save-content").val(),
 			rating: $("#rating").val()
 		}
-		if(data.content.trim() == "") {
+		if(data.mid.trim() == "") {
+			alert('로그인이 필요한 서비스입니다');
+			return false;
+		} else if(data.content.trim() == "") {
 			alert('내용을 입력해주세요');
 			return false;
 		} else {	
