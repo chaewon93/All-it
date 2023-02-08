@@ -86,7 +86,7 @@ public class CartController {
 		model.addAttribute("cartList", cartList);
 		model.addAttribute("totalPrice", totalPrice);
 		
-		return "member/cartList";
+		return "mypage/cartList";
 	}
 	
 	/** 장바구니에서 삭제 처리 */

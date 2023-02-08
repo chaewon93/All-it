@@ -48,7 +48,7 @@ public class DataInsertTest {
 			member.setEmail("aaaa"+i+"@google.com");
 			member.setBirth("2015/11/"+i);
 			member.setPhone("010-1111-1111");
-			member.setAddress("서울 관악구");
+			member.setAddress("서울 관악구,1층");
 			member.setZipcode("111-111");
 			
 			memberRepo.save(member);
@@ -63,7 +63,7 @@ public class DataInsertTest {
 		seller.setEmail("ad1234.google.com");
 		seller.setPhone("010-1234-1234");
 		seller.setRole(Role.ADMIN);
-		seller.setAddress("서울 관악구");
+		seller.setAddress("서울 관악구,1층");
 		seller.setZipcode("111-1122");
 		
 		sellerRepo.save(seller);
@@ -86,6 +86,7 @@ public class DataInsertTest {
 			}else {
 				qna.setCategory("기타");
 			}
+			qna.setTitle("QnA 제목 "+i);
 			qna.setContent("QnA 내용 "+i);
 			if(i<9) {
 				member.setId("aaaa"+i);
@@ -102,7 +103,7 @@ public class DataInsertTest {
 	}
 	
 	@Test
-	@Disabled
+//	@Disabled
 	public void testDataInsert2() {
 		
 		for(int i=1; i<11; i++) {
@@ -112,9 +113,9 @@ public class DataInsertTest {
 			seller.setPwd("aaaa");
 			seller.setName("판매자"+i);
 			seller.setContent("물건판다");
-			seller.setEmail("www.google"+i+".com");
+			seller.setEmail("aaaa"+i+"@google.com");
 			seller.setPhone("010-1122-3344");
-			seller.setAddress("서울시 관악구");
+			seller.setAddress("서울시 관악구,1층");
 			seller.setZipcode("123-456");
 			int a = i+8;
 			seller.setRegno("1111-33-22-"+a);

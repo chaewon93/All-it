@@ -3,6 +3,9 @@ package com.ezen.allit.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import com.ezen.allit.domain.MemCoupon;
 import com.ezen.allit.domain.Grade;
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.QnA;
 import com.ezen.allit.service.CouponService;
 import com.ezen.allit.service.MemberService;
 
@@ -31,13 +35,6 @@ public class MemberController {
 	@Autowired
 	private CouponService couponService;
 	
-	/** 메인 페이지 */
-/*	@GetMapping("/index")
-	public String index() {
-		return "index";
-	}
-*/	
-		
 	/** 로그인 기능 처리 */
 	@PostMapping("/login")
 	public String login(Member member, Model model) {
@@ -47,7 +44,7 @@ public class MemberController {
 		System.out.println("findMember is " + findMember);
 		System.out.println("[login()] findMember : " + findMember);
 		//System.out.println("입력한 비밀번호 : "+member.getPwd());
-		System.out.println(findMember.getMemCoupon());
+		//System.out.println(findMember.getMemCoupon());
 		if(findMember != null && findMember.getPwd().equals(member.getPwd())) {
 			model.addAttribute("user", findMember);
 
@@ -125,7 +122,7 @@ public class MemberController {
 	@GetMapping("/info")
 	public void info(@ModelAttribute("user") Member member, Model model) {
 		String fullAddr = member.getAddress();
-		System.out.println("[Member info()] user Address : "+fullAddr);
+		//System.out.println("[Member info()] user Address : "+fullAddr);
 		if(fullAddr != null) {
 			String[] addr = fullAddr.split(",");
 			model.addAttribute("addr", addr);
@@ -164,8 +161,59 @@ public class MemberController {
 	 * }
 	 */
 	
+	/** 마이올잇>문의하기(1:1문의) - QnA 글 작성 */
+	@GetMapping("/qna")
+	public String QnaView() {
+		return "mypage/qnaWrite";
+	}
+	
+	/** 마이올잇>문의하기(1:1문의) - QnA 글 작성 처리 */
+	@PostMapping("/writeQna")
+	public String writeQna(QnA qna, @ModelAttribute("user") Member member) {
+		
+		qna.setStatus(0);
+		qna.setMember(member);
+		System.out.println("[Member writeQna()] qna : "+qna);
+		System.out.println("[Member writeQna()] qna writer : "+member);
+		
+		memberService.saveQna(qna);
+		
+		return "redirect:qnaList";
+	}
+	
+	/** 마이올잇>문의내역 조회 */
+	@RequestMapping("/qnaList")
+	public String getQnaList(Model model, @ModelAttribute("user") Member member,
+							@PageableDefault(page = 1) Pageable pageable) {
+		
+		Page<QnA> qnaList = memberService.getQnaList(member, pageable);
+		System.out.println("[Member getQnaList()] qnaList : "+qnaList.getTotalElements());
+		
+		int naviSize = 10; // 페이지네이션 갯수
+		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+		int endPage = ((startPage + naviSize - 1) < qnaList.getTotalPages()) ? startPage + naviSize - 1 : qnaList.getTotalPages();
+
+		model.addAttribute("list", qnaList);
+		model.addAttribute("startPage", startPage);
+		model.addAttribute("endPage", endPage);	
+		model.addAttribute("url", "/member/qnaList");
+		if(qnaList.getTotalElements() == 0) model.addAttribute("size", 0);
+		
+		return "mypage/qnaList";
+	}
+	
+	/** 마이올잇>문의내역 상세보기 */
+	@GetMapping("/qnaDetail")
+	public String getQnaDetail(Model model, int qno) {
+		QnA qna = memberService.getQnaDetail(qno);
+		
+		model.addAttribute("qna", qna);
+		
+		return "mypage/qnaDetail";
+	}
+	
 	@GetMapping("coupon")
-	public String coupon(@ModelAttribute("user")Member member, Model model) {
+	public String coupon(@ModelAttribute("user") Member member, Model model) {
 		System.out.println(member);
 		List<MemCoupon> memCouList = member.getMemCoupon();
 		model.addAttribute("list", memCouList);

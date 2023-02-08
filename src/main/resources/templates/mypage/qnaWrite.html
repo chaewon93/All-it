@@ -1,0 +1,51 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
+
+<head>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+
+<body th:align="center">
+<h1>고객센터(1:1 문의)</h1>
+
+<form th:action="@{/member/writeQna}" method="post">
+<table>
+	<tr>
+		<td>
+			<select name="category">
+				<option value="주문/결제" selected>주문/결제</option>
+				<option value="취소/교환/반품" >취소/교환/반품</option>
+				<option value="환불" >환불</option>
+				<option value="배송" >배송</option>
+				<option value="회원서비스" >회원서비스</option>
+				<option value="기타" >기타</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td bgcolor="orange" width="70" th:text="제목"></td>
+		<td align="left"><input type="hidden" th:value="${ session['user']?.id }" name="mid" id="mid">
+			<input type="text" name="title" required="required"/>
+		</td>
+	</tr>
+	<tr>
+		<td bgcolor="orange" th:text="내용"></td>
+		<td align="left">
+			<textarea name="content" cols="40" rows="10" required="required"></textarea>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" align="center">
+			<input type="submit" value="등록" class="btn btn-primary"/>
+		</td>
+	</tr>
+</table>
+</form>
+
+</body>
+
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>

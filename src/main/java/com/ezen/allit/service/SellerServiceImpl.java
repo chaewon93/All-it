@@ -226,4 +226,17 @@ public class SellerServiceImpl implements SellerService {
 		else return null;
 	}
 
+	@Override
+	public int idCheck(String id) {
+		Optional<Seller> findId = sellerRepo.findById(id);
+		
+		if(findId.isPresent()) {
+			System.out.println("이미 사용중인 아이디");
+			return 0;
+		} else {
+			System.out.println("사용 가능한 아이디");
+			return -1;
+		}
+	}
+
 }

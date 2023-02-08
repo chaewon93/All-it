@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Product;
@@ -61,6 +63,13 @@ public class SellerController {
 			
 			return "seller/login";
 		}
+	}
+	
+	/** 판매자 아이디 중복확인 */
+	@ResponseBody
+	@PostMapping("/idCheck")
+	public int idCheck(@RequestParam("userId") String user_id) {
+		return sellerService.idCheck(user_id);
 	}
 	
 	/*
