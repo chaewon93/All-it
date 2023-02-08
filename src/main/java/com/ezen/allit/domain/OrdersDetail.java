@@ -10,7 +10,7 @@ import lombok.*;
 
 @Getter
 @Setter
-@ToString(exclude = {"orders", "member", "product"})
+@ToString(exclude = {"orders", "member", "products"})
 @Entity
 public class OrdersDetail {
 	@Id
@@ -23,8 +23,8 @@ public class OrdersDetail {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "mid")
 	private Member member;   						   // mno
-	@OneToMany(mappedBy = "ordersDetail", fetch = FetchType.LAZY)
-	@JsonIgnoreProperties({"ordersDetail"})
-	private List<Product> product = new ArrayList<>(); // pno
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "pno")
+	private Product product; // pno
 	private int status; // 주문상태(1:결제완료, 2:배송중, 3:배송완료, 4:구매확정, 5:주문취소)
 }
