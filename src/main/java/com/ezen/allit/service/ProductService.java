@@ -7,9 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.ezen.allit.domain.Product;
 
-public interface ProductService {
-	Page<Product> getProductListByCategory(int category, Pageable pageable);
-	
+public interface ProductService {	
 	Page<Product> getProductList(Pageable pageable);
 	
 	Product getProduct(int pno);
@@ -17,4 +15,8 @@ public interface ProductService {
 	void updateCount(int pno);
 	
 	Page<Product> search(String searchKeyword, Pageable pageable);
+	
+	Page<Product> search(int searchCondition, String searchKeyword, Pageable pageable);
+	
+	Page<Product> search(int searchCondition, Pageable pageable);
 }

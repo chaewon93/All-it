@@ -26,31 +26,28 @@
 		</ul>
 		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
 			<h1><a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a></h1>
-			<div class="search">
-				<input type="text" placeholder="검색어를 입력해주세요">
-				<a href="#"><img th:src='@{ https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png }'></a>
-			</div>
 		</div>
 
 		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 			<div class="dropdown">
 				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">카테고리</button>
 				<div class="dropdown-menu">
-					<a class="dropdown-item" th:href="@{ /product/category/1 }">패션</a>
-					<a class="dropdown-item" th:href="@{ /product/category/2 }">식품</a>
-					<a class="dropdown-item" th:href="@{ /product/category/3 }">주방용품</a>
-					<a class="dropdown-item" th:href="@{ /product/category/4 }">생활용품</a>
-					<a class="dropdown-item" th:href="@{ /product/category/5 }">인테리어</a>
-					<a class="dropdown-item" th:href="@{ /product/category/6 }">가전제품</a>
-					<a class="dropdown-item" th:href="@{ /product/category/7 }">스포츠/레저</a>
-					<a class="dropdown-item" th:href="@{ /product/category/8 }">도서/음반/DVD</a>
-					<a class="dropdown-item" th:href="@{ /product/category/9 }">반려동물용품</a>
-					<a class="dropdown-item" th:href="@{ /product/category/10 }">건강식품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=1) }">패션</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=2) }">식품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=3) }">주방용품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=4) }">생활용품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=5) }">인테리어</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=6) }">가전제품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=7) }">스포츠/레저</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=8) }">도서/음반/DVD</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=9) }">반려동물용품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=10) }">건강식품</a>
+					<!-- <a class="dropdown-item" th:href="@{ /product/category/{category} }">건강식품</a> -->
 				</div>
 			</div> &nbsp;&nbsp;
 			<div class="collapse navbar-collapse" id="collapsibleNavbar">
 				<ul class="navbar-nav">
-					<li class="nav-item"><a class="nav-link" th:href="@{ /product/newItem }">신상품</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /product/new }">신상품</a></li>
 					<li class="nav-item"><a class="nav-link" href="#">베스트상품</a></li>
 					<li class="nav-item"><a class="nav-link" href="#">특가세일</a></li>
 					<li class="nav-item"><a class="nav-link" href="#">쿠폰세일</a></li>
