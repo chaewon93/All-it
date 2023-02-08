@@ -24,7 +24,7 @@
 				<tr th:each="cart, st : ${cartList}">
 					<td><input type="checkbox" name="cno" id="cno" th:value="${ cart.cno }"></td>
 					<td>
-						<a th:href="@{ |/product/detail/${ cart.product.pno }| }">
+						<a th:href="@{ |/product/${ cart.product.pno }| }">
 						<img class="img-fluid" th:src="@{ /images/ } + ${ cart.product.imageName }" width="100">
 							<span th:text="${ cart.product.name }"></span>
 						</a>
@@ -174,7 +174,7 @@
 			alert("주문할 상품을 선택해주세요."); 
 			return false;
 		} else {
-			$("#cartform").action = "/order/orderInfo";
+			$("#cartform").attr("action", "/order/orderInfo");
 			$("#cartform").submit();
 		}
 	}
