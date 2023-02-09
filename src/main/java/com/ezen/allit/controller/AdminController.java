@@ -2,16 +2,11 @@ package com.ezen.allit.controller;
 
 import java.util.List;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,7 +29,6 @@ import com.ezen.allit.repository.QnARepository;
 import com.ezen.allit.repository.SellerRepository;
 import com.ezen.allit.service.AdminService;
 import com.ezen.allit.service.CouponService;
-import com.ezen.allit.service.SellerService;
 
 @Controller
 @RequestMapping("/admin/")
@@ -54,9 +48,6 @@ public class AdminController {
 	
 	@Autowired
 	private MemberRepository memRepo;
-	
-	@Autowired
-	private SellerService sellerService;
 	
 	@Autowired
 	private CouponService couponService;

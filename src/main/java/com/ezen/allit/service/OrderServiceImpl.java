@@ -48,11 +48,11 @@ public class OrderServiceImpl implements OrderService {
 	 */
 	@Transactional
 	public void saveOrdersDetail(Product product, Member member,
-								@RequestParam("quantity") int quantity) {
+								OrdersDetail ordersDetail) {
 		/* 주문번호 생성 매서드 사용, ono 반환 */
 		int ono = selectMaxOno();
 		
-		ordersDetailRepo.saveOrder(product.getPno(), quantity, ono, member.getId());
+		ordersDetailRepo.saveOrder(product.getPno(), ono, member.getId(), ordersDetail.getQuantity(),ordersDetail.getReceiverName(), ordersDetail.getReceiverZipcode(), ordersDetail.getReceiverAddr(), ordersDetail.getReceiverPhone());
 	}
 	
 		

@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.dto.HitSaveRequestDto;
 
@@ -21,6 +22,12 @@ public interface MemberService {
 	public Member findByPw(Member member); 
 	
 	public void deleteMember(String id);
+	
+	/** 주문목록조회 */
+	Page<OrdersDetail> getOrderList(Member member, Pageable pageable);
+	
+	/** 상품 구매시 올머니 차감 */
+	void minusMoney(String id, int amount);
 	
 
 	/* <== 1:1문의(QnA) ==> */
