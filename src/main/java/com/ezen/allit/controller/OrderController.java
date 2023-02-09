@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.ezen.allit.domain.Cart;
 import com.ezen.allit.domain.Member;
-import com.ezen.allit.domain.Orders;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.repository.CartRepository;
@@ -94,6 +92,7 @@ public class OrderController {
 
 		orderService.saveOrders(member);
 		orderService.saveOrdersDetail(product, member, ordersDetail);
+
 		memberService.minusMoney(mid, amount);
 
 		return "redirect:/";
@@ -103,11 +102,11 @@ public class OrderController {
 	@PostMapping("/orders")
 	public String insertOrders(Model model, OrdersDetail ordersDetail,
 							@ModelAttribute("user") Member member,
-							@RequestParam(value = "cno") int[] cno) {	
+							@RequestParam(value = "cno") int[] cno,
+							@RequestParam(value = "price") int price) {	
+		
 		// 1) Orders 테이블에 insert
 		orderService.saveOrders(member);
-		
-		int amount = 0;
 		
 		for(int i=0; i<cno.length; i++) {
 			Cart cart = cartRepo.findById(cno[i]).get();
@@ -124,7 +123,12 @@ public class OrderController {
 		}
 		
 		// 4) 올잇머니 차감
-		
+		//System.out.println("[order] price : "+price);
+		memberService.minusMoney(member.getId(), price);
+
+		// 5) 세션에 수정된 정보 저장
+		Member findMember = memberService.getMember(member);
+		model.addAttribute("user", findMember);
 		
 		return "redirect:orderList";
 
