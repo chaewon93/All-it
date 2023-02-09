@@ -21,4 +21,5 @@ public interface OrdersDetailRepository extends JpaRepository<OrdersDetail, Inte
 	
 	// 사용자 주문목록조회
 	Page<OrdersDetail> findAllByMemberId(String id, Pageable pageable);
+
 }

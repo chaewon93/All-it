@@ -25,7 +25,7 @@ public class OrdersDetail {
 	private Member member;   		// mno
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "pno")
-	private Product product; 		// pno
+	private Product product; 							// pno
 	private int status; // 주문상태(1:결제완료, 2:배송중, 3:배송완료, 4:구매확정, 5:주문취소)
 	private String receiverName;	// 받는 사람 이름
 	private String receiverZipcode;	// 받는 사람 우편번호
