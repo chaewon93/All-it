@@ -13,5 +13,7 @@ public interface OrderService {
 	// 주문 조회
 	List<Orders> getOrder(Orders orders);
 
-	int buy(Product product, Member member, @RequestParam("quantity") int quantity);
+	void saveOrders(Member member);
+	
+	void saveOrdersDetail(Product product, Member member, @RequestParam("quantity") int quantity);
 }

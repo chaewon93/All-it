@@ -28,19 +28,37 @@ public class OrderServiceImpl implements OrderService {
 	}
 	
 	/*
-	 * 바로구매
+	 * 주문번호 생성 매서드 - ono를 검색해서 값이 있으면 그 값을, 없으면 새로 1을 반환하는 매서드
 	 */
 	@Transactional
-	public int buy(Product product, Member member,
-				@RequestParam("quantity") int quantity) {
-		// 1. 신규 주문번호 할당
-		Orders orders = ordersRepo.findById(ordersRepo.saveOrderSequence(member.getId())).get();
-		
-		// 2. 주문번호를 토대로 주문테이블에 저장
-		OrdersDetail ordersDetail = new OrdersDetail();
-		ordersDetailRepo.saveOrder(product, quantity, orders.getOno(), member.getId());
-		
-		// 3. 상품페이지에서 상품정보 읽어서 주문상세테이블에 저장
-		return orders.getOno();
+	public int selectMaxOno() {
+		return ordersDetailRepo.selectMaxOno();
 	}
+	
+	/*
+	 * 바로구매 1 - 주문번호(orders) 생성
+	 */
+	@Transactional
+	public void saveOrders(Member member) {		
+		ordersRepo.saveOrderSequence(member.getId());
+	}
+	
+	/*
+	 * 바로구매 2 - 주문상세(ordersDetail) 생성
+	 */
+	@Transactional
+	public void saveOrdersDetail(Product product, Member member,
+								@RequestParam("quantity") int quantity) {
+		/* 주문번호 생성 매서드 사용, ono 반환 */
+		int ono = selectMaxOno();
+		
+		ordersDetailRepo.saveOrder(product.getPno(), quantity, ono, member.getId());
+	}
+	
+		
 }
+
+
+
+
+

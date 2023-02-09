@@ -12,6 +12,7 @@ import com.ezen.allit.domain.Cart;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Orders;
 import com.ezen.allit.domain.Product;
+import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.service.OrderService;
 import com.ezen.allit.service.ProductService;
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderController {
 	private final ProductRepository productRepo;
+	private final MemberRepository memberRepo;
 	private final OrderService orderService;
 	
 	@ModelAttribute("user")
@@ -31,26 +33,35 @@ public class OrderController {
 		return new Member();
 	}
 	
-	/** 주문/결제 페이지 요청 */
-	@PostMapping("/orderInfo")
+	/** 즉시구매 시 주문/결제 페이지 요청 */
+	@PostMapping("/orderNow")
 	public String getOrderView(Product product, Model model,
 							@RequestParam("quantity") int quantity) {
+		
 		Product theProduct = productRepo.findById(product.getPno()).get();
-		System.out.println("theProduct = " + theProduct);
 		model.addAttribute("product", theProduct);
 		model.addAttribute("quantity", quantity);
 		
 		return "mypage/orderInfo";
 	}
 	
+	/** 장바구니에서 주문/결제 페이지 요청 */
+	@PostMapping("/orderInfo")
+	public String ordersView(Cart cart) {
+		
+		return "mypage/orderInfo";
+	}
+	
 	/** 주문하기 */
 	@PostMapping("/orders")
-	public String insertOrder(Product product, Member member, Model model,
-							@RequestParam("quantity") int quantity) {		
-		System.out.println("product = " + product);
-		System.out.println("member = " + member);
-		System.out.println("quantity = " + quantity);
-		orderService.buy(product, member, quantity);
+	public String insertOrder(int pno, String mid, Model model,
+							@RequestParam("quantity") int quantity) {	
+		
+		Product product = productRepo.findById(pno).get();
+		Member member = memberRepo.findById(mid).get(); 
+
+		orderService.saveOrders(member);
+		orderService.saveOrdersDetail(product, member, quantity);
 		
 		return "redirect:/";
 	}
