@@ -93,11 +93,13 @@ public class SellerController {
 		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
 	    int endPage = ((startPage + naviSize - 1) < productList.getTotalPages()) ? startPage + naviSize - 1 : productList.getTotalPages();
 		
+	    model.addAttribute("list", productList);
+	    model.addAttribute("url", "/seller/");
 	    model.addAttribute("productList", productList);
 	    model.addAttribute("startPage", startPage);
 	    model.addAttribute("endPage", endPage);
 		
-		return "seller/main";
+		return "seller/list";
 	}
 	
 	/*

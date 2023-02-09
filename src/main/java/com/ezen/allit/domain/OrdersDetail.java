@@ -13,7 +13,7 @@ public class OrdersDetail {
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	private int odno;	    		// 주문상세 일련번호
 	private int quantity;   		// 주문량
-	private int finalPirce;			// 결제금액
+	private int finalPrice;   		// 최종주문금액
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ono")
 	private Orders orders;	 		// ono, quantity
