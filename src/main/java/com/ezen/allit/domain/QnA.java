@@ -22,7 +22,6 @@ public class QnA {
 	private String category; // 질문분류
 	private String content;  // 내용
 	private int status;      // 답변유무(0:미답변, 1:답변)
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sid")
 	private Seller seller;   // 판매자정보

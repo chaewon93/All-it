@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Product;
@@ -63,14 +65,22 @@ public class SellerController {
 		}
 	}
 	
+	/** 판매자 아이디 중복확인 */
+	@ResponseBody
+	@PostMapping("/idCheck")
+	public int idCheck(@RequestParam("userId") String user_id) {
+		return sellerService.idCheck(user_id);
+	}
+	
 	/*
 	 * 판매자 메인화면 이동
 	 */
 	@RequestMapping("/")
-	public String mainView(Model model, @PageableDefault(page = 1) Pageable pageable,
-									String searchKeyword,
-									String sid,
-									HttpSession session) {
+	public String mainView(Model model,
+						String searchKeyword,
+						HttpSession session,
+						@PageableDefault(page = 1) Pageable pageable) {
+		
 		Seller seller = (Seller) session.getAttribute("seller");
 		Page<Product> productList = null;
 		if(searchKeyword == null || searchKeyword.equals("")) {
@@ -94,7 +104,8 @@ public class SellerController {
 	 * 판매자 상품조회
 	 */
 	@GetMapping("/product/{pno}")
-	public String getProduct(@PathVariable int pno, Model model,
+	public String getProduct(Model model,
+							@PathVariable int pno,
 							@PageableDefault(page = 1) Pageable pageable) {
 		Product theProduct = sellerService.getProduct(pno);
 		

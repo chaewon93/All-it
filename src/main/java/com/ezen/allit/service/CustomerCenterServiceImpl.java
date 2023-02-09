@@ -31,7 +31,7 @@ public class CustomerCenterServiceImpl implements CustomerCenterService {
 		return custoList;
 	}
 
-	// 관리자 고겍센터 게시글 작성
+	// 관리자 고객센터 게시글 작성
 	@Override
 	public void insertCustomerCenter(CustomerCenter cus) {
 

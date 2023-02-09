@@ -56,7 +56,7 @@
 		<td><input type="text" name="birth" id="birth" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" th:value="${session['user']?.birth}"/></td>
 	</tr>
 	<tr>
-		<td>성별</td>
+		<td>성별*</td>
 		<td>
 			<input type="hidden" id="gender" th:value="${session['user']?.gender}">
 			<input type="radio" name="gender" id="m" value="남" /> 남
@@ -92,6 +92,9 @@ let index = {
 				break;
 			case '여':
 				$("#f").prop('checked', true);
+				break;
+			case '안함':
+				$("#n").prop('checked', true);
 				break;
 			case '':
 				$("#n").prop('checked', true);

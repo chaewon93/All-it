@@ -1,9 +1,16 @@
 package com.ezen.allit.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.OrdersDetail;
+import com.ezen.allit.domain.QnA;
+import com.ezen.allit.dto.HitSaveRequestDto;
 
 public interface MemberService {
 	
+	/* <== 회원 정보 ==> */
 	public Member getMember(Member member);
 	
 	public void saveMember(Member member);
@@ -15,4 +22,20 @@ public interface MemberService {
 	public Member findByPw(Member member); 
 	
 	public void deleteMember(String id);
+	
+	/** 주문목록조회 */
+	Page<OrdersDetail> getOrderList(Member member, Pageable pageable);
+	
+	/** 상품 구매시 올머니 차감 */
+	void minusMoney(String id, int amount);
+	
+
+	/* <== 1:1문의(QnA) ==> */
+	public void saveQna(QnA qna);
+	
+	public Page<QnA> getQnaList(Member member, Pageable pageable);
+	
+	public QnA getQnaDetail(int qno);
+	
+	void hitProduct(HitSaveRequestDto hitSaveRequestDto); // 상품 좋아요
 }

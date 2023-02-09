@@ -12,12 +12,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.dto.HitSaveRequestDto;
+import com.ezen.allit.dto.QnaSaveRequestDto;
 import com.ezen.allit.dto.ResponseDto;
 import com.ezen.allit.dto.ReviewDeleteRequestDto;
 import com.ezen.allit.dto.ReviewModifyRequestDto;
 import com.ezen.allit.dto.ReviewReplySaveRequestDto;
 import com.ezen.allit.dto.ReviewSaveRequestDto;
+import com.ezen.allit.service.MemberService;
 import com.ezen.allit.service.ProductService;
+import com.ezen.allit.service.QnAService;
 import com.ezen.allit.service.ReviewService;
 import com.ezen.allit.service.SellerService;
 
@@ -25,10 +28,11 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-public class SellerApiController {
+public class DongukApiController {
 	private final SellerService sellerService;
 	private final ReviewService reviewService;
-	private final ProductService productService;
+	private final MemberService memberService;
+	private final QnAService qnaService;
 
 	/*
 	 * 상품삭제
@@ -43,9 +47,9 @@ public class SellerApiController {
 	/*
 	 * 상품 좋아요
 	 */
-	@PutMapping("/seller/product/hit/{pno}")
+	@PutMapping("/product/hit/{pno}")
 	public ResponseDto<Integer> hitProduct(@RequestBody HitSaveRequestDto hitSaveRequestDto) {
-		sellerService.hitProduct(hitSaveRequestDto);
+		memberService.hitProduct(hitSaveRequestDto);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
@@ -100,6 +104,15 @@ public class SellerApiController {
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 	
+	/*
+	 * 문의작성
+	 */
+	@PostMapping("/product/qna/save/{pno}")
+	public ResponseDto<Integer> saveQuestoin(@RequestBody QnaSaveRequestDto qnaSaveRequestDto) {
+		qnaService.saveQuestion(qnaSaveRequestDto);
+		
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}
 	
 	/*
 	 * 상품수정

@@ -134,7 +134,7 @@ public class SellerServiceImpl implements SellerService {
 		int pageSize = 3;
 		
 		Page<Product> product = 
-				productRepo.findBySellerIdAndNameContaining(seller.getId(), searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+				productRepo.findAllBySellerIdAndNameContaining(seller.getId(), searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 		
 		return product;
 	}
@@ -224,6 +224,19 @@ public class SellerServiceImpl implements SellerService {
 			return findSeller.get();
 		}
 		else return null;
+	}
+
+	@Override
+	public int idCheck(String id) {
+		Optional<Seller> findId = sellerRepo.findById(id);
+		
+		if(findId.isPresent()) {
+			System.out.println("이미 사용중인 아이디");
+			return 0;
+		} else {
+			System.out.println("사용 가능한 아이디");
+			return -1;
+		}
 	}
 
 }

@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Hit;
+import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.Review;
 import com.ezen.allit.domain.Seller;
@@ -22,6 +23,7 @@ import com.ezen.allit.dto.ReviewModifyRequestDto;
 import com.ezen.allit.dto.ReviewReplySaveRequestDto;
 import com.ezen.allit.dto.ReviewSaveRequestDto;
 import com.ezen.allit.repository.HitRepository;
+import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.repository.ReviewRepository;
 import com.ezen.allit.repository.SellerRepository;
@@ -35,17 +37,14 @@ public class ReviewServiceImpl implements ReviewService {
 	private final ProductRepository productRepo;
 	private final SellerRepository sellerRepo;
 	private final HitRepository hitRepo;
+	private final MemberRepository memberRepo;
 
 	/*
 	 * 리뷰작성
 	 */
-//	@Transactional
-//	public void saveReview(ReviewSaveRequestDto reviewSaveRequestDto) {
-//		reviewRepo.saveReview(reviewSaveRequestDto.getContent(), reviewSaveRequestDto.getImageName(), reviewSaveRequestDto.getRating(), reviewSaveRequestDto.getPno(), reviewSaveRequestDto.getSid());
-//	}
 	@Transactional
 	public void saveReview(ReviewSaveRequestDto reviewSaveRequestDto) {
-		reviewRepo.saveReview(reviewSaveRequestDto.getContent(), reviewSaveRequestDto.getImageName(), reviewSaveRequestDto.getRating(), reviewSaveRequestDto.getPno());
+		reviewRepo.saveReview(reviewSaveRequestDto.getContent(), reviewSaveRequestDto.getImageName(), reviewSaveRequestDto.getRating(), reviewSaveRequestDto.getPno(), reviewSaveRequestDto.getMid());
 	}
 	
 	/*
@@ -72,13 +71,14 @@ public class ReviewServiceImpl implements ReviewService {
 	 */
 	@Transactional
 	public void hitReview(HitSaveRequestDto hitSaveRequestDto) {
-		Optional<Hit> hit = hitRepo.findByReviewRvnoAndSellerId(hitSaveRequestDto.getRvno(), hitSaveRequestDto.getSid());
+		Optional<Hit> hit = hitRepo.findByReviewRvnoAndMemberId(hitSaveRequestDto.getRvno(), hitSaveRequestDto.getMid());
 		Review review = reviewRepo.findById(hitSaveRequestDto.getRvno()).get();
-		Seller seller = sellerRepo.findById(hitSaveRequestDto.getSid()).get();
+		Member member = memberRepo.findById(hitSaveRequestDto.getMid()).get();
+		System.out.println("member = " + member);
 		
 		/* 이전에 좋아요 누른 기록이 없으면 좋아요, 있으면 좋아요 취소 */
 		if(hit.isEmpty()) {
-			hitRepo.save(new Hit(review, seller));
+			hitRepo.save(new Hit(review, member));
 			review.setHit(review.getHit()+1);
 		} else {
 			hitRepo.deleteById(hit.get().getHno());

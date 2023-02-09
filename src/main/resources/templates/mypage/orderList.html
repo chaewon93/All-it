@@ -15,29 +15,29 @@
 		<tr>
 			<th>상품명</th> <th>수 량</th><th>가 격</th> <th>주문일</th> <th> 진행 상태 </th>    
 		</tr>
-		<!-- 
-		<tr th:each="orderVO : ${orderList}">      
+
+		<tr th:each="order : ${orderList}">      
 			<td>
-				<a href="product_detail?pseq=${orderVO.pno}">
-				<h3 th:text="${orderVO.name}"> </h3>              
+				<a th:href="@{ |/product/${order.product.pno}| }">
+				<h3 th:text="${order.product.name}"> </h3>              
 				</a>    
 			</td>
-			<td th:text="${orderVO.quantity}"> </td>
-			<td th:text="${#numbers.formatInteger(orderVO.price2*orderVO.quantity, 1, 'COMMA')}+'원'" /> </td>      
-			<td th:text="${#dates.format(orderVO.regDate, 'yyyy-MM-dd')}" /></td>
+			<td th:text="${order.quantity}"> </td>
+			<td th:text="${#numbers.formatInteger(order.product.price*order.quantity, 1, 'COMMA')}+'원'" /> </td>      
+			<td th:text="${#dates.format(order.orders.regDate, 'yyyy-MM-dd')}" /></td>
 			<td> 처리 진행 중 </td>
 		</tr>
        
 		<tr>
  			<th colspan="2"> 총 액 </th>
-			<th colspan="2" th:text="${#numbers.formatInteger(totalPrice, 1, 'COMMA')}+'원'"/><br>     </th> 
+			<!-- <th colspan="2" th:text="${#numbers.formatInteger(totalPrice, 1, 'COMMA')}+'원'"/><br></th> --> 
 			<th> 주문 처리가 완료되었습니다. </th>                
 		</tr> 
 	</table>   
-       -->    
+
 	<div class="clear"></div>
 	<div id="buttons" style="float: right">
-		<input type="button"    value="쇼핑 계속하기"  class="cancel"  onclick="location.href='/'">     
+		<input type="button" value="쇼핑 계속하기" class="btn btn-light" onclick="location.href='/'">     
 	</div>
 	</form>  
 </article>
