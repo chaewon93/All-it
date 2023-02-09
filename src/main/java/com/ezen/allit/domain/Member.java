@@ -57,7 +57,7 @@ public class Member {
 	@JsonIgnoreProperties({"member"})
 	private List<Hit> hits = new ArrayList<>();	  	   			 // 연관관계 설정용
 	
-	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"member"})
 	private List<MemCoupon> memCoupon = new ArrayList<>();
 	

@@ -153,14 +153,16 @@ public class CouponServiceImpl implements CouponService {
 //		int price = pro.getPrice();
 		int dis = coupon.getDiscount();
 		int result = 0;
+		int a = (totp * dis) / 100;
 		
 		if(totp>coupon.getMinPrice()) {
 			if(coupon.getDiscount()>100) {
 				result = totp - dis;
-			}else if(coupon.getDiscount()<=100) {
-				result = totp * dis / 100;
-				if(result < coupon.getMaxValue()) {
-					result = -1;
+			}else if(dis <= 100) {
+				result = totp - ((totp * dis) / 100);
+				System.out.println("할인적용금액 : " +a);
+				if(a > coupon.getMaxValue()) {
+					result = totp - coupon.getMaxValue();
 				}
 			}
 		}
