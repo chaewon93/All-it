@@ -3,9 +3,15 @@ package com.ezen.allit.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,8 +26,8 @@ import com.ezen.allit.domain.Product;
 import com.ezen.allit.repository.CartRepository;
 import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.ProductRepository;
+import com.ezen.allit.service.MemberService;
 import com.ezen.allit.service.OrderService;
-import com.ezen.allit.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +39,7 @@ public class OrderController {
 	private final ProductRepository productRepo;
 	private final MemberRepository memberRepo;
 	private final OrderService orderService;
+	private final MemberService memberService;
 	private final CartRepository cartRepo;
 	
 	@ModelAttribute("user")
@@ -75,7 +82,7 @@ public class OrderController {
 		
 		return "mypage/orderInfo";
 	}
-	
+
 	/** 주문하기 - 바로구매 */
 	@PostMapping("/order")
 	public String insertOrder(int pno, String mid, Model model, OrdersDetail ordersDetail) {   
@@ -83,6 +90,7 @@ public class OrderController {
 
 		Product product = productRepo.findById(pno).get();
 		Member member = memberRepo.findById(mid).get(); 
+		int amount = product.getPrice() * ordersDetail.getQuantity();
 
 		orderService.saveOrders(member);
 		orderService.saveOrdersDetail(product, member, ordersDetail);
@@ -113,14 +121,28 @@ public class OrderController {
 		}
 		
 		// 4) 올잇머니 차감
-		
+		memberService.minusMoney(mid, amount);
 		
 		return "redirect:orderList";
+
 	}
 	
-	/** 주문 목록 */
-	@RequestMapping("/orderList")
-	public String getOrderList() {
+	/** 주문 목록조회 */
+	@GetMapping("/orderList")
+	public String getOrderList(HttpSession session,
+							Model model,
+							@PageableDefault(page = 1) Pageable pageable) {
+		Member member = (Member) session.getAttribute("user");
+		
+		Page<OrdersDetail> orderList = memberService.getOrderList(member, pageable);
+		
+		int naviSize = 10; // 페이지네이션 갯수
+		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+	    int endPage = ((startPage + naviSize - 1) < orderList.getTotalPages()) ? startPage + naviSize - 1 : orderList.getTotalPages();
+
+	    model.addAttribute("orderList", orderList);
+	    model.addAttribute("startPage", startPage);
+	    model.addAttribute("endPage", endPage);	    
 		
 		return "mypage/orderList";
 	}

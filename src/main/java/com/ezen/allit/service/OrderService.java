@@ -17,5 +17,5 @@ public interface OrderService {
 	void saveOrders(Member member);
 	
 	void saveOrdersDetail(Product product, Member member, OrdersDetail orderDetail);
-	
+
 }

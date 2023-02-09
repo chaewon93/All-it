@@ -14,8 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.repository.MemberRepository;
+import com.ezen.allit.repository.OrdersDetailRepository;
 import com.ezen.allit.repository.QnARepository;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.dto.HitSaveRequestDto;
@@ -27,11 +29,11 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
-
 	private final MemberRepository memberRepo;
 	private final ProductRepository productRepo;
 	private final HitRepository hitRepo;
 	private final QnARepository qnaRepo;
+	private final OrdersDetailRepository ordersDetailRepo;
 
 	/** 회원 조회 */
 	@Override
@@ -132,6 +134,45 @@ public class MemberServiceImpl implements MemberService {
 		}
 
 	}
+	
+	/** 주문목록조회 */
+	@Transactional
+	public Page<OrdersDetail> getOrderList(Member member, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 10;
+		
+		Page<OrdersDetail> orderList = 
+				ordersDetailRepo.findAllByMemberId(member.getId(), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));
+		
+		System.out.println("orderList = " + orderList);
+		
+		return orderList;
+	}
+	/** 상품 구매 시 올머니 차감 */
+	@Transactional
+	public void minusMoney(String id, int amount) {
+		Member member = memberRepo.findById(id).get();
+		member.setMoney(member.getMoney()-amount);
+	}
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

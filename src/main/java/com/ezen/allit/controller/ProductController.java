@@ -60,14 +60,6 @@ public class ProductController {
 			}			
 		}
 
-//		if(searchKeyword.equals("")) {
-//			System.out.println("검색 키워드 없음");
-//			productList = productService.getProductList(pageable);
-//		} else {
-//			System.out.printf("검색 키워드: [%s]\n", searchKeyword);
-//			productList = productService.search(searchKeyword, pageable);
-//		}
-
 		int naviSize = 10; // 페이지네이션 갯수
 		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
 		int endPage = ((startPage + naviSize - 1) < productList.getTotalPages()) ? startPage + naviSize - 1 : productList.getTotalPages();
