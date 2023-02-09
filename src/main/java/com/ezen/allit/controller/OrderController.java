@@ -1,5 +1,9 @@
 package com.ezen.allit.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -12,6 +16,7 @@ import com.ezen.allit.domain.Cart;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Orders;
 import com.ezen.allit.domain.Product;
+import com.ezen.allit.repository.CartRepository;
 import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.service.OrderService;
@@ -27,6 +32,7 @@ public class OrderController {
 	private final ProductRepository productRepo;
 	private final MemberRepository memberRepo;
 	private final OrderService orderService;
+	private final CartRepository cartRepo;
 	
 	@ModelAttribute("user")
 	public Member setMember() {
@@ -47,9 +53,24 @@ public class OrderController {
 	
 	/** 장바구니에서 주문/결제 페이지 요청 */
 	@PostMapping("/orderInfo")
-	public String ordersView(Cart cart) {
+	public String ordersView(Model model, @ModelAttribute("user") Member member,
+							@RequestParam(value = "cno") int[] cno) {
 		
-		return "mypage/orderInfo";
+		System.out.println("[Orders ordersView()] cartList.size : "+cno.length);
+		
+		int totalPrice = 0;
+		List<Cart> cartList = new ArrayList<>();
+		
+ 		for(int i=0; i<cno.length; i++) {
+			Cart cart = cartRepo.findById(cno[i]).get();
+			cartList.add(cart);
+			
+			totalPrice += cart.getProduct().getPrice() * cart.getQuantity();
+		}
+ 		
+ 		model.addAttribute("cartList", cartList);
+		model.addAttribute("totalPrice", totalPrice);
+		System.out.println("[Orders ordersView()] totalPrice : "+totalPrice);
 	}
 	
 	/** 주문하기 */
@@ -62,8 +83,8 @@ public class OrderController {
 
 		orderService.saveOrders(member);
 		orderService.saveOrdersDetail(product, member, quantity);
-		
-		return "redirect:/";
+
+		return "redirect:orderList";
 	}
 	
 	/** 주문 목록 */

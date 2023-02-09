@@ -4,116 +4,201 @@
 <!-- header replace -->
 
 <!-- 내용 섹션 시작 -->
-<form method="post" action="/order/orders">
-
-	<br><h3>구매자 정보</h3>
-	<table>
-		<tr>
-			<th style="font-size: large; font-weight: bold;">이름</th>
-			<td th:text="${ session['user']?.name }">
-		</tr>
-		<tr>
-			<th style="font-size: large; font-weight: bold;">이메일</th>
-			<td th:text="${ session['user']?.email }">
-		</tr>
-		<tr>
-			<th style="font-size: large; font-weight: bold;">연락처</th>
-			<td th:text="${ session['user']?.phone }">
-		</tr>
-	</table><hr>
-	
-	<h3>받는 사람 정보</h3>
-	<table id="payerInfo">
-		<tr>
-			<th style="font-size: large; font-weight: bold;">이름</th>
-			<td th:text="${ session['user']?.name }">
-		</tr>
-		<tr>
-			<th style="font-size: large; font-weight: bold;">배송 주소</th>
-			<td th:text="${ session['user']?.address }">
-		</tr>
-		<tr>
-			<th style="font-size: large; font-weight: bold;">연락처</th>
-			<td th:text="${ session['user']?.phone }">
-		</tr>
-	</table>
-	<button type="button" value="배송정보 변경" class="btn btn-light">배송정보 변경</button><hr>
-	
-	<h3>주문 상품</h3>
-	<table th:if="${ cartList }" th:each="product, ${ cartList }" id="prodInfo">
-		<tr>
-			<td>
-				<a th:href="@{ |/product/${ product.pno }| }">
-					<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="100">
-					<span th:text="${ product.name }" th:name="name"></span>
-				</a> 
-			</td>
-		</tr>
-		<tr>
-			<td th:text="${ quantity }+'개'"></td>
-		</tr>
-		<tr>
-			<td th:text="${ #numbers.formatInteger(product.price*quantity, 1, 'COMMA') }+'원'" th:name="price"></td>
-		</tr>
-	</table><hr>
-<!-- 
-	<table th:unless="${ cartList }" id="prodInfo">
-		<tr>
-			<td>
-				<a th:href="@{ |/product/${ product.pno }| }">
-					<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="100">
-					<span th:text="${ product.name }" th:name="name"></span>
-				</a> 
-			</td>
-		</tr>
-		<tr>
-			<td th:text="${ quantity }+'개'"></td>
-		</tr>
-		<tr>
-			<td th:text="${ #numbers.formatInteger(product.price*quantity, 1, 'COMMA') }+'원'" th:name="price"></td>
-		</tr>
-	</table><hr>	
- -->	
-	<h3>결제 정보</h3>
-	<table id="payInfo">
-		<tr>
-			<th style="font-size: large; font-weight: bold;">총 상품가격</th>
-			<td th:text="${ totalPrice }">
-		</tr>
-		<tr>
-			<th style="font-size: large; font-weight: bold;">할인 쿠폰</th>
-			<td>
-			<button type="button" value="쿠폰 선택" class="btn btn-light"></button>
-		</tr>
-		<tr>
-			<th style="font-size: large; font-weight: bold;">포인트</th>
-			<td th:text="${ session['user']?.point }">
-		</tr>
-		<tr>
-			<th>총 결제금액</th>
-			<td th:text="${ totalPrice }">
-		</tr>
-		<tr>
-			<th>결제방법</th>
-			<td>
-				<input type="radio" name="pay" value="신용/체크카드" checked="checked">신용/체크카드
-				<input type="radio" name="pay" value="계좌이체">계좌이체
-				<input type="radio" name="pay" value="휴대폰">휴대폰
-				<input type="radio" name="pay" value="무통장입금">무통장입금(가상계좌)
-			</td>
-		</tr>
-	</table><br>
-	
-	<input type="hidden" th:value="${ session['user']?.id }" name="mid" id="mid"/>
-	<input type="hidden" th:value="${ product.pno }" name="pno" id="pno"/>
-	<input type="hidden" th:value="${ quantity }" name="quantity" id="quantity"/>
-	<input type="radio" id="check">위 주문 내용을 확인 하였으며, 회원 본인은 개인정보 이용 및 제공 및 결제에 동의합니다. &nbsp;
-	<input type="submit" value="결제하기" class="btn btn-primary">
+<form method="post" th:action="@{/order/orders}">
+<h3>구매자 정보</h3>
+<table id="buyerInfo" border="1">
+	<tr>
+		<th>이름</th>
+		<td id="userName" th:text="${ session['user']?.name }">
+	</tr>
+	<tr>
+		<th>이메일</th>
+		<td th:text="${ session['user']?.email }">
+	</tr>
+	<tr>
+		<th>연락처</th>
+		<td id="userPhone" th:text="${ session['user']?.phone }">
+	</tr>
+</table>
+<hr>
+<h3>받는 사람 정보</h3>
+<table id="receiverInfo" border="1">
+	<input type="checkbox" id="chkbox" name="chkbox"> 구매자 정보와 동일
+	<tr>
+		<th>이름</th>
+		<td><input type="text" id="name" name="receiverName" required="required"></td>
+	</tr>
+	<tr>
+		<th>배송 주소</th>
+		<td>
+			<input type="text" id="zipcode" name="receiverZipcode" required="required" placeholder="우편번호"/>
+			<input type="button" id="kakaoAddr" value="우편번호 찾기" class="btn btn-light"><br>
+			<input type="text" id="addr" name="receiverAddr" required="required" placeholder="주소"/><br>
+			<input type="text" id="addrDetail" name="receiverAddr" required="required" placeholder="상세주소"/>
+		</td>
+	</tr>
+	<tr>
+		<th>연락처</th>
+		<td><input type="text" id="phone" name="receiverPhone" required="required"></td>
+	</tr>
+</table>
+<hr>
+<h3>주문 상품</h3>
+<table id="prodInfo" border="1">
+	<tr>
+		<th>상품 정보</th>
+		<th>수량</th>
+		<th>상품금액</th>
+	</tr>
+	<tr th:each="cart : ${cartList}">
+		<td>
+			<a th:href="@{ |/product/${ cart.product.pno }| }">
+				<img class="img-fluid" th:src="@{ /images/ } + ${ cart.product.imageName }" width="100">
+				<span
+				
+				 th:text="${ cart.product.name }"></span>
+			</a> 
+		</td>
+		<td th:text="${ cart.quantity }">
+		<td th:text="${ #numbers.formatInteger(cart.product.price, 1, 'COMMA') }+'원'">
+	</tr>
+</table>
+<hr>
+<h3>결제 정보</h3>
+<table id="payInfo">
+	<input type="hidden" id="totalPrice" th:value="${ totalPrice }">
+	<tr>
+		<th>총 상품가격</th>
+		<td th:text="${ #numbers.formatInteger(totalPrice, 1, 'COMMA') }+'원'">
+	</tr>
+	<tr>
+		<th>할인 쿠폰</th>
+		<td><span id="coupon" style="color: red;" th:text="|-${ '2500' }|+'원'"></span>
+		<button type="button" id="couponBtn" class="btn btn-light">쿠폰 선택</button>
+		</td>
+	</tr>
+	<tr>
+		<th>포인트</th>
+		<td th:text="${ session['user']?.point }">
+	</tr>
+	<tr>
+		<th>총 결제금액</th>
+		<td><span id="payPrice" style="font-weight: bold;"></span>
+			<input type="hidden" id="price">
+		</td>
+	</tr>
+	<tr>
+		<th>올잇머니 결제</th>
+		<td><span id="money" th:text="${ #numbers.formatInteger(session['user']?.money, 1, 'COMMA') }+'원'"></span>
+			<button type="button" id="moneyBtn" class="btn btn-light">충전하기</button>
+		</td>
+	</tr>
+</table>
+<br>
+<input type="radio" id="chkrdo"> 위 주문 내용을 확인 하였으며, 회원 본인은 개인정보 이용 및 제공 및 결제에 동의합니다.
+<br><br>
+<input type="submit" value="결제하기" id="payBtn" onclick="return orderCheck()" class="btn btn-primary">
 </form>
 
-
 <!-- 자바스트립트 섹션 시작 -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script type="text/javascript">
+let index = {
+	init:function() {
+		// 총 결제금액 계산
+		let totalPrice = parseInt($("#totalPrice").val());
+		let coupon = parseInt(document.getElementById("coupon").innerText);
+		let payPrice = totalPrice + coupon;
+		//console.log(totalPrice);
+		//console.log(coupon);
+		//console.log(totalPrice - coupon);
+		$("#price").val(payPrice);
+		$("#payPrice").text(payPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"원");
+		
+		/* 이벤트 처리 */
+		// 구매자 정보와 동일 체크박스 이벤트		
+		$("#chkbox").on("click", ()=>{ 
+			this.copyInfo();
+		});
+		
+		// 올잇머니 충전하기 버튼 이벤트
+		$("#moneyBtn").on("click", ()=>{ 
+			this.chargeMoney();
+		});
+		
+		// 결제하기 버튼 이벤트
+//		$("#payBtn").on("click", ()=>{ 
+//			this.orderCheck();
+//		});
+	},
+
+	copyInfo:function() {
+		let userName = document.getElementById("userName");
+		let userPhone = document.getElementById("userPhone");
+		//console.log(userName.innerText);
+		//console.log($("input:checkbox[name='chk']:checked").length);
+		
+		if($("input[name='chkbox']:checked").length == 0) {
+			$("#name").val("");
+			$("#phone").val("");
+		} else {
+			$("#name").val(userName.innerText);
+			$("#phone").val(userPhone.innerText);
+		}
+	},
+	
+//	chargeMoney:function() {
+		
+//	},
+
+}
+index.init();
+
+function orderCheck() {
+	//alert($("#chkrdo").prop("checked"));
+	let money = parseInt(document.getElementById("money").innerText);
+	let payPrice = parseInt($("#price").val());
+	//console.log("올잇머니", money);
+	//console.log("총 결제금액", payPrice);
+	
+	if(!$("#chkrdo").prop("checked")) {
+		alert("결제에 동의해주세요.");
+		return false;
+	} else if(money < payPrice) {
+		alert("올잇머니를 충전해주세요.");
+		return false;
+	}
+	
+	return true;
+}
+
+//카카오 주소api 사용
+$("#kakaoAddr").click(function(){
+	// 카카오 지도 입력창
+	new daum.Postcode({
+        oncomplete: function(data) { //선택시 입력값 세팅
+        	// 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+            // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+            // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+            var addr = ''; // 주소 변수
+            var extraAddr = ''; // 참고항목 변수
+
+            //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+            if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                addr = data.roadAddress;
+            } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                addr = data.jibunAddress;
+            }
+		
+            // 우편번호와 주소 정보를 해당 필드에 넣는다.
+            document.getElementById('zipcode').value = data.zonecode;
+            document.getElementById("addr").value = addr;
+            // 커서를 상세주소 필드로 이동한다.
+            document.getElementById("addrDetail").focus();
+        }
+    }).open();
+});
 
 </script>
 <!-- 자바스트립트 섹션 끝 -->

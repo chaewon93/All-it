@@ -20,7 +20,6 @@ import com.ezen.allit.repository.QnARepository;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.dto.HitSaveRequestDto;
 import com.ezen.allit.repository.HitRepository;
-import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -28,11 +27,11 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
+
 	private final MemberRepository memberRepo;
 	private final ProductRepository productRepo;
 	private final HitRepository hitRepo;
 	private final QnARepository qnaRepo;
-
 
 	/** 회원 조회 */
 	@Override
@@ -106,7 +105,7 @@ public class MemberServiceImpl implements MemberService {
 				qnaRepo.findByMemberAndCategoryNotIn(member, cate, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "qno")));
 		
 		return qnaList;
-  }
+	}
  
  	/** 문의글 상세조회 */
 	@Override

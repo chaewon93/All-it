@@ -1,10 +1,6 @@
 package com.ezen.allit.domain;
 
-import java.util.*;
-
 import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.*;
 
@@ -24,7 +20,10 @@ public class OrdersDetail {
 	@JoinColumn(name = "mid")
 	private Member member;   						   // mno
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "pno")
-	private Product product; // pno
+	private Product product; 							// pno
 	private int status; // 주문상태(1:결제완료, 2:배송중, 3:배송완료, 4:구매확정, 5:주문취소)
+	private String receiverName;						// 받는 사람 이름
+	private String receiverZipcode;						// 받는 사람 우편번호
+	private String receiverAddr;						// 받는 사람 주소
+	private String receiverPhone;						// 받는 사람 전화번호
 }
