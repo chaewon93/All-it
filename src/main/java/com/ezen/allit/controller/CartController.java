@@ -87,7 +87,7 @@ public class CartController {
 		for(int i=0; i<cartList.size(); i++) {
 			totalPrice += cartList.get(i).getProduct().getPrice() * cartList.get(i).getQuantity();
 		}
-		
+
 		model.addAttribute("cartList", cartList);
 		model.addAttribute("totalPrice", totalPrice);
 		

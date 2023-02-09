@@ -122,6 +122,7 @@
 <input type="hidden" th:value="${ session['user']?.id }" name="mid" id="mid"/>
 <input type="hidden" th:value="${ product?.pno }" name="pno" id="pno"/>
 <input type="hidden" th:if="${product != null}" th:value="${ quantity }" name="quantity" id="quantity"/>
+<!-- <input type="hidden" th:if="${product != null}" th:value="${  }" name="finalPrice" id="finalPrice"/> -->
 <input type="submit" value="결제하기" id="payBtn" onclick="return orderCheck()" class="btn btn-primary">
 </form>
 
