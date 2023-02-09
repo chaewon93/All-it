@@ -279,7 +279,7 @@ public class AdminController {
 			if(seller.getRole().equals(Role.TEMP)) {
 				seller.setRole(Role.SELLER);
 			}else if(seller.getRole().equals(Role.SELLER)) {
-				seller.getRole().equals(Role.TEMP);
+				seller.setRole(Role.TEMP);
 			}
 			sellerRepo.save(seller);
 		}

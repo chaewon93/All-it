@@ -3,55 +3,129 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript">
+
+function downCou(btn){
+	
+	var chk = confirm("다운?");
+	let couId = btn.previousElementSibling.value;
+	
+	let pno = $("input[name='pno']").val();
+
+	alert(couId);
+	if(chk) {
+		$.ajax({
+			url:'/member/downCoupon',
+			type:'post',
+			data: {
+				"couId":couId,
+			},
+			success: function(res){
+				alert("쿠폰 다운.");
+				location.reload(true);
+			}, error: function(xhr,status,err){
+				alert("다시 받아주세요.");				
+			}			
+		}); 
+
+	}
+}
+
+function useCou(btn){
+	
+	var chk = confirm("사용?");
+	let index = btn.previousElementSibling.value;
+	let memCouid = document.getElementsByName("memCouid")[index].value;
+	let totp = opener.document.getElementById("totp").value;
+	
+	console.log("index=", btn.previousElementSibling);
+	console.log("content=", document.getElementsByName("memCouCon")[index]);
+	console.log("totp=", totp);
+	
+	opener.document.getElementById("useCoupon").value = document.getElementsByName("memCouCon")[index].value
+
+	alert(memCouid);
+	if(chk) {
+		$.ajax({
+			url:'/cart/useCoupon',
+			type:'post',
+			data: {
+				"memCouid":memCouid,
+				"totp":totp,
+			},
+			success: function(res){
+				console.log("price=", res);
+				console.log("price=", res['price']);
+				opener.document.getElementById("couPrice").value = res['price'];
+				alert("쿠폰 사용");
+
+			}, error: function(xhr,status,err){
+				alert("사용할 수 없습니다.");				
+			}			
+		}); 
+
+	}
+}
+
+</script>
 
 </head>
 <body>
-
 <form action="/coupon/deleteCoupon" method="post" id="theform">	
 <table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
 
 <tr>
 	<th bgcolor="orange" width="100">번호</th>
-	<th bgcolor="orange" width="100">쿠폰 번호</th>
 	<th bgcolor="orange" width="100">쿠폰 설명</th>
 	<th bgcolor="orange" width="100">등록일</th>
 	<th bgcolor="orange" width="100">만료일</th>
+	<th th:if="${pno}!=0" bgcolor="orange" width="100">쿠폰 사용</th>
 
 </tr>
-<tr th:each="pro, state : ${list}">
+<tr th:each="memcou, state : ${list}">
 	<td th:text="${state.count}"></td>
-	<td th:text="${pro.coupon.couName}"></td>
-	<td th:text="${pro.coupon.couContent}"></td>
-	<td th:text="${pro.createMemCouDate}"></td>
-	<td th:text="${pro.endMemCouDate}"></td>
-	<td th:text="${pro}"></td>
+	<td th:text="${memcou.coupon.couContent}"></td>
+	<td th:text="${#dates.format(memcou.createMemCouDate, 'yyyy-MM-dd')}"></td>
+	<td th:text="${#dates.format(memcou.endMemCouDate, 'yyyy-MM-dd')}"></td>
+	<td align="center" th:if="${pno}!=0">
+		<input type="hidden" name="memCouCon" id="memCouCon" th:value="${memcou.coupon.couContent}">
+		<input type="hidden" name="memCouid" id="memCouid" th:value="${memcou.mcid}">
+ 		<input type="hidden" name="index" id="index" th:value="${state.index}">	
+		<input type="button" name="useCoupon" th:value="사용" onclick="useCou(this)">
+	</td>
 </tr>
 
 </table>
 </form>
-
+<hr>
 <div>
 
-<form action="/coupon/deleteCoupon" method="post" id="theform">	
+<form action="/coupon/deleteCoupon" method="post" id="theform1">	
 <table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
 
 	<tr>
 		<th bgcolor="orange" width="100">번호</th>
-		<th bgcolor="orange" width="100">쿠폰 번호</th>
 		<th bgcolor="orange" width="100">쿠폰 설명</th>
 		<th bgcolor="orange" width="100">등록일</th>
-		<th bgcolor="orange" width="100">만료일</th>
-	
+		<th bgcolor="orange" width="100">기간</th>
+		<th bgcolor="orange" width="100">조건</th>
+		<th bgcolor="orange" width="100">모두 선택</th>
 	</tr>
-	<tr th:each="pro, state : ${list}">
+	<tr th:each="couList, state : ${couList}">
 		<td th:text="${state.count}"></td>
-		<td th:text="${pro.coupon.couName}"></td>
-		<td th:text="${pro.coupon.couContent}"></td>
-		<td th:text="${pro.createMemCouDate}"></td>
-		<td th:text="${pro.endMemCouDate}"></td>
-	</tr>
-
+		<td th:text="${couList.couContent}"></td>
+		<td th:text="${couList.createDate}"></td>
+		<td th:text="${couList.period}"></td>
+		<td th:text="${couList.condition}"></td>
+		<td align="center">
+			<input type="hidden" name="couid" th:value="${couList.couId}">	
+			<input type="button" name="downCoupon" th:value="받기" onclick="downCou(this)">
+		</td>
+	</tr>	
+	
 </table>
+
 </form>
 
 </div>

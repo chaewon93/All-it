@@ -26,27 +26,37 @@ $(document).ready(function(){
 
 function change_seller(){
 	var chk_arr = [];
-	$("input:checkbox[name='sellerId']:checked").each(function(){
-		var chk = $(this).val();
-		chk_arr.push(chk);
-	})
-	var check =	confirm(chk_arr+" 등록 상태 변경 확인?")
-	if(check){
-		document.getElementById("theform").action = "/admin/changeSeller";
-		document.getElementById("theform").submit();		
+	if ($("input:checkbox[name='sellerId']").is(":checked")==true){
+		$("input:checkbox[name='sellerId']:checked").each(function(){
+			var chk = $(this).val();
+			chk_arr.push(chk);
+		})
+		var check =	confirm(chk_arr+" 등록 상태 변경 확인?")
+		if(check){
+			document.getElementById("theform").action = "/admin/changeSeller";
+			document.getElementById("theform").submit();		
+		}
+	}else{
+		alert("체크된 값이 없습니다.");
+		return;
 	}
 }
 
 function delete_seller(){
-	var chk_arr = [];
-	$("input:checkbox[name='sellerId']:checked").each(function(){
-		var chk = $(this).val();
-		chk_arr.push(chk);
-	})
-	var check =	confirm(chk_arr+" 삭제 확인?")
-	if(check){
-		document.getElementById("theform").action = "/admin/deleteSeller";
-		document.getElementById("theform").submit();			
+	var chk_arr = [];	
+	if ($("input:checkbox[name='sellerId']").is(":checked")==true){
+		$("input:checkbox[name='sellerId']:checked").each(function(){
+			var chk = $(this).val();
+			chk_arr.push(chk);
+		})
+		var check =	confirm(chk_arr+" 삭제 확인?")
+		if(check){
+			document.getElementById("theform").action = "/admin/deleteSeller";
+			document.getElementById("theform").submit();			
+		}
+	}else{
+		alert("체크된 값이 없습니다.");
+		return;
 	}
 }
 
@@ -101,6 +111,7 @@ function delete_seller(){
 <hr>
 
 <a th:href="@{/admin/adminMain}">관리자 메인으로...</a> <br>
+<a th:href="@{/admin/findSellerList(a=0)}">관리자, 판매자 조회</a> <br>
 <a th:href="@{/admin/findSellerList(a=1)}">관리자 조회</a> <br>
 <a th:href="@{/admin/findSellerList(a=2)}">전체 판매자 조회</a> <br>
 <a th:href="@{/admin/findSellerList(a=3)}">등록된 판매자 조회</a> <br>

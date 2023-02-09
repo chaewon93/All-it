@@ -19,6 +19,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -49,5 +50,18 @@ public class Coupon {
 	@JsonIgnoreProperties({"coupon"})
 	private List<MemCoupon> memCoupon = new ArrayList<>();
 	private String condition;		// 사용 제한 조건
+	
+	@Override
+	public boolean equals(Object obj) {
+
+		if(obj instanceof Coupon) {
+			Coupon temp = (Coupon)obj;
+			if(this.couId == temp.getCouId()) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 	
 }
