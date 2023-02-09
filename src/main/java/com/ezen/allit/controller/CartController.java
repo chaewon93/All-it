@@ -1,5 +1,6 @@
 package com.ezen.allit.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import com.ezen.allit.domain.Cart;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.service.CartService;
+import com.ezen.allit.service.CouponService;
 
 @Controller
 @RequestMapping("/cart/")
@@ -29,6 +31,9 @@ public class CartController {
 	
 	@Autowired
 	private CartService cartService;
+	
+	@Autowired
+	private CouponService couponService;
 	
 	@ModelAttribute("user")
 	public Member setMember() {
@@ -150,6 +155,24 @@ public class CartController {
 		} else {
 			return "noUser";
 		}
+	}
+	
+	@PostMapping("useCoupon")
+	@ResponseBody
+	public Map<String, Integer> useCoupon(@ModelAttribute("user") Member member,
+				@RequestParam Map<String,Object> map) {
+		System.out.println("====================================== useCopon1");
+		System.out.println(map);
+		int memCouid = Integer.parseInt(String.valueOf(map.get("memCouid")));
+		int totp = Integer.parseInt(String.valueOf(map.get("totp")));
+		System.out.println("====================================== useCopon2");
+		System.out.println(map);
+		int price = couponService.checkPrice(memCouid, totp);
+		System.out.println(price);
+		System.out.println("====================================== useCopon3");
+		Map<String, Integer> map1 = new HashMap<>();
+		map1.put("price", price);
+		return map1;
 	}
 
 }

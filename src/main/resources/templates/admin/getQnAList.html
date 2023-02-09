@@ -14,6 +14,7 @@
 <tr>
 	<th bgcolor="orange" width="100">번호</th>
 	<th bgcolor="orange" width="100">카테고리</th>
+	<th bgcolor="orange" width="100">제목</th>
 	<th bgcolor="orange" width="200">내용</th>
 	<th bgcolor="orange" width="150">등록일</th>
 	<th bgcolor="orange" width="150">답변 상태</th>
@@ -26,6 +27,7 @@
 <tr th:each="qna, state : ${list}">
 	<td th:text="${state.count}"></td>
 	<td th:text="${qna.category}"></td>
+	<td th:text="${qna.title}"></td>
 	<td align="left"><a th:href="@{/admin/getQnADetail(qno=${qna.qno})}" th:text="${qna.content}"></a></td>
 	<td th:text="${qna.regDate}"></td>
 	<td th:text="${qna.status}"></td>

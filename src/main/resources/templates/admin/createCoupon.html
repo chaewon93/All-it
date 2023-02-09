@@ -5,27 +5,47 @@
 <head>
 	<title>All it - I have a All it</title>
 	<meta charset="UTF-8"/>
+	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<script type="text/javascript">
+
+function setCondition(){
+	let grade = $("#grade").val();
+	let gender = $("#gender").val();
+	let category = $("#category").val();
+	let pick = $("input[name=mdpick]:checked").val();
+	let seller = $("#seller").val();
+
+	let con = grade + ', ' + gender + ', ' + category + ', ' +pick + ', ' + seller;
+	
+	document.getElementById('condition').value = con;
+
+	document.getElementById("theform").action = "/admin/createCoupon";
+	document.getElementById("theform").submit();		
+}
+
+</script>
 </head>
 
 <body th:align="center">
 <h1>쿠폰생성</h1>
-<form method="post" th:action="@{/admin/createCoupon}">
+<form method="post" th:action="@{/admin/createCoupon}" id="theform">
 <table th:align="center" border="1" th:cellpadding="0" th:cellspacing="0">
 	
 	<tr>
 		<td>쿠폰 설명(이름)</td>
-		<td><input type="text" name="couContent" id="couContent" required="required"/>
-		<input type="hidden" name="regId" id="regId" th:value="${session['admin'].id}"/>
-		<p th:text="${session['admin'].id}"></p></td>	
+		<td>
+			<input type="text" name="couContent" id="couContent" required="required"/>
+			<input type="hidden" name="regId" id="regId" th:value="${session['admin'].id}"/>
+		</td>	
 	</tr>
 
 	<tr>
 		<td>쿠폰 종료일</td>
-		<td><input type="date" name="endDate" id="endDate" required="required"/></td>
+		<td><input type="date" name="endDate" id="endDate" value="2099-12-31" required="required"/></td>
 	</tr>
 	<tr>
 		<td>사용 가능 기간</td>
-		<td><input type="text" name="period" id="period" required="required"/></td>
+		<td><input type="text" name="period" id="period" value="15" required="required"/></td>
 	</tr>
 	<tr>
 		<td>할인 금액</td>
@@ -33,24 +53,24 @@
 			<input type="radio" name="dis" id="dis1"  value="할인금액" checked="checked"/>할인금액
 			<input type="radio" name="dis" id="dis2" value="할인율" /> 할 인 율
 			<br>
-			<input type="text" name="discount" id="discount">
+			<input type="text" name="discount" id="discount" value="1000" required="required">
 		</td>
 	</tr>
 	<tr>
 		<td>최소 사용 금액</td>
-		<td><input type="text" name="minPrice" id="minPrice" placeholder="0"/></td>
+		<td><input type="text" name="minPrice" id="minPrice" value="10000"/></td>
 	</tr>
 	<tr>
 		<td>최대 할인 금액</td>
 		<td>
-			<input type="text" id="maxValue" name="maxValue" placeholder="0"/>
+			<input type="text" id="maxValue" name="maxValue" value="10000"/>
 		</td>
 	</tr>
 	<tr>
 		<td>대상 등급</td>
 		<td>
 			<select id="grade" name="grade">
-				<option value="전체" selected="selected">전체</option>
+				<option value="ALL" selected="selected">ALL</option>
 				<option value="BRONZE">BRONZE</option>
 				<option value="SILVER">SILVER</option>
 				<option value="GOLD">GOLD</option>
@@ -59,17 +79,17 @@
 		</td>
 	</tr>
 	<tr>
-		<td>성별</td>
+		<td>성별 여부</td>
 		<td>
 			<select id="gender" name="gender">
-				<option value="전체" selected="selected">전체</option>
+				<option value="남녀" selected="selected">남녀</option>
 				<option value="남자">남자</option>
 				<option value="여자">여자</option>
 			</select>
 		</td>
 	</tr>
 	<tr>
-		<td>성별</td>
+		<td>카테고리 여부</td>
 		<td>
 			<select name="category" id="category">
 				<option th:value="0">전체</option>
@@ -87,16 +107,22 @@
 		</td>
 	</tr>		
 	<tr>
-		<td>추천상품</td>
+		<td>추천상품 여부</td>
 		<td>
-			<input type="radio" name="mdpick" id="mdpickAll"  value="할인금액" checked="checked"/>상관없음
-			<input type="radio" name="mdpick" id="mdpickYes" value="할인율" />YES
-			<input type="radio" name="mdpick" id="mdpickNo" value="할인율" /> N O
+			<input type="radio" name="mdpick" id="mdpickYes" value="YES" />YES
+			<input type="radio" name="mdpick" id="mdpickNo" value="NO" checked="checked"/>상관없음
+		</td>
+	</tr>
+	<tr>
+		<td>특정 판매자</td>
+		<td>
+			<input type="text" name="seller" id="seller"  value="SELLERS"/>
 		</td>
 	</tr>
 	<tr>
 		<td colspan="2" align="center">
-			<input type="submit" value="생성"/>
+			<input type="hidden" name="condition" id="condition" value="">
+			<input type="submit" value="생성" onclick="setCondition()"/>
 		</td>
 	</tr>
 	 

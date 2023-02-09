@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.ezen.allit.domain.Coupon;
 import com.ezen.allit.domain.MemCoupon;
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.Product;
 import com.ezen.allit.repository.CouponRepository;
 import com.ezen.allit.repository.MemCouponRepository;
 import com.ezen.allit.repository.MemberRepository;
@@ -26,6 +27,9 @@ public class CouponServiceImpl implements CouponService {
 	
 	@Autowired
 	MemCouponRepository memCouRepo;
+
+	@Autowired
+	ProductService proService;
 	
 	@Override
 	public void createCoupon(Coupon coupon) {
@@ -75,7 +79,7 @@ public class CouponServiceImpl implements CouponService {
 		cal.add(Calendar.DATE, coupon.getPeriod());
 		memCoupon.setEndMemCouDate(cal.getTime());;
 
-		List<MemCoupon> memCouList = new ArrayList<>();
+		List<MemCoupon> memCouList = member.getMemCoupon();
 		memCouList.add(memCoupon);
 		
 //		coupon.setMemCoupon(memCouList);
@@ -87,5 +91,80 @@ public class CouponServiceImpl implements CouponService {
 		
 		memberRepo.save(member);
 		couponRepo.save(coupon);
+	}
+
+	@Override
+	public List<Coupon> forMemberCouponList(Member member, int pno) {
+
+		if(pno == 0) {
+			List<Coupon> allCouList = couponRepo.findCouponByConditionContainingOrConditionContaining(member.getGrade().toString(), "ALL");
+			
+			List<Coupon> allCouList1 = couponRepo.findCouponByConditionContainingOrConditionContaining(member.getGender(), "남녀");
+			
+			allCouList.retainAll(allCouList1);
+			return allCouList;
+		}else {
+			List<Coupon> allCouList = couponRepo.findCouponByConditionContainingOrConditionContaining(member.getGrade().toString(), "ALL");
+			
+			List<Coupon> allCouList1 = couponRepo.findCouponByConditionContainingOrConditionContaining(member.getGender(), "남녀");
+			allCouList.retainAll(allCouList1);
+			
+			Product pro = proService.getProduct(pno);			
+			List<Coupon> allCouList2 = couponRepo.findCouponByConditionContainingOrConditionContaining(Integer.toString(pro.getCategory()), "0");
+			allCouList.retainAll(allCouList2);
+			
+			if(pro.getMdPickyn() == 0) {
+				List<Coupon> allCouList3 = couponRepo.findCouponByConditionContaining("NO");
+				allCouList.retainAll(allCouList3);
+			}else if(pro.getMdPickyn() == 1) {
+				List<Coupon> allCouList3 = couponRepo.findCouponByConditionContaining("YES");
+				allCouList.retainAll(allCouList3);
+			}
+			
+			List<Coupon> allCouList4 = couponRepo.findCouponByConditionContainingOrConditionContaining(pro.getSeller().getId(), "SELLERS");
+			allCouList.retainAll(allCouList4);
+			return allCouList;
+		}
+
+	}
+	
+	@Override
+	public List<MemCoupon> MemProCouponList(Member member, int pno) {
+		List<MemCoupon> list = member.getMemCoupon();
+		Product pro = proService.getProduct(pno);
+		List<MemCoupon> memCouList = new ArrayList<>();
+		for(MemCoupon memCoupon : list) {
+			if(memCoupon.getCoupon().getCondition().contains(Integer.toString(pro.getCategory())) || memCoupon.getCoupon().getCondition().contains("0")){
+				if(memCoupon.getCoupon().getCondition().contains(Integer.toString(pro.getMdPickyn())) || memCoupon.getCoupon().getCondition().contains("NO")) {
+					if(memCoupon.getCoupon().getCondition().contains(pro.getSeller().getId()) || memCoupon.getCoupon().getCondition().contains("SELLERS")) {
+						memCouList.add(memCoupon);
+					}
+				}
+			}
+		}
+		return memCouList;
+	}
+
+	@Override
+	public int checkPrice(int memCouid, int totp) {
+		Coupon coupon = memCouRepo.findById(memCouid).get().getCoupon();
+//		Product pro = proService.getProduct(pno);
+		
+//		int price = pro.getPrice();
+		int dis = coupon.getDiscount();
+		int result = 0;
+		
+		if(totp>coupon.getMinPrice()) {
+			if(coupon.getDiscount()>100) {
+				result = totp - dis;
+			}else if(coupon.getDiscount()<=100) {
+				result = totp * dis / 100;
+				if(result < coupon.getMaxValue()) {
+					result = -1;
+				}
+			}
+		}
+		
+		return result;
 	}
 }

@@ -18,6 +18,7 @@ public class QnA {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int qno;		 // 질문 일련번호
+	private String title;	 // 제목
 	private String category; // 질문분류
 	private String content;  // 내용
 	private int status;      // 답변유무(0:미답변, 1:답변)

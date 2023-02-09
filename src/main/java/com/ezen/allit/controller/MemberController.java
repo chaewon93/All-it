@@ -1,6 +1,9 @@
 package com.ezen.allit.controller;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,10 +16,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.ezen.allit.domain.MemCoupon;
+import com.ezen.allit.domain.Coupon;
 import com.ezen.allit.domain.Grade;
+import com.ezen.allit.domain.MemCoupon;
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.repository.CouponRepository;
+import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.service.CouponService;
 import com.ezen.allit.service.MemberService;
 
@@ -30,6 +37,12 @@ public class MemberController {
 	
 	@Autowired
 	private CouponService couponService;
+	
+	@Autowired
+	private CouponRepository couponRepo;
+	
+	@Autowired
+	private ProductRepository proRepo;
 	
 	/** 메인 페이지 */
 /*	@GetMapping("/index")
@@ -165,15 +178,41 @@ public class MemberController {
 	 */
 	
 	@GetMapping("coupon")
-	public String coupon(@ModelAttribute("user")Member member, Model model) {
-		System.out.println(member);
-		List<MemCoupon> memCouList = member.getMemCoupon();
-		model.addAttribute("list", memCouList);
-		
-		System.out.println("-----------------");
-		System.out.println(memCouList);
-		System.out.println("-----------------");
+	public String coupon(@ModelAttribute("user")Member member, Model model, 
+						@RequestParam(value="pno", defaultValue = "0")int pno) {
+
+		List<MemCoupon> memCouList = new ArrayList<>();
+		if(pno == 0) {
+			memCouList = member.getMemCoupon();
+			model.addAttribute("list", memCouList);
+		}else {
+			memCouList = couponService.MemProCouponList(member, pno);
+			model.addAttribute("list", memCouList);
+		}
+		List<Coupon> couList = couponService.forMemberCouponList(member, pno);
+
+//		model.addAttribute("pno", pno); 딱히 필요 없을듯..
+
+		List<Coupon> couponList = new ArrayList<>();
+		for(MemCoupon memCou : memCouList) {
+			couponList.add(memCou.getCoupon());
+		}
+
+		couList.removeAll(couponList);
+
+		model.addAttribute("couList", couList);
 		
 		return "member/coupon";
+	}
+	
+	@PostMapping("downCoupon")
+	public String downCoupon(@ModelAttribute("user")Member member,
+			@RequestParam Map<String,Object> map, RedirectAttributes re) {
+		
+		int couId = Integer.parseInt(String.valueOf(map.get("couId")));
+		
+		couponService.insertMemCoupon(member, couId);
+		
+		return "redirect:coupon";
 	}
 }

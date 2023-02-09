@@ -26,6 +26,11 @@
 	</div>
 	<input type="button" class="btn btn-light" id="inCart" value="장바구니">
 	<input type="submit" class="btn btn-light" id="buy" formaction="/orders/insert" value="바로구매">
+	<input type="button" class="btn btn-light" onclick="allmemproCoupon()" value="쿠폰"><br>
+	<input type="text" name="useCoupon" id="useCoupon">
+	<input type="text" name="couPrice" id="couPrice">
+	<input type="text" name="totp" id="totp">	
+<!-- 	<input type="hidden" name="memCouid" id="memCouid"> -->
 </form>
 <!-- 내용 섹션 끝 -->
 
@@ -193,6 +198,22 @@ let index = {
 			alert(JSON.stringify(error));
 		});
 	}*/
+}
+let price,quantity;
+function allmemproCoupon(){
+	let mid = $("#mid").val();
+	let pno = $("#pno").val();
+	setPrice();
+	let totp = price * quantity;
+	document.getElementById("totp").value = totp;
+	
+	alert(pno+", "+ mid+", "+totp);
+	let openwin = window.open("/member/coupon?pno="+pno, "쿠폰", "width=800, height=600, scrollbars=yes");
+}
+
+function setPrice(){
+	price = $("#price").val();
+	quantity = $("#quantity").val();
 }
 
 index.init();

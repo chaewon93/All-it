@@ -26,40 +26,55 @@ $(document).ready(function(){
 
 function reg_product(){
 	var chk_arr = [];
-	$("input:checkbox[name='pno']:checked").each(function(){
-		var chk = $(this).val();
-		chk_arr.push(chk);
-	})
-	var check =	confirm(chk_arr+" 등록 확인?")
-	if(check){
-		document.getElementById("theform").action = "/admin/regPro";
-		document.getElementById("theform").submit();		
+	if ($("input:checkbox[name='pno']").is(":checked")==true){
+		$("input:checkbox[name='pno']:checked").each(function(){
+			var chk = $(this).val();
+			chk_arr.push(chk);
+		})
+		var check =	confirm(chk_arr+" 등록 확인?")
+		if(check){
+			document.getElementById("theform").action = "/admin/regPro";
+			document.getElementById("theform").submit();		
+		}
+	}else{
+		alert("체크된 값이 없습니다.");
+		return;
 	}
 }
 
 function changeProMDPick(){
 	var chk_arr = [];
-	$("input:checkbox[name='pno']:checked").each(function(){
-		var chk = $(this).val();
-		chk_arr.push(chk);
-	})
-	var check =	confirm(chk_arr+" 변경 확인?")
-	if(check){
-		document.getElementById("theform").action = "/admin/changeProMDPick";
-		document.getElementById("theform").submit();				
+	if ($("input:checkbox[name='pno']").is(":checked")==true){
+		$("input:checkbox[name='pno']:checked").each(function(){
+			var chk = $(this).val();
+			chk_arr.push(chk);
+		})
+		var check =	confirm(chk_arr+" 변경 확인?")
+		if(check){
+			document.getElementById("theform").action = "/admin/changeProMDPick";
+			document.getElementById("theform").submit();				
+		}		
+	}else{
+		alert("체크된 값이 없습니다.");
+		return;
 	}
 }
 
 function delete_product(){
 	var chk_arr = [];
-	$("input:checkbox[name='pno']:checked").each(function(){
-		var chk = $(this).val();
-		chk_arr.push(chk);
-	})
-	var check =	confirm(chk_arr+" 삭제 확인?")
-	if(check){
-		document.getElementById("theform").action = "/admin/deletePro";
-		document.getElementById("theform").submit();		
+	if ($("input:checkbox[name='pno']").is(":checked")==true){
+		$("input:checkbox[name='pno']:checked").each(function(){
+			var chk = $(this).val();
+			chk_arr.push(chk);
+		})
+		var check =	confirm(chk_arr+" 삭제 확인?")
+		if(check){
+			document.getElementById("theform").action = "/admin/deletePro";
+			document.getElementById("theform").submit();		
+		}
+	}else{
+		alert("체크된 값이 없습니다.");
+		return;
 	}
 }
 
