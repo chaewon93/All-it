@@ -17,21 +17,41 @@ import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Orders;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.repository.CartRepository;
+import com.ezen.allit.repository.MemberRepository;
+import com.ezen.allit.repository.ProductRepository;
+import com.ezen.allit.service.OrderService;
+import com.ezen.allit.service.ProductService;
+
+import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/order/")
+@RequestMapping("/order")
 @SessionAttributes("user")
+@RequiredArgsConstructor
 public class OrderController {
-	
-	@Autowired
-	private CartRepository cartRepo;
+	private final ProductRepository productRepo;
+	private final MemberRepository memberRepo;
+	private final OrderService orderService;
+	private final CartRepository cartRepo;
 	
 	@ModelAttribute("user")
 	public Member setMember() {
 		return new Member();
 	}
 	
-	/** 주문/결제 페이지 요청 */
+	/** 즉시구매 시 주문/결제 페이지 요청 */
+	@PostMapping("/orderNow")
+	public String getOrderView(Product product, Model model,
+							@RequestParam("quantity") int quantity) {
+		
+		Product theProduct = productRepo.findById(product.getPno()).get();
+		model.addAttribute("product", theProduct);
+		model.addAttribute("quantity", quantity);
+		
+		return "mypage/orderInfo";
+	}
+	
+	/** 장바구니에서 주문/결제 페이지 요청 */
 	@PostMapping("/orderInfo")
 	public String ordersView(Model model, @ModelAttribute("user") Member member,
 							@RequestParam(value = "cno") int[] cno) {
@@ -51,14 +71,19 @@ public class OrderController {
  		model.addAttribute("cartList", cartList);
 		model.addAttribute("totalPrice", totalPrice);
 		System.out.println("[Orders ordersView()] totalPrice : "+totalPrice);
-		
-		return "mypage/orderInfo";
 	}
 	
 	/** 주문하기 */
 	@PostMapping("/orders")
-	public String insertOrder(Orders order, @ModelAttribute("user") Member member) {
+	public String insertOrder(int pno, String mid, Model model,
+							@RequestParam("quantity") int quantity) {	
 		
+		Product product = productRepo.findById(pno).get();
+		Member member = memberRepo.findById(mid).get(); 
+
+		orderService.saveOrders(member);
+		orderService.saveOrdersDetail(product, member, quantity);
+
 		return "redirect:orderList";
 	}
 	

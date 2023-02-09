@@ -27,14 +27,11 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
-	
-	@Autowired
-	private MemberRepository memberRepo;
-	@Autowired
-	private QnARepository qnaRepo;
 
+	private final MemberRepository memberRepo;
 	private final ProductRepository productRepo;
 	private final HitRepository hitRepo;
+	private final QnARepository qnaRepo;
 
 	/** 회원 조회 */
 	@Override
