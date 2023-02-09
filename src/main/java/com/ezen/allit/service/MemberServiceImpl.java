@@ -46,7 +46,7 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 
-	/** 회원 등록(회원가입) */
+	/** 회원 등록(회원가입) + 회원 정보수정 */
 	@Override
 	public void saveMember(Member member) {
 		

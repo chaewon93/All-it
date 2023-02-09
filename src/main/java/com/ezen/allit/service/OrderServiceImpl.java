@@ -36,7 +36,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 	
 	/*
-	 * 바로구매 1 - 주문번호(orders) 생성
+	 * 주문 1 - 주문번호(orders) 생성
 	 */
 	@Transactional
 	public void saveOrders(Member member) {		
@@ -44,15 +44,14 @@ public class OrderServiceImpl implements OrderService {
 	}
 	
 	/*
-	 * 바로구매 2 - 주문상세(ordersDetail) 생성
+	 * 주문 2 - 주문상세(ordersDetail) 생성
 	 */
 	@Transactional
-	public void saveOrdersDetail(Product product, Member member,
-								@RequestParam("quantity") int quantity) {
+	public void saveOrdersDetail(Product product, Member member, OrdersDetail ordersDetail) {
 		/* 주문번호 생성 매서드 사용, ono 반환 */
 		int ono = selectMaxOno();
-		
-		ordersDetailRepo.saveOrder(product.getPno(), quantity, ono, member.getId());
+
+		ordersDetailRepo.saveOrder(product.getPno(), ono, member.getId(), ordersDetail.getQuantity(),ordersDetail.getReceiverName(), ordersDetail.getReceiverZipcode(), ordersDetail.getReceiverAddr(), ordersDetail.getReceiverPhone());
 	}
 	
 		

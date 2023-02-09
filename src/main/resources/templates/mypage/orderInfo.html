@@ -4,7 +4,7 @@
 <!-- header replace -->
 
 <!-- 내용 섹션 시작 -->
-<form method="post" th:action="@{/order/orders}">
+<form id="orderFrm" method="post">
 <h3>구매자 정보</h3>
 <table id="buyerInfo" border="1">
 	<tr>
@@ -31,6 +31,8 @@
 	<tr>
 		<th>배송 주소</th>
 		<td>
+			<input type="hidden" id="userZipcode" th:value="${ session['user']?.zipcode }">
+			<input type="hidden" id="userAddress" th:value="${ session['user']?.address }">
 			<input type="text" id="zipcode" name="receiverZipcode" required="required" placeholder="우편번호"/>
 			<input type="button" id="kakaoAddr" value="우편번호 찾기" class="btn btn-light"><br>
 			<input type="text" id="addr" name="receiverAddr" required="required" placeholder="주소"/><br>
@@ -50,26 +52,45 @@
 		<th>수량</th>
 		<th>상품금액</th>
 	</tr>
+	<!-- 바로 구매 -->
+	<th:block th:if="${product} != null">
+		<tr>
+			<td>
+				<a th:href="@{ |/product/${ product.pno }| }">
+					<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="100">
+					<span
+					
+					 th:text="${ product.name }"></span>
+				</a> 
+			</td>
+			<td th:text="${ quantity }+'개'">
+			<td th:text="${ #numbers.formatInteger(product.price, 1, 'COMMA') }+'원'">
+		</tr>
+	</th:block>
+	<!-- 장바구니 구매 -->
+	<th:block th:if="${cartList != null}">
 	<tr th:each="cart : ${cartList}">
-		<td>
+		<td><input type="hidden" th:value="${ cart?.cno }" name="cno" id="cno"/>
 			<a th:href="@{ |/product/${ cart.product.pno }| }">
 				<img class="img-fluid" th:src="@{ /images/ } + ${ cart.product.imageName }" width="100">
-				<span
-				
-				 th:text="${ cart.product.name }"></span>
+				<span th:text="${ cart.product.name }"></span>
 			</a> 
 		</td>
-		<td th:text="${ cart.quantity }">
+		<td th:text="${ cart.quantity }+'개'">
+		<input type="hidden" name="quantity" th:if="${cartList != null}" th:vlaue="${ cart.quantity }">
 		<td th:text="${ #numbers.formatInteger(cart.product.price, 1, 'COMMA') }+'원'">
 	</tr>
+	</th:block>
 </table>
 <hr>
 <h3>결제 정보</h3>
 <table id="payInfo">
-	<input type="hidden" id="totalPrice" th:value="${ totalPrice }">
+	<input type="hidden" id="totalPrice" th:if="${product != null}" th:value="${ product.price * quantity }">
+	<input type="hidden" id="totalPrice" th:if="${cartList != null}" th:value="${ totalPrice }">
 	<tr>
 		<th>총 상품가격</th>
-		<td th:text="${ #numbers.formatInteger(totalPrice, 1, 'COMMA') }+'원'">
+		<td th:if="${product != null}" th:text="${ #numbers.formatInteger(product.price * quantity, 1, 'COMMA') }+'원'">
+		<td th:if="${cartList != null}" th:text="${ #numbers.formatInteger(totalPrice, 1, 'COMMA') }+'원'">
 	</tr>
 	<tr>
 		<th>할인 쿠폰</th>
@@ -89,7 +110,8 @@
 	</tr>
 	<tr>
 		<th>올잇머니 결제</th>
-		<td><span id="money" th:text="${ #numbers.formatInteger(session['user']?.money, 1, 'COMMA') }+'원'"></span>
+		<td><span th:text="${ #numbers.formatInteger(session['user']?.money, 1, 'COMMA') }+'원'"></span>
+			<input type="hidden" id="money" th:value="${ session['user']?.money }">
 			<button type="button" id="moneyBtn" class="btn btn-light">충전하기</button>
 		</td>
 	</tr>
@@ -97,6 +119,9 @@
 <br>
 <input type="radio" id="chkrdo"> 위 주문 내용을 확인 하였으며, 회원 본인은 개인정보 이용 및 제공 및 결제에 동의합니다.
 <br><br>
+<input type="hidden" th:value="${ session['user']?.id }" name="mid" id="mid"/>
+<input type="hidden" th:value="${ product?.pno }" name="pno" id="pno"/>
+<input type="hidden" th:if="${product != null}" th:value="${ quantity }" name="quantity" id="quantity"/>
 <input type="submit" value="결제하기" id="payBtn" onclick="return orderCheck()" class="btn btn-primary">
 </form>
 
@@ -125,11 +150,6 @@ let index = {
 		$("#moneyBtn").on("click", ()=>{ 
 			this.chargeMoney();
 		});
-		
-		// 결제하기 버튼 이벤트
-//		$("#payBtn").on("click", ()=>{ 
-//			this.orderCheck();
-//		});
 	},
 
 	copyInfo:function() {
@@ -139,10 +159,26 @@ let index = {
 		//console.log($("input:checkbox[name='chk']:checked").length);
 		
 		if($("input[name='chkbox']:checked").length == 0) {
+			// 체크 해제 -> 초기화
 			$("#name").val("");
+			$("#zipcode").val("");
+			$("#addr").val("");
+			$("#addrDetail").val("");
 			$("#phone").val("");
 		} else {
+			// 체크 -> 구매자 정보 세팅
 			$("#name").val(userName.innerText);
+			$("#zipcode").val($("#userZipcode").val());
+			
+			var addr = $("#userAddress").val().split(",");
+			//console.log(addr.length);
+			if(addr.length > 1) {
+				$("#addr").val(addr[0]);
+				$("#addrDetail").val(addr[1]);
+			} else {
+				$("#addr").val($("#userAddress").val());
+			}
+			
 			$("#phone").val(userPhone.innerText);
 		}
 	},
@@ -156,7 +192,7 @@ index.init();
 
 function orderCheck() {
 	//alert($("#chkrdo").prop("checked"));
-	let money = parseInt(document.getElementById("money").innerText);
+	let money = parseInt($("#money").val());
 	let payPrice = parseInt($("#price").val());
 	//console.log("올잇머니", money);
 	//console.log("총 결제금액", payPrice);
@@ -167,6 +203,16 @@ function orderCheck() {
 	} else if(money < payPrice) {
 		alert("올잇머니를 충전해주세요.");
 		return false;
+	} 
+	
+	if($("#pno").val() == "") {
+		// 장바구니 구매
+		$("#orderFrm").attr("action", "/order/orders")
+		$("#orderFrm").submit;
+	} else {
+		// 바로구매
+		$("#orderFrm").attr("action", "/order/order");
+		$("#orderFrm").submit();
 	}
 	
 	return true;

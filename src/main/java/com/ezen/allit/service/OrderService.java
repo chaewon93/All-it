@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Orders;
+import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
 
 public interface OrderService {
@@ -15,5 +16,6 @@ public interface OrderService {
 
 	void saveOrders(Member member);
 	
-	void saveOrdersDetail(Product product, Member member, @RequestParam("quantity") int quantity);
+	void saveOrdersDetail(Product product, Member member, OrdersDetail orderDetail);
+	
 }

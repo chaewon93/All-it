@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.ezen.allit.domain.Cart;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Orders;
+import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.repository.CartRepository;
 import com.ezen.allit.repository.MemberRepository;
@@ -56,7 +57,7 @@ public class OrderController {
 	public String ordersView(Model model, @ModelAttribute("user") Member member,
 							@RequestParam(value = "cno") int[] cno) {
 		
-		System.out.println("[Orders ordersView()] cartList.size : "+cno.length);
+		//System.out.println("[Orders ordersView()] cartList.size : "+cno.length);
 		
 		int totalPrice = 0;
 		List<Cart> cartList = new ArrayList<>();
@@ -70,20 +71,50 @@ public class OrderController {
  		
  		model.addAttribute("cartList", cartList);
 		model.addAttribute("totalPrice", totalPrice);
-		System.out.println("[Orders ordersView()] totalPrice : "+totalPrice);
+		//System.out.println("[Orders ordersView()] totalPrice : "+totalPrice);
+		
+		return "mypage/orderInfo";
 	}
 	
-	/** 주문하기 */
-	@PostMapping("/orders")
-	public String insertOrder(int pno, String mid, Model model,
-							@RequestParam("quantity") int quantity) {	
-		
+	/** 주문하기 - 바로구매 */
+	@PostMapping("/order")
+	public String insertOrder(int pno, String mid, Model model, OrdersDetail ordersDetail) {   
+		System.out.println("ordersDetail = " + ordersDetail);
+
 		Product product = productRepo.findById(pno).get();
 		Member member = memberRepo.findById(mid).get(); 
 
 		orderService.saveOrders(member);
-		orderService.saveOrdersDetail(product, member, quantity);
+		orderService.saveOrdersDetail(product, member, ordersDetail);
 
+		return "redirect:/";
+	}
+	
+	/** 주문하기 - 장바구니 */
+	@PostMapping("/orders")
+	public String insertOrders(Model model, OrdersDetail ordersDetail,
+							@ModelAttribute("user") Member member,
+							@RequestParam(value = "cno") int[] cno) {	
+		// 1) Orders 테이블에 insert
+		orderService.saveOrders(member);
+		
+		for(int i=0; i<cno.length; i++) {
+			Cart cart = cartRepo.findById(cno[i]).get();
+			
+			ordersDetail.setProduct(cart.getProduct());
+			ordersDetail.setQuantity(cart.getQuantity());
+			//System.out.println("[order] ordersDetail : "+ordersDetail);
+			
+			// 2) OrdersDetail 테이블에 insert
+			orderService.saveOrdersDetail(cart.getProduct(), member, ordersDetail);
+			
+			// 3) Cart 테이블에서 delete
+			cartRepo.deleteById(cno[i]);
+		}
+		
+		// 4) 올잇머니 차감
+		
+		
 		return "redirect:orderList";
 	}
 	

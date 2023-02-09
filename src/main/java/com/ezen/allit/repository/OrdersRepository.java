@@ -12,7 +12,4 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer> {
 	@Query(value =  "INSERT INTO orders(mid, reg_date) VALUES(?1, sysdate)", nativeQuery = true)
 	int saveOrderSequence(String mid);
 	
-	@Modifying
-	@Query(value =  "SELECT ono FROM orders WHERE ", nativeQuery = true)
-	int findOno();
 }
