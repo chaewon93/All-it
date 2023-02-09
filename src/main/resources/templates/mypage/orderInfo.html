@@ -4,11 +4,12 @@
 <!-- header replace -->
 
 <!-- 내용 섹션 시작 -->
+<form method="post" th:action="@{/order/orders}">
 <h3>구매자 정보</h3>
-<table id="payerInfo">
+<table id="buyerInfo" border="1">
 	<tr>
 		<th>이름</th>
-		<td th:text="${ session['user']?.name }">
+		<td id="userName" th:text="${ session['user']?.name }">
 	</tr>
 	<tr>
 		<th>이메일</th>
@@ -16,54 +17,65 @@
 	</tr>
 	<tr>
 		<th>연락처</th>
-		<td th:text="${ session['user']?.phone }">
+		<td id="userPhone" th:text="${ session['user']?.phone }">
 	</tr>
 </table>
-
+<hr>
 <h3>받는 사람 정보</h3>
-<button type="button" value="배송정보 변경" class="btn btn-light"></button>
-<table id="payeeInfo">
+<table id="receiverInfo" border="1">
+	<input type="checkbox" id="chkbox" name="chkbox"> 구매자 정보와 동일
 	<tr>
 		<th>이름</th>
-		<td th:text="${ session['user']?.name }">
+		<td><input type="text" id="name" name="receiverName" required="required"></td>
 	</tr>
 	<tr>
 		<th>배송 주소</th>
-		<td th:text="${ session['user']?.address }">
+		<td>
+			<input type="text" id="zipcode" name="receiverZipcode" required="required" placeholder="우편번호"/>
+			<input type="button" id="kakaoAddr" value="우편번호 찾기" class="btn btn-light"><br>
+			<input type="text" id="addr" name="receiverAddr" required="required" placeholder="주소"/><br>
+			<input type="text" id="addrDetail" name="receiverAddr" required="required" placeholder="상세주소"/>
+		</td>
 	</tr>
 	<tr>
 		<th>연락처</th>
-		<td th:text="${ session['user']?.phone }">
+		<td><input type="text" id="phone" name="receiverPhone" required="required"></td>
 	</tr>
 </table>
-
+<hr>
 <h3>주문 상품</h3>
-<table id="prodInfo">
+<table id="prodInfo" border="1">
+	<tr>
+		<th>상품 정보</th>
+		<th>수량</th>
+		<th>상품금액</th>
+	</tr>
 	<tr th:each="cart : ${cartList}">
 		<td>
-			<a th:href="@{ |/product/detail/${ cart.product.pno }| }">
+			<a th:href="@{ |/product/${ cart.product.pno }| }">
 				<img class="img-fluid" th:src="@{ /images/ } + ${ cart.product.imageName }" width="100">
 				<span
 				
 				 th:text="${ cart.product.name }"></span>
 			</a> 
 		</td>
-		<td th:text="${ cart.product.name }">
 		<td th:text="${ cart.quantity }">
 		<td th:text="${ #numbers.formatInteger(cart.product.price, 1, 'COMMA') }+'원'">
 	</tr>
 </table>
-
+<hr>
 <h3>결제 정보</h3>
 <table id="payInfo">
+	<input type="hidden" id="totalPrice" th:value="${ totalPrice }">
 	<tr>
 		<th>총 상품가격</th>
-		<td th:text="${ totalPrice }">
+		<td th:text="${ #numbers.formatInteger(totalPrice, 1, 'COMMA') }+'원'">
 	</tr>
 	<tr>
 		<th>할인 쿠폰</th>
-		<td th:text="${  }">
-		<button type="button" value="쿠폰 선택" class="btn btn-light"></button>
+		<td><span id="coupon" style="color: red;" th:text="|-${ '2500' }|+'원'"></span>
+		<button type="button" id="couponBtn" class="btn btn-light">쿠폰 선택</button>
+		</td>
 	</tr>
 	<tr>
 		<th>포인트</th>
@@ -71,160 +83,122 @@
 	</tr>
 	<tr>
 		<th>총 결제금액</th>
-		<td th:text="${ totalPrice }">
+		<td><span id="payPrice" style="font-weight: bold;"></span>
+			<input type="hidden" id="price">
+		</td>
 	</tr>
 	<tr>
-		<th>결제방법</th>
-		<td>
-			<input type="radio" name="pay" value="신용/체크카드" checked="checked">신용/체크카드
-			<input type="radio" name="pay" value="계좌이체">계좌이체
-			<input type="radio" name="pay" value="휴대폰">휴대폰
-			<input type="radio" name="pay" value="무통장입금">무통장입금(가상계좌)
+		<th>올잇머니 결제</th>
+		<td><span id="money" th:text="${ #numbers.formatInteger(session['user']?.money, 1, 'COMMA') }+'원'"></span>
+			<button type="button" id="moneyBtn" class="btn btn-light">충전하기</button>
 		</td>
 	</tr>
 </table>
-
-<input type="radio" id="check" value="">위 주문 내용을 확인 하였으며, 회원 본인은 개인정보 이용 및 제공 및 결제에 동의합니다.
-
-<input type="submit" value="결제하기" class="btn btn-primary">
-
+<br>
+<input type="radio" id="chkrdo"> 위 주문 내용을 확인 하였으며, 회원 본인은 개인정보 이용 및 제공 및 결제에 동의합니다.
+<br><br>
+<input type="submit" value="결제하기" id="payBtn" onclick="return orderCheck()" class="btn btn-primary">
+</form>
 
 <!-- 자바스트립트 섹션 시작 -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script type="text/javascript">
 let index = {
 	init:function() {
-		let type = $("#category").val();
-		if(type != null) {
-			switch(type) {
-			case '1' :
-				$("#type").val("패션");
-				break;
-			case '2' :
-				$("#type").val("식품");
-				break;
-			case '3' :
-				$("#type").val("주방용품");
-				break;
-			case '4' :
-				$("#type").val("생활용품");
-				break;
-			case '5' :
-				$("#type").val("인테리어");
-				break;
-			case '6' :
-				$("#type").val("가전");
-				break;
-			case '7' :
-				$("#type").val("스포츠/레저");
-				break;
-			case '8' :
-				$("#type").val("도서/음반/DVD");
-				break;
-			case '9' :
-				$("#type").val("반려동물용품");
-				break;
-			case '10' :
-				$("#type").val("건강식품");
-				break;
-			}
-		}
+		// 총 결제금액 계산
+		let totalPrice = parseInt($("#totalPrice").val());
+		let coupon = parseInt(document.getElementById("coupon").innerText);
+		let payPrice = totalPrice + coupon;
+		//console.log(totalPrice);
+		//console.log(coupon);
+		//console.log(totalPrice - coupon);
+		$("#price").val(payPrice);
+		$("#payPrice").text(payPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"원");
 		
-		$("#inCart").on("click", ()=>{ // function(){} 대신 ()=>{}를 사용하는 이유는 this를 바인딩 하기 위함
-			this.insertCart();
-
+		/* 이벤트 처리 */
+		// 구매자 정보와 동일 체크박스 이벤트		
+		$("#chkbox").on("click", ()=>{ 
+			this.copyInfo();
 		});
-//		$("#save").on("click", () =>{
-//			this.save();
+		
+		// 올잇머니 충전하기 버튼 이벤트
+		$("#moneyBtn").on("click", ()=>{ 
+			this.chargeMoney();
+		});
+		
+		// 결제하기 버튼 이벤트
+//		$("#payBtn").on("click", ()=>{ 
+//			this.orderCheck();
 //		});
 	},
 
-	insertCart:function() {
-		let user_id = $("#mid").val();
+	copyInfo:function() {
+		let userName = document.getElementById("userName");
+		let userPhone = document.getElementById("userPhone");
+		//console.log(userName.innerText);
+		//console.log($("input:checkbox[name='chk']:checked").length);
 		
-		if(user_id == "" || user_id == "undefined") {
-			alert('로그인이 필요한 서비스입니다.');
-			window.location.href="/member-login";
-			return false;
+		if($("input[name='chkbox']:checked").length == 0) {
+			$("#name").val("");
+			$("#phone").val("");
 		} else {
-			// ajax는 기본이 비동기 호출이기 때문에 만약 뒤에 다른 요청이 있으면 그것도 같이 수행
-			// ajax가 통신을 성공하고 서버가 json을 리턴하면 자동으로 자바오브젝트로 변환해줌
-			$.ajax({
-				url: "/cart/insert",
-				type: "post",
-				data: JSON.stringify({
-					mid: $("#mid").val(),
-					pno: $("#pno").val(),
-					quantity : $("#quantity").val()
-				}),
-				dataType: "text",
-				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
-				success: function(data){ // 처리 성공 시
-					//alert("[처리결과]"+data);
-					if(data == 'inCart') {
-						alert('상품이 장바구니에 담겼습니다.');
-						//self.history.go(-1);
-					} else if(data == 'exist') {
-						var chk = confirm('장바구니에 같은 상품이 있습니다. \n그래도 담으시겠습니까?');
-						if(chk) {
-							//location.replace("/cart/modCart");
-							$.ajax({
-								url: "/cart/modCart",
-								type: "post",
-								data: JSON.stringify({
-									mid: $("#mid").val(),
-									pno: $("#pno").val(),
-									quantity : $("#quantity").val(),
-									type: "add"
-								}),
-								dataType: "text",
-								contentType: "application/json; charset=utf-8",
-								success: function(data){
-									if(data == 'modCart') {
-										alert('상품이 장바구니에 담겼습니다.');
-									} else if(data == 'null') {
-										alert('장바구니 조회 중 일시적인 오류입니다.');
-									} else {
-										alert('로그인이 필요한 서비스입니다.');
-									}
-								}, error: function(err){
-									alert("다시 시도해주세요.");				
-									console.log('[modCart() ajax error] '+err);
-								}	
-							});
-						}
-					} else {
-						alert('로그인이 필요한 서비스입니다.');
-					}
-				}
-			}).fail(function(error){ // 처리 실패 시
-				alert("다시 시도해주세요.");
-				console.log("[insertCart() ajax error] "+JSON.stringify(error));
-			});
+			$("#name").val(userName.innerText);
+			$("#phone").val(userPhone.innerText);
 		}
 	},
-/*	
-	save:function() {
-		let data = {
-			pno: $("#save-pno").val(),
-			content: $("#reply-content").val(),
-			rating: $("#rating").val()
-		}
-		console.log("data = " + data);
-		$.ajax({
-			type: "post",
-			url: '/review/save/${data.pno}',
-			data: JSON.stringify(data),
-			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
-		}).done(function(response){ // 처리 성공 시
-			alert('댓글이 작성되었습니다');
-			location.href="/seller/";
-		}).fail(function(error){ // 처리 실패 시
-			alert(JSON.stringify(error));
-		});
-	}*/
+	
+//	chargeMoney:function() {
+		
+//	},
+
+}
+index.init();
+
+function orderCheck() {
+	//alert($("#chkrdo").prop("checked"));
+	let money = parseInt(document.getElementById("money").innerText);
+	let payPrice = parseInt($("#price").val());
+	//console.log("올잇머니", money);
+	//console.log("총 결제금액", payPrice);
+	
+	if(!$("#chkrdo").prop("checked")) {
+		alert("결제에 동의해주세요.");
+		return false;
+	} else if(money < payPrice) {
+		alert("올잇머니를 충전해주세요.");
+		return false;
+	}
+	
+	return true;
 }
 
-index.init();
+//카카오 주소api 사용
+$("#kakaoAddr").click(function(){
+	// 카카오 지도 입력창
+	new daum.Postcode({
+        oncomplete: function(data) { //선택시 입력값 세팅
+        	// 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+            // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+            // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+            var addr = ''; // 주소 변수
+            var extraAddr = ''; // 참고항목 변수
+
+            //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+            if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                addr = data.roadAddress;
+            } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                addr = data.jibunAddress;
+            }
+		
+            // 우편번호와 주소 정보를 해당 필드에 넣는다.
+            document.getElementById('zipcode').value = data.zonecode;
+            document.getElementById("addr").value = addr;
+            // 커서를 상세주소 필드로 이동한다.
+            document.getElementById("addrDetail").focus();
+        }
+    }).open();
+});
 
 </script>
 <!-- 자바스트립트 섹션 끝 -->
