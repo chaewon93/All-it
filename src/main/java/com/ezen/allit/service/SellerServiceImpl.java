@@ -134,7 +134,7 @@ public class SellerServiceImpl implements SellerService {
 		int pageSize = 3;
 		
 		Page<Product> product = 
-				productRepo.findBySellerIdAndNameContaining(seller.getId(), searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+				productRepo.findAllBySellerIdAndNameContaining(seller.getId(), searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 		
 		return product;
 	}
