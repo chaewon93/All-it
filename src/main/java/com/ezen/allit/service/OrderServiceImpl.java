@@ -51,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
 		/* 주문번호 생성 매서드 사용, ono 반환 */
 		int ono = selectMaxOno();
 
-		ordersDetailRepo.saveOrder(product.getPno(), ono, member.getId(), ordersDetail.getQuantity(),ordersDetail.getReceiverName(), ordersDetail.getReceiverZipcode(), ordersDetail.getReceiverAddr(), ordersDetail.getReceiverPhone());
+		ordersDetailRepo.saveOrder(product.getPno(), ono, member.getId(), ordersDetail.getQuantity(), ordersDetail.getFinalPrice(), ordersDetail.getReceiverName(), ordersDetail.getReceiverZipcode(), ordersDetail.getReceiverAddr(), ordersDetail.getReceiverPhone());
 	}
 	
 		

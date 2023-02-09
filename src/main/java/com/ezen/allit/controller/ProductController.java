@@ -64,6 +64,8 @@ public class ProductController {
 		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
 		int endPage = ((startPage + naviSize - 1) < productList.getTotalPages()) ? startPage + naviSize - 1 : productList.getTotalPages();
 		
+		model.addAttribute("list", productList);
+		model.addAttribute("url", "/product/");
 		model.addAttribute("productList", productList);
 		model.addAttribute("search", search);
 		model.addAttribute("startPage", startPage);
@@ -122,6 +124,8 @@ public class ProductController {
 		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
 		int endPage = ((startPage + naviSize - 1) < productList.getTotalPages()) ? startPage + naviSize - 1 : productList.getTotalPages();
 		
+		model.addAttribute("list", productList);
+		model.addAttribute("url", "/product/");
 		model.addAttribute("productList", productList);
 		model.addAttribute("search", search);
 		model.addAttribute("startPage", startPage);

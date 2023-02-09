@@ -94,6 +94,7 @@ public class OrderController {
 
 		orderService.saveOrders(member);
 		orderService.saveOrdersDetail(product, member, ordersDetail);
+		memberService.minusMoney(mid, amount);
 
 		return "redirect:/";
 	}
@@ -105,6 +106,8 @@ public class OrderController {
 							@RequestParam(value = "cno") int[] cno) {	
 		// 1) Orders 테이블에 insert
 		orderService.saveOrders(member);
+		
+		int amount = 0;
 		
 		for(int i=0; i<cno.length; i++) {
 			Cart cart = cartRepo.findById(cno[i]).get();
@@ -121,7 +124,7 @@ public class OrderController {
 		}
 		
 		// 4) 올잇머니 차감
-		memberService.minusMoney(mid, amount);
+		
 		
 		return "redirect:orderList";
 
@@ -140,6 +143,8 @@ public class OrderController {
 		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
 	    int endPage = ((startPage + naviSize - 1) < orderList.getTotalPages()) ? startPage + naviSize - 1 : orderList.getTotalPages();
 
+	    model.addAttribute("list", orderList);
+	    model.addAttribute("url", "/order/orderList/");
 	    model.addAttribute("orderList", orderList);
 	    model.addAttribute("startPage", startPage);
 	    model.addAttribute("endPage", endPage);	    
