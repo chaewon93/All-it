@@ -23,7 +23,7 @@
 	</table><hr>
 	
 	<h3>받는 사람 정보</h3>
-	<table id="payeeInfo">
+	<table id="payerInfo">
 		<tr>
 			<th style="font-size: large; font-weight: bold;">이름</th>
 			<td th:text="${ session['user']?.name }">
@@ -40,7 +40,7 @@
 	<button type="button" value="배송정보 변경" class="btn btn-light">배송정보 변경</button><hr>
 	
 	<h3>주문 상품</h3>
-	<table id="prodInfo">
+	<table th:if="${ cartList }" th:each="product, ${ cartList }" id="prodInfo">
 		<tr>
 			<td>
 				<a th:href="@{ |/product/${ product.pno }| }">
@@ -50,13 +50,30 @@
 			</td>
 		</tr>
 		<tr>
-			<td th:text="${ quantity }+'개'" th:name="quantity" id="quantity"></td>
+			<td th:text="${ quantity }+'개'"></td>
 		</tr>
 		<tr>
 			<td th:text="${ #numbers.formatInteger(product.price*quantity, 1, 'COMMA') }+'원'" th:name="price"></td>
 		</tr>
 	</table><hr>
-	
+<!-- 
+	<table th:unless="${ cartList }" id="prodInfo">
+		<tr>
+			<td>
+				<a th:href="@{ |/product/${ product.pno }| }">
+					<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="100">
+					<span th:text="${ product.name }" th:name="name"></span>
+				</a> 
+			</td>
+		</tr>
+		<tr>
+			<td th:text="${ quantity }+'개'"></td>
+		</tr>
+		<tr>
+			<td th:text="${ #numbers.formatInteger(product.price*quantity, 1, 'COMMA') }+'원'" th:name="price"></td>
+		</tr>
+	</table><hr>	
+ -->	
 	<h3>결제 정보</h3>
 	<table id="payInfo">
 		<tr>
@@ -87,6 +104,9 @@
 		</tr>
 	</table><br>
 	
+	<input type="hidden" th:value="${ session['user']?.id }" name="mid" id="mid"/>
+	<input type="hidden" th:value="${ product.pno }" name="pno" id="pno"/>
+	<input type="hidden" th:value="${ quantity }" name="quantity" id="quantity"/>
 	<input type="radio" id="check">위 주문 내용을 확인 하였으며, 회원 본인은 개인정보 이용 및 제공 및 결제에 동의합니다. &nbsp;
 	<input type="submit" value="결제하기" class="btn btn-primary">
 </form>
