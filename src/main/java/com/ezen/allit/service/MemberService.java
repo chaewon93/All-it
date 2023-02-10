@@ -23,12 +23,15 @@ public interface MemberService {
 	
 	public void deleteMember(String id);
 	
-	/** 주문목록조회 */
-	Page<OrdersDetail> getOrderList(Member member, Pageable pageable);
-	
-	/** 상품 구매시 올머니 차감 */
+	/* <== 상품 주문 ==> */
+	/** 상품 구매시 올잇머니 차감 */
 	void minusMoney(String id, int amount);
 	
+	/** 상품 구매시 포인트 사용 */
+	void minusPoint(String id, int amount);
+	
+	/** 구매확정 후 포인트 적립 */
+	void addPoint(String id, int amount);
 
 	/* <== 1:1문의(QnA) ==> */
 	public void saveQna(QnA qna);

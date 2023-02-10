@@ -3,6 +3,7 @@
 <div th:replace="~{ /fragments/header.html :: header }"></div>
 <!-- header replace -->
 
+<body th:align="center">
 <!-- 내용 섹션 시작 -->
 <form id="orderFrm" method="post">
 <h3>구매자 정보</h3>
@@ -58,13 +59,12 @@
 			<td>
 				<a th:href="@{ |/product/${ product.pno }| }">
 					<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="100">
-					<span
-					
-					 th:text="${ product.name }"></span>
+					<span th:text="${ product.name }"></span>
 				</a> 
+				<span th:text="${#numbers.formatInteger(product.price, 1, 'COMMA')}+'원'"></span>
 			</td>
 			<td th:text="${ quantity }+'개'">
-			<td th:text="${ #numbers.formatInteger(product.price, 1, 'COMMA') }+'원'">
+			<td th:text="${ #numbers.formatInteger((product.price * quantity), 1, 'COMMA') }+'원'">
 		</tr>
 	</th:block>
 	<!-- 장바구니 구매 -->
@@ -75,10 +75,11 @@
 				<img class="img-fluid" th:src="@{ /images/ } + ${ cart.product.imageName }" width="100">
 				<span th:text="${ cart.product.name }"></span>
 			</a> 
+			<span th:text="${#numbers.formatInteger(cart.product.price, 1, 'COMMA')}+'원'"></span>
 		</td>
 		<td th:text="${ cart.quantity }+'개'">
 		<input type="hidden" name="quantity" th:if="${cartList != null}" th:vlaue="${ cart.quantity }">
-		<td th:text="${ #numbers.formatInteger(cart.product.price, 1, 'COMMA') }+'원'">
+		<td th:text="${ #numbers.formatInteger((cart.product.price*cart.quantity), 1, 'COMMA') }+'원'">
 	</tr>
 	</th:block>
 </table>
@@ -100,7 +101,11 @@
 	</tr>
 	<tr>
 		<th>포인트</th>
-		<td th:text="${ session['user']?.point }">
+		<td>
+			<input type="text" id="point" name="point" th:value="0" onchange="changePoint()">
+			<button type="button" id="pointBtn" class="btn btn-light">전액 사용</button>
+			<br><span>보유 포인트 <b id="mypoint" th:text="${ session['user']?.point }"></b>P</span>
+		</td>
 	</tr>
 	<tr>
 		<th>총 결제금액</th>
@@ -115,6 +120,7 @@
 			<button type="button" id="moneyBtn" class="btn btn-light">충전하기</button>
 		</td>
 	</tr>
+	<!-- 현금영수증? -->
 </table>
 <br>
 <input type="radio" id="chkrdo"> 위 주문 내용을 확인 하였으며, 회원 본인은 개인정보 이용 및 제공 및 결제에 동의합니다.
@@ -125,26 +131,24 @@
 <!-- <input type="hidden" th:if="${product != null}" th:value="${  }" name="finalPrice" id="finalPrice"/> -->
 <input type="submit" value="결제하기" id="payBtn" onclick="return orderCheck()" class="btn btn-primary">
 </form>
+</body>
 
 <!-- 자바스트립트 섹션 시작 -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script type="text/javascript">
 let index = {
 	init:function() {
-		// 총 결제금액 계산
-		let totalPrice = parseInt($("#totalPrice").val());
-		let coupon = parseInt(document.getElementById("coupon").innerText);
-		let payPrice = totalPrice + coupon;
-		//console.log(totalPrice);
-		//console.log(coupon);
-		//console.log(totalPrice - coupon);
-		$("#price").val(payPrice);
-		$("#payPrice").text(payPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"원");
+		priceCheck();
 		
 		/* 이벤트 처리 */
 		// 구매자 정보와 동일 체크박스 이벤트		
 		$("#chkbox").on("click", ()=>{ 
 			this.copyInfo();
+		});
+		
+		// 포인트 전액사용 버튼 이벤트
+		$("#pointBtn").on("click", ()=>{ 
+			this.minusPoint();
 		});
 		
 		// 올잇머니 충전하기 버튼 이벤트
@@ -184,12 +188,55 @@ let index = {
 		}
 	},
 	
+	minusPoint:function() {	
+		var point = $("#point");
+		var mypoint = parseInt($("#mypoint").text());
+		
+		if(parseInt($("#mypoint").text()) < 1000) {
+			alert("1000P 이상 보유 시 사용 가능합니다.");
+			$("#pointBtn").attr("disabled", "disabled");
+		} else if(point == "") {
+			point.val(0);
+		} else {
+			point.val(mypoint);
+		}
+		priceCheck();
+	},
+	
 //	chargeMoney:function() {
 		
 //	},
 
 }
 index.init();
+
+function changePoint() {
+	var point = $("#point");
+	
+	if(point.val() == "") {
+		point.val(0);
+	}
+	priceCheck();
+}
+
+//총 결제금액 계산
+function priceCheck() { 
+	// 총 상품가격
+	let totalPrice = parseInt($("#totalPrice").val());
+	// 쿠폰 적용시 할인금액
+	let coupon = parseInt(document.getElementById("coupon").innerText);
+	// 포인트 사용
+	let point = parseInt($("#point").val());
+	
+	// 총 결제금액 계산
+	let payPrice = totalPrice + coupon - point;
+	//console.log(totalPrice);
+	//console.log(coupon);
+	//console.log(totalPrice - coupon);
+	
+	$("#price").val(payPrice);
+	$("#payPrice").text(payPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"원");
+}
 
 function orderCheck() {
 	//alert($("#chkrdo").prop("checked"));
@@ -198,13 +245,33 @@ function orderCheck() {
 	//console.log("올잇머니", money);
 	//console.log("총 결제금액", payPrice);
 	
-	if(!$("#chkrdo").prop("checked")) {
+	if($("#userName").text() == "") {
+		alert("일시적인 오류입니다.");
+		location.replace("/");
+		return false;
+	} else if($("#name").val() == "") {
+		alert("받는 사람 이름을 입력해주세요.");
+		$("#name").focus();
+		return false;
+	} else if($("#zipcode").val() == "" || $("#addr").val() == "") {
+		alert("배송 주소를 입력해주세요.");
+		$("#zipcode").focus();
+		return false;
+	} else if($("#addrDetail").val() == "") {
+		alert("상세 주소를 입력해주세요.");
+		$("#addrDetail").focus();
+		return false;
+	} else if($("#phone").val() == "") {
+		alert("받는 사람 연락처를 입력해주세요.");
+		$("#phone").focus();
+		return false;
+	} else if(!$("#chkrdo").prop("checked")) {
 		alert("결제에 동의해주세요.");
 		return false;
 	} else if(money < payPrice) {
 		alert("올잇머니를 충전해주세요.");
 		return false;
-	} 
+	}
 	
 	if($("#pno").val() == "") {
 		// 장바구니 구매

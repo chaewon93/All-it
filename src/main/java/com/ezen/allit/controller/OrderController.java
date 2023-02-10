@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.ezen.allit.domain.Cart;
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.Orders;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.repository.CartRepository;
@@ -90,12 +91,25 @@ public class OrderController {
 		Member member = memberRepo.findById(mid).get(); 
 		int amount = product.getPrice() * ordersDetail.getQuantity();
 
+		// 1) Orders 테이블에 insert
 		orderService.saveOrders(member);
+		// 2) OrdersDetail 테이블에 insert
 		orderService.saveOrdersDetail(product, member, ordersDetail);
 
+		// 3) 올잇머니 차감
 		memberService.minusMoney(mid, amount);
+		
+		// 4) 포인트 사용 시 포인트 차감
+		//if(point != 0 && point >= 1000) memberService.minusPoint(member.getId(), price);
 
-		return "redirect:/";
+		// 포인트 적립 : 결제금액의 1% -> 구매확정 후 적립
+		//memberService.addPoint(member.getId(), price / 100);
+		
+		// 5) 세션에 수정된 정보 저장
+		Member findMember = memberService.getMember(member);
+		model.addAttribute("user", findMember);
+
+		return "redirect:orderList";
 	}
 	
 	/** 주문하기 - 장바구니 */
@@ -103,7 +117,8 @@ public class OrderController {
 	public String insertOrders(Model model, OrdersDetail ordersDetail,
 							@ModelAttribute("user") Member member,
 							@RequestParam(value = "cno") int[] cno,
-							@RequestParam(value = "price") int price) {	
+							@RequestParam(value = "price") int price,
+							@RequestParam(value = "point") int point) {	
 		
 		// 1) Orders 테이블에 insert
 		orderService.saveOrders(member);
@@ -125,8 +140,14 @@ public class OrderController {
 		// 4) 올잇머니 차감
 		//System.out.println("[order] price : "+price);
 		memberService.minusMoney(member.getId(), price);
+		
+		// 5) 포인트 사용 시 포인트 차감
+		if(point != 0 && point >= 1000) memberService.minusPoint(member.getId(), price);
+		
+		// 포인트 적립 : 결제금액의 1% -> 구매확정 후 적립
+		//memberService.addPoint(member.getId(), price / 100);
 
-		// 5) 세션에 수정된 정보 저장
+		// 6) 세션에 수정된 정보 저장
 		Member findMember = memberService.getMember(member);
 		model.addAttribute("user", findMember);
 		
@@ -136,12 +157,13 @@ public class OrderController {
 	
 	/** 주문 목록조회 */
 	@GetMapping("/orderList")
-	public String getOrderList(HttpSession session,
-							Model model,
+	public String getOrderList(Model model,
+							@ModelAttribute("user") Member member,
 							@PageableDefault(page = 1) Pageable pageable) {
-		Member member = (Member) session.getAttribute("user");
 		
-		Page<OrdersDetail> orderList = memberService.getOrderList(member, pageable);
+		Page<Orders> orderList = orderService.getOrder(member, pageable);
+		
+		//Page<OrdersDetail> orderList = orderService.getOrderDetail(member, pageable);
 		
 		int naviSize = 10; // 페이지네이션 갯수
 		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
@@ -155,5 +177,8 @@ public class OrderController {
 		
 		return "mypage/orderList";
 	}
+	
+	/** 주문 상세조회 */
+	
 
 }

@@ -1,0 +1,42 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
+<head>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+
+<body th:align="center">
+<h1>올잇머니 관리</h1>
+<article style="margin-bottom: 20px">
+	<form name="formm" id="cartform" method="post">
+		<table id="moneyList" border="1" th:align="center">
+			<tr>
+				<th width="150">올잇머니 잔액</th>
+				<td colspan="2" th:text="${ session['user']?.money }">
+			</tr>
+			<tr>
+				<th width="100"></th>
+				<td><input type="button" value="충전하기"></td>
+				<td><input type="button" value="계좌 연결하기"></td>
+			</tr>
+				
+		</table>
+		<div class="clear">
+			<a href="#" onclick="delCart()" th:if="${cartList.size() != 0}" class="btn btn-light"><span id="delCheck">선택삭제</span></a>
+		</div>
+		<div id="buttons" style="float: right">
+			<input type="button" value="쇼핑 계속하기" class="btn btn-light" onclick="location.href='/'">
+			<input th:if="${cartList.size() != 0}" type="button" value="주문하기" class="btn btn-light" onclick="goOrderList()">
+		</div>
+	</form>
+</article>
+
+<script type="text/javascript">
+	
+</script>
+</body>
+
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>

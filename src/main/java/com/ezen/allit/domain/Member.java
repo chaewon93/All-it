@@ -57,11 +57,12 @@ public class Member {
 	@JsonIgnoreProperties({"member"})
 	private List<Hit> hits = new ArrayList<>();	  	   			 // 연관관계 설정용
 	
-	@OneToMany(mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"member"})
 	private List<MemCoupon> memCoupon = new ArrayList<>();
 	
 	private Grade grade;	   		 		    			 	 // 회원등급
+	@CreationTimestamp
 	private Date regDate;			 	   		 		     	 // 가입일
 	
 	@Builder
