@@ -6,8 +6,6 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import lombok.*;
 
 @Getter
@@ -21,6 +19,7 @@ public class QnA {
 	private String title;	 // 제목
 	private String category; // 질문분류
 	private String content;  // 내용
+	private String response; // 답변
 	private int status;      // 답변유무(0:미답변, 1:답변)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sid")
@@ -36,4 +35,6 @@ public class QnA {
 	private Reply reply;     // 답변정보
 	@CreationTimestamp
 	private Date regDate;    // 등록일
+	@CreationTimestamp
+	private Date resDate;    // 답변일
 }

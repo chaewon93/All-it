@@ -28,7 +28,15 @@ public interface QnARepository extends JpaRepository<QnA, Integer> {
 
 	// 상품문의 작성
 	@Modifying
-	@Query(value = "INSERT INTO qna(pno, sid, mid, category, content, status, rno, reg_date) VALUES(?1, ?2, ?3, ?4, ?5, 0, '', sysdate)", nativeQuery = true)
-	int saveQnA(int pno, String sid, String mid, String category, String content);
+	@Query(value = "INSERT INTO qna(pno, sid, mid, category, title, content, status, rno, reg_date) VALUES(?1, ?2, ?3, ?4, ?5, ?6, 0, '', sysdate)", nativeQuery = true)
+	int saveQnA(int pno, String sid, String mid, String category, String title, String content);
+	
+	// 상품문의 답변
+	@Modifying
+	@Query(value = "UPDATE qna SET response = ?1, res_date = sysdate WHERE qno=?2", nativeQuery = true)
+	int responseQnA(String response, int qno);
+	
+	// 판매자 문의목록조회
+	Page<QnA> findAllBySellerId(String id, Pageable pageable);
 }
 

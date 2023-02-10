@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.dto.HitSaveRequestDto;
-import com.ezen.allit.dto.QnaSaveRequestDto;
+import com.ezen.allit.dto.QnADto;
 import com.ezen.allit.dto.ResponseDto;
 import com.ezen.allit.dto.ReviewDeleteRequestDto;
 import com.ezen.allit.dto.ReviewModifyRequestDto;
@@ -108,8 +108,19 @@ public class DongukApiController {
 	 * 문의작성
 	 */
 	@PostMapping("/product/qna/save/{pno}")
-	public ResponseDto<Integer> saveQuestoin(@RequestBody QnaSaveRequestDto qnaSaveRequestDto) {
-		qnaService.saveQuestion(qnaSaveRequestDto);
+	public ResponseDto<Integer> saveQuestoin(@RequestBody QnADto qnaDto) {
+		qnaService.saveQuestion(qnaDto);
+		
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}
+	
+	/*
+	 * 문의답변
+	 */
+	@PostMapping("/product/qna/save/{pno}/response")
+	public ResponseDto<Integer> saveResponse(@RequestBody QnADto qnaDto) {
+		qnaService.saveResponse(qnaDto);
+		qnaService.modifyStatus(qnaDto);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}

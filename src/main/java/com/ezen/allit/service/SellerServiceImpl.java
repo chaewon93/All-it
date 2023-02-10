@@ -4,26 +4,22 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.ezen.allit.domain.Hit;
+import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
-import com.ezen.allit.domain.Review;
+import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
-import com.ezen.allit.dto.HitSaveRequestDto;
-import com.ezen.allit.repository.HitRepository;
+import com.ezen.allit.repository.OrdersDetailRepository;
 import com.ezen.allit.repository.ProductRepository;
-import com.ezen.allit.repository.ReviewRepository;
+import com.ezen.allit.repository.QnARepository;
 import com.ezen.allit.repository.SellerRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -33,8 +29,8 @@ import lombok.RequiredArgsConstructor;
 public class SellerServiceImpl implements SellerService {
 	private final SellerRepository sellerRepo;
 	private final ProductRepository productRepo;
-	private final HitRepository hitRepo;
-	private final ReviewRepository reviewRepo;
+	private final OrdersDetailRepository ordersDetailRepo;
+	private final QnARepository qnaRepo;
 //	private final BCryptPasswordEncoder encoder;
   
 	/*
@@ -46,6 +42,34 @@ public class SellerServiceImpl implements SellerService {
 	public Seller findByIdAndPwd(String id, String pwd) {
 		return sellerRepo.findByIdAndPwd(id, pwd);
 	}
+	
+	/*
+	 * 판매자 정보수정
+	 */
+	@Transactional
+	public Seller modify(Seller seller) {
+		Seller theSeller = sellerRepo.findById(seller.getId()).get();
+		theSeller.setId(seller.getId());
+		theSeller.setPwd(seller.getPwd());
+		theSeller.setName(seller.getName());
+		theSeller.setContent(seller.getContent());
+		theSeller.setEmail(seller.getEmail());
+		theSeller.setPhone(seller.getPhone());
+		theSeller.setZipcode(seller.getZipcode());
+		theSeller.setAddress(seller.getAddress());
+		theSeller.setRegno(seller.getRegno());
+		
+		return theSeller;
+	}
+	
+	/*
+	 * 판매자 탈퇴
+	 */
+	@Transactional
+	public void quit(Seller seller) {
+		sellerRepo.deleteById(seller.getId());
+	}
+	
 
 //	// 판매자 입점신청
 //	@Transactional
@@ -58,10 +82,12 @@ public class SellerServiceImpl implements SellerService {
 //		sellerRepo.save(seller);
 //	}
 	
-	// 판매자 입점신청
+	/*
+	 *  판매자 입점신청
+	 */
 	@Transactional
 	public void saveSeller(Seller seller) {
-		seller.setRole(Role.SELLER);		
+		seller.setRole(Role.TEMP);		
 		sellerRepo.save(seller);
 	}
 	
@@ -98,33 +124,43 @@ public class SellerServiceImpl implements SellerService {
 	}
 
 	/*
-	 * 상품 조회수 증가
+	 * 판매자 주문목록조회
 	 */
 	@Transactional
-	public void updateCount(int pno) {
-		Product product = productRepo.findById(pno).get();
-		product.setCount(product.getCount()+1);
+	public Page<OrdersDetail> getOrderList(Seller seller, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 10;
+		
+		Page <OrdersDetail> orderList = 
+				ordersDetailRepo.findAllByProductSellerId(seller.getId(), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));
+		
+		return orderList;
 	}
 	
 	/*
-	 * 상품 좋아요
+	 * 판매자 qna목록조회
 	 */
 	@Transactional
-	public void hitProduct(HitSaveRequestDto hitSaveRequestDto) {
-		Optional<Hit> hit = hitRepo.findByProductPnoAndSellerId(hitSaveRequestDto.getPno(), hitSaveRequestDto.getSid());
-		Product product = productRepo.findById(hitSaveRequestDto.getPno()).get();
-		Seller seller = sellerRepo.findById(hitSaveRequestDto.getSid()).get();
+	public Page<QnA> getQnAList(Seller seller, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 10;
 		
-		/* 이전에 좋아요 누른 기록이 없으면 좋아요, 있으면 좋아요 취소 */
-		if(hit.isEmpty()) {
-			hitRepo.save(new Hit(product, seller));
-			product.setHit(product.getHit()+1);
-		} else {
-			hitRepo.deleteById(hit.get().getHno());
-			product.setHit(product.getHit()-1);			
-		}
+		Page <QnA> qnaList = 
+				qnaRepo.findAllBySellerId(seller.getId(), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "qno")));
+		
+		return qnaList;
 	}
 	
+	/*
+	 * 판매자 qna조회
+	 */
+	@Transactional
+	public QnA getQnA(int qno) {
+		QnA qna = qnaRepo.findById(qno).get();
+		
+		return qna;
+	}
+
 	/*
 	 * 판매자 상품검색
 	 */

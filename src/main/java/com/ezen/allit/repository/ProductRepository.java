@@ -1,15 +1,19 @@
 package com.ezen.allit.repository;
 
-import java.util.List;
+import java.util.Date;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.ezen.allit.domain.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
+	// 신상품목록조회
+	@Query(value = "SELECT * FROM product WHERE TO_CHAR(sysdate, 'YYYYMMDD')-TO_CHAR(reg_date, 'YYYYMMDD')<8", nativeQuery = true)
+	Page<Product> getNewProductList(Pageable pageable);
 
 	// 상품검색 (검색조건 x, 검색어 o)
 	Page<Product> findAllByNameContaining(String searchKeyword, Pageable pageable);
