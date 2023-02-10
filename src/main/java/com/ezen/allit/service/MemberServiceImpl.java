@@ -135,44 +135,26 @@ public class MemberServiceImpl implements MemberService {
 
 	}
 	
-	/** 주문목록조회 */
-	@Transactional
-	public Page<OrdersDetail> getOrderList(Member member, Pageable pageable) {
-		int page = pageable.getPageNumber() - 1;
-		int pageSize = 10;
-		
-		Page<OrdersDetail> orderList = 
-				ordersDetailRepo.findAllByMemberId(member.getId(), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));
-		
-		System.out.println("orderList = " + orderList);
-		
-		return orderList;
-	}
-	/** 상품 구매 시 올머니 차감 */
+	/** 상품 구매 시 올잇머니 차감 */
 	@Transactional
 	public void minusMoney(String id, int amount) {
 		Member member = memberRepo.findById(id).get();
-		member.setMoney(member.getMoney()-amount);
+		member.setMoney(member.getMoney() - amount);
+	}
+	
+	/** 상품 구매 시 포인트 사용 */
+	@Override
+	public void minusPoint(String id, int amount) {
+		Member member = memberRepo.findById(id).get();
+		member.setPoint(member.getPoint() - amount);
+	}
+
+	/** 상품 구매 완료 후 포인트 적립 */
+	@Override
+	public void addPoint(String id, int amount) {
+		Member member = memberRepo.findById(id).get();
+		member.setPoint(member.getPoint() + amount);
 	}
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

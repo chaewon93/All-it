@@ -26,10 +26,10 @@ public class MemCoupon {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int mcid;			// 사용자 쿠폰 번호
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name="mid")
 	private Member member;		// 양방향 다대다 설정-> 다대일 두개로 나눔
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name="couId")
 	private Coupon coupon;		// 양방향 다대다 설정-> 다대일 두개로 나눔
 	@Temporal(TemporalType.DATE)

@@ -14,16 +14,16 @@ public class OrdersDetail {
 	private int odno;	    		// 주문상세 일련번호
 	private int quantity;   		// 주문량
 	private int finalPrice;   		// 최종주문금액
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "ono")
 	private Orders orders;	 		// ono, quantity
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "mid")
 	private Member member;   		// mno
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne
 	@JoinColumn(name = "pno")
 	private Product product; 		// pno
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne
 	@JoinColumn(name = "mcid")
 	private MemCoupon memCoupon; 	// mcid
 	private int status; // 주문상태(1:결제완료, 2:배송중, 3:배송완료, 4:구매확정, 5:주문취소)

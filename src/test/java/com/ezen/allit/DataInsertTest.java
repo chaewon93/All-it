@@ -1,5 +1,7 @@
 package com.ezen.allit;
 
+import java.util.Date;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,11 +11,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.ezen.allit.domain.Grade;
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.Orders;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
 import com.ezen.allit.repository.MemberRepository;
+import com.ezen.allit.repository.OrdersDetailRepository;
+import com.ezen.allit.repository.OrdersRepository;
 import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.repository.QnARepository;
 import com.ezen.allit.repository.SellerRepository;
@@ -33,6 +38,12 @@ public class DataInsertTest {
 	
 	@Autowired
 	private ProductRepository prodRepo;
+	
+	@Autowired
+	private OrdersRepository orderRepo;
+	
+	@Autowired
+	private OrdersDetailRepository detailRepo;
 
 	@Test
 	@Disabled
@@ -42,7 +53,7 @@ public class DataInsertTest {
 			Member member = new Member();
 			
 			member.setId("aaaa"+i);
-			member.setPwd("1234");
+			member.setPwd("1111");
 			member.setName("aaaa"+i);
 			member.setGrade(Grade.BRONZE);
 			member.setEmail("aaaa"+i+"@google.com");
@@ -50,6 +61,8 @@ public class DataInsertTest {
 			member.setPhone("010-1111-1111");
 			member.setAddress("서울 관악구,1층");
 			member.setZipcode("111-111");
+			member.setMoney(500000);
+			member.setPoint(8000);
 			
 			memberRepo.save(member);
 		}
@@ -70,7 +83,7 @@ public class DataInsertTest {
 	}
 	
 	@Test
-//	@Disabled
+	@Disabled
 	public void testDataInsert1() {
 		
 		for(int i=1; i<11; i++) {
@@ -165,5 +178,22 @@ public class DataInsertTest {
 
 			prodRepo.save(product);
 		}
+	}
+	
+	@Test
+	@Disabled
+	public void testOrderDataInsert() {
+		
+		// Order 생성
+		Orders orders = new Orders();
+		Member member = new Member();
+		member.setId("aaaa1");
+		
+		orders.setMember(member);
+		orders.setRegDate(new Date());
+		
+		orderRepo.save(orders);
+		
+
 	}
 }
