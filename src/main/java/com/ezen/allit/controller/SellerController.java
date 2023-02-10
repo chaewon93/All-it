@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
+import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
 import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
@@ -32,7 +34,7 @@ public class SellerController {
 	private final SellerService sellerService;
 		
 	// 판매자 상품등록 화면 이동
-	@GetMapping("/product/insert")
+	@GetMapping("/insert")
 	public String insertView() {
 		
 		return "seller/insert";
@@ -57,8 +59,13 @@ public class SellerController {
 				session.setAttribute("admin", theSeller);
 				return "admin/adminMain";
 			}
-			session.setAttribute("seller", theSeller);
-			return "redirect:/seller/";
+			if(theSeller.getRole().equals(Role.SELLER)) {
+				session.setAttribute("seller", theSeller);
+				return "redirect:/seller/";
+			} else {
+				
+				return "seller/loginError";
+			}
 		} else {
 			
 			return "seller/login";
@@ -71,6 +78,39 @@ public class SellerController {
 	public int idCheck(@RequestParam("userId") String user_id) {
 		return sellerService.idCheck(user_id);
 	}
+	
+	// 판매자 마이페이지 이동
+	@GetMapping("/mypage")
+	public String mypageView() {
+		
+		
+		return "seller/mypage";
+	}
+	
+	
+	/*
+	 * 판매자 정보 수정
+	 */
+	@PostMapping("/modify")
+	public String modify(Seller seller, HttpSession session) {
+		Seller theSeller = sellerService.modify(seller);
+		session.setAttribute("seller", theSeller);
+		
+		return "redirect:/seller/";
+	}
+	
+	
+	/*
+	 * 판매자 탈퇴
+	 */
+	@PostMapping("/quit")
+	public String quit(Seller seller, HttpSession session) {
+		session.invalidate();
+		sellerService.quit(seller);
+		
+		return "redirect:/";
+	}
+	
 	
 	/*
 	 * 판매자 메인화면 이동
@@ -99,7 +139,7 @@ public class SellerController {
 	    model.addAttribute("startPage", startPage);
 	    model.addAttribute("endPage", endPage);
 		
-		return "seller/list";
+		return "seller/productList";
 	}
 	
 	/*
@@ -110,10 +150,7 @@ public class SellerController {
 							@PathVariable int pno,
 							@PageableDefault(page = 1) Pageable pageable) {
 		Product theProduct = sellerService.getProduct(pno);
-		
-		/* 조회수 증가 */
-		sellerService.updateCount(theProduct.getPno());
-	
+
 		/* 별점 평균 구하기 */
 		List<Review> reviewList = theProduct.getReview();
 		if(reviewList != null) {
@@ -133,7 +170,65 @@ public class SellerController {
 		model.addAttribute("product", theProduct);
 		model.addAttribute("page", pageable.getPageNumber());
 		
-		return "seller/detail";
+		return "seller/product";
+	}
+	
+	/*
+	 * 판매자 주문목록조회
+	 */
+	@GetMapping("/order")
+	public String getOrderList(HttpSession session, Model model,
+							@PageableDefault(page = 1) Pageable pageable) {
+		Seller seller = (Seller) session.getAttribute("seller");
+		Page<OrdersDetail> orderList = sellerService.getOrderList(seller, pageable);
+		
+		int naviSize = 10; // 페이지네이션 갯수
+		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+	    int endPage = ((startPage + naviSize - 1) < orderList.getTotalPages()) ? startPage + naviSize - 1 : orderList.getTotalPages();
+		
+	    model.addAttribute("list", orderList);
+	    model.addAttribute("url", "/seller/order");
+	    model.addAttribute("orderList", orderList);
+	    model.addAttribute("startPage", startPage);
+	    model.addAttribute("endPage", endPage);		
+	    System.out.println("orderList.size() = " + orderList.getSize());
+		
+		return "seller/orderList";
+	}
+	
+	/*
+	 * 판매자 qna목록조회
+	 */
+	@GetMapping("/qna")
+	public String getQnAList(HttpSession session, Model model,
+							@PageableDefault(page = 1) Pageable pageable) {
+		Seller seller = (Seller) session.getAttribute("seller");
+		Page<QnA> qnaList = sellerService.getQnAList(seller, pageable);
+		
+		int naviSize = 10; // 페이지네이션 갯수
+		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+	    int endPage = ((startPage + naviSize - 1) < qnaList.getTotalPages()) ? startPage + naviSize - 1 : qnaList.getTotalPages();
+		
+	    model.addAttribute("list", qnaList);
+	    model.addAttribute("url", "/seller/qna");
+	    model.addAttribute("qnaList", qnaList);
+	    model.addAttribute("startPage", startPage);
+	    model.addAttribute("endPage", endPage);		
+	    System.out.println("========= qnaList = " + qnaList);
+		
+		return "seller/qnaList";
+	}
+	
+	/*
+	 * 판매자 qna조회
+	 */
+	@GetMapping("/qna/{qno}")
+	public String getQnA(@PathVariable int qno, Model model) {
+		QnA qna = sellerService.getQnA(qno);
+		System.out.println("qna = " + qna.getContent());
+		model.addAttribute("qna", qna);
+		
+		return "seller/qna";
 	}
 	
 	/*

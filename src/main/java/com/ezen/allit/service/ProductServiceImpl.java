@@ -1,5 +1,6 @@
 package com.ezen.allit.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,16 +38,21 @@ public class ProductServiceImpl implements ProductService {
 
 		Page<Product> product = 
 				productRepo.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
-		
-        System.out.println("product.getContent() = " + product.getContent()); 			  // 요청 페이지에 해당하는 글
-        System.out.println("product.getTotalElements() = " + product.getTotalElements()); // 전체 글갯수
-        System.out.println("product.getNumber() = " + product.getNumber()); 			  // DB로 요청한 페이지 번호
-        System.out.println("product.getTotalPages() = " + product.getTotalPages()); 	  // 전체 페이지 갯수
-        System.out.println("product.getSize() = " + product.getSize()); 				  // 한 페이지에 보여지는 글 갯수
-        System.out.println("product.hasPrevious() = " + product.hasPrevious()); 		  // 이전 페이지 존재 여부
-        System.out.println("product.isFirst() = " + product.isFirst()); 		  		  // 첫 페이지 여부
-        System.out.println("product.isLast() = " + product.isLast()); 					  // 마지막 페이지 여부
-		
+
+        return product;
+	}
+	
+	/*
+	 * 신상품목록조회
+	 */
+	@Transactional
+	public Page<Product> getNewProductList(Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 6;
+
+		Page<Product> product = 
+				productRepo.getNewProductList(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+
         return product;
 	}
 	

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<!-- header replace -->
+
+<!-- 내용 섹션 시작 -->
+<form method="post" th:action="@{ /seller/product/modify }" id="productDetail" enctype="multipart/form-data">
+	<div class="form-group">
+		<!-- <input type="text" th:value="${ #authentication.principal.seller.id }" name="seller" id="seller"> -->
+		<input type="hidden" th:value="${ product.seller.id }" name="sid" id="sid">
+		<input type="hidden" th:value="${ session.seller.id }" name="seller" id="seller">
+		<input type="hidden" th:value="${ product.pno }" name="pno" id="pno">
+		<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="350"><br>
+		<span>조회수: </span><span th:text="${ product.count }" style="color: green;"></span><br>
+		<span>별점: </span><span th:text="${ product.rating }" style="color: purple;"></span><br>
+		<span>좋아요: </span><span th:text="${ product.hit }" style="color: aqua;"></span><br>
+		<label for="sel1">카테고리</label>
+		<select class="form-control" name="category" id="category">
+			<option>==카테고리==</option>
+			<option th:value="1" th:selected="${ product.category }=='1'">패션</option>
+			<option th:value="2" th:selected="${ product.category }=='2'">식품</option>
+			<option th:value="3" th:selected="${ product.category }=='3'">주방용품</option>
+			<option th:value="4" th:selected="${ product.category }=='4'">생활용품</option>
+			<option th:value="5" th:selected="${ product.category }=='5'">인테리어</option>
+			<option th:value="6" th:selected="${ product.category }=='6'">가전제품</option>
+			<option th:value="7" th:selected="${ product.category }=='7'">스포츠/레저</option>
+			<option th:value="8" th:selected="${ product.category }=='8'">도서/음반/DVD</option>
+			<option th:value="9" th:selected="${ product.category }=='9'">반려동물용품</option>
+			<option th:value="10" th:selected="${ product.category }=='10'">건강식품</option>	
+		</select>
+		<label for="name">상품명</label>
+		<input type="text" class="form-control" th:value="${ product.name }" name="name" id="name"/>
+		<label for="price">판매가</label>
+		<input type="text" class="form-control" th:value="${ product.price }" name="price" id="price"/>
+		<label for="content">상품설명</label>
+		<textarea class="form-control" th:text="${ product.content }" rows="5" name="content" id="content"></textarea>
+		<label for="image">이미지 업로드</label>
+		<input type="hidden" th:value="${ product.imageName }" name="imageName" id="imageName">
+		<input type="file" class="form-control-file border" name="imageFile" id="imageFile"/>
+	</div>
+	<button type="submit" class="btn btn-light" id="modify">상품수정</button>
+	<button type="button" class="btn btn-light" id="delete">삭제</button>
+	<!-- <button type="button" class="btn btn-light" id="hit">좋아요</button> <br> <br> -->
+</form>
+<!-- 내용 섹션 끝 -->
+
+<!-- 댓글 출력 섹션 시작 -->
+<div class="card">
+	<div class="card-header">
+		<span>댓글</span>
+	</div>
+	<ul class="list-group" id="reply--box" th:each="review : ${ product.review }" th:if="${ review.prvno == 0 }">
+		<li class="list-group-item d-flex justify-content-between" id="reply--1">
+	  		<div> 
+				<span>평점:</span><span th:text="${ review.rating }" id="review-rating"></span>점 <br>
+				<span>작성일:</span><span th:if="${ review.modDate == null }" th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span>
+								  <span th:if="${ review.modDate != null }" th:text="${ #dates.format(review.modDate, 'yyyy-MM-dd') }+(' (수정됨)')"></span> <br>
+		  		<span>상품명:</span><span th:text="${ review.product.name }"></span> <br>
+		  		<span>리뷰:</span><span th:text="${ review.content }" id="review-content"></span> <br>
+		  		<span>좋아요 </span><span th:text="${ review.hit }"></span>개
+	  			<!-- <p th:text="${ review.member.id }"></p> -->
+	  		</div>
+	  	</li>
+	</ul>
+</div>  <br>
+<!-- 댓글 출력 섹션 끝 -->
+
+
+<!-- 자바스트립트 섹션 시작 -->
+<script type="text/javascript">
+$("#modify").click(function() {
+	let category = $("#category").val();
+	let name = $("#name").val();
+	let price = $("#price").val();
+	let content = $("#content").val();
+	let imageFile = $("#imageFile").val();
+	
+	if(category == 0) {
+		alert('카테고리를 선택해주세요');
+		return false;
+	}
+	if(name.trim() == "") {
+		alert('상품명을 입력해주세요');
+		return false;
+	}
+	if(price.trim() == "") {
+		alert('판매가를 입력해주세요');
+		return false;
+	}
+	if(content.trim() == "") {
+		alert('상품에 대한 설명을 입력해주세요');
+		return false;
+	}
+	if(imageFile == "") {
+		alert('이미지 파일을 포함해주세요');
+		return false;
+	}
+})
+
+let index = {
+	init:function() {
+		$("#delete").on("click", ()=>{
+			this.deleteByPno();
+		});
+	},
+	
+	// 상품 삭제
+	deleteByPno:function() {
+		let pno = $("#pno").val()
+		$.ajax({
+			type: "delete",
+			url: '/seller/product/delete/'+pno,
+			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+		}).done(function(response){ // 처리 성공 시
+			alert('삭제가 완료되었습니다');
+			location.href="/seller/";
+		}).fail(function(error){ // 처리 실패 시
+			alert(JSON.stringify(error));
+		});
+	}
+}
+
+index.init();
+
+</script>
+<!-- 자바스트립트 섹션 끝 -->
+
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+<!-- footer replace -->
+	
+	

@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 public class HitSaveRequestDto {
 	private int pno;
 	private int rvno;
-	private String sid;
 	private String mid;
 }

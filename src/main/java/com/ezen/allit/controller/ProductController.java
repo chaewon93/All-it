@@ -114,7 +114,8 @@ public class ProductController {
 
 		if(searchKeyword.equals("")) {
 			System.out.println("검색 키워드 없음");
-			productList = productService.getProductList(pageable);
+			System.out.println("=========================================");
+			productList = productService.getNewProductList(pageable);
 		} else {
 			System.out.printf("검색 키워드: [%s]\n", searchKeyword);
 			productList = productService.search(searchCondition, searchKeyword, pageable);

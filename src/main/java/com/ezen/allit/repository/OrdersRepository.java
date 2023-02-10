@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.ezen.allit.domain.Orders;
+import com.ezen.allit.domain.OrdersDetail;
 
 public interface OrdersRepository extends JpaRepository<Orders, Integer> {
 
@@ -16,4 +17,5 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer> {
 
 	// 사용자 주문목록조회
 	Page<Orders> findAllByMemberId(String id, Pageable pageable);
+
 }

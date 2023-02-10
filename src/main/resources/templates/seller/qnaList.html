@@ -1,0 +1,38 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<!-- header replace -->
+
+<!-- 내용 섹션 시작 -->
+<h1>문의 목록</h1>
+<table id="cartList">
+	<tr>
+		<th bgcolor="orange" width="100">카테고리</th>
+		<th bgcolor="orange" width="150">상품</th>
+		<th bgcolor="orange" width="300">제목</th>
+		<th bgcolor="orange" width="150">질문자</th>
+		<th bgcolor="orange" width="150">답변 상태</th>
+		<th bgcolor="orange" width="150">날짜</th>     
+	</tr>
+	<tr th:if="${size} == 0">
+		<td colspan="5" align="center" style="font-weight: bold; color: rgb(255, 195, 81);">문의 내역이 없습니다.</td>
+	</tr>
+	<tr th:each="qna : ${ qnaList }">      
+		<td th:text="${ qna.category }"> </td>
+		<td th:text="${ qna.product.name }"> </td>
+		<td>
+			<a th:href="@{ |/seller/qna/${ qna.qno }| }">
+				<h5 th:text="${ qna.title }"></h5>              
+			</a>    
+		</td>
+		<td th:text="${ qna.member.id }"> </td>
+		<td th:text="${qna.status == 0 ? '답변 대기' : '답변 완료'}"></td>     
+		<td th:text="${ #dates.format(qna.regDate, 'yyyy-MM-dd') }" /></td>
+	</tr>
+</table>   
+<!-- 내용 섹션 끝 -->
+
+<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
+<!-- pagination replace -->
+
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+<!-- footer replace -->

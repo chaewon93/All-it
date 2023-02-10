@@ -36,6 +36,7 @@
 </form>
 <!-- 내용 섹션 끝 -->
 
+<!-- 자바스트립트 섹션 시작 -->
 <script type="text/javascript">
 $("#save").click(function() {
 	let category = $("#category").val();
@@ -64,9 +65,10 @@ $("#save").click(function() {
 		alert('이미지 파일을 포함해주세요');
 		return false;
 	}
-})
+});
 
 </script>
+<!-- 자바스트립트 섹션 끝 -->
 
 <div th:replace="~{ /fragments/footer.html :: footer }"></div>
 <!-- footer replace -->

@@ -1,7 +1,5 @@
 package com.ezen.allit.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ezen.allit.domain.CustomerCenter;
-import com.ezen.allit.domain.Product;
-import com.ezen.allit.domain.QnA;
 import com.ezen.allit.repository.CustomerCenterRepository;
 import com.ezen.allit.service.CustomerCenterService;
 

@@ -1,22 +1,21 @@
 package com.ezen.allit.service;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
-import com.ezen.allit.domain.Review;
+import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Seller;
-import com.ezen.allit.dto.HitSaveRequestDto;
 
 public interface SellerService {
 
-	public Seller findByIdAndPwd(String id, String pwd);
+	Seller findByIdAndPwd(String id, String pwd);
+	
+	Seller modify(Seller seller);
+	
+	void quit(Seller seller);
 	
 	void saveSeller(Seller seller);
 
@@ -26,9 +25,11 @@ public interface SellerService {
 	
 	Product getProduct(int pno);
 	
-	void updateCount(int pno);
+	Page<OrdersDetail> getOrderList(Seller seller, Pageable pageable);
 	
-	void hitProduct(HitSaveRequestDto hitSaveRequestDto);
+	Page<QnA> getQnAList(Seller seller, Pageable pageable);
+	
+	QnA getQnA(int qno);
 	
 	Seller getSeller(Seller seller);
 

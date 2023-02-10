@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<!-- header replace -->
+
+<!-- 내용 섹션 시작 -->
+<div class="container" style="margin-top: 30px; background-color: white">	
+	<form method="get" th:action="@{ /seller/ }">
+		<input type="text" name="searchKeyword" id="searchKeyword" placeholder="검색어를 입력해주세요">
+		<button type="submit" class="btn btn-light">검색</button>
+	</form> <br>
+	<div class="row">
+		<div class="col-sm-4" th:each="order : ${ orderList }">
+			<a th:href="@{ |/seller/product/${ order.product.pno }| }">
+				<h2 th:text="${ order.product.name }"></h2>
+				<img class="img-fluid" th:src="@{ /images/ } + ${ order.product.imageName }" width="350">
+				<span>구매자 : </span><span th:text="${ order.member.id }"></span><br>
+				<span>가격 : </span><span th:text="${ order.product.price }"></span><br>
+				<span>수량 : </span><span th:text="${ order.quantity }"></span>
+			</a>
+			<hr class="d-sm-none">
+		</div>
+	</div>
+<!-- 	<div class="row">
+		<div class="col-sm-4" th:each="i : ${#numbers.sequence.(orderList.size()-1, 0, -1)"
+							  th:with="">
+			<a th:href="@{ |/seller/product/${ order.product.pno }| }">
+				<h2 th:text="${ order.product.name }"></h2>
+				<img class="img-fluid" th:src="@{ /images/ } + ${ order.product.imageName }" width="350">
+				<span>구매자 : </span><span th:text="${ order.member.id }"></span><br>
+				<span>가격 : </span><span th:text="${ order.product.price }"></span><br>
+				<span>수량 : </span><span th:text="${ order.quantity }"></span>
+			</a>
+			<hr class="d-sm-none">
+		</div>
+	</div> -->
+</div>
+<!-- 내용 섹션 끝 -->
+
+<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
+<!-- pagination replace -->
+
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+<!-- footer replace -->
+	
