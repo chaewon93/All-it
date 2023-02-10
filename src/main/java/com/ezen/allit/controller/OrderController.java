@@ -95,7 +95,7 @@ public class OrderController {
 
 		memberService.minusMoney(mid, amount);
 
-		return "redirect:/";
+		return "redirect:orderList";
 	}
 	
 	/** 주문하기 - 장바구니 */

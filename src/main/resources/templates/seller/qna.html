@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<!-- header replace -->
+
+<!-- 내용 섹션 시작 -->
+<form method="post">
+	<div>
+		<br>
+		<span>카테고리 </span>
+		<input type="text" th:value="${ qna.category }"/> <br><br>
+		<span>상품 </span>
+		<input type="text" th:value="${ qna.product.name }"/> <br><br>
+		<span>제목 </span>
+		<input type="text" th:value="${ qna.title }"/> <br><br>
+		<span>질문자 </span>
+		<input type="text" th:value="${ qna.member.id }"/> <br><br>
+		<span>문의내용 </span><br>
+		<textarea rows="9"cols="75" th:text="${ qna.content }"></textarea><br><br>
+		<span>답변 </span><br>
+		<textarea rows="9"cols="75" id="response"></textarea>
+	</div>
+	<div>
+		<input type="text" th:value="${ qna.product.pno }" id="pno">
+		<input type="text" th:value="${ qna.qno }" id="qno">
+		<button type="button" class="btn btn-primary" onclick="saveit()">작성</button>
+		<button type="button" class="btn btn-light" id="delete">취소</button>
+	</div>
+</form>
+<!-- 내용 섹션 시작 -->
+
+<!-- 자바스트립트 섹션 시작 -->
+<script type="text/javascript">
+function saveit() {
+	let data = {
+		pno: $("#pno").val(),
+		qno: $("#qno").val(),
+		response: $("#response").val()
+	}
+	console.log('data = ', data);
+	if(data.response.trim() == "") {
+		alert('답변을 작성해주세요');
+		return false;			
+	} else {
+		$.ajax({
+			type: "post",
+			url: '/product/qna/save/${data.pno}/response',
+			data: JSON.stringify(data),
+			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+		}).done(function(response){ // 처리 성공 시
+			alert('답변이 완료되었습니다');
+			location.href="/seller/";
+		}).fail(function(error){ // 처리 실패 시
+			alert(JSON.stringify(error));
+		});
+	}
+}
+/* let index = {
+	init:function() {
+		$("#save").on("click", ()=>{
+			this.save();
+		});
+	},
+	
+	save:function() {
+		let data = {
+			qno: $("#qno").val(),
+			response: $("#response").val()
+		}
+		console.log('data = ', data);
+		if(data.response.trim() == "") {
+			alert('답변을 작성해주세요');
+			return false;			
+		} else {
+			$.ajax({
+				type: "post",
+				url: '/product/qna/save/${data.pno}/response',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('답변이 완료되었습니다');
+				window.location.reload();
+			}).fail(function(error){ // 처리 실패 시
+				alert(JSON.stringify(error));
+			});
+		}
+	}
+} */
+</script>
+<!-- 자바스트립트 섹션 끝 -->
+
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+<!-- footer replace -->

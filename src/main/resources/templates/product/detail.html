@@ -54,13 +54,14 @@
 					<option th:value="결제">결제</option>
 					<option th:value="신고">신고</option>
 				</select> <br><br>
-				<span>문의내용 </span>
-				<textarea rows="10"cols="75" id="question-content"></textarea>
+				<span>제목 </span>
+				<input type="text" id="question-title"><br><br>
+				<span>문의내용 </span><br>
+				<textarea rows="9"cols="75" id="question-content"></textarea>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-primary" id="question-save">작성</button>
 				<button type="button" class="btn btn-light" data-dismiss="modal">취소</button>
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 		</div>
 	</div>
@@ -131,8 +132,9 @@
 <!-- 상품평 작성 섹션 시작 -->
 <div class="form-group">
 	<form id="reply-save-form">
-		<label for="content">상품평</label>
-		<textarea class="form-control" rows="3" id="review-save-content" placeholder="후기를 작성해주세요"></textarea>
+		<div class="card-body">
+			<textarea class="form-control" rows="3" id="review-save-content" placeholder="후기를 작성해주세요"></textarea>
+		</div>
 		<div class="card-footer">
 			<select class="form-control" name="rating" id="rating">
 				<option th:value="1">1</option>
@@ -301,6 +303,7 @@ let index = {
 			sid: $("#sid").val(),
 			mid: $("#mid").val(),
 			category: $("#question-category").val(),
+			title: $("#question-title").val(),
 			content: $("#question-content").val()
 		}
 		if(data.mid.trim() == "") {
@@ -308,6 +311,9 @@ let index = {
 			return false;			
 		} else if(data.category == 0) {
 			alert('카테고리를 선택해주세요');
+			return false;
+		} else if(data.title.trim() == "") {
+			alert('제목을 입력해주세요');
 			return false;
 		} else if(data.content.trim() == "") {
 			alert('내용을 입력해주세요');

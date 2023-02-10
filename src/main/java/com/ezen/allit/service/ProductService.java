@@ -10,6 +10,8 @@ import com.ezen.allit.domain.Product;
 public interface ProductService {	
 	Page<Product> getProductList(Pageable pageable);
 	
+	Page<Product> getNewProductList(Pageable pageable);
+	
 	Product getProduct(int pno);
 	
 	void updateCount(int pno);
