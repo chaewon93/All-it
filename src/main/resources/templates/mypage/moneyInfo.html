@@ -1,4 +1,5 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <!-- header replace -->
 <div th:replace="~{ /fragments/header.html :: header }"></div>
 <div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
@@ -14,7 +15,7 @@
 		<table id="moneyList" border="1" th:align="center">
 			<tr>
 				<th width="150">올잇머니 잔액</th>
-				<td colspan="2" th:text="${ session['user']?.money }">
+				<td colspan="2" th:text="${ #authentication.principal.member?.money }">
 			</tr>
 			<tr>
 				<th width="100"></th>

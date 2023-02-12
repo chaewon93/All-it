@@ -4,6 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +33,7 @@ public class SellerServiceImpl implements SellerService {
 	private final ProductRepository productRepo;
 	private final OrdersDetailRepository ordersDetailRepo;
 	private final QnARepository qnaRepo;
-//	private final BCryptPasswordEncoder encoder;
+	private final BCryptPasswordEncoder encoder;
   
 	/*
 	 * 동욱파트
@@ -47,10 +49,13 @@ public class SellerServiceImpl implements SellerService {
 	 * 판매자 정보수정
 	 */
 	@Transactional
-	public Seller modify(Seller seller) {
+	public void modify(Seller seller) {
 		Seller theSeller = sellerRepo.findById(seller.getId()).get();
+		String rawPwd = seller.getPwd(); 	 	// 정보수정 시 작성한 password를 문자열에 담아
+		String encPwd = encoder.encode(rawPwd); // PasswordEncoder객체를 이용해 해쉬화
+		
 		theSeller.setId(seller.getId());
-		theSeller.setPwd(seller.getPwd());
+		theSeller.setPwd(encPwd);
 		theSeller.setName(seller.getName());
 		theSeller.setContent(seller.getContent());
 		theSeller.setEmail(seller.getEmail());
@@ -58,8 +63,6 @@ public class SellerServiceImpl implements SellerService {
 		theSeller.setZipcode(seller.getZipcode());
 		theSeller.setAddress(seller.getAddress());
 		theSeller.setRegno(seller.getRegno());
-		
-		return theSeller;
 	}
 	
 	/*
@@ -71,31 +74,31 @@ public class SellerServiceImpl implements SellerService {
 	}
 	
 
-//	// 판매자 입점신청
-//	@Transactional
-//	public void saveSeller(Seller seller) {
-//		String rawPwd = seller.getPwd();		// 입점신청 화면에서 넘겨받은 pwd
-//		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
-//		seller.setPwd(encPwd);
-//		seller.setRole(Role.TEMP);
-//		System.out.println("seller = " + seller);
-//		sellerRepo.save(seller);
-//	}
+	// 판매자 입점신청
+	@Transactional
+	public void saveSeller(Seller seller) {
+		String rawPwd = seller.getPwd();		// 입점신청 화면에서 넘겨받은 pwd
+		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
+		seller.setPwd(encPwd);
+		seller.setRole(Role.SELLER);
+		sellerRepo.save(seller);
+	}
 	
 	/*
 	 *  판매자 입점신청
 	 */
-	@Transactional
-	public void saveSeller(Seller seller) {
-		seller.setRole(Role.TEMP);		
-		sellerRepo.save(seller);
-	}
+//	@Transactional
+//	public void saveSeller(Seller seller) {
+//		seller.setRole(Role.TEMP);		
+//		sellerRepo.save(seller);
+//	}
 	
 	/*
 	 * 판매자 상품목록조회
 	 */
 	@Transactional
 	public Page<Product> getProductList(Pageable pageable, Seller seller) {
+		System.out.println("seller = 0" + seller);
 		int page = pageable.getPageNumber() - 1;
 		int pageSize = 3;
 		Page<Product> product = 

@@ -7,13 +7,13 @@
 <!-- 내용 섹션 시작 -->
 <form method="post" th:action="@{ /seller/product/modify }" id="productDetail" enctype="multipart/form-data">
 	<div class="form-group">
-		<!-- <input type="text" th:value="${ #authentication.principal.seller.id }" name="seller" id="seller"> -->
 		<input type="hidden" th:value="${ product.seller.id }" name="sid" id="sid">
-		<input type="hidden" th:value="${ session.seller.id }" name="seller" id="seller">
+		<input type="hidden" th:value="${ #authentication.principal.seller.id }" name="seller" id="seller">
 		<input type="hidden" th:value="${ product.pno }" name="pno" id="pno">
 		<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="350"><br>
 		<span>조회수: </span><span th:text="${ product.count }" style="color: green;"></span><br>
-		<span>별점: </span><span th:text="${ product.rating }" style="color: purple;"></span><br>
+		<span>별점: </span><span th:if="${ product.rating } != 0" th:text="${ product.rating }" style="color: purple;"></span>
+						  <span th:if="${ product.rating } == 0" style="color: purple;"></span><br>
 		<span>좋아요: </span><span th:text="${ product.hit }" style="color: aqua;"></span><br>
 		<label for="sel1">카테고리</label>
 		<select class="form-control" name="category" id="category">
@@ -45,7 +45,7 @@
 </form>
 <!-- 내용 섹션 끝 -->
 
-<!-- 댓글 출력 섹션 시작 -->
+<!-- 리뷰 출력 섹션 시작 -->
 <div class="card">
 	<div class="card-header">
 		<span>댓글</span>
@@ -64,8 +64,7 @@
 	  	</li>
 	</ul>
 </div>  <br>
-<!-- 댓글 출력 섹션 끝 -->
-
+<!-- 리뷰 출력 섹션 끝 -->
 
 <!-- 자바스트립트 섹션 시작 -->
 <script type="text/javascript">

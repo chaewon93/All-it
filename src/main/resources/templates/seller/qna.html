@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <div th:replace="~{ /fragments/header.html :: header }"></div>
 <!-- header replace -->
 
@@ -18,13 +19,14 @@
 		<span>문의내용 </span><br>
 		<textarea rows="9"cols="75" th:text="${ qna.content }"></textarea><br><br>
 		<span>답변 </span><br>
-		<textarea rows="9"cols="75" id="response"></textarea>
+		<textarea th:if="${ qna.response }" th:text="${ qna.response }" rows="9"cols="75" id="response" readonly="readonly"></textarea>
+		<textarea th:unless="${ qna.response }" th:text="${ qna.response }" rows="9"cols="75" id="response"></textarea>
 	</div>
 	<div>
-		<input type="text" th:value="${ qna.product.pno }" id="pno">
-		<input type="text" th:value="${ qna.qno }" id="qno">
+		<input type="hidden" th:value="${ qna.product.pno }" id="pno">
+		<input type="hidden" th:value="${ qna.qno }" id="qno">
 		<button type="button" class="btn btn-primary" onclick="saveit()">작성</button>
-		<button type="button" class="btn btn-light" id="delete">취소</button>
+		<button type="button" class="btn btn-light" th:if="${ qna.response }" onclick="deleteit()">답변삭제</button>
 	</div>
 </form>
 <!-- 내용 섹션 시작 -->
@@ -43,17 +45,36 @@ function saveit() {
 		return false;			
 	} else {
 		$.ajax({
-			type: "post",
+			type: "put",
 			url: '/product/qna/save/${data.pno}/response',
 			data: JSON.stringify(data),
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 		}).done(function(response){ // 처리 성공 시
 			alert('답변이 완료되었습니다');
-			location.href="/seller/";
+			location.href="/seller/qna";
 		}).fail(function(error){ // 처리 실패 시
 			alert(JSON.stringify(error));
 		});
 	}
+}
+
+function deleteit() {
+	let data = {
+		pno: $("#pno").val(),
+		qno: $("#qno").val()
+	}
+	console.log('data = ', data);
+	$.ajax({
+		type: "put",
+		url: '/product/qna/delete/${data.pno}/response',
+		data: JSON.stringify(data),
+		contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+	}).done(function(response){ // 처리 성공 시
+		alert('답변이 삭제되었습니다');
+		location.href="/seller/qna";
+	}).fail(function(error){ // 처리 실패 시
+		alert(JSON.stringify(error));
+	});
 }
 /* let index = {
 	init:function() {

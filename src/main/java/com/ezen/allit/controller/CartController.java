@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.ezen.allit.config.auth.PrincipalDetailMember;
 import com.ezen.allit.domain.Cart;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Product;
@@ -26,7 +28,6 @@ import com.ezen.allit.service.CouponService;
 
 @Controller
 @RequestMapping("/cart/")
-@SessionAttributes("user")
 public class CartController {
 	
 	@Autowired
@@ -45,7 +46,7 @@ public class CartController {
 	@PostMapping("/insert")
 	//public int insertCart(@ModelAttribute("member") Member member, Cart cart, @RequestBody(required=false) Map<String, Object> param) {
 	public String insertCart(@RequestBody Map<String, Object> param,
-						@ModelAttribute("user") Member member) {
+							@AuthenticationPrincipal PrincipalDetailMember principal) {
 		
 		//System.out.println("====[member]==== : "+member);
 		//System.out.println("====[param]==== : "+param);
@@ -57,11 +58,11 @@ public class CartController {
 		product.setPno(Integer.parseInt(param.get("pno").toString()));
 		cart.setProduct(product);
 		
-		if(member.getId() != null || !member.getId().equals(null)) {
+		if(principal.getMember().getId() != null || !principal.getMember().getId().equals(null)) {
 			//System.out.println("====[cart]==== : "+cart);
-			cart.setMember(member);
+			cart.setMember(principal.getMember());
 			
-			Cart cartList = cartService.checkCart(member, product);
+			Cart cartList = cartService.checkCart(principal.getMember(), product);
 			if(cartList != null && cartList.getProduct().getPno() == product.getPno()) {
 				return "exist";
 			} else {
@@ -76,12 +77,12 @@ public class CartController {
 	/** 장바구니 조회 처리 */
 	@GetMapping("/cartList")
 	public String getCartList(Model model,
-							@ModelAttribute("user") Member member) {
+							@AuthenticationPrincipal PrincipalDetailMember principal) {
 		//System.out.println("=============[getCartList()]===============");
-		//System.out.println("member : "+member);
+		System.out.println("member : "+principal.getMember());
 		
 		int totalPrice = 0;
-		List<Cart> cartList = cartService.getCartList(member);
+		List<Cart> cartList = cartService.getCartList(principal.getMember());
 		//System.out.println("cartList : "+cartList);
 		
 		for(int i=0; i<cartList.size(); i++) {
@@ -115,17 +116,17 @@ public class CartController {
 	@ResponseBody
 	@PostMapping("/modCart")
 	public String modifyCart(@RequestBody Map<String, Object> param,
-						@ModelAttribute("user") Member member) {
+							@AuthenticationPrincipal PrincipalDetailMember principal) {
 		//System.out.println("=============[modifyCart()]===============");
 		Cart cart = new Cart();
 		Product product = new Product();
 		product.setPno(Integer.parseInt(param.get("pno").toString()));
 		cart.setProduct(product);
-		cart.setMember(member);
+		cart.setMember(principal.getMember());
 		
-		if(member.getId() != null || !member.getId().equals(null)) {
+		if(principal.getMember().getId() != null || !principal.getMember().getId().equals(null)) {
 			// 장바구니에 담겨있는 상품정보 조회
-			Cart cartList = cartService.checkCart(member, product);
+			Cart cartList = cartService.checkCart(principal.getMember(), product);
 			
 			if(cartList != null) {
 				//System.out.println("[checkCart quantity] " + cartList.getQuantity());
@@ -159,8 +160,7 @@ public class CartController {
 	
 	@PostMapping("useCoupon")
 	@ResponseBody
-	public Map<String, Integer> useCoupon(@ModelAttribute("user") Member member,
-				@RequestParam Map<String,Object> map) {
+	public Map<String, Integer> useCoupon(@RequestParam Map<String,Object> map) {
 		System.out.println("====================================== useCopon1");
 		System.out.println(map);
 		int memCouid = Integer.parseInt(String.valueOf(map.get("memCouid")));

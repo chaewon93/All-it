@@ -64,6 +64,7 @@ public class Member {
 	@CreationTimestamp
 	private Date regDate;			 	   		 		     	 // 가입일
 	private Grade grade;	   		 		    			 	 // 회원등급
+	private Role role;	   		 		    			 	 	 // 역할
 	
 	@Builder
 	public Member(String id, String pwd, String name, String email, String phone, String address, String zipcode,

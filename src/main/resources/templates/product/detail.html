@@ -1,18 +1,20 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <div th:replace="~{ /fragments/header.html :: header }"></div>
 <!-- header replace -->
 
 <!-- 내용 섹션 시작 -->
 <form method="post" id="productDetail">
 	<div class="form-group">
-		<input type="hidden" th:value="${ session['user']?.id }" name="mid" id="mid"><!-- th:if="${ session['user'].id } ne null" -->
+		<input type="hidden" sec:authorize="isAuthenticated()" th:value="${ #authentication.principal.member.id }" name="mid" id="mid"><!-- th:if="${ session['user'].id } ne null" -->
 		<input type="hidden" th:value="${ product.seller.id }" name="sid" id="sid">
 		<input type="hidden" th:value="${ product.pno }" name="pno" id="pno">
 		<input type="hidden" th:value="${ product.imageName }" name="imageName" id="imageName">
 		<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="350"><br>
 		<span>조회수: </span><span th:text="${ product.count }" style="color: green;"></span><br>
-		<span>별점: </span><span th:text="${ product.rating }" style="color: purple;"></span><br>
+		<span>별점: </span><span th:if="${ product.rating } != 0" th:text="${ product.rating }" style="color: purple;"></span>
+						  <span th:if="${ product.rating } == 0" style="color: purple;"></span><br>
 		<span>좋아요: </span><span th:text="${ product.hit }" style="color: aqua;"></span><br>
 		<label for="sel1">카테고리</label>
 		<input type="hidden" class="form-control" th:value="${ product.category }" name="category" id="category"/>
@@ -28,8 +30,8 @@
 	</div>
 	<input type="button" class="btn btn-light" id="inCart" value="장바구니">
 	<input type="submit" class="btn btn-light" id="buy" formaction="/order/orderNow" value="바로구매">
-  <input type="button" class="btn btn-light" id="hit" value="좋아요"/>
-  <input type="button" class="btn btn-light" data-toggle="modal" data-target="#myModal" value="문의하기"/> <br> <br>
+	<input type="button" class="btn btn-light" id="hit" value="좋아요"/>
+	<input type="button" class="btn btn-light" data-toggle="modal" data-target="#myModal" value="문의하기"/> <br> <br>
 	<input type="button" class="btn btn-light" onclick="allmemproCoupon()" value="쿠폰"><br>
 	<input type="text" name="useCoupon" id="useCoupon">
 	<input type="text" name="couPrice" id="couPrice">
@@ -57,7 +59,7 @@
 				<span>제목 </span>
 				<input type="text" id="question-title"><br><br>
 				<span>문의내용 </span><br>
-				<textarea rows="9"cols="75" id="question-content"></textarea>
+				<textarea rows="6"cols="75" id="question-content"></textarea>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-primary" id="question-save">작성</button>
@@ -75,7 +77,8 @@
 	</div>
 	<ul class="list-group" id="reply--box" th:each="review : ${ product.review }" th:if="${ review.prvno == 0 }">
 		<li class="list-group-item d-flex justify-content-between" id="reply--1">
-	  		<div> 
+	  		<div>
+	  			<span>작성자:</span><span th:text="${ review.member.id }" id="review-writer"></span> <br>
 				<span>평점:</span><span th:text="${ review.rating }" id="review-rating"></span>점 <br>
 				<span>작성일:</span><span th:if="${ review.modDate == null }" th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span>
 								  <span th:if="${ review.modDate != null }" th:text="${ #dates.format(review.modDate, 'yyyy-MM-dd') }+(' (수정됨)')"></span> <br>
@@ -104,7 +107,7 @@
 					<option th:value="4">4</option>
 					<option th:value="5">5</option>	
 				</select>
-				<input type="text" id="modifying-rvno">
+				<input type="hidden" id="modifying-rvno">
 				<!-- <input type="file" class="form-control-file border" name="reviewImageFile" id="reviewImageFile"/> -->
 				<button type="button" class="btn btn-primary" id="reviewModify" th:onclick="'javascript:index.modifyReview(this, pno.value);'">수정</button>
 				<button type="button" class="btn btn-primary" id="reviewCancle" th:onclick="'javascript:index.cancleReview(this);'">취소</button>
@@ -306,7 +309,7 @@ let index = {
 			title: $("#question-title").val(),
 			content: $("#question-content").val()
 		}
-		if(data.mid.trim() == "") {
+		if(data.mid == null || data.mid.trim() == "") {
 			alert('로그인이 필요한 서비스입니다');
 			return false;			
 		} else if(data.category == 0) {
@@ -341,7 +344,7 @@ let index = {
 			content: $("#review-save-content").val(),
 			rating: $("#rating").val()
 		}
-		if(data.mid.trim() == "") {
+		if(data.mid == null || data.mid.trim() == "") {
 			alert('로그인이 필요한 서비스입니다');
 			return false;
 		} else if(data.content.trim() == "") {

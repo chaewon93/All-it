@@ -7,21 +7,24 @@ import javax.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ezen.allit.config.auth.PrincipalDetailSeller;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
-import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
 import com.ezen.allit.service.SellerService;
 
@@ -32,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/seller")
 public class SellerController {
 	private final SellerService sellerService;
+	private final AuthenticationManager authenticationManager;
 		
 	// 판매자 상품등록 화면 이동
 	@GetMapping("/insert")
@@ -41,43 +45,36 @@ public class SellerController {
 	}
 	
 	// 로그아웃
-	@GetMapping("/logout")
-	public String logout(HttpSession session) {
-		session.invalidate();
-		
-		return "redirect:/";
-	}
+//	@GetMapping("/logout")
+//	public String logout(HttpSession session) {
+//		session.invalidate();
+//		
+//		return "redirect:/";
+//	}
 	
 	/*
 	 * 판매자 로그인
 	 */
-	@PostMapping("/login")
-	public String login(Seller seller, HttpSession session) {
-		Seller theSeller = sellerService.findByIdAndPwd(seller.getId(), seller.getPwd());
-		if(theSeller != null) {
-			if(theSeller.getRole().equals(Role.ADMIN)) {
-				session.setAttribute("admin", theSeller);
-				return "admin/adminMain";
-			}
-			if(theSeller.getRole().equals(Role.SELLER)) {
-				session.setAttribute("seller", theSeller);
-				return "redirect:/seller/";
-			} else {
-				
-				return "seller/loginError";
-			}
-		} else {
-			
-			return "seller/login";
-		}
-	}
-	
-	/** 판매자 아이디 중복확인 */
-	@ResponseBody
-	@PostMapping("/idCheck")
-	public int idCheck(@RequestParam("userId") String user_id) {
-		return sellerService.idCheck(user_id);
-	}
+//	@PostMapping("/login")
+//	public String login(Seller seller, HttpSession session) {
+//		Seller theSeller = sellerService.findByIdAndPwd(seller.getId(), seller.getPwd());
+//		if(theSeller != null) {
+//			if(theSeller.getRole().equals(Role.ADMIN)) {
+//				session.setAttribute("admin", theSeller);
+//				return "admin/adminMain";
+//			}
+//			if(theSeller.getRole().equals(Role.SELLER)) {
+//				session.setAttribute("seller", theSeller);
+//				return "redirect:/seller/";
+//			} else {
+//				
+//				return "seller/loginError";
+//			}
+//		} else {
+//			
+//			return "seller/login";
+//		}
+//	}
 	
 	// 판매자 마이페이지 이동
 	@GetMapping("/mypage")
@@ -87,30 +84,29 @@ public class SellerController {
 		return "seller/mypage";
 	}
 	
-	
 	/*
 	 * 판매자 정보 수정
 	 */
 	@PostMapping("/modify")
-	public String modify(Seller seller, HttpSession session) {
-		Seller theSeller = sellerService.modify(seller);
-		session.setAttribute("seller", theSeller);
+	public String modify(Seller seller) {
+		sellerService.modify(seller);
+		
+		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(seller.getId(), seller.getPwd()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 		
 		return "redirect:/seller/";
 	}
-	
 	
 	/*
 	 * 판매자 탈퇴
 	 */
 	@PostMapping("/quit")
-	public String quit(Seller seller, HttpSession session) {
-		session.invalidate();
+	public String quit(Seller seller) {
 		sellerService.quit(seller);
+		SecurityContextHolder.clearContext();
 		
 		return "redirect:/";
 	}
-	
 	
 	/*
 	 * 판매자 메인화면 이동
@@ -118,15 +114,14 @@ public class SellerController {
 	@RequestMapping("/")
 	public String mainView(Model model,
 						String searchKeyword,
-						HttpSession session,
+						@AuthenticationPrincipal PrincipalDetailSeller principal,
 						@PageableDefault(page = 1) Pageable pageable) {
 		
-		Seller seller = (Seller) session.getAttribute("seller");
 		Page<Product> productList = null;
 		if(searchKeyword == null || searchKeyword.equals("")) {
-			productList = sellerService.getProductList(pageable, seller);
+			productList = sellerService.getProductList(pageable, principal.getSeller());
 		} else {
-			productList = sellerService.search(seller, searchKeyword, pageable);
+			productList = sellerService.search(principal.getSeller(), searchKeyword, pageable);
 		}
 		
 		int naviSize = 10; // 페이지네이션 갯수
@@ -177,10 +172,10 @@ public class SellerController {
 	 * 판매자 주문목록조회
 	 */
 	@GetMapping("/order")
-	public String getOrderList(HttpSession session, Model model,
+	public String getOrderList(Model model,
+							@AuthenticationPrincipal PrincipalDetailSeller principal,
 							@PageableDefault(page = 1) Pageable pageable) {
-		Seller seller = (Seller) session.getAttribute("seller");
-		Page<OrdersDetail> orderList = sellerService.getOrderList(seller, pageable);
+		Page<OrdersDetail> orderList = sellerService.getOrderList(principal.getSeller(), pageable);
 		
 		int naviSize = 10; // 페이지네이션 갯수
 		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
@@ -200,10 +195,10 @@ public class SellerController {
 	 * 판매자 qna목록조회
 	 */
 	@GetMapping("/qna")
-	public String getQnAList(HttpSession session, Model model,
+	public String getQnAList(Model model,
+							@AuthenticationPrincipal PrincipalDetailSeller principal,
 							@PageableDefault(page = 1) Pageable pageable) {
-		Seller seller = (Seller) session.getAttribute("seller");
-		Page<QnA> qnaList = sellerService.getQnAList(seller, pageable);
+		Page<QnA> qnaList = sellerService.getQnAList(principal.getSeller(), pageable);
 		
 		int naviSize = 10; // 페이지네이션 갯수
 		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~

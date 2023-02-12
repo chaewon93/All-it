@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <div th:replace="~{ /fragments/login_header.html :: header }"></div>
 <!-- header replace -->
 
@@ -40,7 +41,7 @@
 	<div class="form-group">
 		<input type="text" class="form-control" placeholder="사업자번호" name="regno" id="regno" required="required">
 	</div>
-	<button type="submit" class="btn btn-primary" onclick="applyCheck()" id="apply">입점신청</button>
+	<button type="submit" class="btn btn-primary" onclick="reruapplyCheck()" id="apply">입점신청</button>
 </form>
 <!-- 내용 섹션 끝 -->
 
@@ -52,13 +53,13 @@
 //아이디 중복확인
 $("#checkBtn").click(function(){
 	var userId = $("#id").val(); // input_id에 입력되는 값
-	
+
 	if(userId == "") {
 		alert("아이디를 입력해주세요.");
 		return false;
 	} else {
 		$.ajax({
-			url : "/seller/idCheck",
+			url : "/sellerIdCheck",
 			type : "post",
 			data : {userId: userId},
 			dataType : 'json',

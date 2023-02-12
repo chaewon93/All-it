@@ -1,6 +1,5 @@
 //package com.ezen.allit.config.auth;
 //
-//import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.core.userdetails.UserDetails;
 //import org.springframework.security.core.userdetails.UserDetailsService;
 //import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -9,15 +8,17 @@
 //import com.ezen.allit.domain.Seller;
 //import com.ezen.allit.repository.SellerRepository;
 //
+//import lombok.RequiredArgsConstructor;
+//
 ///*
 // * 시큐리티가 로그인을 처리할 때 (즉, http.loginProcessingUrl이 실행될 때)
 // * UserDetailsService 타입으로 IoC 되어 있는 loadUserByUsername 매서드가 실행됨
 // * 여기는 username만 처리하는 곳
 // */
 //@Service
-//public class PrincipalDetailsService implements UserDetailsService {
-//	@Autowired
-//	private SellerRepository sellerRepo;
+//@RequiredArgsConstructor
+//public class PrincipalDetailSellerService implements UserDetailsService {
+//	private final SellerRepository sellerRepo;
 //	
 //	/*
 //	 * UserDetails 타입으로 시큐리티 세션 저장소에 유저정보가 들어감
@@ -28,7 +29,7 @@
 //		Seller seller = sellerRepo.findById(id).get();
 //		
 //		if(seller != null) {
-//			return new PrincipalDetails(seller);
+//			return new PrincipalDetailSeller(seller);
 //		} else {
 //			return null;
 //		}

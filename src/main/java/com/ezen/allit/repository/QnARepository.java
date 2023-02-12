@@ -36,6 +36,11 @@ public interface QnARepository extends JpaRepository<QnA, Integer> {
 	@Query(value = "UPDATE qna SET response = ?1, res_date = sysdate WHERE qno=?2", nativeQuery = true)
 	int responseQnA(String response, int qno);
 	
+	// 상품문의 답변
+	@Modifying
+	@Query(value = "UPDATE qna SET response = '', res_date = null WHERE qno=?1", nativeQuery = true)
+	int deleteResponseQnA(int qno);
+	
 	// 판매자 문의목록조회
 	Page<QnA> findAllBySellerId(String id, Pageable pageable);
 }

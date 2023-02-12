@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.QnA;
+import com.ezen.allit.domain.Role;
 import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.OrdersDetailRepository;
 import com.ezen.allit.repository.QnARepository;
@@ -33,7 +35,7 @@ public class MemberServiceImpl implements MemberService {
 	private final ProductRepository productRepo;
 	private final HitRepository hitRepo;
 	private final QnARepository qnaRepo;
-	private final OrdersDetailRepository ordersDetailRepo;
+	private final BCryptPasswordEncoder encoder;
 
 	/** 회원 조회 */
 	@Override
@@ -48,11 +50,31 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 
-	/** 회원 등록(회원가입) + 회원 정보수정 */
+	/** 회원 등록(회원가입) */
 	@Override
 	public void saveMember(Member member) {
-		
+		String rawPwd = member.getPwd();		// 회원가입 화면에서 넘겨받은 pwd
+		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
+		member.setPwd(encPwd);
+		member.setRole(Role.MEMBER);
+
 		memberRepo.save(member);
+	}
+	
+	/** 회원 정보 수정 */
+	@Override
+	@Transactional
+	public void modifyMember(Member member) {
+		Member theMember = memberRepo.findById(member.getId()).get();
+		String rawPwd = member.getPwd();		// 회원가입 화면에서 넘겨받은 pwd
+		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
+		
+		theMember.setPwd(encPwd);
+		theMember.setEmail(member.getEmail());
+		theMember.setPhone(member.getPhone());
+		theMember.setZipcode(member.getZipcode());
+		theMember.setAddress(member.getAddress());
+		theMember.setGender(member.getGender());
 	}
 
 	/** 아이디 중복확인 */

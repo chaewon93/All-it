@@ -13,7 +13,7 @@ public interface SellerService {
 
 	Seller findByIdAndPwd(String id, String pwd);
 	
-	Seller modify(Seller seller);
+	void modify(Seller seller);
 	
 	void quit(Seller seller);
 	

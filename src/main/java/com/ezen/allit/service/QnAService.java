@@ -8,4 +8,8 @@ public interface QnAService {
 	void saveResponse(QnADto qnaDto);
 	
 	void modifyStatus(QnADto qnaDto);
+	
+	void deleteResponse(QnADto qnaDto);
+	
+	void undoStatus(QnADto qnaDto);
 }
