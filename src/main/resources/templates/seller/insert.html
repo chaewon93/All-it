@@ -25,7 +25,7 @@
 		<label for="name">상품명</label>
 		<input type="text" class="form-control" name="name" id="name"/>
 		<label for="price">판매가</label>
-		<input type="text" class="form-control" name="price" id="price"/>
+		<input type="text" class="form-control" name="price" id="price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/>
 		<label for="content">상품설명</label>
 		<textarea class="form-control" rows="5" name="content" id="content"></textarea>
 		<label for="image">이미지 업로드</label>

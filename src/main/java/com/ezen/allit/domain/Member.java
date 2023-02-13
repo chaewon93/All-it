@@ -57,18 +57,20 @@ public class Member {
 	@JsonIgnoreProperties({"member"})
 	private List<Hit> hits = new ArrayList<>();	  	   			 // 연관관계 설정용
 	
-	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"member"})
 	private List<MemCoupon> memCoupon = new ArrayList<>();
 	
 	@CreationTimestamp
 	private Date regDate;			 	   		 		     	 // 가입일
+	@Enumerated(EnumType.STRING)
 	private Grade grade;	   		 		    			 	 // 회원등급
+	@Enumerated(EnumType.STRING)
 	private Role role;	   		 		    			 	 	 // 역할
 	
 	@Builder
 	public Member(String id, String pwd, String name, String email, String phone, String address, String zipcode,
-			String provider, String providerId, Grade grade, Date regDate) {
+			String provider, String providerId, Grade grade, Role role, Date regDate) {
 		super();
 		this.id = id;
 		this.pwd = pwd;
@@ -80,6 +82,7 @@ public class Member {
 		this.provider = provider;
 		this.providerId = providerId;
 		this.grade = grade;
+		this.role = role;
 		this.regDate = regDate;
 	}	
 }

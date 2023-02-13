@@ -49,7 +49,7 @@ public class PrincipalDetailMember implements UserDetails, OAuth2User {
 	
 	@Override
 	public String getName() {
-		return member.getName();
+		return null;
 	}
 	
 	// 계정 만료 여부 확인 (true: 만료x, false: 만료o => 사용 불가)
@@ -81,6 +81,7 @@ public class PrincipalDetailMember implements UserDetails, OAuth2User {
 	}
 
 	// 계정이 가진 권한 목록을 리턴(권한이 여러개일 시 for문으로 반복을 통해 해줘야 함)
+	@SuppressWarnings("serial")
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Collection<GrantedAuthority> collect = new ArrayList<>();

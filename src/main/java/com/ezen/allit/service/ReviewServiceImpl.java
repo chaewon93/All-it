@@ -1,22 +1,14 @@
 package com.ezen.allit.service;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Member;
-import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.Review;
-import com.ezen.allit.domain.Seller;
 import com.ezen.allit.dto.HitSaveRequestDto;
 import com.ezen.allit.dto.ReviewDeleteRequestDto;
 import com.ezen.allit.dto.ReviewModifyRequestDto;
@@ -24,9 +16,7 @@ import com.ezen.allit.dto.ReviewReplySaveRequestDto;
 import com.ezen.allit.dto.ReviewSaveRequestDto;
 import com.ezen.allit.repository.HitRepository;
 import com.ezen.allit.repository.MemberRepository;
-import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.repository.ReviewRepository;
-import com.ezen.allit.repository.SellerRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,8 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 	private final ReviewRepository reviewRepo;
-	private final ProductRepository productRepo;
-	private final SellerRepository sellerRepo;
+
 	private final HitRepository hitRepo;
 	private final MemberRepository memberRepo;
 

@@ -18,10 +18,10 @@
 	<!-- 미로그인 시작 -->
 	<div class="header-container" sec:authorize="!isAuthenticated()">
 		<ul class="nav justifiy-content-end" >
-	  		<li class="nav-item"><a class="nav-link" th:if="${session.user == null}" th:href="@{ /member-login }">로그인</a>
-	  		<li class="nav-item"><a class="nav-link" th:if="${session.user == null}" th:href="@{ /sellerLogin }">판매자 로그인</a>
-	  		<li class="nav-item"><a class="nav-link" th:if="${session.user == null}" th:href="@{ /member-join }">회원가입</a>
-	  		<li class="nav-item"><a class="nav-link" th:if="${session.user == null}" th:href="@{ /sellerApply }">입점신청</a></li>
+	  		<li class="nav-item"><a class="nav-link" th:href="@{ /member-login }">로그인</a>
+	  		<li class="nav-item"><a class="nav-link" th:href="@{ /sellerLogin }">판매자 로그인</a>
+	  		<li class="nav-item"><a class="nav-link" th:href="@{ /member-join }">회원가입</a>
+	  		<li class="nav-item"><a class="nav-link" th:href="@{ /sellerApply }">입점신청</a></li>
         	<li class="nav-item"><a class="nav-link" href="#">고객센터</a></li>
 		</ul>
 		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
@@ -58,9 +58,9 @@
 	<!-- 미로그인 끝 -->
 	
 	<!-- 회원 로그인 시작 -->
-	<div class="header-container" sec:authorize="isAuthenticated()" th:if="${ #authentication.principal.member }">
+	<div class="header-container" sec:authorize="hasRole('MEMBER')">
 		<ul class="nav justifiy-content-end" >
-	  		<li class="nav-item"><a class="nav-link" th:href="@{ /member/logout }">로그아웃</a></li>
+	  		<li class="nav-item"><a class="nav-link" th:href="@{ /logout }">로그아웃</a></li>
 	  		<li class="nav-item"><a class="nav-link" th:href="@{ /member/info }">마이올잇</a></li>
 	  		<li class="nav-item"><a class="nav-link" th:href="@{ /cart/cartList }">장바구니</a></li>
         	<li class="nav-item"><a class="nav-link" href="#">고객센터</a></li>
@@ -99,11 +99,11 @@
 	<!-- 회원 로그인 끝 -->
 	
 	<!-- 판매자 로그인 시작 -->
-<!--	<div class="header-container" sec:authorize="isAuthenticated()" th:if="${ #authentication.principal.seller }">
+ 	<div class="header-container" sec:authorize="hasRole('SELLER')">
 		<ul class="nav justifiy-content-end"> 
-			<li class="nav-item"><a class="nav-link" th:href="@{ / }">사용자페이지</a></li>
+			<li class="nav-item"><a class="nav-link" th:href="@{ /seller/ }">판매자페이지</a></li>
 			<li class="nav-item"><a class="nav-link" th:href="@{ /seller/mypage }">마이페이지</a></li>
-			<li class="nav-item"><a class="nav-link" th:href="@{ /seller/logout }">로그아웃</a></li>
+			<li class="nav-item"><a class="nav-link" th:href="@{ /logout }">로그아웃</a></li>
 		</ul>
 		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
 			<a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a> <br><br>
@@ -120,7 +120,7 @@
 				</ul>
 			</div>
 		</nav>
-	</div>-->
+	</div>
 	<!-- 판매자 로그인 끝 -->
 	
 </div>

@@ -21,7 +21,7 @@ public class Orders {
 	@ManyToOne
 	@JoinColumn(name = "mid")
 	private Member member;   									 // 사용자 정보
-	@OneToMany(mappedBy = "orders", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "orders", fetch = FetchType.LAZY)
 	@JsonIgnoreProperties({"orders"})
 	private List<OrdersDetail> ordersDetail = new ArrayList<>(); // 연관관계 설정용
 	@CreationTimestamp

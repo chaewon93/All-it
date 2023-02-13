@@ -1,6 +1,5 @@
 package com.ezen.allit.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import com.ezen.allit.domain.Grade;
 import com.ezen.allit.domain.Member;
-import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
 import com.ezen.allit.service.CouponService;
 import com.ezen.allit.service.MemberService;
@@ -42,7 +40,6 @@ public class HomeController {
 	@PostMapping("/member-join")
 	public String join(Member member, SessionStatus status) {
 		member.setGrade(Grade.BRONZE);
-		member.setRole(Role.MEMBER);
 		memberService.saveMember(member);
 		status.setComplete();
 		
@@ -100,5 +97,12 @@ public class HomeController {
 	public String loginView() {
 		
 		return "seller/login";
+	}
+	
+	// 권한없는 페이지 요청시
+	@GetMapping("/denied")
+	public String loginError() {
+		
+		return "denied";
 	}
 }

@@ -2,15 +2,12 @@ package com.ezen.allit.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.ezen.allit.domain.Product;
 import com.ezen.allit.dto.HitSaveRequestDto;
 import com.ezen.allit.dto.QnADto;
 import com.ezen.allit.dto.ResponseDto;
@@ -19,7 +16,6 @@ import com.ezen.allit.dto.ReviewModifyRequestDto;
 import com.ezen.allit.dto.ReviewReplySaveRequestDto;
 import com.ezen.allit.dto.ReviewSaveRequestDto;
 import com.ezen.allit.service.MemberService;
-import com.ezen.allit.service.ProductService;
 import com.ezen.allit.service.QnAService;
 import com.ezen.allit.service.ReviewService;
 import com.ezen.allit.service.SellerService;

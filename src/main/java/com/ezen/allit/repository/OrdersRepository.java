@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.ezen.allit.domain.Orders;
-import com.ezen.allit.domain.OrdersDetail;
 
 public interface OrdersRepository extends JpaRepository<Orders, Integer> {
 

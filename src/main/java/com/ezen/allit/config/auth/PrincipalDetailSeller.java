@@ -2,13 +2,10 @@ package com.ezen.allit.config.auth;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Seller;
 
 import lombok.Data;
@@ -70,6 +67,7 @@ public class PrincipalDetailSeller implements UserDetails {
 	}
 
 	// 계정이 가진 권한 목록을 리턴(권한이 여러개일 시 for문으로 반복을 통해 해줘야 함)
+	@SuppressWarnings("serial")
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Collection<GrantedAuthority> collect = new ArrayList<>();

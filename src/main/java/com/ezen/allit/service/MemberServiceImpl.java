@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,11 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Member;
-import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Role;
 import com.ezen.allit.repository.MemberRepository;
-import com.ezen.allit.repository.OrdersDetailRepository;
 import com.ezen.allit.repository.QnARepository;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.dto.HitSaveRequestDto;

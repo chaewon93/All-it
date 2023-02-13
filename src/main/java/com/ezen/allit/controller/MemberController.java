@@ -25,8 +25,6 @@ import com.ezen.allit.config.auth.PrincipalDetailMember;
 import com.ezen.allit.domain.Coupon;
 import com.ezen.allit.domain.MemCoupon;
 import com.ezen.allit.domain.Member;
-import com.ezen.allit.repository.CouponRepository;
-import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.service.CouponService;
 import com.ezen.allit.service.MemberService;
@@ -40,12 +38,6 @@ public class MemberController {
 	
 	@Autowired
 	private CouponService couponService;
-	
-	@Autowired
-	private CouponRepository couponRepo;
-	
-	@Autowired
-	private ProductRepository proRepo;
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -173,7 +165,7 @@ public class MemberController {
 	@PostMapping("/writeQna")
 	public String writeQna(QnA qna,
 						@AuthenticationPrincipal PrincipalDetailMember principal) {
-		
+	
 		qna.setStatus(0);
 		qna.setMember(principal.getMember());
 		System.out.println("[Member writeQna()] qna : "+qna);
@@ -222,6 +214,7 @@ public class MemberController {
 						@RequestParam(value="pno", defaultValue = "0")int pno) {
 
 		List<MemCoupon> memCouList = new ArrayList<>();
+		System.out.println("11111111111111");
 		if(pno == 0) {
 			memCouList = principal.getMember().getMemCoupon();
 			model.addAttribute("list", memCouList);
@@ -230,6 +223,7 @@ public class MemberController {
 			model.addAttribute("list", memCouList);
 		}
 		List<Coupon> couList = couponService.forMemberCouponList(principal.getMember(), pno);
+		System.out.println("22222");
 
 //		model.addAttribute("pno", pno); 딱히 필요 없을듯..
 
@@ -237,9 +231,11 @@ public class MemberController {
 		for(MemCoupon memCou : memCouList) {
 			couponList.add(memCou.getCoupon());
 		}
-
+		System.out.println("33333333333333333");
+		
 		couList.removeAll(couponList);
 
+		System.out.println("444444444444444");
 		model.addAttribute("couList", couList);
 		
 		return "member/coupon";
