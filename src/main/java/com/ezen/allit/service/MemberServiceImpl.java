@@ -143,6 +143,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 	
 	/** 상품 구매 시 포인트 사용 */
+	@Transactional
 	@Override
 	public void minusPoint(String id, int amount) {
 		Member member = memberRepo.findById(id).get();
@@ -150,6 +151,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	/** 상품 구매 완료 후 포인트 적립 */
+	@Transactional
 	@Override
 	public void addPoint(String id, int amount) {
 		Member member = memberRepo.findById(id).get();

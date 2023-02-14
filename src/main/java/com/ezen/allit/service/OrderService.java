@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Orders;
@@ -17,10 +16,10 @@ public interface OrderService {
 	
 	void saveOrdersDetail(Product product, Member member, OrdersDetail orderDetail);
 	
-	/** 주문 조회 */
+	/** 주문목록 조회(주문 조회) */
 	Page<Orders> getOrder(Member member, Pageable pageable);
 
-	/** 주문 상세 조회 */
-	Page<OrdersDetail> getOrderDetail(Member member, Pageable pageable);
+	/** 주문상세 조회 */
+	List<OrdersDetail> getOrderDetail(Member member, Orders order);
 
 }

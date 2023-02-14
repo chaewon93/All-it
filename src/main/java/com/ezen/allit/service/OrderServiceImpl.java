@@ -47,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
 		ordersDetailRepo.saveOrder(product.getPno(), ono, member.getId(), ordersDetail.getQuantity(), ordersDetail.getFinalPrice(), ordersDetail.getReceiverName(), ordersDetail.getReceiverZipcode(), ordersDetail.getReceiverAddr(), ordersDetail.getReceiverPhone());
 	}
 	
-	/** 주문목록 조회 1 - member에 대한 Orders 조회 */
+	/** 주문목록 조회 - member에 대한 Orders 조회 */
 	@Override
 	public Page<Orders> getOrder(Member member, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
@@ -56,15 +56,13 @@ public class OrderServiceImpl implements OrderService {
 		return ordersRepo.findAllByMemberId(member.getId(), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "ono")));
 	}
 	
-	/** 주문목록 조회 2 - Orders에 대한 OrdersDetail 조회 */
+	/** 주문상세 조회 - Orders에 대한 OrdersDetail 조회 */
 	@Transactional
-	public Page<OrdersDetail> getOrderDetail(Member member, Pageable pageable) {
-		int page = pageable.getPageNumber() - 1;
-		int pageSize = 10;
+	public List<OrdersDetail> getOrderDetail(Member member, Orders order) {
 		
-		Page<OrdersDetail> orderList = 
-				ordersDetailRepo.findAllByMemberId(member.getId(), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));
+		List<OrdersDetail> orderDetailList = 
+				ordersDetailRepo.findByMemberAndOrders(member, order);
 		
-		return orderList;
+		return orderDetailList;
 	}
 }
