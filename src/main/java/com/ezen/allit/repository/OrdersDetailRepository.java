@@ -1,11 +1,15 @@
 package com.ezen.allit.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.Orders;
 import com.ezen.allit.domain.OrdersDetail;
 
 public interface OrdersDetailRepository extends JpaRepository<OrdersDetail, Integer> {
@@ -25,6 +29,9 @@ public interface OrdersDetailRepository extends JpaRepository<OrdersDetail, Inte
 	
 	// 사용자 주문목록조회
 	Page<OrdersDetail> findAllByMemberId(String id, Pageable pageable);
+
+	// 사용자 주문상세 조회
+	List<OrdersDetail> findByMemberAndOrders(Member member, Orders order);
 	
 	// 판매자 주문목록조회
 	Page<OrdersDetail> findAllByProductSellerId(String id, Pageable pageable);
