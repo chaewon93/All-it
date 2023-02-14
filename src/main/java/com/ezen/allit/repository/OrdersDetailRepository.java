@@ -22,6 +22,14 @@ public interface OrdersDetailRepository extends JpaRepository<OrdersDetail, Inte
 	@Query(value =  "INSERT INTO orders_detail(pno, ono, mid, quantity, final_price, receiver_name, receiver_zipcode, receiver_addr, receiver_phone, status) VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, 1)", nativeQuery = true)
 	int saveOrder(int pno, int ono, String mid, int quantity, int finalPrice, String receiverName, String receiverZipcode, String receiverAddr, String receiverPhone);
 	
+	// 쿠폰사용
+	@Modifying
+	@Query(value =  "INSERT INTO orders_detail(mcid) VALUES(?1)", nativeQuery = true)
+	int saveCouponOrder(int mcid);
+	
+	// 사용자 주문목록조회
+	Page<OrdersDetail> findAllByMemberId(String id, Pageable pageable);
+
 	// 사용자 주문상세 조회
 	List<OrdersDetail> findByMemberAndOrders(Member member, Orders order);
 	

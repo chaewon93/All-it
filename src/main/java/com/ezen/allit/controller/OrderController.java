@@ -84,12 +84,16 @@ public class OrderController {
 
 	/** 주문하기 - 바로구매 */
 	@PostMapping("/order")
-	public String insertOrder(int pno, String mid, Model model, OrdersDetail ordersDetail) {   
+	public String insertOrder(int pno, String mid, Model model, OrdersDetail ordersDetail,
+							@RequestParam(value = "price") int price,
+							@RequestParam(value = "point") int point,
+							@RequestParam(value = "memCou") int mcid,
+							@RequestParam(value = "proid") int couProid) {   
 		System.out.println("ordersDetail = " + ordersDetail);
 
 		Product product = productRepo.findById(pno).get();
 		Member member = memberRepo.findById(mid).get(); 
-		int amount = product.getPrice() * ordersDetail.getQuantity();
+//		int amount = product.getPrice() * ordersDetail.getQuantity();
 
 		// 1) Orders 테이블에 insert
 		orderService.saveOrders(member);
@@ -97,14 +101,21 @@ public class OrderController {
 		orderService.saveOrdersDetail(product, member, ordersDetail);
 
 		// 3) 올잇머니 차감
-		memberService.minusMoney(mid, amount);
+		memberService.minusMoney(mid, price);
 		
 		// 4) 포인트 사용 시 포인트 차감
-		//if(point != 0 && point >= 1000) memberService.minusPoint(member.getId(), price);
+		if(point != 0 && point >= 1000) memberService.minusPoint(member.getId(), point);
 
 		// 포인트 적립 : 결제금액의 1% -> 구매확정 후 적립
-		//memberService.addPoint(member.getId(), price / 100);
+		if(point == 0) {
+			memberService.addPoint(member.getId(), price / 100);
+		}
 		
+		// 사용한 쿠폰 오더 디테일에 등록
+		if(mcid != 0) {
+			orderService.saveCouponOrder(mcid, couProid);
+		}
+				
 		// 5) 세션에 수정된 정보 저장
 		Member findMember = memberService.getMember(member);
 		model.addAttribute("user", findMember);
@@ -118,7 +129,9 @@ public class OrderController {
 							@ModelAttribute("user") Member member,
 							@RequestParam(value = "cno") int[] cno,
 							@RequestParam(value = "price") int price,
-							@RequestParam(value = "point") int point) {	
+							@RequestParam(value = "point") int point,
+							@RequestParam(value = "memCou") int mcid,
+							@RequestParam(value = "proid") int couProid) {	
 		
 		// 1) Orders 테이블에 insert
 		orderService.saveOrders(member);
@@ -145,7 +158,14 @@ public class OrderController {
 		if(point != 0 && point >= 1000) memberService.minusPoint(member.getId(), point);
 		
 		// 포인트 적립 : 결제금액의 1% -> 구매확정 후 적립
-		//memberService.addPoint(member.getId(), price / 100);
+		if(point == 0) {
+			memberService.addPoint(member.getId(), price / 100);
+		}
+		
+		// 사용한 쿠폰 오더 디테일에 등록
+		if(mcid != 0) {
+			orderService.saveCouponOrder(mcid, couProid);
+		}
 
 		// 6) 세션에 수정된 정보 저장
 		Member findMember = memberService.getMember(member);

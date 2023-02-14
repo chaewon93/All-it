@@ -16,6 +16,8 @@ public interface OrderService {
 	
 	void saveOrdersDetail(Product product, Member member, OrdersDetail orderDetail);
 	
+	void saveCouponOrder(int mcid, int couProid);
+
 	/** 주문목록 조회(주문 조회) */
 	Page<Orders> getOrder(Member member, Pageable pageable);
 
