@@ -171,10 +171,17 @@ public class SellerController {
 	 */
 	@GetMapping("/order")
 	public String getOrderList(Model model,
+							String searchKeyword,
 							@AuthenticationPrincipal PrincipalDetailSeller principal,
 							@PageableDefault(page = 1) Pageable pageable) {
-		Page<OrdersDetail> orderList = sellerService.getOrderList(principal.getSeller(), pageable);
-		
+		Page<OrdersDetail> orderList = null;
+		if(searchKeyword == null || searchKeyword.equals("")) {
+			orderList = sellerService.getOrderList(principal.getSeller(), pageable);
+		} else {
+			orderList = sellerService.getSearhcedOrderList(principal.getSeller(), searchKeyword, pageable);
+		}
+
+
 		int naviSize = 10; // 페이지네이션 갯수
 		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
 	    int endPage = ((startPage + naviSize - 1) < orderList.getTotalPages()) ? startPage + naviSize - 1 : orderList.getTotalPages();

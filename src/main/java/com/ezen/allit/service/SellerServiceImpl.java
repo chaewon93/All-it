@@ -97,7 +97,6 @@ public class SellerServiceImpl implements SellerService {
 	 */
 	@Transactional
 	public Page<Product> getProductList(Pageable pageable, Seller seller) {
-		System.out.println("seller = 0" + seller);
 		int page = pageable.getPageNumber() - 1;
 		int pageSize = 3;
 		Page<Product> product = 
@@ -126,7 +125,7 @@ public class SellerServiceImpl implements SellerService {
 	}
 
 	/*
-	 * 판매자 주문목록조회
+	 * 판매자 주문목록조회 (검색 x)
 	 */
 	@Transactional
 	public Page<OrdersDetail> getOrderList(Seller seller, Pageable pageable) {
@@ -135,6 +134,20 @@ public class SellerServiceImpl implements SellerService {
 		
 		Page <OrdersDetail> orderList = 
 				ordersDetailRepo.findAllByProductSellerId(seller.getId(), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));
+		
+		return orderList;
+	}
+	
+	/*
+	 * 판매자 주문목록조회 (검색 o)
+	 */
+	@Transactional
+	public Page<OrdersDetail> getSearhcedOrderList(Seller seller, String searchKeyword, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 10;
+		
+		Page <OrdersDetail> orderList = 
+				ordersDetailRepo.findAllByProductSellerIdAndProductNameContaining(seller.getId(), searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));
 		
 		return orderList;
 	}
@@ -176,7 +189,6 @@ public class SellerServiceImpl implements SellerService {
 		
 		return product;
 	}
-
 	
 	/*
 	 * 판매자 상품등록

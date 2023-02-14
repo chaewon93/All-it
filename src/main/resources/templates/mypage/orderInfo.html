@@ -116,7 +116,9 @@
 	</tr>
 	<tr>
 		<th>올잇머니 결제</th>
-		<td><span th:text="${ #numbers.formatInteger(#authentication.principal.member.money, 1, 'COMMA') }+'원'"></span>
+		<td>
+			<span th:if="${ session['user'].money == 0 }" th:text="${ #numbers.formatInteger(#authentication.principal.member.money, 1, 'COMMA') }+'원'"></span>
+			<span th:unless="${ session['user'].money == 0 }" th:text="${ #numbers.formatInteger(session['user'].money, 1, 'COMMA') }+'원'"></span>
 			<input type="hidden" id="money" th:value="${ #authentication.principal.member.money }">
 			<button type="button" id="moneyBtn" class="btn btn-light">충전하기</button>
 		</td>

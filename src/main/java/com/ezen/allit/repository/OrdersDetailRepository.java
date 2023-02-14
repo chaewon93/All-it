@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.ezen.allit.domain.OrdersDetail;
+import com.ezen.allit.domain.Product;
 
 public interface OrdersDetailRepository extends JpaRepository<OrdersDetail, Integer> {
 	// 주문번호생성 매서드
@@ -21,7 +22,11 @@ public interface OrdersDetailRepository extends JpaRepository<OrdersDetail, Inte
 	// 사용자 주문목록조회
 	Page<OrdersDetail> findAllByMemberId(String id, Pageable pageable);
 	
-	// 판매자 주문목록조회
+	// 판매자 주문목록조회 (검색 x)
 	Page<OrdersDetail> findAllByProductSellerId(String id, Pageable pageable);
+	
+	// 판매자 주문목록조회 (검색 o)
+	Page<OrdersDetail> findAllByProductSellerIdAndProductNameContaining(String id, String searchKeyword, Pageable pageable);
+
 
 }

@@ -46,7 +46,8 @@ public class SecurityConfig {
 			.and()
 			.formLogin()  								   // formLogin(): form 태그 기반의 로그인을 지원
 			.loginPage("/member-login") 			       // loginPage(): 로그인 페이지 지정
-			.loginProcessingUrl("/member/login")	   	   // loginProcessingUrl(): 해당 url 시큐리티 로그인이 처리 
+			.loginProcessingUrl("/member/login")	   	   // loginProcessingUrl(): 해당 url 시큐리티 로그인이 처리
+//			.successHandler(new LoginSuccessHandler())
 			.defaultSuccessUrl("/")			  			   // defaultSuccessUrl(): 로그인 성공 시 이동할 url
 			.failureUrl("/member-login")			  	   // failureUrl(): 로그인 실패 시 이동할 url
 			.usernameParameter("id")					   // usernameParameter(): username로 고정된 파라미터 속성명 변경

@@ -24,10 +24,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 	private final ReviewRepository reviewRepo;
-
 	private final HitRepository hitRepo;
 	private final MemberRepository memberRepo;
-
+	
 	/*
 	 * 리뷰작성
 	 */

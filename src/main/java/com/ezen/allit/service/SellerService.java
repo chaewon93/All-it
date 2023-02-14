@@ -27,6 +27,8 @@ public interface SellerService {
 	
 	Page<OrdersDetail> getOrderList(Seller seller, Pageable pageable);
 	
+	Page<OrdersDetail> getSearhcedOrderList(Seller seller, String searchKeyword, Pageable pageable);
+	
 	Page<QnA> getQnAList(Seller seller, Pageable pageable);
 	
 	QnA getQnA(int qno);

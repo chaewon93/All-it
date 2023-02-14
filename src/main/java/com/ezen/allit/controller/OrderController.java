@@ -3,10 +3,17 @@ package com.ezen.allit.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,8 +39,8 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/order")
-@SessionAttributes("user")
 @RequiredArgsConstructor
+@SessionAttributes("user")
 public class OrderController {
 	private final ProductRepository productRepo;
 	private final MemberRepository memberRepo;
@@ -48,10 +55,13 @@ public class OrderController {
 	
 	/** 즉시구매 시 주문/결제 페이지 요청 */
 	@PostMapping("/orderNow")
-	public String getOrderView(Product product, Model model,
+	public String getOrderView(Product product, Model model, String mid,
 							@RequestParam("quantity") int quantity) {
 		
+		Member member = memberRepo.findById(mid).get();
+		
 		Product theProduct = productRepo.findById(product.getPno()).get();
+		model.addAttribute("user", member);
 		model.addAttribute("product", theProduct);
 		model.addAttribute("quantity", quantity);
 		
@@ -60,10 +70,11 @@ public class OrderController {
 	
 	/** 장바구니에서 주문/결제 페이지 요청 */
 	@PostMapping("/orderInfo")
-	public String ordersView(Model model,
+	public String ordersView(Model model, String mid,
 							@RequestParam(value = "cno") int[] cno) {
 		
 		//System.out.println("[Orders ordersView()] cartList.size : "+cno.length);
+		Member member = memberRepo.findById(mid).orElse(null);
 		
 		int totalPrice = 0;
 		List<Cart> cartList = new ArrayList<>();
@@ -75,6 +86,7 @@ public class OrderController {
 			totalPrice += cart.getProduct().getPrice() * cart.getQuantity();
 		}
  		
+ 		model.addAttribute("user", member);
  		model.addAttribute("cartList", cartList);
 		model.addAttribute("totalPrice", totalPrice);
 		//System.out.println("[Orders ordersView()] totalPrice : "+totalPrice);
@@ -84,9 +96,7 @@ public class OrderController {
 
 	/** 주문하기 - 바로구매 */
 	@PostMapping("/order")
-	public String insertOrder(int pno, String mid, Model model, OrdersDetail ordersDetail) {   
-		System.out.println("ordersDetail = " + ordersDetail);
-
+	public String insertOrder(int pno, String mid, Model model, OrdersDetail ordersDetail, HttpSession session) {   
 		Product product = productRepo.findById(pno).get();
 		Member member = memberRepo.findById(mid).get(); 
 		int amount = product.getPrice() * ordersDetail.getQuantity();
@@ -106,22 +116,21 @@ public class OrderController {
 		//memberService.addPoint(member.getId(), price / 100);
 		
 		// 5) 세션에 수정된 정보 저장
-		Member findMember = memberService.getMember(member);
-		model.addAttribute("user", findMember);
-
+		model.addAttribute("user", memberRepo.findById(mid).get());
+		
 		return "redirect:orderList";
 	}
 	
 	/** 주문하기 - 장바구니 */
 	@PostMapping("/orders")
-	public String insertOrders(Model model, OrdersDetail ordersDetail,
-							@AuthenticationPrincipal PrincipalDetailMember principal,
+	public String insertOrders(Model model, OrdersDetail ordersDetail, String mid,
 							@RequestParam(value = "cno") int[] cno,
 							@RequestParam(value = "price") int price,
-							@RequestParam(value = "point") int point) {	
+							@RequestParam(value = "point") int point) {		
+		Member member = memberRepo.findById(mid).get();
 		
 		// 1) Orders 테이블에 insert
-		orderService.saveOrders(principal.getMember());
+		orderService.saveOrders(member);
 		
 		for(int i=0; i<cno.length; i++) {
 			Cart cart = cartRepo.findById(cno[i]).get();
@@ -131,7 +140,7 @@ public class OrderController {
 			//System.out.println("[order] ordersDetail : "+ordersDetail);
 			
 			// 2) OrdersDetail 테이블에 insert
-			orderService.saveOrdersDetail(cart.getProduct(), principal.getMember(), ordersDetail);
+			orderService.saveOrdersDetail(cart.getProduct(), member, ordersDetail);
 			
 			// 3) Cart 테이블에서 delete
 			cartRepo.deleteById(cno[i]);
@@ -139,17 +148,16 @@ public class OrderController {
 		
 		// 4) 올잇머니 차감
 		//System.out.println("[order] price : "+price);
-		memberService.minusMoney(principal.getMember().getId(), price);
+		memberService.minusMoney(member.getId(), price);
 		
 		// 5) 포인트 사용 시 포인트 차감
-		if(point != 0 && point >= 1000) memberService.minusPoint(principal.getMember().getId(), price);
+		if(point != 0 && point >= 1000) memberService.minusPoint(member.getId(), price);
 		
 		// 포인트 적립 : 결제금액의 1% -> 구매확정 후 적립
 		//memberService.addPoint(member.getId(), price / 100);
 
 		// 6) 세션에 수정된 정보 저장
-		Member findMember = memberService.getMember(principal.getMember());
-		model.addAttribute("user", findMember);
+		model.addAttribute("user", memberRepo.findById(member.getId()));
 		
 		return "redirect:orderList";
 
@@ -168,12 +176,13 @@ public class OrderController {
 		int naviSize = 10; // 페이지네이션 갯수
 		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
 	    int endPage = ((startPage + naviSize - 1) < orderList.getTotalPages()) ? startPage + naviSize - 1 : orderList.getTotalPages();
-
+	    
 	    model.addAttribute("list", orderList);
 	    model.addAttribute("url", "/order/orderList/");
 	    model.addAttribute("orderList", orderList);
 	    model.addAttribute("startPage", startPage);
 	    model.addAttribute("endPage", endPage);	    
+	    
 		
 		return "mypage/orderList";
 	}

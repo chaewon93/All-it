@@ -16,9 +16,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ezen.allit.config.auth.PrincipalDetailMember;
@@ -26,8 +28,10 @@ import com.ezen.allit.domain.Coupon;
 import com.ezen.allit.domain.MemCoupon;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.QnA;
+import com.ezen.allit.domain.Review;
 import com.ezen.allit.service.CouponService;
 import com.ezen.allit.service.MemberService;
+import com.ezen.allit.service.ReviewService;
 
 @Controller
 @RequestMapping("/member/")
@@ -38,10 +42,10 @@ public class MemberController {
 	
 	@Autowired
 	private CouponService couponService;
-	
+
 	@Autowired
 	private AuthenticationManager authenticationManager;
-	
+
 	/** 메인 페이지 */
 /*	@GetMapping("/index")
 	public String index() {
@@ -114,8 +118,9 @@ public class MemberController {
 	
 	/** 마이 페이지(내 정보 확인) */
 	@GetMapping("/info")
-	public void info(Model model, Member member) {
-		String fullAddr = member.getAddress();
+	public void info(Model model,
+					@AuthenticationPrincipal PrincipalDetailMember principal) {
+		String fullAddr = principal.getMember().getAddress();
 		//System.out.println("[Member info()] user Address : "+fullAddr);
 		if(fullAddr != null) {
 			String[] addr = fullAddr.split(",");
@@ -251,4 +256,34 @@ public class MemberController {
 		
 		return "redirect:coupon";
 	}
+	
+	/** 마이올잇>리뷰관리 */
+	@GetMapping("/reviewList")
+	public String reviewView(Model model,
+							@PageableDefault(page = 1) Pageable pageable,
+							@AuthenticationPrincipal PrincipalDetailMember principal) {
+	
+		Page<Review> reviewList = memberService.getReviewList(principal.getMember().getId(), pageable);
+		
+		int naviSize = 10; // 페이지네이션 갯수
+		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+		int endPage = ((startPage + naviSize - 1) < reviewList.getTotalPages()) ? startPage + naviSize - 1 : reviewList.getTotalPages();
+
+		model.addAttribute("list", reviewList);
+		model.addAttribute("startPage", startPage);
+		model.addAttribute("endPage", endPage);	
+		model.addAttribute("url", "/member/reviewList");	
+		model.addAttribute("reviewList", reviewList);
+		if(reviewList.getTotalElements() == 0) model.addAttribute("size", 0);
+		
+		return "mypage/reviewList";
+	}
+	
+	/** 마이올잇>리뷰작성 */
+//	@PostMapping("/writeReview")
+//	public String writeReview(Review review) throws Exception {
+//		memberService.saveReview(review);
+//		
+//		return "redirect:qnaList";
+//	}
 }
