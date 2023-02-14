@@ -14,7 +14,7 @@ public class OrdersDetail {
 	private int odno;	    		// 주문상세 일련번호
 	private int quantity;   		// 주문량
 	private int finalPrice;   		// 최종주문금액
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "ono")
 	private Orders orders;	 		// ono, quantity
 	@ManyToOne

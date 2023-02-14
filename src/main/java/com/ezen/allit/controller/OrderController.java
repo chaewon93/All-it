@@ -142,7 +142,7 @@ public class OrderController {
 		memberService.minusMoney(member.getId(), price);
 		
 		// 5) 포인트 사용 시 포인트 차감
-		if(point != 0 && point >= 1000) memberService.minusPoint(member.getId(), price);
+		if(point != 0 && point >= 1000) memberService.minusPoint(member.getId(), point);
 		
 		// 포인트 적립 : 결제금액의 1% -> 구매확정 후 적립
 		//memberService.addPoint(member.getId(), price / 100);
@@ -163,8 +163,6 @@ public class OrderController {
 		
 		Page<Orders> orderList = orderService.getOrder(member, pageable);
 		
-		//Page<OrdersDetail> orderList = orderService.getOrderDetail(member, pageable);
-		
 		int naviSize = 10; // 페이지네이션 갯수
 		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
 	    int endPage = ((startPage + naviSize - 1) < orderList.getTotalPages()) ? startPage + naviSize - 1 : orderList.getTotalPages();
@@ -179,6 +177,50 @@ public class OrderController {
 	}
 	
 	/** 주문 상세조회 */
+	@PostMapping("/orderDetail")
+	public String orderDetail(Model model, Orders order,
+							@ModelAttribute("user") Member member) {
+		
+		// 보여줄 정보
+		// 1) Orders - 주문일자
+		// 2) OrdersDetail - 상품정보(pno), 받는사람 정보(이름, 연락처, 주소), 결제정보(
+		
+		int totalPrice = 0;
+		int coupon = 0;
+		List<OrdersDetail> orderDetailList = orderService.getOrderDetail(member, order);
+		
+		for(int i=0; i<orderDetailList.size(); i++) {
+			totalPrice += orderDetailList.get(i).getProduct().getPrice() * orderDetailList.get(i).getQuantity();
+			
+			if(orderDetailList.get(i).getMemCoupon() != null) {
+				int prodPirce = orderDetailList.get(i).getProduct().getPrice() * orderDetailList.get(i).getQuantity();
+				if(orderDetailList.get(i).getMemCoupon().getCoupon().getDiscount() <= 100) {
+					// 할인율 계산
+					coupon = (prodPirce * orderDetailList.get(i).getMemCoupon().getCoupon().getDiscount()) / 100;
+				} else {
+					// 금액 할인
+					coupon = orderDetailList.get(i).getMemCoupon().getCoupon().getDiscount();
+				}
+			}
+		}
+		System.out.printf("총 상품금액 : %d, 쿠폰 : %d", totalPrice, coupon);
+		model.addAttribute("totalPrice", totalPrice);
+		model.addAttribute("coupon", coupon);
+		model.addAttribute("orderDetailList", orderDetailList);
+		
+		return "mypage/orderDetail";
+	}
 	
+	
+	/** 주문 취소 */
+	@PostMapping("/orderCancel")
+	public String orderCancel() {
+		
+		// OrdersDetail에서 주문 상세 정보 삭제
+		
+		// Orders에서 주문 삭제
+		
+		return "";
+	}
 
 }
