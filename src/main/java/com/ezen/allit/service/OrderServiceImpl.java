@@ -11,10 +11,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.ezen.allit.domain.MemCoupon;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Orders;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
+import com.ezen.allit.repository.MemCouponRepository;
 import com.ezen.allit.repository.OrdersDetailRepository;
 import com.ezen.allit.repository.OrdersRepository;
 
@@ -25,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderServiceImpl implements OrderService {
 	private final OrdersRepository ordersRepo;
 	private final OrdersDetailRepository ordersDetailRepo;
+	private final MemCouponRepository memCouRepo;
 	
 	/** 주문번호 생성 매서드 - ono를 검색해서 값이 있으면 그 값을, 없으면 새로 1을 반환하는 매서드  */
 	@Transactional
@@ -66,5 +69,29 @@ public class OrderServiceImpl implements OrderService {
 				ordersDetailRepo.findAllByMemberId(member.getId(), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));
 		
 		return orderList;
+	}
+	
+	/** 오더 디테일에 사용한 쿠폰 등록 */
+	@Transactional
+	public void saveCouponOrder(int mcid, int couProid) {
+		int ono = selectMaxOno();
+		System.out.println("맥스 ono~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		System.out.println(ono);
+		MemCoupon memCou = memCouRepo.findById(mcid).get();
+		Orders orders = ordersRepo.findById(ono).get();
+		List<OrdersDetail> detailList = orders.getOrdersDetail();
+		
+		for(OrdersDetail ordersDetail : detailList) {
+			int pno = ordersDetail.getProduct().getPno();
+			if(pno == couProid) {
+				ordersDetail.setMemCoupon(memCou);
+				memCou.setStatus(1);
+				System.out.println("=========================================== 최종 확인 사용된 쿠폰");
+				System.out.println(memCou);
+				System.out.println(ordersDetail);
+				break;
+			}
+		}
+		
 	}
 }

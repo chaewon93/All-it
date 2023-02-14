@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ezen.allit.domain.Grade;
 import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.OrdersDetail;
@@ -143,16 +144,32 @@ public class MemberServiceImpl implements MemberService {
 	}
 	
 	/** 상품 구매 시 포인트 사용 */
+	@Transactional
 	@Override
 	public void minusPoint(String id, int amount) {
 		Member member = memberRepo.findById(id).get();
+		System.out.println("====================================minusPoint 포인트");
+		System.out.println(amount);
+		System.out.println(member);
 		member.setPoint(member.getPoint() - amount);
+		System.out.println(member);
 	}
 
 	/** 상품 구매 완료 후 포인트 적립 */
+	@Transactional
 	@Override
 	public void addPoint(String id, int amount) {
+		System.out.println("==========================================포인트 적립");
 		Member member = memberRepo.findById(id).get();
+		String grade = member.getGrade().toString();
+		if(grade.equals(Grade.BRONZE.toString())) {
+			amount = amount * ;
+		}else if(grade.equals(Grade.SILVER.toString())) {
+			amount = amount * 
+		}else if(grade.equals(Grade.GOLD.toString())) {
+			
+		}else if(grade.equals(Grade.VIP.toString()))
+
 		member.setPoint(member.getPoint() + amount);
 	}
 

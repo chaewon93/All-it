@@ -37,27 +37,28 @@ function useCou(btn){
 	var chk = confirm("사용?");
 	let index = btn.previousElementSibling.value;
 	let memCouid = document.getElementsByName("memCouid")[index].value;
-	let totp = opener.document.getElementById("totp").value;
+	let price = document.getElementById("price").value;
 	
 	console.log("index=", btn.previousElementSibling);
-	console.log("content=", document.getElementsByName("memCouCon")[index]);
-	console.log("totp=", totp);
-	
-	opener.document.getElementById("useCoupon").value = document.getElementsByName("memCouCon")[index].value
+	console.log("price=", price);
+	console.log("memCouid=", memCouid);
+	opener.document.getElementById("coucon").value = document.getElementsByName("memCouCon")[index].value
+	opener.document.getElementById("proid").value = document.getElementById("proid").value;
 
-	alert(memCouid);
 	if(chk) {
 		$.ajax({
-			url:'/cart/useCoupon',
+			url:'/cart/useCoupon1',
 			type:'post',
 			data: {
 				"memCouid":memCouid,
-				"totp":totp,
+				"price":price,
 			},
 			success: function(res){
 				console.log("price=", res);
-				console.log("price=", res['price']);
-				opener.document.getElementById("couPrice").value = res['price'];
+				console.log("price=", res['fprice']);
+				opener.document.getElementById("coupon").value = res['fprice'];
+				opener.document.getElementById("memCou").value = res['memCouid'];
+				opener.priceCheck();
 				alert("쿠폰 사용");
 
 			}, error: function(xhr,status,err){
@@ -73,6 +74,8 @@ function useCou(btn){
 </head>
 <body>
 <form action="/coupon/deleteCoupon" method="post" id="theform">	
+<input type="hidden" name="price" id="price" th:value="${price}">
+<input type="hidden" name="proid" id="proid" th:value="${pno}">
 <table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
 
 <tr>
@@ -80,15 +83,20 @@ function useCou(btn){
 	<th bgcolor="orange" width="100">쿠폰 설명</th>
 	<th bgcolor="orange" width="100">등록일</th>
 	<th bgcolor="orange" width="100">만료일</th>
+	<th bgcolor="orange" width="100">최소사용금액</th>
 	<th bgcolor="orange" width="100">쿠폰상태</th>
 	<th th:if="${price}!=0" bgcolor="orange" width="100">쿠폰 사용</th>
 
 </tr>
-<tr th:each="memcou, state : ${list}">
+<tr th:each="memcou, state : ${list}" th:if="${price} < ${memcou.coupon.minPrice}">
+	<td align="center" colspan="7" th:if="${state.index} == 0">상품에 사용 가능한 쿠폰이 없습니다</td>
+</tr>
+<tr th:each="memcou, state : ${list}" th:if="${price} >= ${memcou.coupon.minPrice}">
 	<td th:text="${state.count}"></td>
 	<td th:text="${memcou.coupon.couContent}"></td>
 	<td th:text="${#dates.format(memcou.createMemCouDate, 'yyyy-MM-dd')}"></td>
 	<td th:text="${#dates.format(memcou.endMemCouDate, 'yyyy-MM-dd')}"></td>
+	<td th:text="${memcou.coupon.minPrice}"></td>
 	<td align="center" th:if="${memcou.status} == 0" th:text="사용가능"></td>
 	<td align="center" th:if="${memcou.status} == 1" th:text="사용됨"></td>
 	<td align="center" th:if="${memcou.status} == 2" th:text="만료됨"></td>
@@ -96,7 +104,8 @@ function useCou(btn){
 		<input type="hidden" name="memCouCon" id="memCouCon" th:value="${memcou.coupon.couContent}">
 		<input type="hidden" name="memCouid" id="memCouid" th:value="${memcou.mcid}">
  		<input type="hidden" name="index" id="index" th:value="${state.index}">	
-		<input type="button" name="useCoupon" th:value="사용" onclick="useCou(this)">
+		<input th:if="${memcou.status}==0" type="button" name="useCoupon" th:value="사용" onclick="useCou(this)">
+		<input th:if="${memcou.status}!=0" type="button" name="useCoupon" th:value="사용" onclick="useCou(this)" disabled="disabled">
 	</td>
 </tr>
 
@@ -116,7 +125,10 @@ function useCou(btn){
 		<th bgcolor="orange" width="100">조건</th>
 		<th bgcolor="orange" width="100">쿠폰</th>
 	</tr>
-	<tr th:each="couList, state : ${couList}">
+	<tr th:each="couList, state : ${couList}" th:if="${price} < ${couList.minPrice}">
+		<td align="center" colspan="7" th:if="${state.index} == 0">상품에 사용 가능한 쿠폰이 없습니다</td>
+	</tr>
+	<tr th:each="couList, state : ${couList}" th:if="${price} >= ${couList.minPrice}">
 		<td th:text="${state.count}"></td>
 		<td th:text="${couList.couContent}"></td>
 		<td th:text="${couList.createDate}"></td>

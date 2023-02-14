@@ -52,12 +52,14 @@
 		<th>상품 정보</th>
 		<th>수량</th>
 		<th>상품금액</th>
+		<th>쿠폰 적용</th>
 	</tr>
 	<!-- 바로 구매 -->
 	<th:block th:if="${product} != null">
 		<tr>
 			<td>
 				<a th:href="@{ |/product/${ product.pno }| }">
+					<input type="hidden" th:value="${product.pno}" name="ppno" id="ppno"/> 
 					<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="100">
 					<span th:text="${ product.name }"></span>
 				</a> 
@@ -65,12 +67,18 @@
 			</td>
 			<td th:text="${ quantity }+'개'">
 			<td th:text="${ #numbers.formatInteger((product.price * quantity), 1, 'COMMA') }+'원'">
+			<td>
+				<input type="hidden" name="index" id="index" th:value="0"/>
+				<input type="button" class="btn btn-light" onclick="selectCoupon(this)" value="쿠폰"/>
+				<input type="hidden" th:value="${product.price}" name="cpprice" id="cpprice"/>
+			</td>
 		</tr>
 	</th:block>
 	<!-- 장바구니 구매 -->
 	<th:block th:if="${cartList != null}">
-	<tr th:each="cart : ${cartList}">
+	<tr th:each="cart, status : ${cartList}">
 		<td><input type="hidden" th:value="${ cart?.cno }" name="cno" id="cno"/>
+			<input type="hidden" th:value="${cart?.product.pno}" name="cpno" id="cpno"/> 
 			<a th:href="@{ |/product/${ cart.product.pno }| }">
 				<img class="img-fluid" th:src="@{ /images/ } + ${ cart.product.imageName }" width="100">
 				<span th:text="${ cart.product.name }"></span>
@@ -80,6 +88,11 @@
 		<td th:text="${ cart.quantity }+'개'">
 		<input type="hidden" name="quantity" th:if="${cartList != null}" th:vlaue="${ cart.quantity }">
 		<td th:text="${ #numbers.formatInteger((cart.product.price*cart.quantity), 1, 'COMMA') }+'원'">
+		<td>
+			<input type="hidden" name="index" id="index" th:value="${status.index}"/>
+			<input type="button" class="btn btn-light" onclick="selectCoupon(this)" value="쿠폰"/>
+			<input type="hidden" th:value="${cart.product.price}" name="cpprice" id="cpprice"/>
+		</td>
 	</tr>
 	</th:block>
 </table>
@@ -95,8 +108,8 @@
 	</tr>
 	<tr>
 		<th>할인 쿠폰</th>
-		<td><span id="coupon" style="color: red;" th:text="|-${ '2500' }|+'원'"></span>
-		<button type="button" id="couponBtn" class="btn btn-light">쿠폰 선택</button>
+		<td><input type="text" id="coupon" name="coupon" readonly="readonly" style="color: red;border: none;">
+			<input type="text" id="coucon" name="coucon" readonly="readonly" style="border: none;">
 		</td>
 	</tr>
 	<tr>
@@ -125,6 +138,8 @@
 <br>
 <input type="radio" id="chkrdo"> 위 주문 내용을 확인 하였으며, 회원 본인은 개인정보 이용 및 제공 및 결제에 동의합니다.
 <br><br>
+<input type="text" name="memCou" id="memCou"/>
+<input type="text" name="proid" id="proid"/>
 <input type="hidden" th:value="${ session['user']?.id }" name="mid" id="mid"/>
 <input type="hidden" th:value="${ product?.pno }" name="pno" id="pno"/>
 <input type="hidden" th:if="${product != null}" th:value="${ quantity }" name="quantity" id="quantity"/>
@@ -155,6 +170,7 @@ let index = {
 		$("#moneyBtn").on("click", ()=>{ 
 			this.chargeMoney();
 		});
+
 	},
 
 	copyInfo:function() {
@@ -212,9 +228,13 @@ index.init();
 
 function changePoint() {
 	var point = $("#point");
+	var mypoint = parseInt($("#mypoint").text());
 	
 	if(point.val() == "") {
 		point.val(0);
+	}
+	if(point.val() > mypoint){
+		point.val(mypoint);
 	}
 	priceCheck();
 }
@@ -224,15 +244,17 @@ function priceCheck() {
 	// 총 상품가격
 	let totalPrice = parseInt($("#totalPrice").val());
 	// 쿠폰 적용시 할인금액
-	let coupon = parseInt(document.getElementById("coupon").innerText);
+//	let coupon = parseInt(document.getElementById("coupon").innerText);
+	let coupon = document.getElementById("coupon").value;
+
 	// 포인트 사용
 	let point = parseInt($("#point").val());
-	
+
 	// 총 결제금액 계산
-	let payPrice = totalPrice + coupon - point;
-	//console.log(totalPrice);
-	//console.log(coupon);
-	//console.log(totalPrice - coupon);
+	let payPrice = totalPrice - coupon - point;
+	console.log("totalPrice=",totalPrice);
+	console.log("coupon=",coupon);
+	console.log(totalPrice - coupon);
 	
 	$("#price").val(payPrice);
 	$("#payPrice").text(payPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"원");
@@ -284,6 +306,25 @@ function orderCheck() {
 	}
 	
 	return true;
+}
+
+function selectCoupon(btn){
+	let mid = $("#mid").val();
+	let index = btn.previousElementSibling.value;
+	
+	let apno = -1;
+	if($("input[name=ppno]").val() != null){
+		apno = $("input[name=ppno]").val();
+	}else if($("input[name=cpno]").eq(index).val() != null){
+		apno = $("input[name=cpno]").eq(index).val();
+	}
+	
+//	let apno = $("#ppno").val();
+//	let apno = $("input[name=cpno]").eq(index).val();
+	let price = $("input[name=cpprice]").eq(index).val();
+	
+	alert(apno+", "+ mid+", "+price+", "+index);
+	let openwin = window.open("/member/coupon1?pno="+apno, "쿠폰", "width=800, height=600, scrollbars=yes");
 }
 
 //카카오 주소api 사용
