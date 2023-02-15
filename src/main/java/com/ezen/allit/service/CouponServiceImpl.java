@@ -7,6 +7,7 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ezen.allit.domain.Coupon;
 import com.ezen.allit.domain.MemCoupon;
@@ -16,6 +17,7 @@ import com.ezen.allit.repository.CouponRepository;
 import com.ezen.allit.repository.MemCouponRepository;
 import com.ezen.allit.repository.MemberRepository;
 
+@Transactional
 @Service
 public class CouponServiceImpl implements CouponService {
 
@@ -127,7 +129,7 @@ public class CouponServiceImpl implements CouponService {
 		}
 
 	}
-	
+		
 	@Override
 	public List<MemCoupon> MemProCouponList(Member member, int pno) {
 		List<MemCoupon> list = member.getMemCoupon();
@@ -142,31 +144,39 @@ public class CouponServiceImpl implements CouponService {
 				}
 			}
 		}
+		System.out.println("============================= memcoulist");
+		System.out.println(memCouList);
 		return memCouList;
 	}
 
 	@Override
-	public int checkPrice(int memCouid, int totp) {
+	public int checkPrice(int memCouid, int price) {
 		Coupon coupon = memCouRepo.findById(memCouid).get().getCoupon();
-//		Product pro = proService.getProduct(pno);
-		
-//		int price = pro.getPrice();
+
 		int dis = coupon.getDiscount();
 		int result = 0;
-		int a = (totp * dis) / 100;
+		int a = (price * dis) / 100;
 		
-		if(totp>coupon.getMinPrice()) {
-			if(coupon.getDiscount()>100) {
-				result = totp - dis;
-			}else if(dis <= 100) {
-				result = totp - ((totp * dis) / 100);
+		if(price>=coupon.getMinPrice()) {
+			if(coupon.getDiscount()>=100) {
+				result = dis;
+			}else if(dis < 100) {
+				result = a;
 				System.out.println("할인적용금액 : " +a);
 				if(a > coupon.getMaxValue()) {
-					result = totp - coupon.getMaxValue();
+					result = coupon.getMaxValue();
 				}
 			}
 		}
 		
 		return result;
+	}
+
+	/** 취소/반품시 쿠폰 복원 */
+	@Transactional
+	@Override
+	public void updateStatus(int memCouid, int status) {
+		MemCoupon memCoupon = memCouRepo.findById(memCouid).get();
+		memCoupon.setStatus(status);
 	}
 }

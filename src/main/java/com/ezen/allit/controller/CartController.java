@@ -173,5 +173,24 @@ public class CartController {
 		map1.put("price", price);
 		return map1;
 	}
+	
+	@PostMapping("useCoupon1")
+	@ResponseBody
+	public Map<String, Integer> useCoupon1(@ModelAttribute("user") Member member,
+				@RequestParam Map<String,Object> map) {
+		System.out.println("====================================== useCopon1");
+		System.out.println(map);
+		int memCouid = Integer.parseInt(String.valueOf(map.get("memCouid")));
+		int price = Integer.parseInt(String.valueOf(map.get("price")));
+		System.out.println("====================================== useCopon2");
+		System.out.println(map);
+		int fprice = couponService.checkPrice(memCouid, price);
+		System.out.println(fprice);
+		System.out.println("====================================== useCopon3");
+		Map<String, Integer> map1 = new HashMap<>();
+		map1.put("fprice", fprice);
+		map1.put("memCouid", memCouid);
+		return map1;
+	}
 
 }

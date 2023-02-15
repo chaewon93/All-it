@@ -11,15 +11,29 @@ import com.ezen.allit.dto.OrdersDetailRequestDto;
 
 public interface OrderService {
 	
-	void saveOrders(Member member);
+	void saveOrders(Member member, int finalPrice, int usePoint);
 	
 	void saveOrdersDetail(Product product, Member member, OrdersDetail orderDetail);
 	
-	/** 주문 조회 */
+	void saveCouponOrder(int mcid, int couProid);
+
+	/** 주문목록 조회(주문 조회) */
 	Page<Orders> getOrder(Member member, Pageable pageable);
 
-	/** 주문 상세 조회 */
-	Page<OrdersDetail> getOrderDetail(Member member, Pageable pageable);
+	/** 주문상세 조회 */
+	List<OrdersDetail> getOrderDetail(Member member, Orders order);
+	
+	/** 구매 확정 */
+	void updateStatus(int status, int odno);
+	
+	/** 주문 취소 - OrdersDetail 삭제 */
+	void deleteOrdersDetail(int odno);
+	
+	/** 주문 취소 - Orders 삭제 */
+	void deleteOrders(int ono);
+	
+	/** 주문 취소 - Orders의 finalPrice 수정 */
+	void updateOrders(int ono, int finalPrice);
 	
 	void modifyOrderStatus(OrdersDetailRequestDto detailRequestDto, int status);
 

@@ -31,6 +31,9 @@ public interface MemberService {
 	/** 상품 구매시 올잇머니 차감 */
 	void minusMoney(String id, int amount);
 	
+	/** 취소/반품시 올잇머니 환불 */
+	void addMoney(String id, int amount);
+	
 	/** 상품 구매시 포인트 사용 */
 	void minusPoint(String id, int amount);
 	

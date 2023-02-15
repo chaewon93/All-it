@@ -61,9 +61,9 @@
 	<tr>
 		<td>성별*</td>
 		<td>
-			<input type="hidden" id="gender" th:value="${ session['user'].gender }">
-			<input type="radio" name="gender" id="m" value="남" /> 남
-			<input type="radio" name="gender" id="f" value="여" /> 여
+			<input type="hidden" id="gender" th:value="${session['user']?.gender}">
+			<input type="radio" name="gender" id="m" value="남자" /> 남자
+			<input type="radio" name="gender" id="f" value="여자" /> 여자
 			<input type="radio" name="gender" id="n" value="안함"/> 선택 안 함
 		</td>
 	</tr>
@@ -90,10 +90,10 @@ let index = {
 			var gender = $("#gender").val();
 			
 			switch(gender) {
-			case '남':
+			case '남자':
 				$("#m").prop('checked', true);
 				break;
-			case '여':
+			case '여자':
 				$("#f").prop('checked', true);
 				break;
 			case '안함':

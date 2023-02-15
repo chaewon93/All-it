@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ezen.allit.domain.Grade;
 import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.QnA;
@@ -178,23 +179,49 @@ public class MemberServiceImpl implements MemberService {
 	
 	/** 상품 구매 시 올잇머니 차감 */
 	@Transactional
+	@Override
 	public void minusMoney(String id, int amount) {
 		Member member = memberRepo.findById(id).get();
 		member.setMoney(member.getMoney() - amount);
 	}
 	
+	/** 취소/반품 시 올잇머니 환불 */
+	@Transactional
+	@Override
+	public void addMoney(String id, int amount) {
+		Member member = memberRepo.findById(id).get();
+		member.setMoney(member.getMoney() + amount);
+	}
+	
 	/** 상품 구매 시 포인트 사용 */
 	@Transactional
+	@Override
 	public void minusPoint(String id, int amount) {
 		Member member = memberRepo.findById(id).get();
+		System.out.println("====================================minusPoint 포인트");
+		System.out.println(amount);
+		System.out.println(member);
 		member.setPoint(member.getPoint() - amount);
+		System.out.println(member);
 	}
 
 	/** 상품 구매 완료 후 포인트 적립 */
 	@Transactional
+	@Override
 	public void addPoint(String id, int amount) {
+		System.out.println("==========================================포인트 적립");
 		Member member = memberRepo.findById(id).get();
-		member.setPoint(member.getPoint() + amount);
+		String grade = member.getGrade().toString();
+		if(grade.equals(Grade.BRONZE.toString())) {
+			member.setPoint(member.getPoint() + amount);
+		}else if(grade.equals(Grade.SILVER.toString())) {
+			 
+		}else if(grade.equals(Grade.GOLD.toString())) {
+			
+		}else if(grade.equals(Grade.VIP.toString())) {
+			
+		}
+
 	}
 	
 	/** 리뷰목록 조회 */

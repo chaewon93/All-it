@@ -13,10 +13,12 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -232,9 +234,27 @@ public class MemberController {
 		return "mypage/qnaDetail";
 	}
 	
+	/** 올잇머니 관리 페이지 */
+	@GetMapping("/money")
+	public String moneyView() {
+		
+		return "mypage/moneyInfo";
+	}
+	
+	/** 올잇머니 충전 */
+	@ResponseBody
+	@PostMapping("/moneyCharge")
+	public void moneyCharge(@ModelAttribute("user") Member member,
+						@RequestBody Map<String, Object> map, Model model) {
+
+		memberService.addMoney(member.getId(), Integer.parseInt(map.get("money").toString()));
+		
+		// 세션에 수정된 정보 저장
+		model.addAttribute("user", memberService.getMember(member));
+	}
+	
 	@GetMapping("coupon")
-	public String coupon(Model model,
-						@AuthenticationPrincipal PrincipalDetailMember principal,
+	public String coupon(@ModelAttribute("user") Member member, Model model, 
 						@RequestParam(value="pno", defaultValue = "0")int pno) {
 
 		List<MemCoupon> memCouList = new ArrayList<>();
@@ -242,6 +262,8 @@ public class MemberController {
 		if(pno == 0) {
 			memCouList = principal.getMember().getMemCoupon();
 			model.addAttribute("list", memCouList);
+			System.out.println("======================== getmemcoupon");
+			System.out.println(memCouList);
 		}else {
 			memCouList = couponService.MemProCouponList(principal.getMember(), pno);
 			model.addAttribute("list", memCouList);
@@ -249,7 +271,15 @@ public class MemberController {
 		List<Coupon> couList = couponService.forMemberCouponList(principal.getMember(), pno);
 		System.out.println("22222");
 
-//		model.addAttribute("pno", pno); 딱히 필요 없을듯..
+		model.addAttribute("pno", pno);
+		int price = 0;
+		if(pno != 0) {
+			 price = proRepo.findById(pno).get().getPrice();
+		}else {
+			price = 0;
+		}
+		
+		model.addAttribute("price", price);
 
 		List<Coupon> couponList = new ArrayList<>();
 		for(MemCoupon memCou : memCouList) {
@@ -265,9 +295,47 @@ public class MemberController {
 		return "member/coupon";
 	}
 	
+	@GetMapping("coupon1")
+	public String coupon1(@ModelAttribute("user") Member member, Model model, 
+						@RequestParam(value="pno", defaultValue = "0") int pno) {
+
+		List<MemCoupon> memCouList = new ArrayList<>();
+		if(pno == 0) {
+			memCouList = member.getMemCoupon();
+			model.addAttribute("list", memCouList);
+			System.out.println("======================== getmemcoupon");
+			System.out.println(memCouList);
+		}else {
+			memCouList = couponService.MemProCouponList(member, pno);
+			model.addAttribute("list", memCouList);
+		}
+		List<Coupon> couList = couponService.forMemberCouponList(member, pno);
+
+		model.addAttribute("pno", pno); 
+		int price = 0;
+		if(pno != 0) {
+			 price = proRepo.findById(pno).get().getPrice();
+		}else {
+			price = 0;
+		}
+		
+		model.addAttribute("price", price);
+
+		List<Coupon> couponList = new ArrayList<>();
+		for(MemCoupon memCou : memCouList) {
+			couponList.add(memCou.getCoupon());
+		}
+
+		couList.removeAll(couponList);
+
+		model.addAttribute("couList", couList);
+		
+		return "mypage/coupon";
+	}
+	
 	@PostMapping("downCoupon")
-	public String downCoupon(RedirectAttributes re, Member member,
-							@RequestParam Map<String,Object> map) {
+	public String downCoupon(@ModelAttribute("user") Member member,
+			@RequestParam Map<String, Object> map, RedirectAttributes re) {
 		
 		int couId = Integer.parseInt(String.valueOf(map.get("couId")));
 		

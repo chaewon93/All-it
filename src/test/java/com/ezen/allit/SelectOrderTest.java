@@ -21,7 +21,7 @@ public class SelectOrderTest {
 	private OrdersRepository orderRepo;
 	
 	@Test
-	@Disabled
+//	@Disabled
 	public void selectOrder() {
 		Optional<Orders> results = orderRepo.findById(3);
 		

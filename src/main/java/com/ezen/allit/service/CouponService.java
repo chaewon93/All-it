@@ -17,4 +17,7 @@ public interface CouponService {
 	List<MemCoupon> MemProCouponList(Member member, int pno);
 	
 	int checkPrice(int memCouid, int pno);
+	
+	/** 취소/반품시 쿠폰 복원 */
+	void updateStatus(int memCouid, int status);
 }
