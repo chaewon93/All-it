@@ -7,6 +7,7 @@ import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Orders;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
+import com.ezen.allit.dto.OrdersDetailRequestDto;
 
 public interface OrderService {
 	
@@ -19,5 +20,7 @@ public interface OrderService {
 
 	/** 주문 상세 조회 */
 	Page<OrdersDetail> getOrderDetail(Member member, Pageable pageable);
+	
+	void modifyOrderStatus(OrdersDetailRequestDto detailRequestDto, int status);
 
 }

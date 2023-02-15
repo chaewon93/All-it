@@ -153,7 +153,7 @@ public class SellerServiceImpl implements SellerService {
 	}
 	
 	/*
-	 * 판매자 qna목록조회
+	 * 판매자 qna목록조회 (검색 x)
 	 */
 	@Transactional
 	public Page<QnA> getQnAList(Seller seller, Pageable pageable) {
@@ -162,6 +162,20 @@ public class SellerServiceImpl implements SellerService {
 		
 		Page <QnA> qnaList = 
 				qnaRepo.findAllBySellerId(seller.getId(), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "qno")));
+		
+		return qnaList;
+	}
+	
+	/*
+	 * 판매자 qna목록조회 (검색 o)
+	 */
+	@Transactional
+	public Page<QnA> getSearchedQnAList(Seller seller, String searchKeyword, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 10;
+		
+		Page <QnA> qnaList = 
+				qnaRepo.findAllBySellerIdAndTitleContaining(seller.getId(), searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "qno")));
 		
 		return qnaList;
 	}

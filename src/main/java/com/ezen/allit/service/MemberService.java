@@ -17,6 +17,8 @@ public interface MemberService {
 	
 	Member modifyMember(Member member);
 	
+	Member modifySnsMember(Member member);
+	
 	public int idCheck(String id);
 	
 	public Member findById(Member member); 

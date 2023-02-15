@@ -1,10 +1,8 @@
 package com.ezen.allit.service;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,8 +11,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Member;
@@ -80,6 +76,23 @@ public class MemberServiceImpl implements MemberService {
 		theMember.setAddress(member.getAddress());
 		theMember.setGender(member.getGender());
 		
+		return theMember;
+	}
+	
+	/** sns 회원 정보 수정 */
+	@Override
+	@Transactional
+	public Member modifySnsMember(Member member) {
+		System.out.println("member = " + member);
+		Member theMember = memberRepo.findById(member.getId()).get();
+
+		theMember.setEmail(member.getEmail());
+		theMember.setPhone(member.getPhone());
+		theMember.setZipcode(member.getZipcode());
+		theMember.setAddress(member.getAddress());
+		theMember.setBirth(member.getBirth());
+		theMember.setGender(member.getGender());
+		System.out.println("theMember = " + theMember);
 		return theMember;
 	}
 

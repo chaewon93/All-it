@@ -31,6 +31,8 @@ public interface SellerService {
 	
 	Page<QnA> getQnAList(Seller seller, Pageable pageable);
 	
+	Page<QnA> getSearchedQnAList(Seller seller, String searchKeyword, Pageable pageable);
+	
 	QnA getQnA(int qno);
 	
 	Seller getSeller(Seller seller);

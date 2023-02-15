@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.ezen.allit.domain.OrdersDetail;
-import com.ezen.allit.domain.Product;
 
 public interface OrdersDetailRepository extends JpaRepository<OrdersDetail, Integer> {
 	// 주문번호생성 매서드

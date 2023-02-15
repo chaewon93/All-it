@@ -142,6 +142,7 @@ public class SellerController {
 	public String getProduct(Model model,
 							@PathVariable int pno,
 							@PageableDefault(page = 1) Pageable pageable) {
+		
 		Product theProduct = sellerService.getProduct(pno);
 
 		/* 별점 평균 구하기 */
@@ -174,13 +175,13 @@ public class SellerController {
 							String searchKeyword,
 							@AuthenticationPrincipal PrincipalDetailSeller principal,
 							@PageableDefault(page = 1) Pageable pageable) {
+		
 		Page<OrdersDetail> orderList = null;
 		if(searchKeyword == null || searchKeyword.equals("")) {
 			orderList = sellerService.getOrderList(principal.getSeller(), pageable);
 		} else {
 			orderList = sellerService.getSearhcedOrderList(principal.getSeller(), searchKeyword, pageable);
 		}
-
 
 		int naviSize = 10; // 페이지네이션 갯수
 		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
@@ -191,6 +192,7 @@ public class SellerController {
 	    model.addAttribute("orderList", orderList);
 	    model.addAttribute("startPage", startPage);
 	    model.addAttribute("endPage", endPage);		
+	    if(orderList.getTotalElements() == 0) model.addAttribute("size", 0);
 	    System.out.println("orderList.size() = " + orderList.getSize());
 		
 		return "seller/orderList";
@@ -201,9 +203,16 @@ public class SellerController {
 	 */
 	@GetMapping("/qna")
 	public String getQnAList(Model model,
+							String searchKeyword,
 							@AuthenticationPrincipal PrincipalDetailSeller principal,
 							@PageableDefault(page = 1) Pageable pageable) {
-		Page<QnA> qnaList = sellerService.getQnAList(principal.getSeller(), pageable);
+		
+		Page<QnA> qnaList = null;
+		if(searchKeyword == null || searchKeyword.equals("")) {
+			qnaList = sellerService.getQnAList(principal.getSeller(), pageable);
+		} else {
+			qnaList = sellerService.getSearchedQnAList(principal.getSeller(), searchKeyword, pageable);
+		}
 		
 		int naviSize = 10; // 페이지네이션 갯수
 		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
@@ -214,6 +223,8 @@ public class SellerController {
 	    model.addAttribute("qnaList", qnaList);
 	    model.addAttribute("startPage", startPage);
 	    model.addAttribute("endPage", endPage);		
+	    if(qnaList.getTotalElements() == 0) model.addAttribute("size", 0);
+	    
 	    System.out.println("========= qnaList = " + qnaList);
 		
 		return "seller/qnaList";

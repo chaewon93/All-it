@@ -88,7 +88,7 @@
 	  		</div>
 	  		<div class="d-flex">
 	  			<!-- <div class="font-italic" th:text="${ review.member.id }"></div> &nbsp; -->
-				<button class="badge" id="reviewModifyView" style="color: black"th:onclick="'javascript:index.modifyReviewView(this, ' +${ review.rating }+ ', ' +${ review.rvno }+');'">수정</button> <!-- th:if="${ review.member.id == session['user']?.id }" -->
+				<button class="badge" id="reviewModifyView" style="color: black" th:onclick="'javascript:index.modifyReviewView(this, ' +${ review.rating }+ ', ' +${ review.rvno }+');'">수정</button> <!-- th:if="${ review.member.id == session['user']?.id }" -->
 	  			<button class="badge" id="reviewDelete" style="color: black" th:onclick="'javascript:index.deleteReview(pno.value, ' +${ review.rvno }+ ');'">삭제</button> <!-- th:if="${ review.member.id == session['user']?.id }" -->
 	  			<button class="badge" id="reviewHit" style="color: black" th:onclick="'javascript:index.hitReview(pno.value, mid.value, ' +${ review.rvno }+ ');'">좋아요</button>
 	  		</div>

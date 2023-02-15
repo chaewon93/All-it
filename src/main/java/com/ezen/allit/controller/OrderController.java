@@ -5,15 +5,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -96,7 +91,7 @@ public class OrderController {
 
 	/** 주문하기 - 바로구매 */
 	@PostMapping("/order")
-	public String insertOrder(int pno, String mid, Model model, OrdersDetail ordersDetail, HttpSession session) {   
+	public String insertOrder(int pno, String mid, Model model, OrdersDetail ordersDetail) {   
 		Product product = productRepo.findById(pno).get();
 		Member member = memberRepo.findById(mid).get(); 
 		int amount = product.getPrice() * ordersDetail.getQuantity();

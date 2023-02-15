@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -29,12 +28,13 @@ import com.ezen.allit.domain.MemCoupon;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
+import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.service.CouponService;
 import com.ezen.allit.service.MemberService;
-import com.ezen.allit.service.ReviewService;
 
 @Controller
 @RequestMapping("/member/")
+@SessionAttributes("user")
 public class MemberController {
 	
 	@Autowired
@@ -42,10 +42,17 @@ public class MemberController {
 	
 	@Autowired
 	private CouponService couponService;
-
+	
 	@Autowired
-	private AuthenticationManager authenticationManager;
-
+	private MemberRepository memberRepo;
+	
+	@ModelAttribute("user")
+	public Member setMember(@AuthenticationPrincipal PrincipalDetailMember principal) {
+		Member member = principal.getMember();
+		System.out.println("member=============== = " + member);
+		return member;
+	}
+	
 	/** 메인 페이지 */
 /*	@GetMapping("/index")
 	public String index() {
@@ -118,27 +125,39 @@ public class MemberController {
 	
 	/** 마이 페이지(내 정보 확인) */
 	@GetMapping("/info")
-	public void info(Model model,
-					@AuthenticationPrincipal PrincipalDetailMember principal) {
-		String fullAddr = principal.getMember().getAddress();
+	public void info(Model model) {
+		Member member = (Member) model.getAttribute("user");
+		System.out.println("member = " + member);
+
+		String fullAddr = member.getAddress();
 		//System.out.println("[Member info()] user Address : "+fullAddr);
 		if(fullAddr != null) {
 			String[] addr = fullAddr.split(",");
 			model.addAttribute("addr", addr);
 		}
+		
+		// 세션에 수정된 정보 저장
+		model.addAttribute("user", memberRepo.findById(member.getId()).orElse(member));
+		
 	}
 	
 	/** 내 정보 수정 처리 */
 	@PostMapping("/infoModify")
-	public String infoModify(Member member) {
+	public String infoModify(Member member, Model model) {
 		System.out.println("[Member infoModify()] Member : "+member);
 		
 		// 회원 정보 수정
-		memberService.modifyMember(member);
+		if(member.getProvider() == "") {
+			System.out.println("일반회원 : "+member);
+			memberService.modifyMember(member);			
+		} else {
+			System.out.println("sns회원 : "+member);
+			memberService.modifySnsMember(member);
+		}
 		
 		// 세션에 수정된 정보 저장
-		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(member.getId(), member.getPwd()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+		model.addAttribute("user", memberRepo.findById(member.getId()).get());
+		
 		return "redirect:/";
 	}
 	
@@ -159,7 +178,7 @@ public class MemberController {
 	 * 	return "redirect:index"; 
 	 * }
 	 */
-	
+
 	/** 마이올잇>문의하기(1:1문의) - QnA 글 작성 */
 	@GetMapping("/qna")
 	public String QnaView() {

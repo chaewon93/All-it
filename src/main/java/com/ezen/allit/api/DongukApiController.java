@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ezen.allit.dto.HitSaveRequestDto;
+import com.ezen.allit.dto.OrdersDetailRequestDto;
 import com.ezen.allit.dto.QnADto;
 import com.ezen.allit.dto.ResponseDto;
 import com.ezen.allit.dto.ReviewDeleteRequestDto;
@@ -16,6 +17,7 @@ import com.ezen.allit.dto.ReviewModifyRequestDto;
 import com.ezen.allit.dto.ReviewReplySaveRequestDto;
 import com.ezen.allit.dto.ReviewSaveRequestDto;
 import com.ezen.allit.service.MemberService;
+import com.ezen.allit.service.OrderService;
 import com.ezen.allit.service.QnAService;
 import com.ezen.allit.service.ReviewService;
 import com.ezen.allit.service.SellerService;
@@ -29,6 +31,7 @@ public class DongukApiController {
 	private final ReviewService reviewService;
 	private final MemberService memberService;
 	private final QnAService qnaService;
+	private final OrderService orderService;
 
 	/*
 	 * 상품삭제
@@ -132,6 +135,15 @@ public class DongukApiController {
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 	
+	/*
+	 * 주문상태 수정
+	 */
+	@PutMapping("/product/modify/{odno}")
+	public ResponseDto<Integer> modifyOrderStatus(@RequestBody OrdersDetailRequestDto detailRequestDto) {
+		orderService.modifyOrderStatus(detailRequestDto, detailRequestDto.getStatus());
+		
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}
 	/*
 	 * 상품수정
 	 */
