@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -232,8 +233,27 @@ public class MemberController {
 		return "mypage/qnaDetail";
 	}
 	
+	/** 올잇머니 관리 페이지 */
+	@GetMapping("/money")
+	public String moneyView() {
+		
+		return "mypage/moneyInfo";
+	}
+	
+	/** 올잇머니 충전 */
+	@ResponseBody
+	@PostMapping("/moneyCharge")
+	public void moneyCharge(@ModelAttribute("user") Member member,
+						@RequestBody Map<String, Object> map, Model model) {
+
+		memberService.addMoney(member.getId(), Integer.parseInt(map.get("money").toString()));
+		
+		// 세션에 수정된 정보 저장
+		model.addAttribute("user", memberService.getMember(member));
+	}
+	
 	@GetMapping("coupon")
-	public String coupon(@ModelAttribute("user")Member member, Model model, 
+	public String coupon(@ModelAttribute("user") Member member, Model model, 
 						@RequestParam(value="pno", defaultValue = "0")int pno) {
 
 		List<MemCoupon> memCouList = new ArrayList<>();
@@ -271,8 +291,8 @@ public class MemberController {
 	}
 	
 	@GetMapping("coupon1")
-	public String coupon1(@ModelAttribute("user")Member member, Model model, 
-						@RequestParam(value="pno", defaultValue = "0")int pno) {
+	public String coupon1(@ModelAttribute("user") Member member, Model model, 
+						@RequestParam(value="pno", defaultValue = "0") int pno) {
 
 		List<MemCoupon> memCouList = new ArrayList<>();
 		if(pno == 0) {
@@ -309,8 +329,8 @@ public class MemberController {
 	}
 	
 	@PostMapping("downCoupon")
-	public String downCoupon(@ModelAttribute("user")Member member,
-			@RequestParam Map<String,Object> map, RedirectAttributes re) {
+	public String downCoupon(@ModelAttribute("user") Member member,
+			@RequestParam Map<String, Object> map, RedirectAttributes re) {
 		
 		int couId = Integer.parseInt(String.valueOf(map.get("couId")));
 		

@@ -171,4 +171,12 @@ public class CouponServiceImpl implements CouponService {
 		
 		return result;
 	}
+
+	/** 취소/반품시 쿠폰 복원 */
+	@Transactional
+	@Override
+	public void updateStatus(int memCouid, int status) {
+		MemCoupon memCoupon = memCouRepo.findById(memCouid).get();
+		memCoupon.setStatus(status);
+	}
 }

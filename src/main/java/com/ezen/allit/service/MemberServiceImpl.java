@@ -138,9 +138,18 @@ public class MemberServiceImpl implements MemberService {
 	
 	/** 상품 구매 시 올잇머니 차감 */
 	@Transactional
+	@Override
 	public void minusMoney(String id, int amount) {
 		Member member = memberRepo.findById(id).get();
 		member.setMoney(member.getMoney() - amount);
+	}
+	
+	/** 취소/반품 시 올잇머니 환불 */
+	@Transactional
+	@Override
+	public void addMoney(String id, int amount) {
+		Member member = memberRepo.findById(id).get();
+		member.setMoney(member.getMoney() + amount);
 	}
 	
 	/** 상품 구매 시 포인트 사용 */
@@ -163,14 +172,15 @@ public class MemberServiceImpl implements MemberService {
 		Member member = memberRepo.findById(id).get();
 		String grade = member.getGrade().toString();
 		if(grade.equals(Grade.BRONZE.toString())) {
-			amount = amount * ;
+			member.setPoint(member.getPoint() + amount);
 		}else if(grade.equals(Grade.SILVER.toString())) {
-			amount = amount * 
+			 
 		}else if(grade.equals(Grade.GOLD.toString())) {
 			
-		}else if(grade.equals(Grade.VIP.toString()))
+		}else if(grade.equals(Grade.VIP.toString())) {
+			
+		}
 
-		member.setPoint(member.getPoint() + amount);
 	}
 
 

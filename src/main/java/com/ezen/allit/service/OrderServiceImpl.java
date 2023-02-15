@@ -37,8 +37,8 @@ public class OrderServiceImpl implements OrderService {
 	
 	/** 주문 1 - 주문번호(orders) 생성 */
 	@Transactional
-	public void saveOrders(Member member) {		
-		ordersRepo.saveOrderSequence(member.getId());
+	public void saveOrders(Member member, int finalPrice, int usePoint) {		
+		ordersRepo.saveOrderSequence(member.getId(), finalPrice, usePoint);
 	}
 	
 	/** 주문 2 - 주문상세(ordersDetail) 생성 */
@@ -47,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
 		/* 주문번호 생성 매서드 사용, ono 반환 */
 		int ono = selectMaxOno();
 
-		ordersDetailRepo.saveOrder(product.getPno(), ono, member.getId(), ordersDetail.getQuantity(), ordersDetail.getFinalPrice(), ordersDetail.getReceiverName(), ordersDetail.getReceiverZipcode(), ordersDetail.getReceiverAddr(), ordersDetail.getReceiverPhone());
+		ordersDetailRepo.saveOrder(product.getPno(), ono, member.getId(), ordersDetail.getQuantity(), ordersDetail.getReceiverName(), ordersDetail.getReceiverZipcode(), ordersDetail.getReceiverAddr(), ordersDetail.getReceiverPhone());
 	}
 	
 	/** 주문목록 조회 - member에 대한 Orders 조회 */
@@ -67,6 +67,34 @@ public class OrderServiceImpl implements OrderService {
 				ordersDetailRepo.findByMemberAndOrders(member, order);
 		
 		return orderDetailList;
+	}
+	
+	/** 구매 확정 */
+	@Transactional
+	@Override
+	public void updateStatus(int status, int odno) {
+		OrdersDetail detail = ordersDetailRepo.findById(odno).get();
+		detail.setStatus(status);
+		//return ordersDetailRepo.updateStatus(status, odno);
+	}
+	
+	/** 주문 취소 - OrdersDetail 삭제 */
+	@Override
+	public void deleteOrdersDetail(int odno) {
+		ordersDetailRepo.deleteById(odno);
+	}
+	
+	/** 주문 취소 - Orders 삭제 */
+	@Override
+	public void deleteOrders(int ono) {
+		ordersRepo.deleteById(ono);
+	}
+	
+	/** 주문 취소 - Orders의 finalPrice 수정 */
+	@Override
+	public void updateOrders(int ono, int finalPrice) {
+		Orders order = ordersRepo.findById(ono).get();
+		order.setFinalPrice(finalPrice);
 	}
 	
 	/** 오더 디테일에 사용한 쿠폰 등록 */
