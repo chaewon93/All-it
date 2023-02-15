@@ -1,5 +1,7 @@
 package com.ezen.allit.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -98,11 +100,14 @@ public class OrderServiceImpl implements OrderService {
 	@Transactional
 	public void saveCouponOrder(int mcid, int couProid) {
 		int ono = selectMaxOno();
-		System.out.println("맥스 ono~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		System.out.println("맥스 ono11111111");
 		System.out.println(ono);
 		MemCoupon memCou = memCouRepo.findById(mcid).get();
+		System.out.println("맥스 ono2222222");
 		Orders orders = ordersRepo.findById(ono).get();
+		System.out.println("맥스 ono33333333");
 		List<OrdersDetail> detailList = orders.getOrdersDetail();
+		System.out.println("맥스 ono44444444");
 		
 		for(OrdersDetail ordersDetail : detailList) {
 			int pno = ordersDetail.getProduct().getPno();

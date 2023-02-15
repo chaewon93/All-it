@@ -39,40 +39,64 @@
 					<option value="5" th:selected="${ order.status }=='5'">주문취소</option>
 				</select>
 				<input type="hidden" th:value="${ order.odno }" name="odno" id="odno">
-				<!-- <button type="button" class="badge" th:onclick="'javascript:modifyStatus(this);'">확인</button> -->
-				<button type="button" class="badge" onclick="modifyStatus(this)">확인</button>				
+				<button type="button" class="badge" name="btn" id="btn" th:onclick="'javascript:index.modifyStatus(odno.value, status.value);'">확인</button>
 			</td>
 		</tr>
 	</table>
-		<button type="button" class="badge" onclick="go()">확인</button>
 </div>
 <!-- 내용 섹션 끝 -->
 
 <!-- 자바스트립트 섹션 시작 -->
 <script type="text/javascript">
-	function go() {
+let index = {
+	modifyStatus:function(odno, status) {
 		alert('hi');
-	}
-
-	function modifyStatus(btn) {
-		let data = {
-			//status = btn.previousElementSibling.previousElementSibling.value,
+		alert(odno);
+		alert(status);
+/* 		const data = {
+			status = btn.previousElementSibling.previousElementSibling.value,
 			odno = btn.previousElementSibling.value
-			
 		}
-	console.log("data = ", data);
-	$.ajax({
-		type: "put",
-		url: '/product/modify/${data.odno}',
-		data: JSON.stringify(data),
-		contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
-	}).done(function(response){ // 처리 성공 시
-		alert('확인이 완료되었습니다');
-		window.location.reload();
-	}).fail(function(error){ // 처리 실패 시
-		alert(JSON.stringify(error));
-	});
-	}
+		alert(data);
+*/		
+		$.ajax({
+			type: "put",
+			url: '/product/modify/'+odno,
+			data: JSON.stringify({
+				odno: odno
+			}),
+			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+		}).done(function(response){ // 처리 성공 시
+			alert('확인이 완료되었습니다');
+			window.location.reload();
+		}).fail(function(error){ // 처리 실패 시
+			alert(JSON.stringify(error));
+		});
+	}	
+
+/* 	modifyStatus:function(odno) {
+		alert(odno);
+		let data = {
+			odno = odno,
+			status = status
+		}
+		alert(data);
+		$.ajax({
+			type: "put",
+			url: '/product/modify/{data.odno}',
+			data: JSON.stringify(data),
+			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+		}).done(function(response){ // 처리 성공 시
+			alert('확인이 완료되었습니다');
+			window.location.reload();
+		}).fail(function(error){ // 처리 실패 시
+			alert(JSON.stringify(error));
+		});
+	}	 */
+}
+
+index.init();
+
 </script>
 <!-- 자바스트립트 섹션 끝 -->
 

@@ -1,8 +1,10 @@
 package com.ezen.allit.service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,12 +13,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Grade;
 import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
+import com.ezen.allit.domain.ReviewFile;
 import com.ezen.allit.domain.Role;
 import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.QnARepository;
@@ -75,6 +79,7 @@ public class MemberServiceImpl implements MemberService {
 		theMember.setPhone(member.getPhone());
 		theMember.setZipcode(member.getZipcode());
 		theMember.setAddress(member.getAddress());
+		theMember.setBirth(member.getBirth());
 		theMember.setGender(member.getGender());
 		
 		return theMember;
@@ -240,10 +245,12 @@ public class MemberServiceImpl implements MemberService {
 //	@Transactional
 //	public void saveReview(Review review) throws Exception {
 //		int theRvno = reviewRepo.save(review).getRvno();
+//		System.out.println("theRvno = " + theRvno);
 //		Review theReview = reviewRepo.findById(theRvno).get();
+//		System.out.println("theReview = " + theReview);
 //		
-//		for(MultipartFile imageFile : theReview.getImageFile()) {
-//			String ogName = imageFile.getOriginalFilename(); 										  // 원본 파일명
+//		for(ReviewFile imageFile : theReview.getReviewFile()) {
+//			String ogName = imageFile.getImageName(); 										  // 원본 파일명
 //			String realPath = "c:/fileUpload/images/"; 	// 파일 저장경로
 //			/*
 //			 * UUID를 이용해 중복되지 않는 파일명 생성

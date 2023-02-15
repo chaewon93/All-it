@@ -17,10 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -28,9 +30,12 @@ import com.ezen.allit.config.auth.PrincipalDetailMember;
 import com.ezen.allit.domain.Coupon;
 import com.ezen.allit.domain.MemCoupon;
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
 import com.ezen.allit.repository.MemberRepository;
+import com.ezen.allit.repository.OrdersDetailRepository;
+import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.service.CouponService;
 import com.ezen.allit.service.MemberService;
 
@@ -47,6 +52,12 @@ public class MemberController {
 	
 	@Autowired
 	private MemberRepository memberRepo;
+	
+	@Autowired
+	private ProductRepository proRepo;
+	
+	@Autowired
+	private OrdersDetailRepository ordersDetailRepo;
 	
 	@ModelAttribute("user")
 	public Member setMember(@AuthenticationPrincipal PrincipalDetailMember principal) {
@@ -260,15 +271,15 @@ public class MemberController {
 		List<MemCoupon> memCouList = new ArrayList<>();
 		System.out.println("11111111111111");
 		if(pno == 0) {
-			memCouList = principal.getMember().getMemCoupon();
+			memCouList = member.getMemCoupon();
 			model.addAttribute("list", memCouList);
 			System.out.println("======================== getmemcoupon");
 			System.out.println(memCouList);
 		}else {
-			memCouList = couponService.MemProCouponList(principal.getMember(), pno);
+			memCouList = couponService.MemProCouponList(member, pno);
 			model.addAttribute("list", memCouList);
 		}
-		List<Coupon> couList = couponService.forMemberCouponList(principal.getMember(), pno);
+		List<Coupon> couList = couponService.forMemberCouponList(member, pno);
 		System.out.println("22222");
 
 		model.addAttribute("pno", pno);
@@ -364,6 +375,18 @@ public class MemberController {
 		if(reviewList.getTotalElements() == 0) model.addAttribute("size", 0);
 		
 		return "mypage/reviewList";
+	}
+	
+	/** 마이올잇>리뷰작성 */
+	@GetMapping("/reviewWrite/{odno}")
+	public String reviewWriteView(Model model,
+								@PathVariable int odno) {
+		System.out.println("odno = " + odno);
+		OrdersDetail ordersDetail = ordersDetailRepo.findById(odno).get();
+		model.addAttribute("ordersDetail", ordersDetail);
+		System.out.println("odno = " + odno);
+		
+		return "mypage/reviewWrite";
 	}
 	
 	/** 마이올잇>리뷰작성 */

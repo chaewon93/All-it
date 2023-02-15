@@ -2,6 +2,8 @@ package com.ezen.allit.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -23,6 +25,7 @@ import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
+import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
 import com.ezen.allit.service.SellerService;
 
@@ -43,36 +46,37 @@ public class SellerController {
 	}
 	
 	// 로그아웃
-//	@GetMapping("/logout")
-//	public String logout(HttpSession session) {
-//		session.invalidate();
-//		
-//		return "redirect:/";
-//	}
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.invalidate();
+		
+		return "redirect:/";
+	}
 	
 	/*
 	 * 판매자 로그인
 	 */
-//	@PostMapping("/login")
-//	public String login(Seller seller, HttpSession session) {
-//		Seller theSeller = sellerService.findByIdAndPwd(seller.getId(), seller.getPwd());
-//		if(theSeller != null) {
-//			if(theSeller.getRole().equals(Role.ADMIN)) {
-//				session.setAttribute("admin", theSeller);
-//				return "admin/adminMain";
-//			}
-//			if(theSeller.getRole().equals(Role.SELLER)) {
-//				session.setAttribute("seller", theSeller);
-//				return "redirect:/seller/";
-//			} else {
-//				
-//				return "seller/loginError";
-//			}
-//		} else {
-//			
-//			return "seller/login";
-//		}
-//	}
+	@PostMapping("/login")
+	public String login(Seller seller, HttpSession session) {
+		Seller theSeller = sellerService.findByIdAndPwd(seller.getId(), seller.getPwd());
+		if(theSeller != null) {
+			if(theSeller.getRole().equals(Role.ADMIN)) {
+				session.setAttribute("admin", theSeller);
+				
+				return "admin/adminMain";
+			}
+			if(theSeller.getRole().equals(Role.SELLER)) {
+				session.setAttribute("seller", theSeller);
+				return "redirect:/seller/";
+			} else {
+				
+				return "seller/loginError";
+			}
+		} else {
+			
+			return "seller/login";
+		}
+	}
 	
 	// 판매자 마이페이지 이동
 	@GetMapping("/mypage")

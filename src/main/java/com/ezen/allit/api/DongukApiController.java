@@ -140,6 +140,7 @@ public class DongukApiController {
 	 */
 	@PutMapping("/product/modify/{odno}")
 	public ResponseDto<Integer> modifyOrderStatus(@RequestBody OrdersDetailRequestDto detailRequestDto) {
+		System.out.println("detailRequestDto = " + detailRequestDto);
 		orderService.modifyOrderStatus(detailRequestDto, detailRequestDto.getStatus());
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);

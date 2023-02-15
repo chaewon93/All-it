@@ -53,7 +53,7 @@
 					<input type="button" th:if="${detail.status == 3}" id="buyComplete" value="구매확정" class="btn btn-light" th:onclick="'javascript:index.buyComplete(' +${ detail.odno }+ ');'">
 					<input type="button" th:if="${detail.status == 3}" id="refund" value="교환/반품 신청" class="btn btn-light">
 					<input type="button" class="btn btn-light" id="productQna" value="상품문의">
-					<input type="button" th:if="${detail.status == 3}" id="writeReview" value="리뷰작성" class="btn btn-light">
+					<input type="button" th:if="${detail.status == 4}" id="writeReview" value="리뷰작성" class="btn btn-light" th:onclick="'javascript:index.writeReview(' +${ detail.odno }+ ');'">
 					
 					<input type="hidden" th:value="${ order.ono }" id="ono" name="ono">
 	 				<input type="hidden" th:value="${ session['user']?.id }" id="mid" name="mid">
@@ -64,7 +64,7 @@
 			</tr>
 			<tr>
 	 			<td colspan="6">
-	 				<input type="submit" formaction="/order/orderDetail" value="주문 상세보기 >" id="detail" class="btn btn-light"> 
+	 				<input type="submit" formaction="/order/orderDetail/|${ order.ono }|" value="주문 상세보기 >" id="detail" class="btn btn-light"> 
 	 			</td>
  			</tr>
  		</table>
@@ -228,8 +228,20 @@ let index = {
 				console.log("[orderComplete() ajax error] "+JSON.stringify(error));
 			});
 		}
+	},
+	
+	// 리뷰작성 화면
+	writeReview:function(odno) {
+		
+		let user_id = $("#mid").val();
+		
+		if(user_id == "" || user_id == "undefined") {
+			alert('로그인이 필요한 서비스입니다.');
+			window.location.href="/member-login";
+			return false;
+		}
+		location.href="/member/reviewWrite/"+odno;
 	}
-
 }
 index.init();
 </script>

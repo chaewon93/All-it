@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -119,6 +120,8 @@ public class OrderController {
 
 		// 5) 사용한 쿠폰 오더 디테일에 등록
 		if(mcid != 0) {
+			System.out.println("mcid = " + mcid);
+			System.out.println("couProid = " + couProid);
 			orderService.saveCouponOrder(mcid, couProid);
 		}
 				
@@ -199,10 +202,11 @@ public class OrderController {
 	}
 	
 	/** 주문 상세조회 */
-	@PostMapping("/orderDetail")
+	@PostMapping("/orderDetail/{ono}")
 	public String orderDetail(Model model, Orders order,
+							@PathVariable int ono,
 							@ModelAttribute("user") Member member) {
-		
+		System.out.println("ono = " + ono);
 		int totalPrice = 0;
 		int coupon = 0;
 		List<OrdersDetail> orderDetailList = orderService.getOrderDetail(member, order);
