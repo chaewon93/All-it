@@ -21,7 +21,6 @@ import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Reply;
-import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
 import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.ProductRepository;
@@ -207,8 +206,6 @@ public class AdminController {
 		temp.setQno(Integer.parseInt(qno));
 
 		adminService.insertReply(temp, rep);
-		
-		QnA qna = qnaRepo.findQnAByQno(Integer.parseInt(qno));
 
 		return "redirect:/admin/getQnAList";
 	}
@@ -232,61 +229,61 @@ public class AdminController {
 	}
 	
 	// 관리자 판매,관리,판매대기자 조회
-	@GetMapping("findSellerList")
-	public String findSellerList(Model model, @PageableDefault(page = 1) Pageable pageable,
-			@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword,
-			@RequestParam(value= "a", defaultValue = "0") int a) {
-		int b = 0;
-		Page<Seller> sellerList = null;
-		if(a==0) {	// 관리자,판매자, 판매대기자 전부 조회
-			sellerList = adminService.findAllSeller(pageable);
-		}else if(a==1) {	// 관리자 조회
-			sellerList = adminService.findSellerByRole(Role.ADMIN, pageable);
-		}else if(a==2) {	// 판매자, 판매대기자 조회
-			sellerList = adminService.findSellerByRoleNot(Role.ADMIN, pageable);
-			b = 1;
-		}else if(a==3) {	// 판매자 조회
-			sellerList = adminService.findSellerByRole(Role.SELLER, pageable);
-			b = 1;
-		}else if(a==4) {	// 판매대기자 조회
-			sellerList = adminService.findSellerByRole(Role.TEMP, pageable);
-			b = 1;
-		}
-		
-		int naviSize = 10; // 페이지네이션 갯수
-		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
-		int endPage = ((startPage + naviSize - 1) < sellerList.getTotalPages()) ? startPage + naviSize - 1 : sellerList.getTotalPages();
-
-		model.addAttribute("list", sellerList);
-		model.addAttribute("url", "/admin/findSellerList");
-		model.addAttribute("startPage", startPage);
-		model.addAttribute("endPage", endPage);	
-		model.addAttribute("a", a);
-		model.addAttribute("b", b);
-		
-		return "/admin/findSellerList";		
-	}
+//	@GetMapping("findSellerList")
+//	public String findSellerList(Model model, @PageableDefault(page = 1) Pageable pageable,
+//			@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword,
+//			@RequestParam(value= "a", defaultValue = "0") int a) {
+//		int b = 0;
+//		Page<Seller> sellerList = null;
+//		if(a==0) {	// 관리자,판매자, 판매대기자 전부 조회
+//			sellerList = adminService.findAllSeller(pageable);
+//		}else if(a==1) {	// 관리자 조회
+//			sellerList = adminService.findSellerByRole(Role.ADMIN, pageable);
+//		}else if(a==2) {	// 판매자, 판매대기자 조회
+//			sellerList = adminService.findSellerByRoleNot(Role.ADMIN, pageable);
+//			b = 1;
+//		}else if(a==3) {	// 판매자 조회
+//			sellerList = adminService.findSellerByRole(Role.SELLER, pageable);
+//			b = 1;
+//		}else if(a==4) {	// 판매대기자 조회
+//			sellerList = adminService.findSellerByRole(Role.TEMP, pageable);
+//			b = 1;
+//		}
+//		
+//		int naviSize = 10; // 페이지네이션 갯수
+//		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+//		int endPage = ((startPage + naviSize - 1) < sellerList.getTotalPages()) ? startPage + naviSize - 1 : sellerList.getTotalPages();
+//
+//		model.addAttribute("list", sellerList);
+//		model.addAttribute("url", "/admin/findSellerList");
+//		model.addAttribute("startPage", startPage);
+//		model.addAttribute("endPage", endPage);	
+//		model.addAttribute("a", a);
+//		model.addAttribute("b", b);
+//		
+//		return "/admin/findSellerList";		
+//	}
 	
 	// 관리자 판매대기자를 판매자로 등록
-	@PostMapping("changeSeller")
-	public String changeSeller(@RequestParam(value = "sellerId") String[] sellerId, RedirectAttributes re) {
-		// model은 주로 페이지(view)로 보낼 때 사용...
-		// RedirectAttributes은 컨트롤러로 보낼 때 사용...
-		
-		for(int i=0; i<sellerId.length; i++) {
-			
-			Seller seller = sellerRepo.findById(sellerId[i]).get();
-			if(seller.getRole().equals(Role.TEMP)) {
-				seller.setRole(Role.SELLER);
-			}else if(seller.getRole().equals(Role.SELLER)) {
-				seller.setRole(Role.TEMP);
-			}
-			sellerRepo.save(seller);
-		}
-		re.addAttribute("a", 0);
-		String pass = "redirect:/admin/findSellerList?a=2"; 
-		return pass;
-	}
+//	@PostMapping("changeSeller")
+//	public String changeSeller(@RequestParam(value = "sellerId") String[] sellerId, RedirectAttributes re) {
+//		// model은 주로 페이지(view)로 보낼 때 사용...
+//		// RedirectAttributes은 컨트롤러로 보낼 때 사용...
+//		
+//		for(int i=0; i<sellerId.length; i++) {
+//			
+//			Seller seller = sellerRepo.findById(sellerId[i]).get();
+//			if(seller.getRole().equals(Role.TEMP)) {
+//				seller.setRole(Role.SELLER);
+//			}else if(seller.getRole().equals(Role.SELLER)) {
+//				seller.setRole(Role.TEMP);
+//			}
+//			sellerRepo.save(seller);
+//		}
+//		re.addAttribute("a", 0);
+//		String pass = "redirect:/admin/findSellerList?a=2"; 
+//		return pass;
+//	}
 	
 	// 관리자 판매자 삭제
 	@PostMapping("deleteSeller")

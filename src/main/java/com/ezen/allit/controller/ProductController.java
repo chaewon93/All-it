@@ -147,7 +147,7 @@ public class ProductController {
 		/* 조회수 증가 */
 		productService.updateCount(theProduct.getPno());
 		
-		/* 별점 평균 구하기 */
+		/* 별점 구하기 */
 		List<Review> reviewList = theProduct.getReview();
 		if(reviewList != null) {
 			Review review = null;

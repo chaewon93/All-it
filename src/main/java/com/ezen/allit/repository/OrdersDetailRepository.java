@@ -36,7 +36,11 @@ public interface OrdersDetailRepository extends JpaRepository<OrdersDetail, Inte
 	@Query(value = "UPDATE orders_detail SET status = ?1 WHERE odno = ?2)", nativeQuery = true)
 	int updateStatus(int status, int odno);
 	
-	// 판매자 주문목록조회
+	// 판매자 주문목록조회 (검색 x)
 	Page<OrdersDetail> findAllByProductSellerId(String id, Pageable pageable);
+	
+	// 판매자 주문목록조회 (검색 o)
+	Page<OrdersDetail> findAllByProductSellerIdAndProductNameContaining(String id, String searchKeyword, Pageable pageable);
+
 
 }

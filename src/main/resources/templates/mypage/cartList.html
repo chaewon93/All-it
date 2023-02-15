@@ -1,4 +1,5 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <!-- header replace -->
 <div th:replace="~{ /fragments/header.html :: header }"></div>
 <div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
@@ -31,7 +32,7 @@
 						<span th:text="${#numbers.formatInteger(cart.product.price, 1, 'COMMA')}+'원'"></span>
 					</td>
 					<td>
-						<input type="hidden" th:value="${ session['user']?.id }" name="mid" id="mid">
+						<input type="hidden" th:value="${ #authentication.principal.member?.id }" name="mid" id="mid">
 						<input type="hidden" th:value="${ cart.product.pno }" name="pno" id="pno">
 						<select th:id="'quantity'+${ st.count }" name="quantity" onchange="qtyChange(this);">
 							<option value="1" th:selected="${ cart.quantity }=='1'">1</option>

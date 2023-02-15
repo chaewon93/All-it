@@ -1,10 +1,5 @@
 package com.ezen.allit.service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,13 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ezen.allit.domain.Hit;
-import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Product;
-import com.ezen.allit.domain.Seller;
-import com.ezen.allit.dto.HitSaveRequestDto;
-import com.ezen.allit.repository.HitRepository;
-import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;

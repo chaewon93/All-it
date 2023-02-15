@@ -12,17 +12,41 @@
 	<script th:src="@{ https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js }"></script>
 	<script th:src="@{ https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js }"></script>
 	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<!-- 	<script type="text/javascript">
+		function go() {
+			alert('hi');
+		}
+	
+		function modifyStatus(btn) {
+			let data = {
+				//status = btn.previousElementSibling.previousElementSibling.value,
+				odno = btn.previousElementSibling.value
+				
+			}
+		console.log("data = ", data);
+		$.ajax({
+			type: "put",
+			url: '/product/modify/${data.odno}',
+			data: JSON.stringify(data),
+			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+		}).done(function(response){ // 처리 성공 시
+			alert('확인이 완료되었습니다');
+			window.location.reload();
+		}).fail(function(error){ // 처리 실패 시
+			alert(JSON.stringify(error));
+		});
+		}
+	</script> -->
 	</head>
 	<body>
-	<div class="header-container" th:if="${ session.seller == null }">
+	
+	<!-- 미로그인 시작 -->
+	<div class="header-container" sec:authorize="!isAuthenticated()">
 		<ul class="nav justifiy-content-end" >
-	  		<li class="nav-item"><a class="nav-link" th:if="${session.user == null}" th:href="@{ /member-login }">로그인</a>
-	  		<li class="nav-item"><a class="nav-link" th:if="${session.user == null}" th:href="@{ /sellerLogin }">판매자 로그인</a>
-	  		<li class="nav-item"><a class="nav-link" th:if="${session.user != null}" th:href="@{ /member/logout }">로그아웃</a></li>
-	  		<li class="nav-item"><a class="nav-link" th:if="${session.user == null}" th:href="@{ /member-join }">회원가입</a>
-	  		<li class="nav-item"><a class="nav-link" th:unless="${session.user == null}" th:href="@{ /member/info }">마이올잇</a></li>
-	  		<li class="nav-item"><a class="nav-link" th:unless="${session.user == null}" th:href="@{ /cart/cartList }">장바구니</a></li>
-	  		<li class="nav-item"><a class="nav-link" th:if="${session.user == null}" th:href="@{ /sellerApply }">입점신청</a></li>
+	  		<li class="nav-item"><a class="nav-link" th:href="@{ /member-login }">로그인</a>
+	  		<li class="nav-item"><a class="nav-link" th:href="@{ /sellerLogin }">판매자 로그인</a>
+	  		<li class="nav-item"><a class="nav-link" th:href="@{ /member-join }">회원가입</a>
+	  		<li class="nav-item"><a class="nav-link" th:href="@{ /sellerApply }">입점신청</a></li>
         	<li class="nav-item"><a class="nav-link" href="#">고객센터</a></li>
 		</ul>
 		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
@@ -56,11 +80,57 @@
 			</div>
 		</nav>
 	</div>
-	<div class="header-container" th:if="${ session.seller }">
+	<!-- 미로그인 끝 -->
+	
+	<!-- 회원 로그인 시작 -->
+	<div class="header-container" sec:authorize="hasRole('MEMBER')">
+		<ul class="nav justifiy-content-end" >
+			<li class="nav-item"><span th:text="${ #authentication.principal.member.name }+'님'"></span></li>
+	  		<li class="nav-item"><a class="nav-link" th:href="@{ /logout }">로그아웃</a></li>
+	  		<li class="nav-item"><a class="nav-link" th:href="@{ /member/info }">마이올잇</a></li>
+	  		<li class="nav-item"><a class="nav-link" th:href="@{ /cart/cartList }">장바구니</a></li>
+        	<li class="nav-item"><a class="nav-link" href="#">고객센터</a></li>
+		</ul>
+		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
+			<h1><a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a></h1>
+		</div>
+
+		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+			<div class="dropdown">
+				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">카테고리</button>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=1) }">패션</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=2) }">식품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=3) }">주방용품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=4) }">생활용품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=5) }">인테리어</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=6) }">가전제품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=7) }">스포츠/레저</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=8) }">도서/음반/DVD</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=9) }">반려동물용품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=10) }">건강식품</a>
+					 <a class="dropdown-item" th:href="@{ /product/category/{category} }">건강식품</a> 
+				</div>
+			</div> &nbsp;&nbsp;
+			<div class="collapse navbar-collapse" id="collapsibleNavbar">
+				<ul class="navbar-nav">
+					<li class="nav-item"><a class="nav-link" th:href="@{ /product/new }">신상품</a></li>
+					<li class="nav-item"><a class="nav-link" href="#">베스트상품</a></li>
+					<li class="nav-item"><a class="nav-link" href="#">특가세일</a></li>
+					<li class="nav-item"><a class="nav-link" href="#">쿠폰세일</a></li>
+				</ul>
+			</div>
+		</nav>
+	</div>
+	<!-- 회원 로그인 끝 -->
+	
+	<!-- 판매자 로그인 시작 -->
+ 	<div class="header-container" sec:authorize="hasRole('SELLER')">
 		<ul class="nav justifiy-content-end"> 
-			<li class="nav-item"><a class="nav-link" th:href="@{ / }">사용자페이지</a></li>
+			<li class="nav-item"><span th:text="${ #authentication.principal.seller.name }+'님'"></span></li>
+			<li class="nav-item"><a class="nav-link" th:href="@{ /seller/ }">판매자페이지</a></li>
 			<li class="nav-item"><a class="nav-link" th:href="@{ /seller/mypage }">마이페이지</a></li>
-			<li class="nav-item"><a class="nav-link" th:href="@{ /seller/logout }">로그아웃</a></li>
+			<li class="nav-item"><a class="nav-link" th:href="@{ /logout }">로그아웃</a></li>
 		</ul>
 		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
 			<a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a> <br><br>
@@ -78,4 +148,6 @@
 			</div>
 		</nav>
 	</div>
+	<!-- 판매자 로그인 끝 -->
+	
 </div>

@@ -1,4 +1,5 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <!-- header replace -->
 <div th:replace="~{ /fragments/header.html :: header }"></div>
 
@@ -9,7 +10,7 @@
 
 <body th:align="center">
 <h1>회원가입</h1>
-<form method="post" action="/member/join">
+<form method="post" action="/member-join">
 <table th:align="center" border="1" th:cellpadding="0" th:cellspacing="0">
 	<tr>
 		<td>아이디*</td>
@@ -82,7 +83,7 @@
 			return false;
 		} else {
 			$.ajax({
-				url : "/member/idCheck",
+				url : "/member-idCheck",
 				type : "post",
 				data : {userId: userId},
 				dataType : 'json',

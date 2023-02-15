@@ -1,15 +1,11 @@
 package com.ezen.allit.service;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ezen.allit.domain.MemCoupon;
 import com.ezen.allit.domain.Member;
@@ -17,6 +13,7 @@ import com.ezen.allit.domain.Orders;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.repository.MemCouponRepository;
+import com.ezen.allit.dto.OrdersDetailRequestDto;
 import com.ezen.allit.repository.OrdersDetailRepository;
 import com.ezen.allit.repository.OrdersRepository;
 
@@ -120,4 +117,24 @@ public class OrderServiceImpl implements OrderService {
 		}
 		
 	}
+	
+	/** 판매자 주문상태 수정 */
+	@Transactional
+	public void modifyOrderStatus(OrdersDetailRequestDto detailRequestDto, int status) {
+		OrdersDetail ordersDetail = ordersDetailRepo.findById(detailRequestDto.getOdno()).get();
+		ordersDetail.setStatus(status);
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+

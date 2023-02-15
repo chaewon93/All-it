@@ -1,7 +1,5 @@
 package com.ezen.allit.service;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -9,6 +7,7 @@ import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Orders;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
+import com.ezen.allit.dto.OrdersDetailRequestDto;
 
 public interface OrderService {
 	
@@ -35,5 +34,7 @@ public interface OrderService {
 	
 	/** 주문 취소 - Orders의 finalPrice 수정 */
 	void updateOrders(int ono, int finalPrice);
+	
+	void modifyOrderStatus(OrdersDetailRequestDto detailRequestDto, int status);
 
 }
