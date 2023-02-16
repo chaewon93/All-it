@@ -7,6 +7,7 @@ import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
 import com.ezen.allit.dto.HitSaveRequestDto;
+import com.ezen.allit.dto.ReviewDto;
 
 public interface MemberService {
 	
@@ -51,5 +52,5 @@ public interface MemberService {
 	
 	Page<Review> getReviewList(String id, Pageable pageable); // 리뷰목록 조회
 	
-//	void saveReview(Review review) throws Exception; // 구매확정 후 리뷰
-}
+	void saveReview(ReviewDto reviewDto) throws Exception; // 리뷰작성
+	}

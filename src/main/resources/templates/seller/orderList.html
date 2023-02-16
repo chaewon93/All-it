@@ -31,15 +31,15 @@
 			<td th:text="${ order.product.price }"></td>
 			<td th:text="${ order.quantity }"></td>
 			<td>
-				<select name="status" id="status">
-					<option value="1" th:selected="${ order.status }=='1'">결제완료</option>
-					<option value="2" th:selected="${ order.status }=='2'">배송중</option>
-					<option value="3" th:selected="${ order.status }=='3'">배송완료</option>
-					<option value="4" th:selected="${ order.status }=='4'">구매확정</option>
-					<option value="5" th:selected="${ order.status }=='5'">주문취소</option>
+				<select id="status">
+					<option th:value="1" th:selected="${ order.status }=='1'">결제완료</option>
+					<option th:value="2" th:selected="${ order.status }=='2'">배송중</option>
+					<option th:value="3" th:selected="${ order.status }=='3'">배송완료</option>
+					<option th:value="4" th:selected="${ order.status }=='4'">구매확정</option>
+					<option th:value="5" th:selected="${ order.status }=='5'">주문취소</option>
 				</select>
-				<input type="hidden" th:value="${ order.odno }" name="odno" id="odno">
-				<button type="button" class="badge" name="btn" id="btn" th:onclick="'javascript:index.modifyStatus(odno.value, status.value);'">확인</button>
+				<input type="hidden" th:value="${ order.odno }" id="odno">
+				<button type="button" class="badge" name="btn" id="btn" th:onclick="'javascript:index.modifyStatus(this);'">확인</button>
 			</td>
 		</tr>
 	</table>
@@ -49,25 +49,19 @@
 <!-- 자바스트립트 섹션 시작 -->
 <script type="text/javascript">
 let index = {
-	modifyStatus:function(odno, status) {
-		alert('hi');
-		alert(odno);
-		alert(status);
-/* 		const data = {
-			status = btn.previousElementSibling.previousElementSibling.value,
-			odno = btn.previousElementSibling.value
+	modifyStatus:function(btn) {
+ 		const data = {
+			status: btn.previousElementSibling.previousElementSibling.value,
+			odno: btn.previousElementSibling.value
 		}
-		alert(data);
-*/		
+
 		$.ajax({
 			type: "put",
-			url: '/product/modify/'+odno,
-			data: JSON.stringify({
-				odno: odno
-			}),
+			url: '/product/modify/${data.odno}',
+			data: JSON.stringify(data),
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 		}).done(function(response){ // 처리 성공 시
-			alert('확인이 완료되었습니다');
+			alert('변경이 완료되었습니다');
 			window.location.reload();
 		}).fail(function(error){ // 처리 실패 시
 			alert(JSON.stringify(error));

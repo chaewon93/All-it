@@ -11,6 +11,7 @@ import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Review;
 import com.ezen.allit.dto.HitSaveRequestDto;
 import com.ezen.allit.dto.ReviewDeleteRequestDto;
+import com.ezen.allit.dto.ReviewDto;
 import com.ezen.allit.dto.ReviewModifyRequestDto;
 import com.ezen.allit.dto.ReviewReplySaveRequestDto;
 import com.ezen.allit.dto.ReviewSaveRequestDto;
@@ -50,7 +51,9 @@ public class ReviewServiceImpl implements ReviewService {
 	 * 리뷰삭제
 	 */
 	@Transactional
-	public void deleteReview(ReviewDeleteRequestDto reviewDeleteRequestDto) {
+	public void deleteReview1(ReviewDeleteRequestDto reviewDeleteRequestDto) {
+		Review review = reviewRepo.findById(reviewDeleteRequestDto.getRvno()).get();
+		review.getOrdersDetail().setStatus(4);
 		reviewRepo.deleteById(reviewDeleteRequestDto.getRvno());
 	}
 	
@@ -80,6 +83,16 @@ public class ReviewServiceImpl implements ReviewService {
 	@Transactional
 	public void saveReviewReply(ReviewReplySaveRequestDto reviewReplySaveRequestDto) {
 		reviewRepo.saveReviewReply(reviewReplySaveRequestDto.getContent(), reviewReplySaveRequestDto.getPno(), reviewReplySaveRequestDto.getRvno());
+	}
+	
+	/*
+	 * 리뷰삭제
+	 */
+	@Transactional
+	public void deleteReview2(ReviewDto reviewDto) {
+		Review review = reviewRepo.findById(reviewDto.getRvno()).get();
+		review.getOrdersDetail().setStatus(4);
+		reviewRepo.deleteById(reviewDto.getRvno());
 	}
 	
 //	/*
