@@ -77,12 +77,12 @@ public class DongukApiController {
 	/*
 	 * 리뷰삭제
 	 */
-//	@DeleteMapping("/review/delete/{pno}/{rvno}")
-//	public ResponseDto<Integer> deleteReview(@RequestBody ReviewDeleteRequestDto reviewDeleteRequestDto) {
-//		reviewService.deleteReview(reviewDeleteRequestDto);
-//		
-//		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
-//	}
+	@DeleteMapping("/review/delete/{pno}/{rvno}")
+	public ResponseDto<Integer> deleteReview1(@RequestBody ReviewDeleteRequestDto reviewDeleteRequestDto) {
+		reviewService.deleteReview1(reviewDeleteRequestDto);
+		
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}
 	
 	/*
 	 * 리뷰 좋아요
@@ -150,8 +150,8 @@ public class DongukApiController {
 	 * 리뷰삭제
 	 */
 	@DeleteMapping("/review/delete/{rvno}")
-	public ResponseDto<Integer> deleteReview(@RequestBody ReviewDto reviewDto) {
-		reviewService.deleteReview(reviewDto);
+	public ResponseDto<Integer> deleteReview2(@RequestBody ReviewDto reviewDto) {
+		reviewService.deleteReview2(reviewDto);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}

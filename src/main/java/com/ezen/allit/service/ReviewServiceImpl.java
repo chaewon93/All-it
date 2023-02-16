@@ -50,10 +50,12 @@ public class ReviewServiceImpl implements ReviewService {
 	/*
 	 * 리뷰삭제
 	 */
-//	@Transactional
-//	public void deleteReview(ReviewDeleteRequestDto reviewDeleteRequestDto) {
-//		reviewRepo.deleteById(reviewDeleteRequestDto.getRvno());
-//	}
+	@Transactional
+	public void deleteReview1(ReviewDeleteRequestDto reviewDeleteRequestDto) {
+		Review review = reviewRepo.findById(reviewDeleteRequestDto.getRvno()).get();
+		review.getOrdersDetail().setStatus(4);
+		reviewRepo.deleteById(reviewDeleteRequestDto.getRvno());
+	}
 	
 	/*
 	 * 리뷰 좋아요
@@ -87,7 +89,7 @@ public class ReviewServiceImpl implements ReviewService {
 	 * 리뷰삭제
 	 */
 	@Transactional
-	public void deleteReview(ReviewDto reviewDto) {
+	public void deleteReview2(ReviewDto reviewDto) {
 		Review review = reviewRepo.findById(reviewDto.getRvno()).get();
 		review.getOrdersDetail().setStatus(4);
 		reviewRepo.deleteById(reviewDto.getRvno());
