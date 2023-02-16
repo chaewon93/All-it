@@ -47,6 +47,7 @@
 					<td th:case="5">주문취소</td>
 					<td th:case="6">교환신청</td>
 					<td th:case="7">반품신청</td>
+					<td th:case="8">구매확정</td>
 				</th:block>
 				<td>
 					<input type="button" th:if="${detail.status == 1}" id="cancelOrder" value="주문취소" class="btn btn-outline-secondary" th:onclick="'javascript:index.cancelOrder(' +${ order.ono }+ ',' +${ detail.odno }+ ');'">
@@ -55,7 +56,7 @@
 					<input type="button" th:if="${detail.status == 3}" id="refund" value="교환/반품 신청" class="btn btn-outline-secondary" data-toggle="modal" data-target="#refundModal">
 					<input type="button" class="btn btn-outline-secondary" id="productQna" value="상품문의">
 					<input type="button" th:if="${detail.status == 4}" id="writeReview" value="리뷰작성" class="btn btn-outline-secondary" th:onclick="'javascript:index.writeReview(' +${ detail.odno }+ ');'">
-					
+			
 					<input type="hidden" th:value="${ order.ono }" id="ono" name="ono">
 	 				<input type="hidden" th:value="${ session['user']?.id }" id="mid" name="mid">
 	 				<input type="hidden" th:value="${ detail.product.pno }" id="pno" name="pno">

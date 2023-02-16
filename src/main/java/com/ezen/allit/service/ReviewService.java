@@ -2,6 +2,7 @@ package com.ezen.allit.service;
 
 import com.ezen.allit.dto.HitSaveRequestDto;
 import com.ezen.allit.dto.ReviewDeleteRequestDto;
+import com.ezen.allit.dto.ReviewDto;
 import com.ezen.allit.dto.ReviewModifyRequestDto;
 import com.ezen.allit.dto.ReviewReplySaveRequestDto;
 import com.ezen.allit.dto.ReviewSaveRequestDto;
@@ -14,7 +15,8 @@ public interface ReviewService {
 	void modifyReview(ReviewModifyRequestDto reviewModifyRequestDto);
 	
 	// 리뷰삭제	
-	void deleteReview(ReviewDeleteRequestDto reviewDeleteRequestDto);
+	void deleteReview1(ReviewDeleteRequestDto reviewDeleteRequestDto);
+	void deleteReview2(ReviewDto reviewDto);
 	
 	// 리뷰 좋아요
 	void hitReview(HitSaveRequestDto hitSaveRequestDto);
