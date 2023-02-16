@@ -25,14 +25,16 @@ public interface OrderService {
 	/** 주문상세 조회 */
 	List<OrdersDetail> getOrderDetail(Member member, Orders order);
 	
-	/** 구매 확정 */
+	/** 주문 상태 변경 */
 	void updateStatus(int status, int odno);
 	
 	/** 주문 취소 - OrdersDetail 삭제 */
-	void deleteOrdersDetail(int odno);
+//	void deleteOrdersDetail(int odno);
 	
 	/** 주문 취소 - Orders 삭제 */
-	void deleteOrders(int ono);
+//	void deleteOrders(int ono);
+	
+	/** 주문 취소 - 
 	
 	/** 주문 취소 - Orders의 finalPrice 수정 */
 	void updateOrders(int ono, int finalPrice);

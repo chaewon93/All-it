@@ -1,49 +1,60 @@
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+
+<!-- 시큐리티 부분?
 <html xmlns:th="http://www.thymeleaf.org"
 	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+ -->
+
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
 
-<table>
-	<tr>
-		<th>작성자</th>
-		<td th:text="${qna.member.id}"></td>
-	</tr>
-	<tr>
-		<th>제목</th>
-		<td th:text="${qna.title}"></td>
-	</tr>
-	<tr>
-		<th>내용</th>
-		<td th:text="${qna.content}"></td>
-	</tr>
-	<tr th:if="${qna.status} == '1'">
-		<form id="rep" name="rep" action="/admin/updateReply" method="post">
-			<input type="hidden" name="rno" th:value="${qna.reply?.rno}" >
-			<th>답변</th>
-			<td><textarea name="content" cols="40" rows="10" th:text="${qna.reply?.content}"></textarea></td>
-			<td><input type="submit" value="수정"></td>
-		</form>		
-	</tr>
-	<tr th:if="${qna.status} == '0'">
-		<form id="rep" name="rep" action="/admin/insertReply" method="post">
-			<input type="hidden" name="qno" th:value="${qna.qno}" >
-			<th>답변</th>
-			<td><textarea name="content" rows="10" cols="40"></textarea></td>   
-			<td><input type="submit" value="저장"></td> 
-		</form>		
-	</tr>	
-	<tr>
-		<th>
-		<input type="button" value="뒤로가기" onclick="history.back()"> <br>
-		<a th:if="${qna.status} == '1'" th:href="@{/admin/deleteReply(qno=${qna.qno})}" th:text="답변삭제"></a>
-		</th>
-	</tr>
-
-</table>
+<div align="center">
+	<table>
+		<tr>
+			<th>작성자</th>
+			<td th:text="${qna.member.id}"></td>
+		</tr>
+		<tr>
+			<th>제목</th>
+			<td th:text="${qna.title}"></td>
+		</tr>
+		<tr>
+			<th>내용</th>
+			<td th:text="${qna.content}"></td>
+		</tr>
+		<tr th:if="${qna.status} == '1'">
+			<form id="rep" name="rep" action="/admin/updateReply" method="post">
+				<input type="hidden" name="rno" th:value="${qna.reply?.rno}" >
+				<th>답변</th>
+				<td><textarea name="content" cols="40" rows="10" th:text="${qna.reply?.content}"></textarea></td>
+				<td><input type="submit" value="수정"></td>
+			</form>		
+		</tr>
+		<tr th:if="${qna.status} == '0'">
+			<form id="rep" name="rep" action="/admin/insertReply" method="post">
+				<input type="hidden" name="qno" th:value="${qna.qno}" >
+				<th>답변</th>
+				<td><textarea name="content" rows="10" cols="40"></textarea></td>   
+				<td><input type="submit" value="저장"></td> 
+			</form>		
+		</tr>	
+		<tr>
+			<th>
+			<input type="button" value="뒤로가기" onclick="history.back()"> <br>
+			<a th:if="${qna.status} == '1'" th:href="@{/admin/deleteReply(qno=${qna.qno})}" th:text="답변삭제"></a>
+			</th>
+		</tr>
+	
+	</table>
+</div>
 
 </body>
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
 </html>

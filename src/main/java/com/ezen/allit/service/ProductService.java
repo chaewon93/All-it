@@ -10,6 +10,8 @@ public interface ProductService {
 	
 	Page<Product> getNewProductList(Pageable pageable);
 	
+	Page<Product> getMdpickProductList(Pageable pageable);
+	
 	Product getProduct(int pno);
 	
 	void updateCount(int pno);

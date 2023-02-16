@@ -60,6 +60,7 @@ function useCou(btn){
 				opener.document.getElementById("memCou").value = res['memCouid'];
 				opener.priceCheck();
 				alert("쿠폰 사용");
+				close();
 
 			}, error: function(xhr,status,err){
 				alert("사용할 수 없습니다.");				
@@ -68,7 +69,6 @@ function useCou(btn){
 
 	}
 }
-
 </script>
 
 </head>
@@ -77,7 +77,6 @@ function useCou(btn){
 <input type="hidden" name="price" id="price" th:value="${price}">
 <input type="hidden" name="proid" id="proid" th:value="${pno}">
 <table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
-
 <tr>
 	<th bgcolor="orange" width="100">번호</th>
 	<th bgcolor="orange" width="100">쿠폰 설명</th>
@@ -86,7 +85,6 @@ function useCou(btn){
 	<th bgcolor="orange" width="100">최소사용금액</th>
 	<th bgcolor="orange" width="100">쿠폰상태</th>
 	<th th:if="${price}!=0" bgcolor="orange" width="100">쿠폰 사용</th>
-
 </tr>
 <tr th:each="memcou, state : ${list}" th:if="${price} < ${memcou.coupon.minPrice}">
 	<td align="center" colspan="7" th:if="${state.index} == 0">상품에 사용 가능한 쿠폰이 없습니다</td>
@@ -108,15 +106,14 @@ function useCou(btn){
 		<input th:if="${memcou.status}!=0" type="button" name="useCoupon" th:value="사용" onclick="useCou(this)" disabled="disabled">
 	</td>
 </tr>
-
 </table>
 </form>
-<hr>
-<div>
 
+<hr>
+
+<div>
 <form action="/coupon/deleteCoupon" method="post" id="theform1">	
 <table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
-
 	<tr>
 		<th bgcolor="orange" width="100">번호</th>
 		<th bgcolor="orange" width="100">쿠폰 설명</th>
@@ -139,16 +136,11 @@ function useCou(btn){
 			<input type="button" name="downCoupon" th:value="받기" onclick="downCou(this)">
 		</td>
 	</tr>	
-	
 </table>
-
 </form>
-
 </div>
-
 <!-- <div th:replace="~{ /fragments/pagination.html :: pagination }"></div>  -->
 <!-- pagination replace -->
-<hr>
 
 </body>
 </html>

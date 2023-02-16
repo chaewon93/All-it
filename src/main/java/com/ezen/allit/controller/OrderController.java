@@ -203,12 +203,16 @@ public class OrderController {
 	
 	/** 주문 상세조회 */
 	@PostMapping("/orderDetail/{ono}")
-	public String orderDetail(Model model, Orders order,
-							@PathVariable int ono,
+	public String orderDetail(Model model, @PathVariable int ono,
 							@ModelAttribute("user") Member member) {
 		System.out.println("ono = " + ono);
 		int totalPrice = 0;
 		int coupon = 0;
+		
+		//System.out.println("주문번호(ono) : "+ono);
+		Orders order = new Orders();
+		order.setOno(ono);
+		
 		List<OrdersDetail> orderDetailList = orderService.getOrderDetail(member, order);
 		
 		for(int i=0; i<orderDetailList.size(); i++) {
@@ -230,7 +234,7 @@ public class OrderController {
 				}
 			}
 		}
-		System.out.printf("총 상품금액 : %d, 쿠폰 : %d \n", totalPrice, coupon);
+		//System.out.printf("총 상품금액 : %d, 쿠폰 : %d \n", totalPrice, coupon);
 		model.addAttribute("totalPrice", totalPrice);
 		model.addAttribute("coupon", coupon);
 		model.addAttribute("orderDetailList", orderDetailList);
@@ -289,8 +293,9 @@ public class OrderController {
 					orderService.updateOrders(orderDetailList.get(i).getOrders().getOno(), 
 							orderDetailList.get(i).getOrders().getFinalPrice() - cancelPrice);
 					
-					// OrdersDetail 삭제
-					orderService.deleteOrdersDetail(orderDetailList.get(i).getOdno());
+					// OrdersDetail 삭제 -> status를 5(주문 취소)로 변경
+					//orderService.deleteOrdersDetail(orderDetailList.get(i).getOdno());
+					orderService.updateStatus(5, orderDetailList.get(i).getOdno());
 				
 				} else {
 					System.out.println("========== 전체 주문 취소 ==========");
@@ -307,7 +312,8 @@ public class OrderController {
 					memberService.addMoney(member.getId(), cancelPrice);
 					
 					// OrdersDetail 삭제
-					orderService.deleteOrdersDetail(orderDetailList.get(i).getOdno());
+					//orderService.deleteOrdersDetail(orderDetailList.get(i).getOdno());
+					orderService.updateStatus(5, orderDetailList.get(i).getOdno());
 					
 					// Orders 삭제
 //					orderService.deleteOrders(orderDetailList.get(i).getOrders().getOno());

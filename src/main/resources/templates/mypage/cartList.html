@@ -10,16 +10,16 @@
 
 <body th:align="center">
 <h1>장바구니</h1>
-<article style="margin-bottom: 20px">
+<div class="container">
 	<form name="formm" id="cartform" method="post">
 		<h3 th:if="${cartList.size() == 0}" style="color: red; text-align: center;">장바구니가 비었습니다.</h3>
 		<th:block th:unless="${cartList.size() == 0}">
-			<table id="cartList" border="1" align="center">
+			<table id="cartList" class="table">
 				<tr>
-					<th width="150"><input type="checkbox" id="allCheck" name="allCheck"> 전체선택</th>
-					<th width="450">상 품 정 보</th>
-					<th width="100">수 량</th>
-					<th width="150">가 격</th>
+					<th width="100"><input type="checkbox" id="allCheck" name="allCheck"> 전체선택</th>
+					<th width="400">상 품 정 보</th>
+					<th width="50">수 량</th>
+					<th width="100">가 격</th>
 				</tr>
 				
 				<tr th:each="cart, st : ${cartList}">
@@ -65,8 +65,9 @@
 			<input th:if="${cartList.size() != 0}" type="button" value="주문하기" class="btn btn-light" onclick="goOrderList()">
 		</div>
 	</form>
-</article>
+</div>
 
+<!-- 자바스트립트 섹션 시작 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script type="text/javascript">
 	// 전체선택/해제
@@ -180,6 +181,8 @@
 		}
 	}
 </script>
+<!-- 자바스트립트 섹션 끝 -->
+
 </body>
 
 <!-- footer replace -->

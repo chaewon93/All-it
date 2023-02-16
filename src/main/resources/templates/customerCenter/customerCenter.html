@@ -1,11 +1,25 @@
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+
+<!--
 <html xmlns:th="http://www.thymeleaf.org"
 	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+-->
+
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style>
+  p {
+    white-space: pre;
+  }
+</style>
+
 </head>
 <body>
+<!-- 
 <a th:href="@{/admin/findCusto(cate='공지사항')}">공지사항</a> <br>
 <a th:href="@{/admin/findCusto(cate='이벤트')}">이벤트</a> <br>
 <a th:href="@{/admin/findCusto(cate='전체')}">자주하는 질문 전체</a> <br>
@@ -13,14 +27,35 @@
 <a th:href="@{/admin/findCusto(cate='회원서비스')}">회원서비스</a> <br>
 <a th:href="@{/admin/findCusto(cate='배송문의')}">배송문의</a> <br>
 <a th:href="@{/admin/findCusto(cate='반품/교환/환불')}">반품/교환/환불</a> <br>
-<a th:href="@{/admin/findCusto(cate='테스트용 신고')}">신고</a> <br>
 <a th:href="@{/admin/findCusto(cate='모두 보기')}">모두 보기</a> <br>
-<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
-<tr>
+ -->
+<p th:text="${a}"></p>
+<div align="center">	
+	<select name="category" onchange="location.href=(this.value)">
+		<option value="/admin/findCusto?cate=모두 보기" th:selected="${a} == '모두 보기'">모두 보기</option>
+		<option value="/admin/findCusto?cate=공지사항" th:selected="${a} == '공지사항'" >공지사항</option>
+		<option value="/admin/findCusto?cate=이벤트" th:selected="${a} == '이벤트'">이벤트</option>		
+		<option value="/admin/findCusto?cate=전체" th:selected="${a} == '전체'" >자주하는 질문 전체</option>
+		<option value="/admin/findCusto?cate=주문/결제" th:selected="${a} == '주문/결제'" >주문/결제</option>
+		<option value="/admin/findCusto?cate=회원서비스" th:selected="${a} == '회원서비스'" >회원서비스</option>
+		<option value="/admin/findCusto?cate=배송문의" th:selected="${a} == '배송문의'" >배송문의</option>
+		<option value="/admin/findCusto?cate=반품/교환/환불" th:selected="${a} == '반품/교환/환불'" >반품/교환/환불</option>
+	</select>
+	<button type="button" onclick="insertCustoView()" style="border: none;">글 작성</button>
+	<a th:href="@{/admin/adminMain}">관리자 메인으로</a>
+</div>
+
+<form method="post" id="theform" action="/product/mainBanner">
+<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="900">
+<tr align="center">
 	<th bgcolor="orange" width="100">번호</th>
 	<th bgcolor="orange" width="150">카테고리</th>
 	<th bgcolor="orange" width="200">제목</th>
 	<th bgcolor="orange" width="150">내용</th>
+	<th bgcolor="orange" width="400">이미지</th>
+	<th bgcolor="orange" width="100">체크<br>
+		<input type="checkbox" name="checkAll" id="regAll">
+	</th>
 </tr>
 
 <tr th:each="cate, state : ${list}">
@@ -29,9 +64,29 @@
 	<td th:text="${cate.category}"></td>
 	<td th:text="${cate.title}"></td>
 	<td align="left"><a th:href="@{/admin/getCustoDetail(cno=${cate.cno})}" th:text="${cate.content}"></a></td>
+	<td th:if="${cate.imageName} != null"><img class="img-fluid" th:src="@{ /images/admin/ } + ${ cate.imageName }" width="350"></td>
+	<td th:if="${cate.imageName} == null"></td>
+	<td align="center"><input type="checkbox" name="cno" class="test" th:value="${cate.cno}"></td>
 </tr>
 
 </table>
+<div align="center">
+	<input type="button" value="MDPick 변경" onclick="mainBanner()">
+</div>
+</form>
+
+<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
+<tr th:each="cate, state : ${list}">
+<td>
+	<details>
+	    <summary th:text="${cate.title}"></summary>
+	    <p th:text="${cate.content}"></p>
+	    <img th:if="${cate.imageName} != null" class="img-fluid" th:src="@{ /images/admin/ } + ${ cate.imageName }" width="350">
+	</details>
+</td>
+</tr>
+</table>
+
 <div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
 <!-- pagination replace -->
 <hr>
@@ -40,4 +95,50 @@
 <a th:href="@{/admin/adminMain}">관리자 메인으로</a> <br>
 
 </body>
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function(){
+	$("#regAll").change(function(){
+		  if($("#regAll").is(":checked")){
+		 	 $(".test").prop("checked", true);
+		  }else{
+		  	$(".test").prop("checked", false);
+		  }
+		});
+	
+	$(".test").change(function(){
+		  if($(".test:checked").length == $(".test").length){
+		  	$("#regAll").prop("checked", true);
+		   }else{
+		  	$("#regAll").prop("checked", false);
+		  }
+		});
+});
+
+function mainBanner(){
+	var chk_arr = [];
+	if ($("input:checkbox[name='cno']").is(":checked")==true){
+		$("input:checkbox[name='cno']:checked").each(function(){
+			var chk = $(this).val();
+			chk_arr.push(chk);
+		})
+		var check =	confirm(chk_arr+" 변경 확인?")
+		if(check){
+			document.getElementById("theform").action = "/admin/mainBanner";
+			document.getElementById("theform").submit();				
+		}		
+	}else{
+		alert("체크된 값이 없습니다.");
+		return;
+	}
+}
+
+function insertCustoView(){
+	let openwin = window.open("/admin/insertCustoView", "고객센터 글 작성", "width=600, height=300");
+}
+</script>
 </html>

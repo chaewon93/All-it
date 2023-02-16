@@ -1,15 +1,23 @@
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+
+<!--
 <html xmlns:th="http://www.thymeleaf.org"
 	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+-->
+
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
 
+<div align="center">
 <form th:action="@{/admin/updateCusto}" method="post" name="custo">
+<input type="hidden" name="cno" th:value="${custo.cno}"/>
 <table >
-	<input type="hidden" name="cno" th:value="${custo.cno}"/>
 	<tr>
 		<td>
 			<select name="category">
@@ -33,18 +41,15 @@
 	</tr>
 	<tr>
 		<td colspan="2" align="center">
-		<input type="submit" value="수정"/></td>
+		<input type="submit" value="수정"/>
+		<button type="button" value="뒤로가기" onclick="history.back()" style="border-width: thin;">뒤로가기</button>
+		<button type="button" th:onclick="|location.href='@{/admin/deleteCusto?(cno=${custo.cno})}'|" style="border-width:thin;">답변삭제</button>
+		</td>
 	</tr>
-	<tr>
-		<th>
-		<input type="button" value="뒤로가기" onclick="history.back()"> <br>
-		<button type="button" th:onclick="|location.href='@{/admin/deleteCusto?(cno=${custo.cno})}'|">답변삭제</button><br>
-		<a th:href="@{/admin/deleteCusto(cno=${custo.cno})}" th:text="답변삭제"></a>
-		</th>
-	</tr>		
 </table>
 </form>
-
-
+</div>
 </body>
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
 </html>

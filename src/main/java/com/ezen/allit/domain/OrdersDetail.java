@@ -1,5 +1,7 @@
 package com.ezen.allit.domain;
 
+import java.util.Date;
+
 import javax.persistence.*;
 
 import lombok.*;
@@ -25,9 +27,11 @@ public class OrdersDetail {
 	@OneToOne
 	@JoinColumn(name = "mcid")
 	private MemCoupon memCoupon; 	// mcid
-	private int status; // 주문상태(1:결제완료, 2:배송중, 3:배송완료, 4:구매확정, 5:주문취소 6:리뷰작성완료)
+	private int status; // 주문상태(1:결제완료, 2:배송중, 3:배송완료, 4:구매확정, 5:주문취소, 6:교환신청, 7:반품신청, 8:리뷰작성완료)
 	private String receiverName;	// 받는 사람 이름
 	private String receiverZipcode;	// 받는 사람 우편번호
 	private String receiverAddr;	// 받는 사람 주소
 	private String receiverPhone;	// 받는 사람 전화번호
+	private String reason;			// 교환/반품 사유
+	private Date cancelDate;		// 취소/교환/반품 신청일
 }

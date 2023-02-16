@@ -29,7 +29,7 @@ function setCondition(){
 </head>
 
 <body th:align="center">
-<h1>쿠폰생성</h1>
+<h1 align="center">쿠폰생성</h1>
 <form method="post" th:action="@{/admin/createCoupon}" id="theform">
 <table th:align="center" border="1" th:cellpadding="0" th:cellspacing="0">
 	
@@ -125,6 +125,7 @@ function setCondition(){
 		<td colspan="2" align="center">
 			<input type="hidden" name="condition" id="condition" value="">
 			<input type="submit" value="생성" onclick="setCondition()"/>
+			<input type="button" value="뒤로가기" onclick="history.back()"> <br>
 		</td>
 	</tr>
 	 
