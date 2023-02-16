@@ -1,4 +1,5 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <!-- header replace -->
 <div th:replace="~{ /fragments/header.html :: header }"></div>
 <div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
@@ -7,6 +8,8 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <body th:align="center">
 <h1>주문 목록</h1>
 <article>
@@ -51,7 +54,7 @@
 					<input type="button" th:if="${detail.status == 3}" id="buyComplete" value="구매확정" class="btn btn-light" th:onclick="'javascript:index.buyComplete(' +${ detail.odno }+ ');'">
 					<input type="button" th:if="${detail.status == 3}" id="refund" value="교환/반품 신청" class="btn btn-light" data-toggle="modal" data-target="#refundModal">
 					<input type="button" class="btn btn-light" id="productQna" value="상품문의">
-					<input type="button" th:if="${detail.status == 3}" id="writeReview" value="리뷰작성" class="btn btn-light">
+					<input type="button" th:if="${detail.status == 4}" id="writeReview" value="리뷰작성" class="btn btn-light" th:onclick="'javascript:index.writeReview(' +${ detail.odno }+ ');'">
 					
 					<input type="hidden" th:value="${ order.ono }" id="ono" name="ono">
 	 				<input type="hidden" th:value="${ session['user']?.id }" id="mid" name="mid">
@@ -283,8 +286,19 @@ let index = {
 		if($("input:radio[name='reason']").is(":checked")) {
 			
 		}
-	}
 
+	// 리뷰작성 화면
+	writeReview:function(odno) {
+		
+		let user_id = $("#mid").val();
+		
+		if(user_id == "" || user_id == "undefined") {
+			alert('로그인이 필요한 서비스입니다.');
+			window.location.href="/member-login";
+			return false;
+		}
+		location.href="/member/reviewWrite/"+odno;
+	}
 }
 index.init();
 </script>

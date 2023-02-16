@@ -1,10 +1,7 @@
 package com.ezen.allit.repository;
 
-import java.util.Date;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -27,15 +24,14 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	Page<Product> findProductByStatus(int status, Pageable pageable);
 
 	Page<Product> findByStatusAndNameContaining(int status, String searchKeyword, Pageable pageable);
+	
+	Page<Product> findProductBymdPickyn(int y, Pageable pageable);
 
 	// 판매자별 상품검색
 	Page<Product> findAllBySellerIdAndNameContaining(String id, String searchKeyword, Pageable pageable);
-	
+
 	// 판매자별 상품조회
 	Page<Product> findAllBySellerId(String id, Pageable pageable);
-	
-	// 판매자별 상품 슬라이싱
-	Slice<Product> findBySellerOrderByPnoDesc(String id, Pageable pageable);
-	
+		
 
 }

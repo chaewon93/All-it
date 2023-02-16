@@ -1,4 +1,5 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <!-- header replace -->
 <div th:replace="~{ /fragments/header.html :: header }"></div>
 
@@ -30,7 +31,13 @@
 			<input type="button" value="아이디/비밀번호 찾기" onclick="find_form()" class="btn btn-light">
 		</td>
 	</tr>
-</table>
+</table><br>
+<div align="center">
+	<a href="/oauth2/authorization/google"><img class="img-fluid" th:src="@{ /images/ } + 'google.png'" width="183" height="45" style="margin-bottom: 5px"></a><br>
+	<a href="/oauth2/authorization/facebook"><img class="img-fluid" th:src="@{ /images/ } + 'facebook.png'" width="183" height="45" style="margin-bottom: 5px"></a><br>
+	<a href="/oauth2/authorization/naver"><img class="img-fluid" th:src="@{ /images/ } + 'naver.png'" width="183" height="45" style="margin-bottom: 5px"></a><br>
+	<a href="/oauth2/authorization/kakao"><img class="img-fluid" th:src="@{ /images/ } + 'kakao.png'" width="183" height="45"></a>
+</div>
 </form>
 
 <!-- 자바스트립트 섹션 시작 -->

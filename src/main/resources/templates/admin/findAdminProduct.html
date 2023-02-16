@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+
+<!-- 
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+ -->
+
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -82,20 +90,27 @@ function delete_product(){
 </head>
 <body>
 
+<div align="center">	
+	<select name="category" onchange="location.href=(this.value)">
+		<option value="/admin/findAdminProduct?a=1" th:selected="${a} == 1">등록 상품 조회</option>
+		<option value="/admin/findAdminProduct?a=0" th:selected="${a} == 0">등록 대기 상품 조회</option>
+	</select>
+</div>
+
 <form action="/admin/regPro" method="post" id="theform">	
-<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
+<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="900">
 
 <tr>
 	<th bgcolor="orange" width="100">번호</th>
-	<th bgcolor="orange" width="100">카테고리</th>
+	<th bgcolor="orange" width="200">카테고리</th>
 	<th bgcolor="orange" width="100">상품 번호</th>
-	<th bgcolor="orange" width="100">상품명</th>
-	<th bgcolor="orange" width="200">내용</th>
+	<th bgcolor="orange" width="300">상품명</th>
+	<th bgcolor="orange" width="300">내용</th>
 	<th bgcolor="orange" width="150">등록일</th>
-	<th bgcolor="orange" width="150">가격</th>
+	<th bgcolor="orange" width="100">가격</th>
 	<th bgcolor="orange" width="100">할인률</th>
 	<th bgcolor="orange" width="100">판매자</th>
-	<th bgcolor="orange" width="100">이미지</th>
+	<th bgcolor="orange" width="300">이미지</th>
 	<th th:if="${a}==1" bgcolor="orange" width="100">MDPick 등록 여부</th>
 	<th bgcolor="orange" width="100">체크<br>
 		<input type="checkbox" name="checkAll" id="regAll">
@@ -123,12 +138,13 @@ function delete_product(){
 	<td th:text="${pro.price}"></td>
 	<td th:text="${pro.discount}"></td>	
 	<td th:text="${pro.seller?.id}"></td>
-	<td th:text="${pro.imageName}"></td>
+	<td><img class="img-fluid" th:src="@{ /images/ } + ${ pro.imageName }"></td>
 	<td th:if="${a}==1" th:switch="${pro.mdPickyn}" align="center">
 		<p th:case="0" th:text="미등록" style="color:red;"></p>
 		<p th:case="1" th:text="등록완료" style="color:blue;"></p>
 	</td>
 	<td align="center"><input type="checkbox" name="pno" class="test" th:value="${pro.pno}"></td>
+	
 </tr>
 </table>
 <div align="center">
@@ -146,4 +162,6 @@ function delete_product(){
 <a th:if="${a}==1" th:href="@{/admin/findAdminProduct(a=0)}">등록 대기 상품 조회</a> <br>
 
 </body>
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
 </html>

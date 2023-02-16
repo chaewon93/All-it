@@ -1,7 +1,5 @@
 package com.ezen.allit.service;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import com.ezen.allit.dto.HitSaveRequestDto;
 import com.ezen.allit.dto.ReviewDeleteRequestDto;
 import com.ezen.allit.dto.ReviewModifyRequestDto;
