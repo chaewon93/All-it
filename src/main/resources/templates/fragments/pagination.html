@@ -2,43 +2,54 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <div th:fragment="pagination">	 
+	<ul class="pagination pagination-sm justify-content-center">
+	
 	<!-- 1(First) - 첫번째 페이지로 이동 -->
 	<!-- @{ /seller/?page=1 }과 같음 -->
-	<a th:href="@{ ${ url }(page=1, searchKeyword = ${ param.searchKeyword }) }">First</a>
+	<li class="page-item"><a class="page-link text-muted" th:href="@{ ${ url }(page=1, searchKeyword = ${ param.searchKeyword }) }">First</a></li>
 	<!-- th:if="${!list?.first}" -->
 	
 	<!-- 2(Prev) - list.getNumber() 사용자:2페이지 getNumber()=1 -->
-	<a th:href="${ list?.first } ? '#' : @{ ${ url }(page=${ list?.number }, searchKeyword = ${ param.searchKeyword }) }">prev</a>
+	<li class="page-item"><a class="page-link text-muted" th:href="${ list?.first } ? '#' : @{ ${ url }(page=${ list?.number }, searchKeyword = ${ param.searchKeyword }) }">prev</a></li>
 	<!-- th:if="${!list?.first}" -->
 	
 	<!-- 3(Link) - 페이지 번호 링크(현재 페이지는 숫자만) -->
 	<!-- for(int page=startPage; page<=endPage; page++)-->
 	<!-- 상품데이터가 하나도 없을 경우 -->
-	<span th:if="${ list.totalElements == 0 }">
-		<span th:text="1"></span>
-	</span>
+	<li class="page-item"><span th:if="${ list.totalElements == 0 }">
+		<a class="page-link text-warning"><span th:text="1"></span></a>
+	</span></li>
 	<!-- 상품데이터가 하나라도 있을 경우 -->
-	<span th:unless="${ list.totalElements == 0 }">
-		<span th:each="page: ${ #numbers.sequence(startPage, endPage) }">
+	<th:block th:unless="${ list.totalElements == 0 }">
+		<th:block th:each="page: ${ #numbers.sequence(startPage, endPage) }">
 			<!-- 요청페이지가 현재페이지면 링크 X -->
-			<span th:if="${ page == list.number + 1 }" th:text="${ page }"></span>
+			<li class="page-item"><a class="page-link text-warning" th:if="${ page == list.number + 1 }" th:text="${ page }"></a></li>
 			<!-- 요청페이지가 현재페이지가 아니면 링크 O -->
+			<li class="page-item" th:unless="${ page == list.number + 1}"><a class="page-link text-warning" th:href="@{ ${ url }(page=${ page }, searchKeyword = ${ param.searchKeyword }) }" th:text="${ page }"></a></li>
+		</th:block>
+	</th:block>
+<!-- 부트스트랩 적용 전	
+ 	<span th:unless="${ list.totalElements == 0 }">
+		<span th:each="page: ${ #numbers.sequence(startPage, endPage) }">
+			<span th:if="${ page == list.number + 1 }" th:text="${ page }"></span> 
 			<span th:unless="${ page == list.number + 1} ">
-				<a th:href="@{ ${ url }(page=${ page }, searchKeyword = ${ param.searchKeyword }) }" th:text="${ page }"></a>
+				<a class="page-link text-warning" th:href="@{ ${ url }(page=${ page }, searchKeyword = ${ param.searchKeyword }) }" th:text="${ page }"></a>
 			</span>
 		</span>
 	</span>
-	
+ -->	
 	<!-- 4(Next) - 사용자: 2페이지, getNumber: 1, 3페이지-->
-	<a th:href="${ list.last } ? '#' : @{ ${ url }(page=${ list?.number + 2 }, searchKeyword = ${ param.searchKeyword }) }">next</a>
+	<li class="page-item"><a class="page-link text-muted" th:href="${ list.last } ? '#' : @{ ${ url }(page=${ list?.number + 2 }, searchKeyword = ${ param.searchKeyword }) }">next</a></li>
 
 	<!-- 5(Last) - 마지막 페이지로 이동 -->
 	<!-- 상품데이터가 하나도 없을 경우 -->
-	<span th:if="${ list.totalElements == 0 }">
-		<a th:href="@{ ${ url }(page=1, searchKeyword = ${ param.searchKeyword }) }">Last</a>
-	</span>
+	<li class="page-item"><span th:if="${ list.totalElements == 0 }">
+		<a class="page-link text-muted" th:href="@{ ${ url }(page=1, searchKeyword = ${ param.searchKeyword }) }">Last</a>
+	</span></li>
 	<!-- 상품데이터가 하나라도 있을 경우 -->
-	<span th:unless="${ list.totalElements == 0 }">
-		<a th:href="@{ ${ url }(page=${ list.totalPages }, searchKeyword = ${ param.searchKeyword }) }">Last</a>
-	</span>
+	<li class="page-item"><span th:unless="${ list.totalElements == 0 }">
+		<a class="page-link text-muted" th:href="@{ ${ url }(page=${ list.totalPages }, searchKeyword = ${ param.searchKeyword }) }">Last</a>
+	</span></li>
+	
+	</ul>
 </div>
