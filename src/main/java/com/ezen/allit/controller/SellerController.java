@@ -93,6 +93,7 @@ public class SellerController {
 	public String modify(Seller seller) {
 		sellerService.modify(seller);
 		
+		/* 수정한 정보로 세션 재주입 */
 		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(seller.getId(), seller.getPwd()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 		
@@ -105,6 +106,8 @@ public class SellerController {
 	@PostMapping("/quit")
 	public String quit(Seller seller) {
 		sellerService.quit(seller);
+		
+		/* 세션 제거 */
 		SecurityContextHolder.clearContext();
 		
 		return "redirect:/";
@@ -119,10 +122,12 @@ public class SellerController {
 						@AuthenticationPrincipal PrincipalDetailSeller principal,
 						@PageableDefault(page = 1) Pageable pageable) {
 		
-		Page<Product> productList = null;
-		if(searchKeyword == null || searchKeyword.equals("")) {
+		/* productList null값으로 전역변수 선언 */
+		Page<Product> productList = null; 
+		
+		if(searchKeyword == null || searchKeyword.equals("")) { // 검색어가 없을 경우
 			productList = sellerService.getProductList(pageable, principal.getSeller());
-		} else {
+		} else {				 								// 검색어가 있을 경우
 			productList = sellerService.search(principal.getSeller(), searchKeyword, pageable);
 		}
 		
@@ -151,14 +156,15 @@ public class SellerController {
 
 		/* 별점 평균 구하기 */
 		List<Review> reviewList = theProduct.getReview();
+		
 		if(reviewList != null) {
 			Review review = null;
 			int totalRating = 0;
-			for(int i=0; i<reviewList.size(); i++) {
+			for(int i=0; i<reviewList.size(); i++) { // 리뷰갯수만큼 반복문을 돌려
 				review = reviewList.get(i);
-				totalRating += review.getRating();
+				totalRating += review.getRating();	 // totalRating에 저장
 			}
-			float rating = (float)totalRating/reviewList.size();
+			float rating = (float)totalRating/reviewList.size(); // 리뷰갯수에서 totalRating을 나누어 최종적으로 값을 저장
 			theProduct.setRating(getRating(rating, 1));
 		} 
 		if(reviewList.isEmpty()) {
@@ -180,10 +186,12 @@ public class SellerController {
 							@AuthenticationPrincipal PrincipalDetailSeller principal,
 							@PageableDefault(page = 1) Pageable pageable) {
 		
+		/* orderList null값으로 전역변수 선언 */
 		Page<OrdersDetail> orderList = null;
-		if(searchKeyword == null || searchKeyword.equals("")) {
+		
+		if(searchKeyword == null || searchKeyword.equals("")) { // 검색어가 없을 경우
 			orderList = sellerService.getOrderList(principal.getSeller(), pageable);
-		} else {
+		} else {				 								// 검색어가 있을 경우
 			orderList = sellerService.getSearhcedOrderList(principal.getSeller(), searchKeyword, pageable);
 		}
 
@@ -211,10 +219,12 @@ public class SellerController {
 							@AuthenticationPrincipal PrincipalDetailSeller principal,
 							@PageableDefault(page = 1) Pageable pageable) {
 		
+		/* qnaList null값으로 전역변수 선언 */
 		Page<QnA> qnaList = null;
-		if(searchKeyword == null || searchKeyword.equals("")) {
+		
+		if(searchKeyword == null || searchKeyword.equals("")) { // 검색어가 있을 경우
 			qnaList = sellerService.getQnAList(principal.getSeller(), pageable);
-		} else {
+		} else {				 								// 검색어가 있을 경우
 			qnaList = sellerService.getSearchedQnAList(principal.getSeller(), searchKeyword, pageable);
 		}
 		
@@ -240,7 +250,6 @@ public class SellerController {
 	@GetMapping("/qna/{qno}")
 	public String getQnA(@PathVariable int qno, Model model) {
 		QnA qna = sellerService.getQnA(qno);
-		System.out.println("qna = " + qna.getContent());
 		model.addAttribute("qna", qna);
 		
 		return "seller/qna";
@@ -262,7 +271,6 @@ public class SellerController {
 	 */
 	@PostMapping("/product/modify")
 	public String modifyProduct(int pno, Product product, MultipartFile imageFile) throws Exception {
-		System.out.println("product = " + product);
 		sellerService.modifyProduct(pno, product, imageFile);
 		
 		return "redirect:/seller/";

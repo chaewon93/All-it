@@ -59,9 +59,13 @@ public class MemberController {
 	
 	@ModelAttribute("user")
 	public Member setMember(@AuthenticationPrincipal PrincipalDetailMember principal) {
-		Member member = principal.getMember();
-		System.out.println("member=============== = " + member);
-		return member;
+		if(principal != null) {
+			Member member = principal.getMember();
+			System.out.println("member=============== = " + member);
+			return member;			
+		} else {
+			return null;
+		}
 	}
 	
 	/** 메인 페이지 */
@@ -72,27 +76,29 @@ public class MemberController {
 */	
 
 	/** 로그인 기능 처리 */
-//	@PostMapping("/login")
-//	public String login(Member member, Model model) {
-//		
-//		Member findMember = memberService.getMember(member);
-//		
-//		System.out.println("findMember is " + findMember);
-//		System.out.println("[login()] findMember : " + findMember);
-//		//System.out.println("입력한 비밀번호 : "+member.getPwd());
-//		//System.out.println(findMember.getMemCoupon());
-//		if(findMember != null && findMember.getPwd().equals(member.getPwd())) {
-//			model.addAttribute("user", findMember);
-//
-//			// 비밀번호 일치시 메인 화면으로 이동
-//			return "redirect:/";
-//			
-//		} else {
-//			System.out.println("[Session Check] login fail : "+member);
-//			// 비밀번호 불일치시 로그인 화면으로 이동
-//			return "redirect:/member-login";
-//		}
-//	}
+/*	
+	@PostMapping("/login")
+	public String login(Member member, Model model) {
+		
+		Member findMember = memberService.getMember(member);
+		
+		System.out.println("findMember is " + findMember);
+		System.out.println("[login()] findMember : " + findMember);
+		//System.out.println("입력한 비밀번호 : "+member.getPwd());
+		//System.out.println(findMember.getMemCoupon());
+		if(findMember != null && findMember.getPwd().equals(member.getPwd())) {
+			model.addAttribute("user", findMember);
+
+			// 비밀번호 일치시 메인 화면으로 이동
+			return "redirect:/";
+			
+		} else {
+			System.out.println("[Session Check] login fail : "+member);
+			// 비밀번호 불일치시 로그인 화면으로 이동
+			return "redirect:/member-login";
+		}
+	}
+*/	
 	
 	/** 아이디 찾기 기능 처리 */
 	@PostMapping("/findId")
@@ -119,11 +125,28 @@ public class MemberController {
 		if (findMember != null) {  // 이름과 이메일을 조건으로 아이디 조회 성공
 			model.addAttribute("message", 1);
 			model.addAttribute("pw", findMember.getPwd());
+			model.addAttribute("id", findMember.getId());
+
+			return "member/findPw";
 		} else {
 			model.addAttribute("message", -1);
+			
+			return "member/findPwError";
 		}
 		
-		return "member/findPw";
+	}
+	
+	/** 비밀번호 수정 처리 */
+	@PostMapping("/modifyPwd")
+	public String modifyPwd(Member member, Model model) {
+		System.out.println("[Member infoModify()] Member : "+member);
+
+		memberService.modifyMemberPwd(member);			
+
+		// 세션에 수정된 정보 저장
+		model.addAttribute("user", memberRepo.findById(member.getId()).get());
+		
+		return "redirect:/";
 	}
 	
 	/** 로그아웃 처리 */
@@ -158,11 +181,9 @@ public class MemberController {
 		System.out.println("[Member infoModify()] Member : "+member);
 		
 		// 회원 정보 수정
-		if(member.getProvider() == "") {
-			System.out.println("일반회원 : "+member);
+		if(member.getProvider() == "") { // 일반회원 정보수정시
 			memberService.modifyMember(member);			
-		} else {
-			System.out.println("sns회원 : "+member);
+		} else {						 // sns회원 정보수정시
 			memberService.modifySnsMember(member);
 		}
 		

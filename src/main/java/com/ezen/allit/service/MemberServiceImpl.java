@@ -14,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Grade;
@@ -100,7 +99,6 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	@Transactional
 	public Member modifySnsMember(Member member) {
-		System.out.println("member = " + member);
 		Member theMember = memberRepo.findById(member.getId()).get();
 
 		theMember.setEmail(member.getEmail());
@@ -109,7 +107,7 @@ public class MemberServiceImpl implements MemberService {
 		theMember.setAddress(member.getAddress());
 		theMember.setBirth(member.getBirth());
 		theMember.setGender(member.getGender());
-		System.out.println("theMember = " + theMember);
+
 		return theMember;
 	}
 
@@ -137,6 +135,19 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public Member findByPw(Member member) {
 		return memberRepo.findByIdAndNameAndEmail(member.getId(), member.getName(), member.getEmail());
+	}
+	
+	/** 회원 비밀번호 수정 */
+	@Override
+	@Transactional
+	public Member modifyMemberPwd(Member member) {
+		Member theMember = memberRepo.findById(member.getId()).get();
+		String rawPwd = member.getPwd();		// 회원가입 화면에서 넘겨받은 pwd
+		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
+
+		theMember.setPwd(encPwd);
+
+		return theMember;
 	}
 
 	/** 회원 탈퇴 */
@@ -254,15 +265,13 @@ public class MemberServiceImpl implements MemberService {
 	/** 리뷰작성 */
 	@Transactional
 	public void saveReview(ReviewDto reviewDto) throws Exception {
-		System.out.println("reviewDtoFile = " + reviewDto.getImageFile());
 		Member member = memberRepo.findById(reviewDto.getMid()).get();
 		Seller seller = sellerRepo.findById(reviewDto.getSid()).get();
 		Product product = productRepo.findById(reviewDto.getPno()).get();
 		OrdersDetail ordersDetail = ordersDetailRepo.findById(reviewDto.getOdno()).get();
 
 		/** 파일 미첨부시 */
-		if(reviewDto.getImageFile().get(0).isEmpty()) { // 여기 처리가 안돼요..ㅠㅠ
-			System.out.println("aaaaaaaaaaaaaaaaaa");
+		if(reviewDto.getImageFile().get(0).isEmpty()) {
 			Review review = Review.toSaveReview(reviewDto);
 			review.setMember(member);
 			review.setSeller(seller);
@@ -274,7 +283,6 @@ public class MemberServiceImpl implements MemberService {
 		
 		/** 파일 첨부시(다중가능) */
 		} else {
-			System.out.println("bbbbbbbbbbbbbbbbbbbbbbbb");
 			Review review = Review.toSaveFileReview(reviewDto);
 			review.setMember(member);
 			review.setSeller(seller);
@@ -296,10 +304,10 @@ public class MemberServiceImpl implements MemberService {
 				
 				File saveFile = new File(realPath, imgName); // 저장경로와 파일명을 토대로 새 파일 생성 
 				imageFile.transferTo(saveFile);			     // 생성 완료
-				System.out.println("saveFile = " + saveFile);
-				ReviewFile reviewFile = ReviewFile.toSaveReviewFile(theReview, imgName);
-				System.out.println("reviewFile = " + reviewFile);
+				
+				ReviewFile reviewFile = ReviewFile.toSaveReviewFile(theReview, imgName); // reviewFile에 데이터 저장
 				reviewFile.setRegDate(new Date());
+				
 				reviewFileRepo.save(reviewFile);
 			}
 		}

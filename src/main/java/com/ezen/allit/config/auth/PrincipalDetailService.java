@@ -24,7 +24,7 @@ public class PrincipalDetailService implements UserDetailsService {
 	private final SellerRepository sellerRepo;
 	
 	/*
-	 * UserDetails 타입으로 시큐리티 세션 저장소에 유저정보가 들어감
+	 * UserDetails 타입으로 시큐리티 세션 저장소에 로그인하는 객체의 정보가 들어감
 	 * 그리고 해당 매서드가 종료될 때 @AuthenticationPrincipal 어노테이션이 생성
 	 */
 	@Override

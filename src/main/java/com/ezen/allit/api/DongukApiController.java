@@ -120,7 +120,7 @@ public class DongukApiController {
 	@PutMapping("/product/qna/save/{pno}/response")
 	public ResponseDto<Integer> saveResponse(@RequestBody QnADto qnaDto) {
 		qnaService.saveResponse(qnaDto);
-		qnaService.modifyStatus(qnaDto);
+		qnaService.modifyStatus(qnaDto); // 주문상세 status 변경
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
@@ -131,7 +131,7 @@ public class DongukApiController {
 	@PutMapping("/product/qna/delete/{pno}/response")
 	public ResponseDto<Integer> deleteResponse(@RequestBody QnADto qnaDto) {
 		qnaService.saveResponse(qnaDto);
-		qnaService.undoStatus(qnaDto);
+		qnaService.undoStatus(qnaDto); // 주문상세 status 변경
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}

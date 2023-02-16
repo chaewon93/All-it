@@ -15,16 +15,40 @@
 			<img class="logo" th:src="@{ /img/logo.jpg }">
 		</h1>
 	</div>
-<div id="wrap" align="center">
+<!-- <div id="wrap" align="center">
   <h3>비밀번호 찾기 결과</h3>
   <form method=post name=formm action="id_check_form" >
-    <!-- User ID <input type=text name="id" th:value="${id}">   --> 
+    User ID <input type=text name="id" th:value="${id}">   
     <div style="margin-top: 20px" th:if="${message == 1}">요청하신 비밀번호는 <b th:text="${pw}"></b>입니다.</div>   
     <div style="margin-top: 20px" th:if="${message == -1}">가입되지 않은 정보입니다.</div>
     <br><input type="button" value="다시 찾기" class="btn btn-primary" onclick="reFind()">
     <input type="button" value="확인" class="btn btn-light" onclick="idok()">
   </form>
-</div>  
+</div>   -->
+<form method="post" id="frm">
+	<div id="wrap" align="center">
+	  <h3>비밀번호 확인 완료</h3>
+	  <form method=post name=formm action="id_check_form" >
+	    <!-- User ID <input type=text name="id" th:value="${id}">   --> 
+	    <div style="margin-top: 20px" th:if="${message == 1}">새로운 비밀번호로 수정해주세요</div><br>  
+	    <table th:align="center" th:cellpadding="3" th:cellspacing="0">
+		    <tr>
+				<td>비밀번호</td>
+				<td><input type="password" id="pwd" name="pwd" class="form-control mr-sm-2" placeholder="비밀번호"/></td>
+			</tr>
+			<tr>
+				<td>비밀번호 확인</td>
+				<td><input type="password" id="pwdCheck" name="pwdCheck" class="form-control mr-sm-2" placeholder="비밀번호 확인"/>
+				<br><font id="checkPw" size="2"></font></td>
+			</tr>	
+	    </table>
+	    <div style="margin-top: 20px" th:if="${message == -1}">가입되지 않은 정보입니다.</div><br>
+	    <input type="hidden" th:value="${ id }" name="id" id="id">
+	    <input type="button" value="수정" class="btn btn-primary" onclick="modifyPwd()">
+	    <input type="button" value="취소" class="btn btn-light" onclick="idok()">
+	  </form>
+	</div>  
+</form>
 
 <!-- 자바스트립트 섹션 시작 -->
 <script type="text/javascript">
@@ -33,6 +57,53 @@ function idok(){
 }
 function reFind(){
 	self.history.go(-1);
+}
+
+// 비밀번호 확인
+$("#pwdCheck").focusout(function(){
+	var pass1 = $("#pwd").val();
+    var pass2 = $("#pwdCheck").val();
+    
+    if (pass1 != "" || pass2 != ""){
+    	if (pass1 == pass2){
+        	$("#checkPw").html('비밀번호가 일치합니다.');
+        	$("#checkPw").attr('color','green');
+        } else {
+        	$("#checkPw").html('비밀번호가 일치하지 않습니다. 다시 입력해주세요.');
+            $("#checkPw").attr('color','red');
+        }
+    }
+});
+
+// 비밀번호 정보수정
+function modifyPwd() {
+	let id = $("#id").val();
+	let pwd = $("#pwd").val();
+	let pwd2 = $("#pwdCheck").val();
+
+	if(pwd.trim() == "") {
+		alert('패스워드를 입력해주세요');
+		return false;
+	}
+	if(pwd2.trim() == "") {
+		alert('패스워드를 확인해주세요');
+		return false;
+	}
+	
+	var pass1 = pwd;
+    var pass2 = pwd2;
+       
+	console.log("pass1 = ", pwd);
+	console.log("pass2 = ", pwd2);
+    if(pass1 != "" || pass2 != ""){
+    	if(pass1 != pass2) {
+        	alert("비밀번호가 틀렸습니다.");
+        	return false;
+        } else {
+			$("#frm").attr("action", "/member/modifyPwd");
+			$("#frm").submit();
+        }
+	}
 }
 </script>
 <!-- 자바스트립트 섹션 끝 -->

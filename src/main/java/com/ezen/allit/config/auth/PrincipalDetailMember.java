@@ -19,6 +19,8 @@ import lombok.Data;
  * Authentication 객체의 유저정보는 UserDetail에 저장함
  * 즉, 로그인 완료 시 UserDetails 타입의 오브젝트를 시큐리티의 고유 세션 저장소에 저장
  * 그리고, OAuth는 OAuth2User 타입의 오브젝트를 시큐리티의 고유 세션 저장소에 저장
+ * 
+ * => 시큐리티 세션에는 UserDetails 객체만 들어갈 수 있기 때문에 Member 객체에 UserDetails 껍데기를 씌우는 것 
  */
 @Data
 public class PrincipalDetailMember implements UserDetails, OAuth2User {
@@ -96,6 +98,7 @@ public class PrincipalDetailMember implements UserDetails, OAuth2User {
 		return collect;
 	}
 
+	// OAuth2 SNS로그인 API 사용 시
 	@Override
 	public Map<String, Object> getAttributes() {
 		return attributes;

@@ -73,7 +73,9 @@ public class SellerServiceImpl implements SellerService {
 	}
 	
 
-	// 판매자 입점신청
+	/*
+	 *  판매자 입점신청
+	 */
 	@Transactional
 	public void saveSeller(Seller seller) {
 		String rawPwd = seller.getPwd();		// 입점신청 화면에서 넘겨받은 pwd
@@ -82,16 +84,7 @@ public class SellerServiceImpl implements SellerService {
 		seller.setRole(Role.SELLER);
 		sellerRepo.save(seller);
 	}
-	
-	/*
-	 *  판매자 입점신청
-	 */
-//	@Transactional
-//	public void saveSeller(Seller seller) {
-//		seller.setRole(Role.TEMP);		
-//		sellerRepo.save(seller);
-//	}
-	
+
 	/*
 	 * 판매자 상품목록조회
 	 */

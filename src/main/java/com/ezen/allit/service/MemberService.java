@@ -24,7 +24,9 @@ public interface MemberService {
 	
 	public Member findById(Member member); 
 	
-	public Member findByPw(Member member); 
+	public Member findByPw(Member member);
+	
+	Member modifyMemberPwd(Member member);
 	
 	public void deleteMember(String id);
 	

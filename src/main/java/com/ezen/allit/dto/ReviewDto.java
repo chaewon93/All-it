@@ -1,6 +1,5 @@
 package com.ezen.allit.dto;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -9,8 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
-import com.ezen.allit.domain.Review;
-import com.ezen.allit.domain.ReviewFile;
 import com.ezen.allit.domain.Seller;
 
 import lombok.AllArgsConstructor;

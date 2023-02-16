@@ -30,10 +30,10 @@
 		</tr>
 		<tr>
 			<td colspan="2" align="center">
-				<input type="text" th:value="${ ordersDetail.odno }" name="odno" id="odno">
-				<input type="text" th:value="${ ordersDetail.product.pno }" name="pno" id="pno">
-				<input type="text" th:value="${ ordersDetail.product.seller.id }" name="sid" id="sid">
-				<input type="text" th:value="${ #authentication.principal.member?.id }" name="mid" id="mid">
+				<input type="hidden" th:value="${ ordersDetail.odno }" name="odno" id="odno">
+				<input type="hidden" th:value="${ ordersDetail.product.pno }" name="pno" id="pno">
+				<input type="hidden" th:value="${ ordersDetail.product.seller.id }" name="sid" id="sid">
+				<input type="hidden" th:value="${ #authentication.principal.member?.id }" name="mid" id="mid">
 				<input type="submit" value="등록" class="btn btn-primary"/>
 			</td>
 		</tr>

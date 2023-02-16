@@ -16,6 +16,7 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 	int saveReview(String content, String imageName, int rating, int pno, String mid);
 	
 	// 리뷰답글 작성
+
 	@Modifying
 	@Query(value = "INSERT INTO review(content, pno, prvno, rating, hit, reg_date) VALUES(?1, ?2, ?3, 0, 0, sysdate)", nativeQuery = true)
 	int saveReviewReply(String content, int pno, int prvno);

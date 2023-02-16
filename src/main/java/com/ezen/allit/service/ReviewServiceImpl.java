@@ -65,7 +65,6 @@ public class ReviewServiceImpl implements ReviewService {
 		Optional<Hit> hit = hitRepo.findByReviewRvnoAndMemberId(hitSaveRequestDto.getRvno(), hitSaveRequestDto.getMid());
 		Review review = reviewRepo.findById(hitSaveRequestDto.getRvno()).get();
 		Member member = memberRepo.findById(hitSaveRequestDto.getMid()).get();
-		System.out.println("member = " + member);
 		
 		/* 이전에 좋아요 누른 기록이 없으면 좋아요, 있으면 좋아요 취소 */
 		if(hit.isEmpty()) {
@@ -80,10 +79,12 @@ public class ReviewServiceImpl implements ReviewService {
 	/*
 	 * 리뷰답글작성
 	 */
+
 	@Transactional
 	public void saveReviewReply(ReviewReplySaveRequestDto reviewReplySaveRequestDto) {
 		reviewRepo.saveReviewReply(reviewReplySaveRequestDto.getContent(), reviewReplySaveRequestDto.getPno(), reviewReplySaveRequestDto.getRvno());
 	}
+
 	
 	/*
 	 * 리뷰삭제
@@ -94,25 +95,5 @@ public class ReviewServiceImpl implements ReviewService {
 		review.getOrdersDetail().setStatus(4);
 		reviewRepo.deleteById(reviewDto.getRvno());
 	}
-	
-//	/*
-//	 * 리뷰작성
-//	 */
-//	@Transactional
-//	public void saveReview(ReviewSaveRequestDto reviewSaveRequestDto, MultipartFile reviewImageFile) throws Exception {
-//		System.out.println("reviewImageFile = " + reviewImageFile);
-//		String ogName = reviewImageFile.getOriginalFilename(); // 원본 파일명
-//		String realPath = "c:/fileUpload/images/"; 		       // 파일 저장경로
-//		
-//		/*
-//		 * UUID를 이용해 중복되지 않는 파일명 생성
-//		 */
-//		UUID uuid = UUID.randomUUID();
-//		String imgName = uuid + "_" + ogName; 			 	   // 저장될 파일명
-//		
-//		File saveFile = new File(realPath, imgName);     	   // 저장경로와 파일명을 토대로 새 파일 생성 
-//		reviewImageFile.transferTo(saveFile);				   // 생성 완료
-//		
-//		reviewRepo.saveReview(reviewSaveRequestDto.getContent(), imgName, reviewSaveRequestDto.getRating(), reviewSaveRequestDto.getPno());
-//	}
+
 }
