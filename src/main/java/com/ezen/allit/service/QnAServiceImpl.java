@@ -39,4 +39,21 @@ public class QnAServiceImpl implements QnAService {
 		QnA qna = qnaRepo.findById(qnaDto.getQno()).get();
 		qna.setStatus(1);
 	}
+	
+	/*
+	 * 상품문의 답변삭제
+	 */
+	@Transactional
+	public void deleteResponse(QnADto qnaDto) {
+		qnaRepo.deleteResponseQnA(qnaDto.getQno());
+	}
+	
+	/*
+	 * status 답변대기 변경
+	 */
+	@Transactional
+	public void undoStatus(QnADto qnaDto) {
+		QnA qna = qnaRepo.findById(qnaDto.getQno()).get();
+		qna.setStatus(0);
+	}
 }

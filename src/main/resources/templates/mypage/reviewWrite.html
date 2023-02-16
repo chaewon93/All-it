@@ -1,0 +1,46 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
+
+<body th:align="center">
+<form th:action="@{ /member/writeReview }" method="post" enctype="multipart/form-data">
+	<table>
+		<tr>
+			<td>
+				<input type="file" name="imageFile" id="imageFile" multiple="multiple">
+			</td>
+		</tr>
+		<tr>
+			<td bgcolor="orange" th:text="내용"></td>
+			<td align="left">
+				<textarea name="content" id="content" cols="40" rows="10"></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<select class="form-control" name="rating" id="rating">
+					<option th:value="1">1</option>
+					<option th:value="2">2</option>
+					<option th:value="3">3</option>
+					<option th:value="4">4</option>
+					<option th:value="5">5</option>	
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+				<input type="text" th:value="${ ordersDetail.odno }" name="odno" id="odno">
+				<input type="text" th:value="${ ordersDetail.product.pno }" name="pno" id="pno">
+				<input type="text" th:value="${ ordersDetail.product.seller.id }" name="sid" id="sid">
+				<input type="text" th:value="${ #authentication.principal.member?.id }" name="mid" id="mid">
+				<input type="submit" value="등록" class="btn btn-primary"/>
+			</td>
+		</tr>
+	</table>
+</form>
+
+</body>
+
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>

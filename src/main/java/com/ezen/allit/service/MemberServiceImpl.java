@@ -1,25 +1,30 @@
 package com.ezen.allit.service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Grade;
 import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Member;
-import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.QnA;
+import com.ezen.allit.domain.Review;
+import com.ezen.allit.domain.ReviewFile;
+import com.ezen.allit.domain.Role;
 import com.ezen.allit.repository.MemberRepository;
-import com.ezen.allit.repository.OrdersDetailRepository;
 import com.ezen.allit.repository.QnARepository;
+import com.ezen.allit.repository.ReviewRepository;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.dto.HitSaveRequestDto;
 import com.ezen.allit.repository.HitRepository;
@@ -34,7 +39,8 @@ public class MemberServiceImpl implements MemberService {
 	private final ProductRepository productRepo;
 	private final HitRepository hitRepo;
 	private final QnARepository qnaRepo;
-	private final OrdersDetailRepository ordersDetailRepo;
+	private final ReviewRepository reviewRepo;
+	private final BCryptPasswordEncoder encoder;
 
 	/** 회원 조회 */
 	@Override
@@ -49,11 +55,51 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 
-	/** 회원 등록(회원가입) + 회원 정보수정 */
+	/** 회원 등록(회원가입) */
 	@Override
 	public void saveMember(Member member) {
-		
+		String rawPwd = member.getPwd();		// 회원가입 화면에서 넘겨받은 pwd
+		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
+		member.setPwd(encPwd);
+		member.setRole(Role.MEMBER);
+
 		memberRepo.save(member);
+	}
+	
+	/** 회원 정보 수정 */
+	@Override
+	@Transactional
+	public Member modifyMember(Member member) {
+		Member theMember = memberRepo.findById(member.getId()).get();
+		String rawPwd = member.getPwd();		// 회원가입 화면에서 넘겨받은 pwd
+		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
+
+		theMember.setPwd(encPwd);
+		theMember.setEmail(member.getEmail());
+		theMember.setPhone(member.getPhone());
+		theMember.setZipcode(member.getZipcode());
+		theMember.setAddress(member.getAddress());
+		theMember.setBirth(member.getBirth());
+		theMember.setGender(member.getGender());
+		
+		return theMember;
+	}
+	
+	/** sns 회원 정보 수정 */
+	@Override
+	@Transactional
+	public Member modifySnsMember(Member member) {
+		System.out.println("member = " + member);
+		Member theMember = memberRepo.findById(member.getId()).get();
+
+		theMember.setEmail(member.getEmail());
+		theMember.setPhone(member.getPhone());
+		theMember.setZipcode(member.getZipcode());
+		theMember.setAddress(member.getAddress());
+		theMember.setBirth(member.getBirth());
+		theMember.setGender(member.getGender());
+		System.out.println("theMember = " + theMember);
+		return theMember;
 	}
 
 	/** 아이디 중복확인 */
@@ -138,9 +184,18 @@ public class MemberServiceImpl implements MemberService {
 	
 	/** 상품 구매 시 올잇머니 차감 */
 	@Transactional
+	@Override
 	public void minusMoney(String id, int amount) {
 		Member member = memberRepo.findById(id).get();
 		member.setMoney(member.getMoney() - amount);
+	}
+	
+	/** 취소/반품 시 올잇머니 환불 */
+	@Transactional
+	@Override
+	public void addMoney(String id, int amount) {
+		Member member = memberRepo.findById(id).get();
+		member.setMoney(member.getMoney() + amount);
 	}
 	
 	/** 상품 구매 시 포인트 사용 */
@@ -165,14 +220,48 @@ public class MemberServiceImpl implements MemberService {
 		if(grade.equals(Grade.BRONZE.toString())) {
 			member.setPoint(member.getPoint() + amount);
 		}else if(grade.equals(Grade.SILVER.toString())) {
-		
+
 		}else if(grade.equals(Grade.GOLD.toString())) {
 			
 		}else if(grade.equals(Grade.VIP.toString())) {
 			
 		}
+	}
+	
+	/** 리뷰목록 조회 */
+	@Transactional
+	public Page<Review> getReviewList(String id, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 10;
 		
+		Page<Review> reviewList = 
+				reviewRepo.findAllByMemberId(id, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "rvno")));
+		
+		return reviewList;
 	}
 
+	/** 구매확정 후 리뷰 */
+//	@Transactional
+//	public void saveReview(Review review) throws Exception {
+//		int theRvno = reviewRepo.save(review).getRvno();
+//		System.out.println("theRvno = " + theRvno);
+//		Review theReview = reviewRepo.findById(theRvno).get();
+//		System.out.println("theReview = " + theReview);
+//		
+//		for(ReviewFile imageFile : theReview.getReviewFile()) {
+//			String ogName = imageFile.getImageName(); 										  // 원본 파일명
+//			String realPath = "c:/fileUpload/images/"; 	// 파일 저장경로
+//			/*
+//			 * UUID를 이용해 중복되지 않는 파일명 생성
+//			 */
+//			UUID uuid = UUID.randomUUID();
+//			String imgName = uuid + "_" + ogName; 		 // 저장될 파일명
+//			
+//			File saveFile = new File(realPath, imgName); // 저장경로와 파일명을 토대로 새 파일 생성 
+//			imageFile.transferTo(saveFile);			     // 생성 완료
+//			
+//			reviewRepo.save(theReview);
+//		}
+//	}
 
 }

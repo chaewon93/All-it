@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.CustomerCenter;
-import com.ezen.allit.domain.QnA;
 import com.ezen.allit.repository.CustomerCenterRepository;
 
 @Service

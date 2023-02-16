@@ -1,4 +1,6 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+	 
 <!-- header replace -->
 <div th:replace="~{ /fragments/header.html :: header }"></div>
 
@@ -133,4 +135,3 @@ function setCondition(){
 
 <!-- footer replace -->
 <div th:replace="~{ /fragments/footer.html :: footer }"></div>
-</html>

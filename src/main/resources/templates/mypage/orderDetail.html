@@ -26,7 +26,7 @@
 					<span th:text="${ detail.product.name }"></span>
 				</a> 
 				<span th:text="${#numbers.formatInteger(detail.product.price, 1, 'COMMA')}+'원'"></span>
-				<input type="button" class="btn btn-light" id="inCart"value="장바구니 담기">
+				<input type="button" class="btn btn-light" id="inCart" value="장바구니 담기">
 			</td>
 			<td th:text="${detail.quantity}+'개'"></td>
 			<td th:text="${#numbers.formatInteger(detail.product.price*detail.quantity, 1, 'COMMA')}+'원'" />
@@ -36,37 +36,39 @@
 				<td th:case="3">배송완료</td>
 				<td th:case="4">구매확정</td>
 				<td th:case="5">주문취소</td>
-				<td th:case="6">반품신청</td>
-				<td th:case="7">환불신청</td>
+				<td th:case="6">교환신청</td>
+				<td th:case="7">반품신청</td>
 			</th:block>
 			<td>
 				<input type="button" th:if="${detail.status == 1}" id="cancelOrder" value="주문취소" class="btn btn-light"> 
 				<input type="button" th:if="${detail.status == 2}" id="delivery" value="배송조회" class="btn btn-light"> 
 				<input type="button" th:if="${detail.status == 3}" id="buyComplete" value="구매확정" class="btn btn-light"> 
-				<input type="button" th:if="${detail.status == 3}" id="refund" value="반품/환불 신청" class="btn btn-light"> 
+				<input type="button" th:if="${detail.status == 3}" id="refund" value="교환/반품 신청" class="btn btn-light"> 
 				<input type="button" class="btn btn-light" id="productQna" value="상품문의"> 
 				<input type="button" th:if="${detail.status == 3}" id="writeReview" value="리뷰작성" class="btn btn-light">
 				
-				<!-- <input type="hidden" th:value="${ detail.orders.ono }">  -->
-				<input type="hidden" th:value="${ session['user']?.id }" id="mid" name="mid"> 
-				<input type="hidden" th:value="${ detail.product.pno }" id="pno" name="pno">
+				<input type="hidden" th:value="${ detail.orders.ono }" id="ono" name="ono">
+	 			<input type="hidden" th:value="${ session['user']?.id }" id="mid" name="mid">
+	 			<input type="hidden" th:value="${ detail.product.pno }" id="pno" name="pno">
+	 			<input type="hidden" th:value="${ detail.odno }" id="odno" name="odno">
+	 			<input type="hidden" th:value="${ detail.orders.finalPrice }" id="finalPrice" name="finalPrice">
 			</td>
 		</tr>
 	</table>
 <hr>
 	<h3>받는 사람 정보</h3>
-	<table id="receiverInfo" border="1" th:each="detail : ${orderDetailList}">
+	<table id="receiverInfo" border="1" th:each="detail, st : ${orderDetailList}">
 		<tr>
-			<td>이름</td>
-			<td th:text="${detail.receiverName}" />
+			<td th:if="${st.first == true}">이름</td>
+			<td th:if="${st.first == true}" th:text="${detail.receiverName}" />
 		</tr>
 		<tr>
-			<td>연락처</td>
-			<td th:text="${detail.receiverPhone}" />
+			<td th:if="${st.first == true}">연락처</td>
+			<td th:if="${st.first == true}" th:text="${detail.receiverPhone}" />
 		</tr>
 		<tr>
-			<td>배송 주소</td>
-			<td th:text="'(' + ${detail.receiverZipcode} + ') ' + ${detail.receiverAddr}" />
+			<td th:if="${st.first == true}">배송 주소</td>
+			<td th:if="${st.first == true}" th:text="'(' + ${detail.receiverZipcode} + ') ' + ${detail.receiverAddr}" />
 		</tr>
 	<!--<tr>
 			<th>배송 요청사항</th>
@@ -113,12 +115,8 @@ let index = {
 			this.insertCart();
 		});
 		
-		$("#cancelOrder").on("click", ()=>{ 
-			this.cancelOrder();
-		});
-		
-		$("#buyComplete").on("click", ()=>{ 
-			this.buyComplete();
+		$("#refund").on("click", ()=>{ 
+			this.refund();
 		});
 		
 	},
@@ -190,7 +188,7 @@ let index = {
 	},
 	
 	// 주문 취소
-	cancelOrder:function() {
+	cancelOrder:function(ono, odno) {
 		let user_id = $("#mid").val();
 		
 		if(user_id == "" || user_id == "undefined") {
@@ -198,35 +196,66 @@ let index = {
 			window.location.href="/member-login";
 			return false;
 		} else {
-		/*	$.ajax({
+			$.ajax({
 				url: "/order/orderCancel",
 				type: "post",
 				data: JSON.stringify({
 					mid: $("#mid").val(),
-					pno: $("#pno").val(),
-					quantity : 1
+					ono: ono,
+					odno : odno
 				}),
 				dataType: "text",
 				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 				success: function(data){ // 처리 성공 시
-					//alert("[처리결과]"+data);
-					if(data == 'inCart') {
-						alert('상품이 장바구니에 담겼습니다.');
-						//self.history.go(-1);
-					} else {
-						alert('로그인이 필요한 서비스입니다.');
-					}
+					console.log(data);
+					alert("선택하신 상품이 주문취소 처리 되었습니다.");
+					location.replace("/order/orderList");
+				}, error: function(xhr,status,err){
+					alert("다시 시도해주세요.");				
+					console.log('[cancelOrder() ajax error] '+JSON.stringify(err));
 				}
 			}).fail(function(error){ // 처리 실패 시
 				alert("다시 시도해주세요.");
-				console.log("[insertCart() ajax error] "+JSON.stringify(error));
-			}); */
+				console.log("[cancelOrder() ajax error] "+JSON.stringify(error));
+			}); 
 		}
 	},
 	
 	// 구매 확정
-	buyComplete:function() {
+	buyComplete:function(odno) {
+		//alert("odno : "+odno);
+		let user_id = $("#mid").val();
 		
+		if(user_id == "" || user_id == "undefined") {
+			alert('로그인이 필요한 서비스입니다.');
+			window.location.href="/member-login";
+			return false;
+		} else {
+			$.ajax({
+				url: "/order/orderComplete",
+				type: "post",
+				data: JSON.stringify({
+					mid: $("#mid").val(),
+					//pno: $("#pno").val(),
+					//ono: $("#ono").val(),
+					odno: odno,
+					finalPrice: $("#finalPrice").val() 
+				}),
+				dataType: "text",
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+				success: function(data){ // 처리 성공 시
+					console.log(data);
+					alert("선택하신 상품이 구매확정 처리 되었습니다.");
+					location.replace("/order/orderList");
+				}, error: function(xhr,status,err){
+					alert("다시 시도해주세요.");				
+					console.log('[orderComplete() ajax error] '+err);
+				}
+			}).fail(function(error){ // 처리 실패 시
+				alert("다시 시도해주세요.");
+				console.log("[orderComplete() ajax error] "+JSON.stringify(error));
+			});
+		}
 	}
 
 }

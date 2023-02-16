@@ -6,37 +6,99 @@
 
 <!-- 내용 섹션 시작 -->
 <div class="container" style="margin-top: 30px; background-color: white">	
-	<form method="get" th:action="@{ /seller/ }">
+	<form method="get" th:action="@{ /seller/order }">
 		<input type="text" name="searchKeyword" id="searchKeyword" placeholder="검색어를 입력해주세요">
 		<button type="submit" class="btn btn-light">검색</button>
 	</form> <br>
-	<div class="row">
-		<div class="col-sm-4" th:each="order : ${ orderList }">
-			<a th:href="@{ |/seller/product/${ order.product.pno }| }">
-				<h2 th:text="${ order.product.name }"></h2>
-				<img class="img-fluid" th:src="@{ /images/ } + ${ order.product.imageName }" width="350">
-				<span>구매자 : </span><span th:text="${ order.member.id }"></span><br>
-				<span>가격 : </span><span th:text="${ order.product.price }"></span><br>
-				<span>수량 : </span><span th:text="${ order.quantity }"></span>
-			</a>
-			<hr class="d-sm-none">
-		</div>
-	</div>
-<!-- 	<div class="row">
-		<div class="col-sm-4" th:each="i : ${#numbers.sequence.(orderList.size()-1, 0, -1)"
-							  th:with="">
-			<a th:href="@{ |/seller/product/${ order.product.pno }| }">
-				<h2 th:text="${ order.product.name }"></h2>
-				<img class="img-fluid" th:src="@{ /images/ } + ${ order.product.imageName }" width="350">
-				<span>구매자 : </span><span th:text="${ order.member.id }"></span><br>
-				<span>가격 : </span><span th:text="${ order.product.price }"></span><br>
-				<span>수량 : </span><span th:text="${ order.quantity }"></span>
-			</a>
-			<hr class="d-sm-none">
-		</div>
-	</div> -->
+	<table>
+		<tr style="text-align: center;">
+			<th bgcolor="orange" width="200">상품</th>
+			<th bgcolor="orange" width="300">구매자</th>
+			<th bgcolor="orange" width="150">가격</th>
+			<th bgcolor="orange" width="100">수량</th>
+			<th bgcolor="orange" width="250">주문상태</th>
+		</tr>
+		<tr th:if="${size} == 0">
+			<td colspan="5" align="center" style="font-weight: bold; color: rgb(255, 195, 81);">판매 내역이 없습니다.</td>
+		</tr>
+		<tr th:each="order : ${ orderList }" style="text-align: center;">
+			<td >
+				<a th:href="@{ |/seller/product/${ order.product.pno }| }">
+					<span th:text="${ order.product.name }"></span>
+				</a>
+			</td>
+			<td th:text="${ order.member.id }"></td>
+			<td th:text="${ order.product.price }"></td>
+			<td th:text="${ order.quantity }"></td>
+			<td>
+				<select name="status" id="status">
+					<option value="1" th:selected="${ order.status }=='1'">결제완료</option>
+					<option value="2" th:selected="${ order.status }=='2'">배송중</option>
+					<option value="3" th:selected="${ order.status }=='3'">배송완료</option>
+					<option value="4" th:selected="${ order.status }=='4'">구매확정</option>
+					<option value="5" th:selected="${ order.status }=='5'">주문취소</option>
+				</select>
+				<input type="hidden" th:value="${ order.odno }" name="odno" id="odno">
+				<button type="button" class="badge" name="btn" id="btn" th:onclick="'javascript:index.modifyStatus(odno.value, status.value);'">확인</button>
+			</td>
+		</tr>
+	</table>
 </div>
 <!-- 내용 섹션 끝 -->
+
+<!-- 자바스트립트 섹션 시작 -->
+<script type="text/javascript">
+let index = {
+	modifyStatus:function(odno, status) {
+		alert('hi');
+		alert(odno);
+		alert(status);
+/* 		const data = {
+			status = btn.previousElementSibling.previousElementSibling.value,
+			odno = btn.previousElementSibling.value
+		}
+		alert(data);
+*/		
+		$.ajax({
+			type: "put",
+			url: '/product/modify/'+odno,
+			data: JSON.stringify({
+				odno: odno
+			}),
+			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+		}).done(function(response){ // 처리 성공 시
+			alert('확인이 완료되었습니다');
+			window.location.reload();
+		}).fail(function(error){ // 처리 실패 시
+			alert(JSON.stringify(error));
+		});
+	}	
+
+/* 	modifyStatus:function(odno) {
+		alert(odno);
+		let data = {
+			odno = odno,
+			status = status
+		}
+		alert(data);
+		$.ajax({
+			type: "put",
+			url: '/product/modify/{data.odno}',
+			data: JSON.stringify(data),
+			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+		}).done(function(response){ // 처리 성공 시
+			alert('확인이 완료되었습니다');
+			window.location.reload();
+		}).fail(function(error){ // 처리 실패 시
+			alert(JSON.stringify(error));
+		});
+	}	 */
+}
+
+index.init();
+
+</script>
+<!-- 자바스트립트 섹션 끝 -->
 
 <div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
 <!-- pagination replace -->

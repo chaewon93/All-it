@@ -4,8 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.ezen.allit.domain.Member;
-import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.QnA;
+import com.ezen.allit.domain.Review;
 import com.ezen.allit.dto.HitSaveRequestDto;
 
 public interface MemberService {
@@ -14,6 +14,10 @@ public interface MemberService {
 	public Member getMember(Member member);
 	
 	public void saveMember(Member member);
+	
+	Member modifyMember(Member member);
+	
+	Member modifySnsMember(Member member);
 	
 	public int idCheck(String id);
 	
@@ -26,6 +30,9 @@ public interface MemberService {
 	/* <== 상품 주문 ==> */
 	/** 상품 구매시 올잇머니 차감 */
 	void minusMoney(String id, int amount);
+	
+	/** 취소/반품시 올잇머니 환불 */
+	void addMoney(String id, int amount);
 	
 	/** 상품 구매시 포인트 사용 */
 	void minusPoint(String id, int amount);
@@ -41,4 +48,8 @@ public interface MemberService {
 	public QnA getQnaDetail(int qno);
 	
 	void hitProduct(HitSaveRequestDto hitSaveRequestDto); // 상품 좋아요
+	
+	Page<Review> getReviewList(String id, Pageable pageable); // 리뷰목록 조회
+	
+//	void saveReview(Review review) throws Exception; // 구매확정 후 리뷰
 }
