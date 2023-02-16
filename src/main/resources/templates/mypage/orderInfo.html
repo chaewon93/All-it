@@ -144,8 +144,8 @@
 <br>
 <input type="radio" id="chkrdo"> 위 주문 내용을 확인 하였으며, 회원 본인은 개인정보 이용 및 제공 및 결제에 동의합니다.
 <br><br>
-<input type="text" name="memCou" id="memCou"/>
-<input type="text" name="proid" id="proid"/>
+<input type="hidden" name="memCou" id="memCou" value="0"/>
+<input type="hidden" name="proid" id="proid" value="0"/>
 <input type="hidden" th:value="${ session['user']?.id }" name="mid" id="mid"/>
 <input type="hidden" th:value="${ product?.pno }" name="pno" id="pno"/>
 <input type="hidden" th:if="${product != null}" th:value="${ quantity }" name="quantity" id="quantity"/>
@@ -241,6 +241,9 @@ function changePoint() {
 	}
 	if(point.val() > mypoint){
 		point.val(mypoint);
+	}
+	if(point.val() < 1000){
+		point.val(0);
 	}
 	priceCheck();
 }

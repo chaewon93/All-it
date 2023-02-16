@@ -85,7 +85,7 @@ public class OrderController {
 	/** 주문하기 - 바로구매 */
 	@PostMapping("/order")
 	public String insertOrder(int pno, String mid, Model model, OrdersDetail ordersDetail,
-							@RequestParam(value = "price") int price,
+							@RequestParam(value = "finalPrice") int price,
 							@RequestParam(value = "point") int point,
 							@RequestParam(value = "memCou") int mcid,
 							@RequestParam(value = "proid") int couProid) {   
@@ -128,7 +128,7 @@ public class OrderController {
 	public String insertOrders(Model model, OrdersDetail ordersDetail,
 							@ModelAttribute("user") Member member,
 							@RequestParam(value = "cno") int[] cno,
-							@RequestParam(value = "price") int price,
+							@RequestParam(value = "finalPrice") int price,
 							@RequestParam(value = "point") int point,
 							@RequestParam(value = "memCou") int mcid,
 							@RequestParam(value = "proid") int couProid) {	

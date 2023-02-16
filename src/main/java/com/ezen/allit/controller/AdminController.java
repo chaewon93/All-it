@@ -89,13 +89,17 @@ public class AdminController {
 	@RequestMapping("getQnAList")
 	public String getQnAList(Model model, @PageableDefault(page = 1) Pageable pageable,
 			@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword,
-			@RequestParam(value= "a", defaultValue = "0") int status) {
+			@RequestParam(value= "a", defaultValue = "-1") int status) {
 		
 		Page<QnA> qnaList = null;
 		
 		if(searchKeyword.equals("")) {
 			System.out.println("검색 키워드 없음");
-			qnaList = adminService.getQnAList(pageable);
+			if(status == -1) {
+				qnaList = adminService.getQnAList(pageable);
+			}else if(status == 0 || status == 1) {
+				qnaList = adminService.findQnAByStatus(status, pageable);
+			}
 		} else {
 			System.out.printf("검색 키워드: [%s]\n", searchKeyword);
 //			qnaList = adminService.searchByAdminQna(searchKeyword, pageable);
@@ -125,7 +129,7 @@ public class AdminController {
 	@RequestMapping("getNoQnAList")
 	public String getNoQnAList(Model model, @PageableDefault(page = 1) Pageable pageable,
 			@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword,
-			@RequestParam(value= "a", defaultValue = "0") int status) {
+			@RequestParam(value= "a", defaultValue = "-1") int status) {
 		
 		Page<QnA> qnaList = null;
 
@@ -380,6 +384,30 @@ public class AdminController {
 		}
 		
 		return "redirect:findAdminProduct";
+	}
+	
+	@GetMapping("couponList")
+	public String couponList(Model model, @PageableDefault(page = 1) Pageable pageable,
+			@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword) {
+		
+		Page<Coupon> couponList = null;
+		if(searchKeyword.equals("")) {
+			System.out.println("검색 키워드 없음");
+			couponList = couponService.findCouponList(pageable);
+		} else {
+			System.out.printf("검색 키워드: [%s]\n", searchKeyword);
+		}
+		
+		int naviSize = 10; // 페이지네이션 갯수
+		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+		int endPage = ((startPage + naviSize - 1) < couponList.getTotalPages()) ? startPage + naviSize - 1 : couponList.getTotalPages();
+		
+		model.addAttribute("list", couponList);
+		model.addAttribute("url", "/admin/couponList");
+		model.addAttribute("startPage", startPage);
+		model.addAttribute("endPage", endPage);	
+		
+		return "admin/couponList";
 	}
 	
 	@GetMapping("createCoupon")

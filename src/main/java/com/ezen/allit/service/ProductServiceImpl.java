@@ -57,6 +57,20 @@ public class ProductServiceImpl implements ProductService {
 	}
 	
 	/*
+	 * MDPICK 상품 조회
+	 */
+	@Transactional
+	public Page<Product> getMdpickProductList(Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 6;
+
+		Page<Product> product = 
+				productRepo.findProductBymdPickyn(1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+
+        return product;
+	}
+	
+	/*
 	 * 상품조회
 	 */
 	@Transactional

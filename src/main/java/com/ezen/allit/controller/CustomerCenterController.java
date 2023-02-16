@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.CustomerCenter;
 import com.ezen.allit.repository.CustomerCenterRepository;
@@ -63,9 +64,8 @@ public class CustomerCenterController {
 	}
 	
 	@RequestMapping("/insertCusto")
-	public String insertCusto(CustomerCenter cus) {
-		
-		cusService.insertCustomerCenter(cus);
+	public String insertCusto(CustomerCenter cus, MultipartFile imageFile) throws Exception {
+		cusService.insertCustomerCenter(cus, imageFile);
 		
 		return "redirect:getCusto";
 	}
@@ -119,6 +119,26 @@ public class CustomerCenterController {
 		
 		cusService.deleteCusto(cno);
 		return "redirect:getCusto";
+	}
+	
+	@PostMapping("/mainBanner")
+	public String mainBanner(@RequestParam(value = "cno") int[] cno) {
+		
+		for(int i=0; i<cno.length; i++) {
+			
+			CustomerCenter customerCenter = cusRepo.findById(cno[i]).get();
+			System.out.println("======================================= 고객센터");
+			System.out.println(customerCenter);
+//			customerCenter.setPick("1");
+			if(customerCenter.getPick().equals("0")) {
+				customerCenter.setPick("1");
+			}else {
+				customerCenter.setPick("0");
+			}
+			cusRepo.save(customerCenter);
+		}
+		
+		return "redirect:findCusto";
 	}
 
 }

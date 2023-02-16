@@ -6,10 +6,15 @@ import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ezen.allit.domain.Coupon;
+import com.ezen.allit.domain.CustomerCenter;
 import com.ezen.allit.domain.MemCoupon;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Product;
@@ -32,6 +37,18 @@ public class CouponServiceImpl implements CouponService {
 
 	@Autowired
 	ProductService proService;
+	
+	@Override
+	public Page<Coupon> findCouponList(Pageable pageable) {
+		
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 6;
+		
+		Page<Coupon> couponList = 
+				couponRepo.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "couId")));
+
+        return couponList;	
+	}
 	
 	@Override
 	public void createCoupon(Coupon coupon) {
@@ -171,4 +188,5 @@ public class CouponServiceImpl implements CouponService {
 		
 		return result;
 	}
+	
 }

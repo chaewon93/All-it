@@ -163,14 +163,15 @@ public class MemberServiceImpl implements MemberService {
 		Member member = memberRepo.findById(id).get();
 		String grade = member.getGrade().toString();
 		if(grade.equals(Grade.BRONZE.toString())) {
-			amount = amount * ;
+			member.setPoint(member.getPoint() + amount);
 		}else if(grade.equals(Grade.SILVER.toString())) {
-			amount = amount * 
+		
 		}else if(grade.equals(Grade.GOLD.toString())) {
 			
-		}else if(grade.equals(Grade.VIP.toString()))
-
-		member.setPoint(member.getPoint() + amount);
+		}else if(grade.equals(Grade.VIP.toString())) {
+			
+		}
+		
 	}
 
 

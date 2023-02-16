@@ -181,7 +181,7 @@ public class DataInsertTest {
 	}
 	
 	@Test
-//	@Disabled
+	@Disabled
 	public void testOrderDataInsert() {
 		
 		// Order 생성
