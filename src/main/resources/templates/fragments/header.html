@@ -40,12 +40,10 @@
 	</head>
 	<body>
 	<div class="header-container" th:if="${ session.admin == null } and ${ session.seller == null }">
-	
   
 	<!-- 미로그인 시작 -->
-  <!--
+
 	<div class="header-container" sec:authorize="!isAuthenticated()">
-  -->
 
 		<ul class="nav justifiy-content-end" >
 	  		<li class="nav-item"><a class="nav-link" th:href="@{ /member-login }">로그인</a>
@@ -73,7 +71,7 @@
 					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=9) }">반려동물용품</a>
 					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=10) }">건강식품</a>
 					<!-- <a class="dropdown-item" th:href="@{ /product/category/{category} }">건강식품</a> -->
-				</div>
+ 				</div>
 			</div> &nbsp;&nbsp;
 			<div class="collapse navbar-collapse" id="collapsibleNavbar">
 				<ul class="navbar-nav">
@@ -87,7 +85,7 @@
 		</nav>
 	</div>
 	<!-- 미로그인 끝 -->
-	
+	</div>
 	<!-- 회원 로그인 시작 -->
 	<div class="header-container" sec:authorize="hasRole('MEMBER')">
 		<ul class="nav justifiy-content-end" >
@@ -115,7 +113,6 @@
 					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=8) }">도서/음반/DVD</a>
 					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=9) }">반려동물용품</a>
 					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=10) }">건강식품</a>
-					 <a class="dropdown-item" th:href="@{ /product/category/{category} }">건강식품</a> 
 				</div>
 			</div> &nbsp;&nbsp;
 			<div class="collapse navbar-collapse" id="collapsibleNavbar">
@@ -181,6 +178,5 @@
 			</div>
 		</nav>
 	</div>	
-
 	<!-- 판매자 로그인 끝 -->
 </div>
