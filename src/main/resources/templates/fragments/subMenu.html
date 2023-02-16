@@ -10,6 +10,68 @@
 	
 </head>
 <body>
+	<div class="col-sm-2" style="float: left; margin-top:30px">
+		<p><b>MY 정보</b></p>
+		<!-- <ul class="nav nav-pills flex-column"> -->
+		<ul class="nav flex-column">
+	        <li class="nav-item">
+	        	<!-- <a class="nav-link active href="#"> -->
+	          <a class="nav-link text-warning" th:href="@{ /member/info }">내 정보 보기/수정</a>
+	        </li>
+	        <li class="nav-item">
+	          <a class="nav-link text-warning" th:href="@{ /member/money }">올잇머니 관리</a>
+	        </li>
+	        <!-- <li class="nav-item">
+	          <a class="nav-link disabled" href="#">Disabled</a>
+	        </li> -->
+		</ul>
+		<!-- <hr class="d-sm-none"> -->
+		<hr>
+		
+		<p><b>MY 쇼핑</b></p>
+		<ul class="nav nav-pills flex-column">
+	        <li class="nav-item">
+	          <a class="nav-link text-warning" th:href="@{ /cart/cartList }">장바구니</a>
+	        </li>
+	        <li class="nav-item">
+	          <a class="nav-link text-warning" th:href="@{ /order/orderList }">주문 내역</a>
+	        </li>
+	        <li class="nav-item">
+	          <a class="nav-link text-warning" th:href="@{ /member/cancelList }">취소/교환/반품 내역</a>
+	        </li>
+		</ul>
+		<hr>
+		
+		<p><b>MY 혜택</b></p>
+		<ul class="nav nav-pills flex-column">
+	        <li class="nav-item">
+	          <a class="nav-link text-warning" th:href="@{ /member/coupon }">할인 쿠폰</a>
+	        </li>
+	        <li class="nav-item">
+	          <a class="nav-link text-warning" th:href="@{ /member/point }">포인트 관리</a>
+	        </li>
+		</ul>
+		<hr>
+		
+		<p><b>MY 활동</b></p>
+		<ul class="nav nav-pills flex-column">
+	        <li class="nav-item">
+	          <a class="nav-link text-warning" th:href="@{ /member/qna }">문의하기</a>
+	        </li>
+	        <li class="nav-item">
+	          <a class="nav-link text-warning" th:href="@{ /member/qnaList }">문의 내역</a>
+	        </li>
+	        <li class="nav-item">
+	          <a class="nav-link text-warning" th:href="@{ /member/review }">리뷰 관리</a>
+	        </li>
+	        <li class="nav-item">
+	          <a class="nav-link text-warning" th:href="@{ /member/like }">좋아요 리스트</a>
+	        </li>
+		</ul>
+		<hr>
+	</div>
+
+<!-- 
 	<nav style="float: left;">
 	<div>
 		<div class="myInfo">MY 정보</div>
@@ -67,4 +129,5 @@
 		</div>
 	</div>
 	</nav>
+-->
 </div> 

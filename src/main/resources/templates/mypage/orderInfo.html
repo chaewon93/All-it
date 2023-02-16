@@ -404,8 +404,8 @@ function orderCheck() {
 	
 	if($("#pno").val() == "") {
 		// 장바구니 구매
-		$("#orderFrm").attr("action", "/order/orders")
-		$("#orderFrm").submit;
+		$("#orderFrm").attr("action", "/order/orders");
+		$("#orderFrm").submit();
 	} else {
 		// 바로구매
 		$("#orderFrm").attr("action", "/order/order");

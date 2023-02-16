@@ -69,7 +69,7 @@ public class OrderServiceImpl implements OrderService {
 		return orderDetailList;
 	}
 	
-	/** 구매 확정 */
+	/** 주문 상태 변경 */
 	@Transactional
 	@Override
 	public void updateStatus(int status, int odno) {
@@ -79,16 +79,16 @@ public class OrderServiceImpl implements OrderService {
 	}
 	
 	/** 주문 취소 - OrdersDetail 삭제 */
-	@Override
-	public void deleteOrdersDetail(int odno) {
-		ordersDetailRepo.deleteById(odno);
-	}
+//	@Override
+//	public void deleteOrdersDetail(int odno) {
+//		ordersDetailRepo.deleteById(odno);
+//	}
 	
 	/** 주문 취소 - Orders 삭제 */
-	@Override
-	public void deleteOrders(int ono) {
-		ordersRepo.deleteById(ono);
-	}
+//	@Override
+//	public void deleteOrders(int ono) {
+//		ordersRepo.deleteById(ono);
+//	}
 	
 	/** 주문 취소 - Orders의 finalPrice 수정 */
 	@Override
