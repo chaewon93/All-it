@@ -16,8 +16,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.web.multipart.MultipartFile;
 
+import com.ezen.allit.dto.ReviewDto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
@@ -54,7 +54,47 @@ public class Review {
 	@OneToOne
 	@JoinColumn(name = "odno")
 	private OrdersDetail ordersDetail; 		  		 // 주문상세 정보
+	private int fileStatus;							 // 파일첨부 여부(0:미첨부, 1:첨부)
 	@CreationTimestamp
 	private Date regDate;							 // 작성일
 	private Date modDate;							 // 수정일
+	
+	public static Review toSaveReview(ReviewDto reviewDto) {
+		Review review = new Review();
+		review.setContent(reviewDto.getContent());
+		review.setRating(reviewDto.getRating());
+		review.setMember(reviewDto.getMember());
+		review.setSeller(reviewDto.getSeller());
+		review.setProduct(reviewDto.getProduct());
+		review.setOrdersDetail(reviewDto.getOrdersDetail());
+		review.setFileStatus(0);
+		review.setRegDate(new Date());
+		
+		return review;
+	}
+	
+	public static Review toSaveFileReview(ReviewDto reviewDto) {
+		Review review = new Review();
+		review.setContent(reviewDto.getContent());
+		review.setRating(reviewDto.getRating());
+		review.setMember(reviewDto.getMember());
+		review.setSeller(reviewDto.getSeller());
+		review.setProduct(reviewDto.getProduct());
+		review.setOrdersDetail(reviewDto.getOrdersDetail());
+		review.setFileStatus(1);
+		review.setRegDate(new Date());
+		
+		return review;
+	}
 }
+
+
+
+
+
+
+
+
+
+
+

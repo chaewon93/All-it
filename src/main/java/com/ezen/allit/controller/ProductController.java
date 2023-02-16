@@ -143,6 +143,7 @@ public class ProductController {
 							@PathVariable int pno,
 							@PageableDefault(page = 1) Pageable pageable) {
 		Product theProduct = productService.getProduct(pno);
+		System.out.println("상품조회 = " + theProduct.getReview());
 		
 		/* 조회수 증가 */
 		productService.updateCount(theProduct.getPno());

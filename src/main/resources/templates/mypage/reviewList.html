@@ -9,9 +9,10 @@
 <table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
 	<tr>
 		<th bgcolor="orange" width="100">번호</th>
-		<th bgcolor="orange" width="150">이미지</th>
-		<th bgcolor="orange" width="300">상품</th>
-		<th bgcolor="orange" width="150">구매일</th>
+		<th bgcolor="orange" width="150">상품</th>
+		<th bgcolor="orange" width="300">내용</th>
+		<th bgcolor="orange" width="200">구매일</th>
+		<th bgcolor="orange" width="100">비고</th>
 	</tr>
 	<tr th:if="${size} == 0">
 		<td colspan="5" align="center" style="font-weight: bold; color: rgb(255, 195, 81);">리뷰 내역이 없습니다.</td>
@@ -19,15 +20,49 @@
 	<tr th:each="review, state : ${ reviewList }">
 		<td th:text="${ state.count }"></td>
 		<td align="left">
-			<a th:href="@{ /member/reviewDetail(rvno=${ review.rvno }) }" >
-				<img class="img-fluid" th:src="@{ /images/ } + ${ review.product.imageName }" width="100">
+			<a th:href="@{ |/product/${ review.product.pno }| }" >
+				<span th:text="${ review.ordersDetail.product.name }"></span>
 			</a>
 		</td>
-		<td th:text="${ review.ordersDetail.product.name }"></td>
-		<td th:text="${ review.ordersDetail.orders.ragDate }"></td>
+		<td th:text="${ review.content }"></td>
+		<td th:text="${#dates.format(review.ordersDetail.orders.regDate, 'yyyy-MM-dd')}" /></td>
+		<td>
+			<input type="hidden" th:value="${ review.rvno }" name="rvno" id="rvno">
+			<button class="badge" id="reviewDelete" style="color: black" th:onclick="'javascript:index.deleteReview(this);'">삭제</button>
+		</td>	  			
 	</tr>
 </table>
 </body>
+
+<!-- 자바스트립트 섹션 시작 -->
+<script type="text/javascript">
+let index = {
+	deleteReview:function(btn) {
+ 		const data = {
+			rvno: btn.previousElementSibling.value
+		}
+		console.log('data = ', data);
+		const check = confirm("삭제하시겠습니까?");
+			if(check == true) {
+			$.ajax({
+				type: "delete",
+				url: '/review/delete/${data.rvno}',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('리뷰가 삭제되었습니다');
+				window.location.reload();
+			}).fail(function(error){ // 처리 실패 시
+				alert(JSON.stringify(error));
+			});
+		}
+	}	
+}
+
+index.init();
+
+</script>
+<!-- 자바스트립트 섹션 끝 -->
 
 <!-- pagination replace -->
 <div th:replace="~{ /fragments/pagination.html :: pagination }"></div>

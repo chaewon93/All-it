@@ -2,6 +2,7 @@ package com.ezen.allit.service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,20 +14,27 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Grade;
 import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
 import com.ezen.allit.domain.ReviewFile;
 import com.ezen.allit.domain.Role;
+import com.ezen.allit.domain.Seller;
 import com.ezen.allit.repository.MemberRepository;
+import com.ezen.allit.repository.OrdersDetailRepository;
 import com.ezen.allit.repository.QnARepository;
+import com.ezen.allit.repository.ReviewFileRepository;
 import com.ezen.allit.repository.ReviewRepository;
+import com.ezen.allit.repository.SellerRepository;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.dto.HitSaveRequestDto;
+import com.ezen.allit.dto.ReviewDto;
 import com.ezen.allit.repository.HitRepository;
 import com.ezen.allit.repository.ProductRepository;
 
@@ -40,6 +48,9 @@ public class MemberServiceImpl implements MemberService {
 	private final HitRepository hitRepo;
 	private final QnARepository qnaRepo;
 	private final ReviewRepository reviewRepo;
+	private final ReviewFileRepository reviewFileRepo;
+	private final SellerRepository sellerRepo;
+	private final OrdersDetailRepository ordersDetailRepo;
 	private final BCryptPasswordEncoder encoder;
 
 	/** 회원 조회 */
@@ -241,28 +252,58 @@ public class MemberServiceImpl implements MemberService {
 		return reviewList;
 	}
 
-	/** 구매확정 후 리뷰 */
-//	@Transactional
-//	public void saveReview(Review review) throws Exception {
-//		int theRvno = reviewRepo.save(review).getRvno();
-//		System.out.println("theRvno = " + theRvno);
-//		Review theReview = reviewRepo.findById(theRvno).get();
-//		System.out.println("theReview = " + theReview);
-//		
-//		for(ReviewFile imageFile : theReview.getReviewFile()) {
-//			String ogName = imageFile.getImageName(); 										  // 원본 파일명
-//			String realPath = "c:/fileUpload/images/"; 	// 파일 저장경로
-//			/*
-//			 * UUID를 이용해 중복되지 않는 파일명 생성
-//			 */
-//			UUID uuid = UUID.randomUUID();
-//			String imgName = uuid + "_" + ogName; 		 // 저장될 파일명
-//			
-//			File saveFile = new File(realPath, imgName); // 저장경로와 파일명을 토대로 새 파일 생성 
-//			imageFile.transferTo(saveFile);			     // 생성 완료
-//			
-//			reviewRepo.save(theReview);
-//		}
-//	}
+	/** 리뷰작성 */
+	@Transactional
+	public void saveReview(ReviewDto reviewDto) throws Exception {
+		System.out.println("reviewDtoFile = " + reviewDto.getImageFile());
+		Member member = memberRepo.findById(reviewDto.getMid()).get();
+		Seller seller = sellerRepo.findById(reviewDto.getSid()).get();
+		Product product = productRepo.findById(reviewDto.getPno()).get();
+		OrdersDetail ordersDetail = ordersDetailRepo.findById(reviewDto.getOdno()).get();
+
+		/** 파일 미첨부시 */
+		if(reviewDto.getImageFile().get(0).isEmpty()) { // 여기 처리가 안돼요..ㅠㅠ
+			System.out.println("aaaaaaaaaaaaaaaaaa");
+			Review review = Review.toSaveReview(reviewDto);
+			review.setMember(member);
+			review.setSeller(seller);
+			review.setProduct(product);
+			review.setOrdersDetail(ordersDetail);
+			ordersDetail.setStatus(8);
+			
+			reviewRepo.save(review);
+		
+		/** 파일 첨부시(다중가능) */
+		} else {
+			System.out.println("bbbbbbbbbbbbbbbbbbbbbbbb");
+			Review review = Review.toSaveFileReview(reviewDto);
+			review.setMember(member);
+			review.setSeller(seller);
+			review.setProduct(product);
+			review.setOrdersDetail(ordersDetail);
+			ordersDetail.setStatus(8);
+			
+			int theRvno = reviewRepo.save(review).getRvno();
+			Review theReview = reviewRepo.findById(theRvno).get();
+		
+			for(MultipartFile imageFile : reviewDto.getImageFile()) {
+				String ogName = imageFile.getOriginalFilename(); // 원본 파일명
+				String realPath = "c:/fileUpload/images/"; 	// 파일 저장경로
+				/*
+				 * UUID를 이용해 중복되지 않는 파일명 생성
+				 */
+				UUID uuid = UUID.randomUUID();
+				String imgName = uuid + "_" + ogName; 		 // 저장될 파일명
+				
+				File saveFile = new File(realPath, imgName); // 저장경로와 파일명을 토대로 새 파일 생성 
+				imageFile.transferTo(saveFile);			     // 생성 완료
+				System.out.println("saveFile = " + saveFile);
+				ReviewFile reviewFile = ReviewFile.toSaveReviewFile(theReview, imgName);
+				System.out.println("reviewFile = " + reviewFile);
+				reviewFile.setRegDate(new Date());
+				reviewFileRepo.save(reviewFile);
+			}
+		}
+	}
 
 }

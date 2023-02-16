@@ -13,6 +13,7 @@ import com.ezen.allit.dto.OrdersDetailRequestDto;
 import com.ezen.allit.dto.QnADto;
 import com.ezen.allit.dto.ResponseDto;
 import com.ezen.allit.dto.ReviewDeleteRequestDto;
+import com.ezen.allit.dto.ReviewDto;
 import com.ezen.allit.dto.ReviewModifyRequestDto;
 import com.ezen.allit.dto.ReviewReplySaveRequestDto;
 import com.ezen.allit.dto.ReviewSaveRequestDto;
@@ -76,12 +77,12 @@ public class DongukApiController {
 	/*
 	 * 리뷰삭제
 	 */
-	@DeleteMapping("/review/delete/{pno}/{rvno}")
-	public ResponseDto<Integer> deleteReview(@RequestBody ReviewDeleteRequestDto reviewDeleteRequestDto) {
-		reviewService.deleteReview(reviewDeleteRequestDto);
-		
-		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
-	}
+//	@DeleteMapping("/review/delete/{pno}/{rvno}")
+//	public ResponseDto<Integer> deleteReview(@RequestBody ReviewDeleteRequestDto reviewDeleteRequestDto) {
+//		reviewService.deleteReview(reviewDeleteRequestDto);
+//		
+//		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+//	}
 	
 	/*
 	 * 리뷰 좋아요
@@ -140,11 +141,21 @@ public class DongukApiController {
 	 */
 	@PutMapping("/product/modify/{odno}")
 	public ResponseDto<Integer> modifyOrderStatus(@RequestBody OrdersDetailRequestDto detailRequestDto) {
-		System.out.println("detailRequestDto = " + detailRequestDto);
 		orderService.modifyOrderStatus(detailRequestDto, detailRequestDto.getStatus());
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
+	
+	/*
+	 * 리뷰삭제
+	 */
+	@DeleteMapping("/review/delete/{rvno}")
+	public ResponseDto<Integer> deleteReview(@RequestBody ReviewDto reviewDto) {
+		reviewService.deleteReview(reviewDto);
+		
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}
+	
 	/*
 	 * 상품수정
 	 */

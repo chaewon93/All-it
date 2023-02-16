@@ -11,15 +11,15 @@
 <table id="buyerInfo" border="1">
 	<tr>
 		<th>이름</th>
-		<td id="userName" th:text="${ #authentication.principal.member?.name }">
+		<td id="userName" th:text="${ session['user'].name }">
 	</tr>
 	<tr>
 		<th>이메일</th>
-		<td th:text="${ #authentication.principal.member?.email }">
+		<td th:text="${ session['user'].email }">
 	</tr>
 	<tr>
 		<th>연락처</th>
-		<td id="userPhone" th:text="${ #authentication.principal.member?.phone }">
+		<td id="userPhone" th:text="${ session['user'].phone }">
 	</tr>
 </table>
 <hr>
@@ -37,8 +37,8 @@
 	<tr>
 		<th>배송 주소</th>
 		<td>
-			<input type="hidden" name="userZipcode" id="userZipcode" th:value="${ #authentication.principal.member?.zipcode }">
-			<input type="hidden" name="userZipcode" id="userAddress" th:value="${ #authentication.principal.member?.address }">
+			<input type="hidden" name="userZipcode" id="userZipcode" th:value="${ session['user'].zipcode }">
+			<input type="hidden" name="userZipcode" id="userAddress" th:value="${ session['user'].address }">
 			<input type="text" id="zipcode" name="receiverZipcode" required="required" placeholder="우편번호"/>
 			<input type="button" id="kakaoAddr" value="우편번호 찾기" class="btn btn-light"><br>
 			<input type="text" id="addr" name="receiverAddr" required="required" placeholder="주소"/><br>
