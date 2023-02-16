@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <div th:replace="~{ /fragments/header.html :: header }"></div>
 <!-- header replace -->
 
 <!-- 내용 섹션 시작 -->
 <form method="post" id="frm">
 	<div class="form-group">
-		<input type="text" class="form-control" th:value="${ session.seller.id }" name="id" id="id">
+		<input type="text" class="form-control" th:value="${ #authentication.principal.seller.id }" name="id" id="id">
 		<input type="button" class="btn btn-light" id="checkBtn" value="중복확인">
 		<font id="checkId" size="2"></font>
 	</div>
@@ -18,16 +19,16 @@
 		<font id="checkPw" size="2"></font>
 	</div>
 	<div class="form-group">
-		<input type="text" class="form-control" th:value="${ session.seller.name }" name="name" id="name">
+		<input type="text" class="form-control" th:value="${ #authentication.principal.seller.name }" name="name" id="name">
 	</div>
 	<div class="form-group">
-		<input type="text" class="form-control" th:value="${ session.seller.content }" name="content" id="content">
+		<input type="text" class="form-control" th:value="${ #authentication.principal.seller.content }" name="content" id="content">
 	</div>
 	<div class="form-group">
-		<input type="email" class="form-control" th:value="${ session.seller.email }" name="email" id="email">
+		<input type="email" class="form-control" th:value="${ #authentication.principal.seller.email }" name="email" id="email">
 	</div>
 	<div class="form-group">
-		<input type="tel" class="form-control" th:value="${ session.seller.phone }" name="phone" id="phone" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}">
+		<input type="tel" class="form-control" th:value="${ #authentication.principal.seller.phone }" name="phone" id="phone" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}">
 	</div>
 	<div class="form-group">
 		<input type="text" class="form-control" placeholder="우편번호" name="zipcode" id="zipcode">
@@ -38,9 +39,9 @@
 		<input type="text" class="form-control" placeholder="상세주소" name="address" id="addrDetail">
 	</div>
 	<div class="form-group">
-		<input type="text" class="form-control" th:value="${ session.seller.regno }" name="regno" id="regno">
+		<input type="text" class="form-control" th:value="${ #authentication.principal.seller.regno }" name="regno" id="regno">
 	</div>
-	<input type="hidden" class="form-control" th:value="${ session.seller.pwd }" name="dbPwd" id="dbPwd">
+	<input type="hidden" class="form-control" th:value="${ #authentication.principal.seller.pwd }" name="dbPwd" id="dbPwd">
 	<button type="button" class="btn btn-primary" id="modify">수정</button>
 	<button type="button" class="btn btn-primary" id="quit">탈퇴</button>
 </form>
@@ -50,7 +51,6 @@
 <script type="text/javascript">
 let index = {
 	init:function() {
-			//console.log($("#id").val());
 		if($("#id").val() == null){
 			alert("잘못된 접근입니다. 다시 시도해주세요.");
 			location.replace("/");
@@ -86,7 +86,7 @@ $("#checkBtn").click(function(){
 		return false;
 	} else {
 		$.ajax({
-			url : "/seller/idCheck",
+			url : "/sellerIdCheck",
 			type : "post",
 			data : {userId: userId},
 			dataType : 'json',
@@ -259,9 +259,6 @@ $("#quit").click(function(){
        if(pass1 != "" || pass2 != ""){
         if(pass1 != pass2) {
         	alert("비밀번호를 확인해주세요.");
-        	return false;
-        } else if(dbpass != pass1) {
-        	alert("현재 비밀번호를 입력해주세요.");
         	return false;
         } else {
         	var delCheck = window.confirm("정말 탈퇴하시겠습니까? \n탈퇴하시면 모든 정보는 삭제됩니다.");

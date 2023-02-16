@@ -9,10 +9,11 @@ import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Orders;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
+import com.ezen.allit.dto.OrdersDetailRequestDto;
 
 public interface OrderService {
 	
-	void saveOrders(Member member);
+	void saveOrders(Member member, int finalPrice, int usePoint);
 	
 	void saveOrdersDetail(Product product, Member member, OrdersDetail orderDetail);
 	
@@ -23,5 +24,19 @@ public interface OrderService {
 
 	/** 주문상세 조회 */
 	List<OrdersDetail> getOrderDetail(Member member, Orders order);
+	
+	/** 구매 확정 */
+	void updateStatus(int status, int odno);
+	
+	/** 주문 취소 - OrdersDetail 삭제 */
+	void deleteOrdersDetail(int odno);
+	
+	/** 주문 취소 - Orders 삭제 */
+	void deleteOrders(int ono);
+	
+	/** 주문 취소 - Orders의 finalPrice 수정 */
+	void updateOrders(int ono, int finalPrice);
+	
+	void modifyOrderStatus(OrdersDetailRequestDto detailRequestDto, int status);
 
 }

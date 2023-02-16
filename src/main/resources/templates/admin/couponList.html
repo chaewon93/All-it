@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
+<tr align="center">	
+	<th bgcolor="orange" width="100">index</th>	
+	<th bgcolor="orange" width="300">쿠폰 설명<br>쿠폰 이름</th>
+	<th bgcolor="orange" width="200">생성일<br>만료일<br>사용 기한</th>
+	<th bgcolor="orange" width="200">할인율<br>최대할인금액<br>최소사용금액</th>	
+	<th bgcolor="orange" width="300">사용 조건<br>(등급,성별,카테고리,MDPICK,판매자)</th>
+	
+	<!-- 
+	<th bgcolor="orange" width="100">index</th>	
+	<th bgcolor="orange" width="300">쿠폰 설명</th>
+	<th bgcolor="orange" width="100">쿠폰 이름</th>
+	<th bgcolor="orange" width="100">생성일</th>
+	<th bgcolor="orange" width="100">만료일</th>
+	<th bgcolor="orange" width="200">할인율</th>
+	<th bgcolor="orange" width="200">최대 할인 금액</th>
+	<th bgcolor="orange" width="200">최소 사용 금액</th>
+	<th bgcolor="orange" width="200">사용 기한</th>
+	<th bgcolor="orange" width="200">사용 조건<br>(등급,성별,카테고리,MDPICK,판매자)</th>
+	 -->	
+</tr>
+
+<tr align="center" th:each="coupon, state : ${list}">
+	<td th:text="${state.count}"></td>
+	<td><span th:text="${coupon.couContent}"></span><br>
+					<span th:text="${coupon.couName}"></span></td>
+	<td><span th:text="${coupon.createDate}"></span><br>
+					<span th:text="${coupon.endDate}"></span><br>
+					<span th:text="${coupon.period}"></span></td>
+	<td><span th:text="${coupon.discount}"></span><br>
+					<span th:text="${coupon.maxValue}"></span><br>
+					<span th:text="${coupon.minPrice}"></span></td>	
+	<td><span th:text="${coupon.condition}"></span>
+					</td>														
+</tr>
+
+
+<!-- 
+<tr th:each="coupon, state : ${list}">
+	<td th:text="${state.count}"></td>
+	<td th:text="${coupon.couContent}"></td>
+	<td th:text="${coupon.couName}"></td>
+	<td th:text="${coupon.createDate}"></td>
+	<td th:text="${coupon.endDate}"></td>
+	<td th:text="${coupon.discount}"></td>
+	<td th:text="${coupon.maxValue}"></td>
+	<td th:text="${coupon.minPrice}"></td>
+	<td th:text="${coupon.period}"></td>
+	<td th:text="${coupon.condition}"></td>
+</tr> -->
+
+</table>
+
+<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
+<!-- pagination replace -->
+<hr>
+<a th:href="@{/admin/adminMain}">관리자 메인으로...</a>
+	
+</body>
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+</html>

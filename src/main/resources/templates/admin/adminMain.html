@@ -1,17 +1,28 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+
+<!-- 시큐리티?
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+-->
+
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
-
-	<a th:href="@{/admin/getMemberList}">회원 조회</a> <hr>
-	<a th:href="@{/admin/getQnAList}">QnA 조회</a> <hr>
-	<a th:href="@{/admin/getCusto}">고객센터</a> <hr>
-	<a th:href="@{/admin/findSellerList(a=0)}">판매자 조회</a> <hr>
-	<a th:href="@{/admin/findAdminProduct(a=0)}">등록 대기 상품 조회</a> <hr>
-	<a th:href="@{/admin/createCoupon}">쿠폰 생성</a> <hr>
-
+	<div align="center">
+		<a th:href="@{/admin/getMemberList}">회원 조회</a> <hr>
+		<button type="button" onclick="location.href='/admin/getMemberList'" style="border: none;">회원조회</button>
+		<a th:href="@{/admin/getQnAList}">QnA 조회</a> <hr>
+		<a th:href="@{/admin/getCusto}">고객센터</a> <hr>
+		<a th:href="@{/admin/findSellerList(a=0)}">판매자 조회</a> <hr>
+		<a th:href="@{/admin/findAdminProduct(a=0)}">등록 대기 상품 조회</a> <hr>
+		<a th:href="@{/admin/createCoupon}">쿠폰 생성</a> <hr>
+	</div>
 </body>
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
 </html>

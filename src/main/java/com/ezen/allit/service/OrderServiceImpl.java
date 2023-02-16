@@ -1,7 +1,6 @@
 package com.ezen.allit.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ezen.allit.domain.MemCoupon;
 import com.ezen.allit.domain.Member;
@@ -17,6 +15,7 @@ import com.ezen.allit.domain.Orders;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.repository.MemCouponRepository;
+import com.ezen.allit.dto.OrdersDetailRequestDto;
 import com.ezen.allit.repository.OrdersDetailRepository;
 import com.ezen.allit.repository.OrdersRepository;
 
@@ -37,8 +36,8 @@ public class OrderServiceImpl implements OrderService {
 	
 	/** 주문 1 - 주문번호(orders) 생성 */
 	@Transactional
-	public void saveOrders(Member member) {		
-		ordersRepo.saveOrderSequence(member.getId());
+	public void saveOrders(Member member, int finalPrice, int usePoint) {		
+		ordersRepo.saveOrderSequence(member.getId(), finalPrice, usePoint);
 	}
 	
 	/** 주문 2 - 주문상세(ordersDetail) 생성 */
@@ -47,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
 		/* 주문번호 생성 매서드 사용, ono 반환 */
 		int ono = selectMaxOno();
 
-		ordersDetailRepo.saveOrder(product.getPno(), ono, member.getId(), ordersDetail.getQuantity(), ordersDetail.getFinalPrice(), ordersDetail.getReceiverName(), ordersDetail.getReceiverZipcode(), ordersDetail.getReceiverAddr(), ordersDetail.getReceiverPhone());
+		ordersDetailRepo.saveOrder(product.getPno(), ono, member.getId(), ordersDetail.getQuantity(), ordersDetail.getReceiverName(), ordersDetail.getReceiverZipcode(), ordersDetail.getReceiverAddr(), ordersDetail.getReceiverPhone());
 	}
 	
 	/** 주문목록 조회 - member에 대한 Orders 조회 */
@@ -69,15 +68,46 @@ public class OrderServiceImpl implements OrderService {
 		return orderDetailList;
 	}
 	
+	/** 구매 확정 */
+	@Transactional
+	@Override
+	public void updateStatus(int status, int odno) {
+		OrdersDetail detail = ordersDetailRepo.findById(odno).get();
+		detail.setStatus(status);
+		//return ordersDetailRepo.updateStatus(status, odno);
+	}
+	
+	/** 주문 취소 - OrdersDetail 삭제 */
+	@Override
+	public void deleteOrdersDetail(int odno) {
+		ordersDetailRepo.deleteById(odno);
+	}
+	
+	/** 주문 취소 - Orders 삭제 */
+	@Override
+	public void deleteOrders(int ono) {
+		ordersRepo.deleteById(ono);
+	}
+	
+	/** 주문 취소 - Orders의 finalPrice 수정 */
+	@Override
+	public void updateOrders(int ono, int finalPrice) {
+		Orders order = ordersRepo.findById(ono).get();
+		order.setFinalPrice(finalPrice);
+	}
+	
 	/** 오더 디테일에 사용한 쿠폰 등록 */
 	@Transactional
 	public void saveCouponOrder(int mcid, int couProid) {
 		int ono = selectMaxOno();
-		System.out.println("맥스 ono~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		System.out.println("맥스 ono11111111");
 		System.out.println(ono);
 		MemCoupon memCou = memCouRepo.findById(mcid).get();
+		System.out.println("맥스 ono2222222");
 		Orders orders = ordersRepo.findById(ono).get();
+		System.out.println("맥스 ono33333333");
 		List<OrdersDetail> detailList = orders.getOrdersDetail();
+		System.out.println("맥스 ono44444444");
 		
 		for(OrdersDetail ordersDetail : detailList) {
 			int pno = ordersDetail.getProduct().getPno();
@@ -92,4 +122,24 @@ public class OrderServiceImpl implements OrderService {
 		}
 		
 	}
+	
+	/** 판매자 주문상태 수정 */
+	@Transactional
+	public void modifyOrderStatus(OrdersDetailRequestDto detailRequestDto, int status) {
+		OrdersDetail ordersDetail = ordersDetailRepo.findById(detailRequestDto.getOdno()).get();
+		ordersDetail.setStatus(status);
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -13,7 +13,7 @@ public interface SellerService {
 
 	Seller findByIdAndPwd(String id, String pwd);
 	
-	Seller modify(Seller seller);
+	void modify(Seller seller);
 	
 	void quit(Seller seller);
 	
@@ -27,7 +27,11 @@ public interface SellerService {
 	
 	Page<OrdersDetail> getOrderList(Seller seller, Pageable pageable);
 	
+	Page<OrdersDetail> getSearhcedOrderList(Seller seller, String searchKeyword, Pageable pageable);
+	
 	Page<QnA> getQnAList(Seller seller, Pageable pageable);
+	
+	Page<QnA> getSearchedQnAList(Seller seller, String searchKeyword, Pageable pageable);
 	
 	QnA getQnA(int qno);
 	

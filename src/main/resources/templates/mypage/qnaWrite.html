@@ -27,7 +27,7 @@
 	</tr>
 	<tr>
 		<td bgcolor="orange" width="70" th:text="제목"></td>
-		<td align="left"><input type="hidden" th:value="${ session['user']?.id }" name="mid" id="mid">
+		<td align="left"><input type="hidden" th:value="${ #authentication.principal.member?.id }" name="mid" id="mid">
 			<input type="text" name="title" required="required"/>
 		</td>
 	</tr>

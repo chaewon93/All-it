@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductController {
 	private final ProductService productService;
-	
+
 	/** 상품 검색 조회 */
 	@GetMapping("/")
 	public String getsearchList(Model model,
@@ -135,6 +135,36 @@ public class ProductController {
 		return "product/list";
 	}
 	
+	/** MDPICK 상품 조회 */
+	@GetMapping("/mdpickList")
+	public String mdpcikList(Model model, @PageableDefault(page = 1) Pageable pageable,
+							@RequestParam(value= "searchCondition", defaultValue = "0") int searchCondition,
+							@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword) {
+		
+		Page<Product> productList = null;
+
+		if(searchKeyword.equals("")) {
+			System.out.println("검색 키워드 없음");
+			System.out.println("=========================================");
+			productList = productService.getMdpickProductList(pageable);
+		} else {
+			System.out.printf("검색 키워드: [%s]\n", searchKeyword);
+//			productList = productService.search(searchCondition, searchKeyword, pageable);
+		}
+
+		int naviSize = 10; // 페이지네이션 갯수
+		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+		int endPage = ((startPage + naviSize - 1) < productList.getTotalPages()) ? startPage + naviSize - 1 : productList.getTotalPages();
+		
+		model.addAttribute("list", productList);
+		model.addAttribute("url", "/product/mdpickList");
+		model.addAttribute("productList", productList);
+		model.addAttribute("startPage", startPage);
+		model.addAttribute("endPage", endPage);
+		
+		return "product/mdpickList";
+	}
+	
 	/** 베스트상품 조회 */
 	
 	/** 상품 상세조회 */
@@ -147,7 +177,7 @@ public class ProductController {
 		/* 조회수 증가 */
 		productService.updateCount(theProduct.getPno());
 		
-		/* 별점 평균 구하기 */
+		/* 별점 구하기 */
 		List<Review> reviewList = theProduct.getReview();
 		if(reviewList != null) {
 			Review review = null;

@@ -1,7 +1,5 @@
 package com.ezen.allit;
 
-import java.util.Date;
-
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,14 +9,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.ezen.allit.domain.Grade;
 import com.ezen.allit.domain.Member;
-import com.ezen.allit.domain.Orders;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
 import com.ezen.allit.repository.MemberRepository;
-import com.ezen.allit.repository.OrdersDetailRepository;
-import com.ezen.allit.repository.OrdersRepository;
 import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.repository.QnARepository;
 import com.ezen.allit.repository.SellerRepository;
@@ -39,12 +34,6 @@ public class DataInsertTest {
 	@Autowired
 	private ProductRepository prodRepo;
 	
-	@Autowired
-	private OrdersRepository orderRepo;
-	
-	@Autowired
-	private OrdersDetailRepository detailRepo;
-
 	@Test
 //	@Disabled
 	public void testDataInsert() {
@@ -158,42 +147,7 @@ public class DataInsertTest {
 					prodRepo.save(pro);
 				}
 			}
-
-
 		}		
 	}
-	
-	@Test
-	@Disabled
-	public void testProductDataInsert() {
 
-		for(int i=0; i<3; i++) {
-			Product product = new Product();
-			
-			product.setCategory(i+1);
-			product.setName("test item"+i);
-			product.setContent("test item"+i);
-			product.setPrice(i+9864);
-			product.setMdPickyn(0);			
-
-			prodRepo.save(product);
-		}
-	}
-	
-	@Test
-//	@Disabled
-	public void testOrderDataInsert() {
-		
-		// Order 생성
-		Orders orders = new Orders();
-		Member member = new Member();
-		member.setId("aaaa1");
-		
-		orders.setMember(member);
-		orders.setRegDate(new Date());
-		
-		orderRepo.save(orders);
-		
-
-	}
 }
