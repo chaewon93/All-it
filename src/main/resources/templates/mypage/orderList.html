@@ -50,7 +50,7 @@
 				</th:block>
 				<td>
 					<input type="button" th:if="${detail.status == 1}" id="cancelOrder" value="주문취소" class="btn btn-light" th:onclick="'javascript:index.cancelOrder(' +${ order.ono }+ ',' +${ detail.odno }+ ');'">
-					<input type="button" th:if="${detail.status == 2}" id="delivery" value="배송조회" class="btn btn-light">
+					<input type="button" th:if="${detail.status == 2}" id="delivery" value="배송조회" class="btn btn-light" data-toggle="modal" data-target="#deliveryModal">
 					<input type="button" th:if="${detail.status == 3}" id="buyComplete" value="구매확정" class="btn btn-light" th:onclick="'javascript:index.buyComplete(' +${ detail.odno }+ ');'">
 					<input type="button" th:if="${detail.status == 3}" id="refund" value="교환/반품 신청" class="btn btn-light" data-toggle="modal" data-target="#refundModal">
 					<input type="button" class="btn btn-light" id="productQna" value="상품문의">
@@ -214,28 +214,31 @@ let index = {
 			window.location.href="/member-login";
 			return false;
 		} else {
-			$.ajax({
-				url: "/order/orderCancel",
-				type: "post",
-				data: JSON.stringify({
-					mid: $("#mid").val(),
-					ono: ono,
-					odno : odno
-				}),
-				dataType: "text",
-				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
-				success: function(data){ // 처리 성공 시
-					console.log(data);
-					alert("선택하신 상품이 주문취소 처리 되었습니다.");
-					location.replace("/order/orderList");
-				}, error: function(xhr,status,err){
-					alert("다시 시도해주세요.");				
-					console.log('[cancelOrder() ajax error] '+JSON.stringify(err));
-				}
-			}).fail(function(error){ // 처리 실패 시
-				alert("다시 시도해주세요.");
-				console.log("[cancelOrder() ajax error] "+JSON.stringify(error));
-			}); 
+			var check = window.confirm("정말 주문 취소하시겠습니까?");
+			if(check) {
+				$.ajax({
+					url: "/order/orderCancel",
+					type: "post",
+					data: JSON.stringify({
+						mid: $("#mid").val(),
+						ono: ono,
+						odno : odno
+					}),
+					dataType: "text",
+					contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+					success: function(data){ // 처리 성공 시
+						console.log(data);
+						alert("선택하신 상품이 주문취소 처리 되었습니다.");
+						location.replace("/order/orderList");
+					}, error: function(xhr,status,err){
+						alert("다시 시도해주세요.");				
+						console.log('[cancelOrder() ajax error] '+JSON.stringify(err));
+					}
+				}).fail(function(error){ // 처리 실패 시
+					alert("다시 시도해주세요.");
+					console.log("[cancelOrder() ajax error] "+JSON.stringify(error));
+				}); 
+			}
 		}
 	},
 	
@@ -286,6 +289,7 @@ let index = {
 		if($("input:radio[name='reason']").is(":checked")) {
 			
 		}
+	},
 
 	// 리뷰작성 화면
 	writeReview:function(odno) {

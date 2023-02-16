@@ -1,5 +1,7 @@
 package com.ezen.allit.domain;
 
+import java.util.Date;
+
 import javax.persistence.*;
 
 import lombok.*;
@@ -30,4 +32,6 @@ public class OrdersDetail {
 	private String receiverZipcode;	// 받는 사람 우편번호
 	private String receiverAddr;	// 받는 사람 주소
 	private String receiverPhone;	// 받는 사람 전화번호
+	private String reason;			// 교환/반품 사유
+	private Date cancelDate;		// 취소/교환/반품 신청일
 }
