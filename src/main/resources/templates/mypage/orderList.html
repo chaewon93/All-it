@@ -34,7 +34,7 @@
 							<input type="hidden" id="pname" th:value="${ detail.product.name }">
 					</a>
 					<span th:text="${#numbers.formatInteger(detail.product.price, 1, 'COMMA')}+'원'"></span>
-					<input type="button" class="btn btn-light" id="inCart" value="장바구니 담기">    
+					<input type="button" class="btn btn-outline-secondary" id="inCart" value="장바구니 담기">    
 				</td>
 				<td th:text="${detail.quantity}+'개'"> </td>
 				<td th:text="${#numbers.formatInteger(detail.product.price*detail.quantity, 1, 'COMMA')}+'원'" /> </td>      
@@ -50,13 +50,13 @@
 					<td th:case="8">구매확정</td>
 				</th:block>
 				<td>
-					<input type="button" th:if="${detail.status == 1}" id="cancelOrder" value="주문취소" class="btn btn-light" th:onclick="'javascript:index.cancelOrder(' +${ order.ono }+ ',' +${ detail.odno }+ ');'">
-					<input type="button" th:if="${detail.status == 2}" id="delivery" value="배송조회" class="btn btn-light" data-toggle="modal" data-target="#deliveryModal">
-					<input type="button" th:if="${detail.status == 3}" id="buyComplete" value="구매확정" class="btn btn-light" th:onclick="'javascript:index.buyComplete(' +${ detail.odno }+ ');'">
-					<input type="button" th:if="${detail.status == 3}" id="refund" value="교환/반품 신청" class="btn btn-light" data-toggle="modal" data-target="#refundModal">
-					<input type="button" class="btn btn-light" id="productQna" value="상품문의">
-					<input type="button" th:if="${detail.status == 4}" id="writeReview" value="리뷰작성" class="btn btn-light" th:onclick="'javascript:index.writeReview(' +${ detail.odno }+ ');'">
-
+					<input type="button" th:if="${detail.status == 1}" id="cancelOrder" value="주문취소" class="btn btn-outline-secondary" th:onclick="'javascript:index.cancelOrder(' +${ order.ono }+ ',' +${ detail.odno }+ ');'">
+					<input type="button" th:if="${detail.status == 2}" id="delivery" value="배송조회" class="btn btn-outline-secondary" data-toggle="modal" data-target="#deliveryModal">
+					<input type="button" th:if="${detail.status == 3}" id="buyComplete" value="구매확정" class="btn btn-outline-secondary" th:onclick="'javascript:index.buyComplete(' +${ detail.odno }+ ');'">
+					<input type="button" th:if="${detail.status == 3}" id="refund" value="교환/반품 신청" class="btn btn-outline-secondary" data-toggle="modal" data-target="#refundModal">
+					<input type="button" class="btn btn-outline-secondary" id="productQna" value="상품문의">
+					<input type="button" th:if="${detail.status == 4}" id="writeReview" value="리뷰작성" class="btn btn-outline-secondary" th:onclick="'javascript:index.writeReview(' +${ detail.odno }+ ');'">
+			
 					<input type="hidden" th:value="${ order.ono }" id="ono" name="ono">
 	 				<input type="hidden" th:value="${ session['user']?.id }" id="mid" name="mid">
 	 				<input type="hidden" th:value="${ detail.product.pno }" id="pno" name="pno">
@@ -75,20 +75,55 @@
 
 	<div class="clear"></div>
 	<div id="buttons" style="float: right">
-		<input type="button" value="쇼핑 계속하기" class="btn btn-light" onclick="location.href='/'">     
+		<input type="button" value="쇼핑 계속하기" class="btn btn-outline-warning" onclick="location.href='/'">     
 	</div>
 	</form>  
 </article>
 
+<!-- 배송조회 모달 섹션 시작 -->
+<div class="modal fade" id="deliveryModal">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2 class="modal-title">배송조회</h2>
+			</div>
+			<div class="modal-body">
+				<!-- <span>상품명 </span>
+				<input type="text" id="prodName" readonly="readonly"/>
+				<hr> -->
+				
+				<h5>택배사 선택 </h5>
+				<select class="form-control" id="delivery-category">
+					<option th:value="CJ대한통운">CJ대한통운</option>
+					<option th:value="우체국택배">우체국택배</option>
+					<option th:value="한진택배">한진택배</option>
+					<option th:value="롯데택배">롯데택배</option>
+					<option th:value="로젠택배">로젠택배</option>
+					<option th:value="CU편의점택배">CU편의점택배</option>
+					<option th:value="GS25편의점택배">GS25편의점택배</option>
+				</select><hr>
+				<input type="text" class="form-control" id="delivery-num" placeholder="운송장번호 - 없이 입력"> <br>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="moneyBtn">조회</button>
+				<button type="button" class="btn btn-light" data-dismiss="modal">취소</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 배송조회 신청 모달 섹션 끝 -->
+
 <!-- 교환/반품 신청 모달 섹션 시작 -->
 <div class="modal fade" id="refundModal">
-	<div class="modal-dialog modal-xl">
+	<div class="modal-dialog modal-xl modal-dialog-scrollable">
 		<div class="modal-content">
-			<div class="modal-body"> <br>
-				<h2 align="center">교환/반품 신청</h2>
+			<div class="modal-header">
+				<h2 class="modal-title">교환/반품 신청</h2>
+			</div>
+			<div class="modal-body">
 				<span>상품명 </span>
-				<input type="text" id="prodName" readonly="readonly"/> <br><br>
-				
+				<input type="text" class="form-control" id="prodName" readonly="readonly"/>
+				<hr>
 				<h5>교환/반품 사유 </h5>
 				<span><b>단순 변심 </b></span> <br>
 				<input type="radio" name="reason" value="상품이 마음에 들지 않음"> 상품이 마음에 들지 않음 <br>
@@ -101,7 +136,7 @@
 				<input type="radio" name="reason" value="상품 결함/기능에 이상이 있음"> 상품 결함/기능에 이상이 있음
 				<hr>
 				<span><b>기타 사유 </b></span>
-				<input type="text" name="reason">
+				<input type="text" class="form-control" name="reason">
 				<hr>
 				
 				<h5>해결 방법 선택 </h5>

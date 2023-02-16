@@ -89,7 +89,7 @@
 	<!-- 회원 로그인 시작 -->
 	<div class="header-container" sec:authorize="hasRole('MEMBER')">
 		<ul class="nav justifiy-content-end" >
-			<li class="nav-item"><span th:text="${ #authentication.principal.member.name }+'님'"></span></li>
+			<span th:text="${ #authentication.principal.member.name }+'님'"></span>
 	  		<li class="nav-item"><a class="nav-link" th:href="@{ /logout }">로그아웃</a></li>
 	  		<li class="nav-item"><a class="nav-link" th:href="@{ /member/info }">마이올잇</a></li>
 	  		<li class="nav-item"><a class="nav-link" th:href="@{ /cart/cartList }">장바구니</a></li>
