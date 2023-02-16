@@ -1,11 +1,16 @@
 package com.ezen.allit.service;
 
+import java.io.File;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.CustomerCenter;
 import com.ezen.allit.repository.CustomerCenterRepository;
@@ -29,15 +34,42 @@ public class CustomerCenterServiceImpl implements CustomerCenterService {
 	}
 
 	// 관리자 고객센터 게시글 작성
+//	@Override
+//	public void insertCustomerCenter(CustomerCenter cus) {
+//
+//		CustomerCenter custo = new CustomerCenter();
+//		
+//		custo.setCategory(cus.getCategory());
+//		custo.setTitle(cus.getTitle());
+//		custo.setContent(cus.getContent());
+//		
+//		cusRepo.save(custo);		
+//	}
+	
 	@Override
-	public void insertCustomerCenter(CustomerCenter cus) {
+	public void insertCustomerCenter(CustomerCenter cus, MultipartFile imageFile) throws Exception {
 
 		CustomerCenter custo = new CustomerCenter();
 		
 		custo.setCategory(cus.getCategory());
 		custo.setTitle(cus.getTitle());
 		custo.setContent(cus.getContent());
-		
+		custo.setPick(cus.getPick());
+		if(imageFile != null) {
+			String ogName = imageFile.getOriginalFilename(); 										  // 원본 파일명
+			String realPath = "c:/fileUpload/images/admin"; 	// 파일 저장경로
+			
+			/*
+			 * UUID를 이용해 중복되지 않는 파일명 생성
+			 */
+			UUID uuid = UUID.randomUUID();
+			String imgName = uuid + "_" + ogName; 		 // 저장될 파일명
+			
+			File saveFile = new File(realPath, imgName); // 저장경로와 파일명을 토대로 새 파일 생성 
+			imageFile.transferTo(saveFile);			     // 생성 완료
+			
+			custo.setImageName(imgName);				 // DB에 저장될 파일명 (DB 저장을 위해 설정(없으면 DB에 저장 안됨))
+		}
 		cusRepo.save(custo);		
 	}
 

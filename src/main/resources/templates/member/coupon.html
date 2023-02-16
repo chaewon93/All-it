@@ -1,6 +1,11 @@
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!--
 <html xmlns:th="http://www.thymeleaf.org"
 	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+-->
+
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -60,7 +65,7 @@ function useCou(btn){
 				console.log("price=", res['price']);
 				opener.document.getElementById("couPrice").value = res['price'];
 				alert("쿠폰 사용");
-
+				close();
 			}, error: function(xhr,status,err){
 				alert("사용할 수 없습니다.");				
 			}			
@@ -68,14 +73,18 @@ function useCou(btn){
 
 	}
 }
-
 </script>
 
 </head>
 <body>
+<!-- header replace -->
+<th:block th:if="${pno} == 0">
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
+</th:block>
+
 <form action="/coupon/deleteCoupon" method="post" id="theform">	
 <table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
-
 <tr>
 	<th bgcolor="orange" width="100">번호</th>
 	<th bgcolor="orange" width="100">쿠폰 설명</th>
@@ -83,7 +92,6 @@ function useCou(btn){
 	<th bgcolor="orange" width="100">만료일</th>
 	<th bgcolor="orange" width="100">쿠폰상태</th>
 	<th th:if="${price}!=0" bgcolor="orange" width="100">쿠폰 사용</th>
-
 </tr>
 <tr th:each="memcou, state : ${list}">
 	<td th:text="${state.count}"></td>
@@ -100,15 +108,14 @@ function useCou(btn){
 		<input type="button" name="useCoupon" th:value="사용" onclick="useCou(this)">
 	</td>
 </tr>
-
 </table>
 </form>
-<hr>
-<div>
 
+<hr>
+
+<div>
 <form action="/coupon/deleteCoupon" method="post" id="theform1">	
 <table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
-
 	<tr>
 		<th bgcolor="orange" width="100">번호</th>
 		<th bgcolor="orange" width="100">쿠폰 설명</th>
@@ -128,16 +135,16 @@ function useCou(btn){
 			<input type="button" name="downCoupon" th:value="받기" onclick="downCou(this)">
 		</td>
 	</tr>	
-	
 </table>
-
 </form>
-
 </div>
-
 <!-- <div th:replace="~{ /fragments/pagination.html :: pagination }"></div>  -->
 <!-- pagination replace -->
-<hr>
 
+<!-- footer replace -->
+<th:block th:if="${pno} == 0">
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+</th:block>
 </body>
+
 </html>

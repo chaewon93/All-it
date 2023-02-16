@@ -1,16 +1,41 @@
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+
+<!--
 <html xmlns:th="http://www.thymeleaf.org"
 	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+-->
+
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
+<!-- 
 <a th:href="@{/admin/findQnA(cate='결제')}">결제</a> <br>
 <a th:href="@{/admin/findQnA(cate='상품')}">상품</a> <br>
 <a th:href="@{/admin/findQnA(cate='신고')}">신고</a> <br>
 <a th:href="@{/admin/findQnA(cate='기타')}">기타</a> <br>
-<a th:href="@{/admin/findQnA(cate='모두 보기')}">모두 보기</a> <br>	
+<a th:href="@{/admin/findQnA(cate='모두 보기')}">모두 보기</a> <br> -->
+<p th:text="${a}"></p>
+
+<div align="center">	
+	<select name="category" onchange="location.href=(this.value)">
+		<option value="/admin/findQnA?cate=모두 보기" th:selected="${a} == '모두 보기'">모두 보기</option>
+		<option value="/admin/findQnA?cate=결제" th:selected="${a} == '결제'">결제</option>
+		<option value="/admin/findQnA?cate=상품" th:selected="${a} == '상품'" >상품</option>
+		<option value="/admin/findQnA?cate=신고" th:selected="${a} == '신고'" >신고</option>
+		<option value="/admin/findQnA?cate=기타" th:selected="${a} == '기타'" >기타</option>
+	</select>
+	<select name="QnAList" onchange="location.href=(this.value)">
+		<option value="/admin/getQnAList?a=-1" th:selected="${a} == -1">QnA 조회</option>
+		<option value="/admin/getNoQnAList?a=1" th:selected="${a} == 1">답변 QnA 조회</option>
+		<option value="/admin/getNoQnAList?a=0" th:selected="${a} == 0">미답변 QnA 조회</option>
+	</select>
+	<a th:href="@{/admin/adminMain}">관리자 메인으로</a>
+</div>
 <table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
 <tr>
 	<th bgcolor="orange" width="100">번호</th>
@@ -48,4 +73,6 @@
 <a th:href="@{/admin/getNoQnAList}">미답변 QnA 조회</a> <br>
 	
 </body>
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
 </html>

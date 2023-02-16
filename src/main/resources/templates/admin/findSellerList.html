@@ -1,6 +1,13 @@
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+
+<!--
 <html xmlns:th="http://www.thymeleaf.org"
 	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+-->
+
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -64,6 +71,16 @@ function delete_seller(){
 </script>
 </head>
 <body>
+<div align="center">	
+	<select name="category" onchange="location.href=(this.value)">
+		<option value="/admin/findSellerList?a=0" th:selected="${a} == 0">관리자, 판매자 조회</option>
+		<option value="/admin/findSellerList?a=1" th:selected="${a} == 1">관리자 조회</option>
+		<option value="/admin/findSellerList?a=2" th:selected="${a} == 2" >전체 판매자 조회</option>
+		<option value="/admin/findSellerList?a=3" th:selected="${a} == 3" >등록된 판매자 조회</option>
+		<option value="/admin/findSellerList?a=4" th:selected="${a} == 4" >등록 대기 판매자 조회</option>
+	</select>
+	<a th:href="@{/admin/adminMain}">관리자 메인으로</a>
+</div>
 
 <form action="/admin/regSeller" method="post" id="theform">
 <table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
@@ -119,4 +136,6 @@ function delete_seller(){
 <a th:href="@{/admin/findSellerList(a=4)}">등록 대기 판매자 조회</a> <br>
 	
 </body>
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
 </html>

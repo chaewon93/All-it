@@ -15,4 +15,6 @@ public class CustomerCenter {
 	private String category; // 질문분류
 	private String title;    // 제목
 	private String content;  // 내용
+	private String imageName;	// 상품 이미지
+	private String pick;		// 메인화면에 나올 글 선택
 }

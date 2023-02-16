@@ -7,36 +7,112 @@
 </head>
 <body>
 
-<form th:action="@{/admin/insertCusto}" method="post">
-<table >
-	<tr>
-		<td>
-			<select name="category">
-				<option value="공지사항" selected>공지사항</option>
-				<option value="이벤트" >이벤트</option>
-				<option value="자주하는질문-주문/결제" >자주하는질문-주문/결제</option>
-				<option value="자주하는질문-회원서비스" >자주하는질문-회원서비스</option>
-				<option value="자주하는질문-배송문의" >자주하는질문-배송문의</option>
-				<option value="자주하는질문-반품/교환/환불" >자주하는질문-반품/교환/환불</option>
-				<option value="테스트용 신고" >테스트용 신고</option>
-			</select>
-		</td>
-	</tr>
-	<tr>
-		<td bgcolor="orange" width="70" th:text="제목"></td><td align="left">
-		<input type="text" name="title" required="required"/></td>
-	</tr>
-	<tr>
-		<td bgcolor="orange" th:text="내용"></td><td align="left">
-		<textarea name="content" cols="40" rows="10" required="required"></textarea></td>
-	</tr>
-	<tr>
-		<td colspan="2" align="center">
-		<input type="button" value="뒤로가기" onclick="history.back()"> <br>
-		<input type="submit" value=" 새글 등록 "/></td>
-	</tr>
-</table>
+<form th:action="@{/admin/insertCusto}" method="post" id="formm" name="formm" enctype="multipart/form-data">
+<div align="center">
+	<table>
+		<tr>
+			<td>
+				<select name="category" id="category">
+					<option value="공지사항" selected>공지사항</option>
+					<option value="이벤트" >이벤트</option>
+					<option value="자주하는질문-주문/결제" >자주하는질문-주문/결제</option>
+					<option value="자주하는질문-회원서비스" >자주하는질문-회원서비스</option>
+					<option value="자주하는질문-배송문의" >자주하는질문-배송문의</option>
+					<option value="자주하는질문-반품/교환/환불" >자주하는질문-반품/교환/환불</option>
+					<!-- 
+					<option value="테스트용 신고" >테스트용 신고</option>
+					 -->
+				</select>
+			</td>
+			<td align="center">
+				<button type="button" style="border: none;">메인화면 표시 여부</button>
+				<input type="checkbox" name="pick" id="pick1" value="1">
+				<input type="hidden" name="pick" id="pick0" value="0">
+			</td>
+		</tr>
+		<tr>
+			<td bgcolor="orange" width="70" th:text="제목"></td><td align="left">
+			<input type="text" name="title" required="required"/></td>
+		</tr>
+		<tr>
+			<td bgcolor="orange" th:text="내용"></td><td align="left">
+			<textarea name="content" id="content" cols="40" rows="10" required="required"></textarea></td>
+		</tr>
+		<tr>
+			<td bgcolor="orange" th:text="이미지"></td><td align="left">
+			<input type="file" class="form-control-file border" name="imageFile" id="imageFile">
+		</tr>
+		<tr>
+			<td colspan="2" align="center"> 
+				<input type="button" value=" 등록 " onclick="return aa()"/>
+			</td>
+		</tr>
+	</table>
+</div>
 </form>
-
 </body>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript">
+
+function aa(){
+	var chk = confirm("등록?");
+	
+	let category = $("#category").val();
+	let title = $("input[name='title']").val();
+	let content = $("#content").val();
+//	let imageFile = $("#imageFile");
+	let imageFile = document.querySelector("#imageFile");
+	let pick = "0";
+	
+	if($("#pick1").is(":checked")){
+		pick = $("#pick1").val();
+		alert(pick);
+	}else{
+		pick = $("#pick0").val();
+		alert(pcik);
+	}
+	
+	alert(imageFile);
+
+	if(title == null){
+		alert("값을 입력해 주세요1");
+		return false;
+	}else if(content == null){
+		alert("값을 입력해 주세요2");
+		return false;		
+	}else if(title.trim() == ""){
+		alert("값을 입력해 주세요3");
+		return false;
+	}else if(content.trim() == ""){
+		alert("값을 입력해 주세요4");
+		return false;		
+	}
+	
+	var formData = new FormData();
+	formData.append("category",category);
+	formData.append("title",title);
+	formData.append("content",content);
+	formData.append("pick",pick);
+	formData.append("imageFile",imageFile.files[0]);
+
+	if(chk) {
+		$.ajax({
+			url:'/admin/insertCusto',
+			type:'post',
+			enctype: 'multipart/form-data',
+			data: formData,
+			contentType : false,
+			processData : false,
+			success: function(res){
+				alert("완료");
+				opener.location.reload(true);
+				close();
+			}, error: function(xhr,status,err){
+				alert("다시 실행해주세요.");				
+			}			
+		}); 
+	}
+}
+
+</script>
 </html>

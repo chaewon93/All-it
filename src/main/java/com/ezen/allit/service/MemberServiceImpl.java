@@ -220,13 +220,12 @@ public class MemberServiceImpl implements MemberService {
 		if(grade.equals(Grade.BRONZE.toString())) {
 			member.setPoint(member.getPoint() + amount);
 		}else if(grade.equals(Grade.SILVER.toString())) {
-			 
+
 		}else if(grade.equals(Grade.GOLD.toString())) {
 			
 		}else if(grade.equals(Grade.VIP.toString())) {
 			
 		}
-
 	}
 	
 	/** 리뷰목록 조회 */
