@@ -32,7 +32,7 @@ import com.ezen.allit.repository.ReviewFileRepository;
 import com.ezen.allit.repository.ReviewRepository;
 import com.ezen.allit.repository.SellerRepository;
 import com.ezen.allit.domain.Product;
-import com.ezen.allit.dto.HitSaveRequestDto;
+import com.ezen.allit.dto.HitDto;
 import com.ezen.allit.dto.ReviewDto;
 import com.ezen.allit.repository.HitRepository;
 import com.ezen.allit.repository.ProductRepository;
@@ -188,10 +188,10 @@ public class MemberServiceImpl implements MemberService {
 
 	/** 상품 좋아요 */
 	@Transactional
-	public void hitProduct(HitSaveRequestDto hitSaveRequestDto) {
-		Optional<Hit> hit = hitRepo.findByProductPnoAndMemberId(hitSaveRequestDto.getPno(), hitSaveRequestDto.getMid());
-		Product product = productRepo.findById(hitSaveRequestDto.getPno()).get();
-		Member member = memberRepo.findById(hitSaveRequestDto.getMid()).get();
+	public void hitProduct(HitDto hitDto) {
+		Optional<Hit> hit = hitRepo.findByProductPnoAndMemberId(hitDto.getPno(), hitDto.getMid());
+		Product product = productRepo.findById(hitDto.getPno()).get();
+		Member member = memberRepo.findById(hitDto.getMid()).get();
 		
 		/* 이전에 좋아요 누른 기록이 없으면 좋아요, 있으면 좋아요 취소 */
 		if(hit.isEmpty()) {
@@ -312,5 +312,35 @@ public class MemberServiceImpl implements MemberService {
 			}
 		}
 	}
+	
+	/** 좋아요목록 조회 */
+	@Transactional
+	public Page<Hit> getLikeList(String id, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 10;
+		
+		Page<Hit> likeList = 
+				hitRepo.findAllByMemberId(id, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "hno")));
+		
+		return likeList;
+	}
+	
+	/** 리뷰삭제 */
+	@Transactional
+	public void deleteHit(HitDto hitDto) {
+		Hit hit = hitRepo.findById(hitDto.getHno()).get();
+		hitRepo.deleteById(hit.getHno());
+	}
 
 }
+
+
+
+
+
+
+
+
+
+
+

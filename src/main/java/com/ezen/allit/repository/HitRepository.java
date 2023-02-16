@@ -2,6 +2,8 @@ package com.ezen.allit.repository;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ezen.allit.domain.Hit;
@@ -12,4 +14,6 @@ public interface HitRepository extends JpaRepository<Hit, Integer> {
 	
 	// 댓글 좋아요(중복확인)
 	Optional<Hit> findByReviewRvnoAndMemberId(int rvno, String mid);
+	
+	Page<Hit> findAllByMemberId(String id, Pageable pageable);
 }

@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class HitSaveRequestDto {
+public class HitDto {
+	private int hno;
 	private int pno;
 	private int rvno;
 	private String mid;

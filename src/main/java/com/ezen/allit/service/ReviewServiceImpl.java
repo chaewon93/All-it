@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Review;
-import com.ezen.allit.dto.HitSaveRequestDto;
+import com.ezen.allit.dto.HitDto;
 import com.ezen.allit.dto.ReviewDeleteRequestDto;
 import com.ezen.allit.dto.ReviewDto;
 import com.ezen.allit.dto.ReviewModifyRequestDto;
@@ -61,10 +61,10 @@ public class ReviewServiceImpl implements ReviewService {
 	 * 리뷰 좋아요
 	 */
 	@Transactional
-	public void hitReview(HitSaveRequestDto hitSaveRequestDto) {
-		Optional<Hit> hit = hitRepo.findByReviewRvnoAndMemberId(hitSaveRequestDto.getRvno(), hitSaveRequestDto.getMid());
-		Review review = reviewRepo.findById(hitSaveRequestDto.getRvno()).get();
-		Member member = memberRepo.findById(hitSaveRequestDto.getMid()).get();
+	public void hitReview(HitDto hitDto) {
+		Optional<Hit> hit = hitRepo.findByReviewRvnoAndMemberId(hitDto.getRvno(), hitDto.getMid());
+		Review review = reviewRepo.findById(hitDto.getRvno()).get();
+		Member member = memberRepo.findById(hitDto.getMid()).get();
 		
 		/* 이전에 좋아요 누른 기록이 없으면 좋아요, 있으면 좋아요 취소 */
 		if(hit.isEmpty()) {

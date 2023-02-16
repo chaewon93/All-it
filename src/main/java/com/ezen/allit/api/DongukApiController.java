@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ezen.allit.dto.HitSaveRequestDto;
+import com.ezen.allit.dto.HitDto;
 import com.ezen.allit.dto.OrdersDetailRequestDto;
 import com.ezen.allit.dto.QnADto;
 import com.ezen.allit.dto.ResponseDto;
@@ -48,8 +48,8 @@ public class DongukApiController {
 	 * 상품 좋아요
 	 */
 	@PutMapping("/product/hit/{pno}")
-	public ResponseDto<Integer> hitProduct(@RequestBody HitSaveRequestDto hitSaveRequestDto) {
-		memberService.hitProduct(hitSaveRequestDto);
+	public ResponseDto<Integer> hitProduct(@RequestBody HitDto hitDto) {
+		memberService.hitProduct(hitDto);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
@@ -88,8 +88,8 @@ public class DongukApiController {
 	 * 리뷰 좋아요
 	 */
 	@PutMapping("/review/hit/{pno}/{rvno}")
-	public ResponseDto<Integer> hitReview(@RequestBody HitSaveRequestDto hitSaveRequestDto) {
-		reviewService.hitReview(hitSaveRequestDto);
+	public ResponseDto<Integer> hitReview(@RequestBody HitDto hitDto) {
+		reviewService.hitReview(hitDto);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
@@ -152,6 +152,16 @@ public class DongukApiController {
 	@DeleteMapping("/review/delete/{rvno}")
 	public ResponseDto<Integer> deleteReview2(@RequestBody ReviewDto reviewDto) {
 		reviewService.deleteReview2(reviewDto);
+		
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}	
+	
+	/*
+	 * 좋아요취소
+	 */
+	@DeleteMapping("/hit/delete/{hno}")
+	public ResponseDto<Integer> deleteHit(@RequestBody HitDto hitDto) {
+		memberService.deleteHit(hitDto);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}

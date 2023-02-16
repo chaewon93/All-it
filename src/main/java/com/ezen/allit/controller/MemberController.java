@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ezen.allit.config.auth.PrincipalDetailMember;
 import com.ezen.allit.domain.Coupon;
+import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.MemCoupon;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.OrdersDetail;
@@ -414,5 +415,27 @@ public class MemberController {
 		memberService.saveReview(reviewDto);
 
 		return "redirect:reviewList";
+	}
+	
+	/** 마이올잇>좋아요리스트 */
+	@GetMapping("/likeList")
+	public String likeView(Model model,
+							@PageableDefault(page = 1) Pageable pageable,
+							@AuthenticationPrincipal PrincipalDetailMember principal) {
+	
+		Page<Hit> likeList = memberService.getLikeList(principal.getMember().getId(), pageable);
+		
+		int naviSize = 10; // 페이지네이션 갯수
+		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+		int endPage = ((startPage + naviSize - 1) < likeList.getTotalPages()) ? startPage + naviSize - 1 : likeList.getTotalPages();
+
+		model.addAttribute("list", likeList);
+		model.addAttribute("startPage", startPage);
+		model.addAttribute("endPage", endPage);	
+		model.addAttribute("url", "/member/likeList");	
+		model.addAttribute("likeList", likeList);
+		if(likeList.getTotalElements() == 0) model.addAttribute("size", 0);
+		
+		return "mypage/likeList";
 	}
 }

@@ -3,10 +3,11 @@ package com.ezen.allit.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
-import com.ezen.allit.dto.HitSaveRequestDto;
+import com.ezen.allit.dto.HitDto;
 import com.ezen.allit.dto.ReviewDto;
 
 public interface MemberService {
@@ -50,9 +51,13 @@ public interface MemberService {
 	
 	public QnA getQnaDetail(int qno);
 	
-	void hitProduct(HitSaveRequestDto hitSaveRequestDto); // 상품 좋아요
+	void hitProduct(HitDto hitSaveRequestDto); // 상품 좋아요
 	
 	Page<Review> getReviewList(String id, Pageable pageable); // 리뷰목록 조회
 	
 	void saveReview(ReviewDto reviewDto) throws Exception; // 리뷰작성
+	
+	Page<Hit> getLikeList(String id, Pageable pageable); // 좋아요목록 조회
+	
+	void deleteHit(HitDto hitDto); // 좋아요 취소
 	}
