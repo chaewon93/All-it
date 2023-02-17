@@ -1,5 +1,7 @@
 package com.ezen.allit.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,4 +21,6 @@ public interface CustomerCenterService {
 	void deleteCusto(int cno);
 	
 	Page<CustomerCenter> findCustomerCenterByCategoryContaining(String cate, Pageable pageable);
+	
+	List<CustomerCenter> findCustomerCenterByPick(String pick);
 }

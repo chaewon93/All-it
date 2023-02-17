@@ -33,7 +33,10 @@
 				<input type="hidden" name="rno" th:value="${qna.reply?.rno}" >
 				<th>답변</th>
 				<td><textarea name="content" cols="40" rows="10" th:text="${qna.reply?.content}"></textarea></td>
-				<td><input type="submit" value="수정"></td>
+				<td><input type="submit" value="수정"><br>
+					<input type="button" value="뒤로가기" onclick="history.back()"><br>
+					<button type="button" th:if="${qna.status} == '1'" th:onclick="|location.href='@{/admin/deleteReply(qno=${qna.qno})}'|" th:text="답변삭제" style="border-color: white;"></button>				
+				</td>
 			</form>		
 		</tr>
 		<tr th:if="${qna.status} == '0'">
@@ -41,16 +44,12 @@
 				<input type="hidden" name="qno" th:value="${qna.qno}" >
 				<th>답변</th>
 				<td><textarea name="content" rows="10" cols="40"></textarea></td>   
-				<td><input type="submit" value="저장"></td> 
+				<td><input type="submit" value="저장"><br>
+					<input type="button" value="뒤로가기" onclick="history.back()"><br>
+					<button type="button" th:if="${qna.status} == '1'" th:onclick="|location.href='@{/admin/deleteReply(qno=${qna.qno})}'|" th:text="답변삭제" style="border-color: white;"></button>
+				</td> 
 			</form>		
 		</tr>	
-		<tr>
-			<th>
-			<input type="button" value="뒤로가기" onclick="history.back()"> <br>
-			<a th:if="${qna.status} == '1'" th:href="@{/admin/deleteReply(qno=${qna.qno})}" th:text="답변삭제"></a>
-			</th>
-		</tr>
-	
 	</table>
 </div>
 

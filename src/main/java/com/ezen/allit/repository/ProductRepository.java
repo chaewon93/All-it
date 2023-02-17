@@ -1,5 +1,7 @@
 package com.ezen.allit.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,6 +28,9 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	Page<Product> findByStatusAndNameContaining(int status, String searchKeyword, Pageable pageable);
 	
 	Page<Product> findProductBymdPickyn(int y, Pageable pageable);
+	
+	// 메인화면에 나오는 mdPick 목록
+	List<Product> findFirst3BymdPickynOrderByRegDateDesc(int y);
 
 	// 판매자별 상품검색
 	Page<Product> findAllBySellerIdAndNameContaining(String id, String searchKeyword, Pageable pageable);

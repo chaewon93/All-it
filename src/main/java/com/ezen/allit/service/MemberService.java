@@ -1,11 +1,14 @@
 package com.ezen.allit.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
+import com.ezen.allit.dto.AddressCountDto;
 import com.ezen.allit.dto.HitSaveRequestDto;
 
 public interface MemberService {
@@ -50,6 +53,9 @@ public interface MemberService {
 	void hitProduct(HitSaveRequestDto hitSaveRequestDto); // 상품 좋아요
 	
 	Page<Review> getReviewList(String id, Pageable pageable); // 리뷰목록 조회
+	
+	//	
+	public List<AddressCountDto> getListAddressCount();
 	
 //	void saveReview(Review review) throws Exception; // 구매확정 후 리뷰
 }
