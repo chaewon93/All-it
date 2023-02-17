@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+
+<!-- 시큐리티?
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+-->
+
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+		var man = $("#man").val();
+		var woman = $("#woman").val();
+		var none = $("#none").val();
+		
+        var data = google.visualization.arrayToDataTable([
+          ['성별', '수'],
+          ['남자', Number(man) ],
+          ['여자', Number(woman) ],
+          ['모름', Number(none) ]     
+        ]);
+        var options = {
+          title: '남녀 비율'
+        };
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        chart.draw(data, options);
+      }
+        
+    </script>
+  </head>
+  <body>
+  	<input type="hidden" name="man" id="man" th:value="${m}">
+  	<input type="hidden" name="woman" id="woman" th:value="${w}">
+  	<input type="hidden" name="none" id="none" th:value="${x}">
+  	<!-- 
+  	<input type="text" name="mapAdd" id="mapAdd" th:value="${mapAdd}">
+  	<input type="text" name="listAdd" id="listAdd" th:value="${listAdd}">
+  	<input type="text" name="listCount" id="listCount" th:value="${listCount}">
+  	-->
+    <div id="piechart" style="width: 900px; height: 500px;"></div>
+  </body>
+
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+</html>

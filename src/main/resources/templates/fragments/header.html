@@ -28,7 +28,7 @@
 			<h1><a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a></h1>
 		</div>
 
-		<nav class="navbar position-relative navbar-expand-sm bg-dark navbar-dark" >
+		<nav class="navbar navbar-expand-sm bg-dark navbar-dark align-middle" >
 			<div class="dropdown">
 				<button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">카테고리</button>
 				<div class="dropdown-menu">
@@ -143,7 +143,7 @@
 					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/findAdminProduct(a=0) }">판매 상품 조회</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/couponList }">쿠폰</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/createCoupon }">쿠폰 생성</a></li>
-					<li class="nav-item"><a class="nav-link" th:href="@{ / }">판매통계</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /chart/mainCharts }">통계</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/adminMain }">판매자 메인화면</a></li>
 				</ul>
 			</div>

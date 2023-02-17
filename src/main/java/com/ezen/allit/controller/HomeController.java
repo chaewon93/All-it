@@ -1,13 +1,24 @@
 package com.ezen.allit.controller;
 
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ezen.allit.domain.CustomerCenter;
+import com.ezen.allit.domain.Grade;
+import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.Seller;
+import com.ezen.allit.service.CouponService;
+import com.ezen.allit.service.CustomerCenterService;
 import com.ezen.allit.service.MemberService;
+import com.ezen.allit.service.ProductService;
 import com.ezen.allit.service.SellerService;
 
 import lombok.RequiredArgsConstructor;
@@ -17,10 +28,23 @@ import lombok.RequiredArgsConstructor;
 public class HomeController {
 	private final MemberService memberService;
 	private final SellerService sellerService;
+
+	private final CouponService couponService;
+	private final CustomerCenterService custoService;
+	private final ProductService proService;;
 	
 	/** 홈 화면 이동 */
 	@GetMapping({"", "/"})
-	public String index() {
+	public String index(Model model) {
+		// 메인화면에 출력되는 이벤트 리스트와 mdPick 리스트
+		String pick ="1";
+		List<CustomerCenter> eventList = custoService.findCustomerCenterByPick(pick);
+		
+		model.addAttribute("eventList", eventList);
+		
+		List<Product> proList = proService.getMdpickProductMainPage();
+		
+		model.addAttribute("proList", proList);
 		
 		return "index";
 	}
@@ -36,6 +60,7 @@ public class HomeController {
 	@PostMapping("/member-join")
 	public String join(Member member, SessionStatus status) {
 		member.setGrade(Grade.BRONZE);
+		member.setRegDate(new Date());
 		memberService.saveMember(member);
 		status.setComplete();
 		

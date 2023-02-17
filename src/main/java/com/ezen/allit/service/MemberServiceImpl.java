@@ -1,11 +1,13 @@
 package com.ezen.allit.service;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,16 +16,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Grade;
 import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
-import com.ezen.allit.domain.ReviewFile;
 import com.ezen.allit.domain.Role;
+
+import com.ezen.allit.dto.AddressCountDto;
+
 import com.ezen.allit.domain.Seller;
 import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.OrdersDetailRepository;
@@ -36,7 +40,10 @@ import com.ezen.allit.dto.HitDto;
 import com.ezen.allit.dto.MemberDto;
 import com.ezen.allit.dto.ReviewDto;
 import com.ezen.allit.repository.HitRepository;
+import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.ProductRepository;
+import com.ezen.allit.repository.QnARepository;
+import com.ezen.allit.repository.ReviewRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -52,6 +59,10 @@ public class MemberServiceImpl implements MemberService {
 	private final SellerRepository sellerRepo;
 	private final OrdersDetailRepository ordersDetailRepo;
 	private final BCryptPasswordEncoder encoder;
+	
+	// 
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	/** 회원 조회 */
 	@Override
@@ -277,6 +288,16 @@ public class MemberServiceImpl implements MemberService {
 		
 		return reviewList;
 	}
+  
+// 차트 테스트 중...
+	@Override
+	public List<AddressCountDto> getListAddressCount() {
+//		String sql ="select , substr(address, 1, 2) as address, COUNT(*) as count from member group by substr(address, 1, 2)";
+		String sql ="select 1 seq, a.ADDR addr, a.cnt cnt"
+				+ "            from(select substr(address, 1, 2) as addr, COUNT(substr(address, 1, 2)) cnt from member group by substr(address, 1, 2)) a";
+		Query query = entityManager.createNativeQuery(sql, AddressCountDto.class);
+		return (List<AddressCountDto>) query.getResultList();
+	}
 
 	/** 리뷰작성 */
 	@Transactional
@@ -350,14 +371,3 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-

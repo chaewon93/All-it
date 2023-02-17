@@ -108,6 +108,7 @@
         }).open();
 	});
 
+	// 배송에 필요한 정보만 화면에서 저장
 	$("#modify").click(function() {
 		let data = {
 			id: $("#id").val(),
@@ -120,16 +121,6 @@
 			gender: $("#gender").val()
 		}
 		console.log("data = ", data)
-		
- 		/* let id = $("#id").val();
-		let email = $("#email").val();
-		let phone = $("#phone").val();
-		let zipcode = $("#zipcode").val();
-		let	address = [$("#addr").val(), $("#addrDetail").val()];
-		let birth = $("#birth").val();
-		let gender = $("#gender").val();
-		
-		console.log("address = ", address); */
 
 		if(data.email.trim() == "") {
 			alert('이메일을 입력해주세요');
@@ -150,8 +141,8 @@
 				contentType: "application/json; charset=utf-8",
 			}).done(function(response) {
 				alert('정보가 저장되었습니다');
-				opener.location.reload();
 				window.close();
+				opener.location.reload();
 			}).fail(function(error){
 				alert(JSON.stringify(error));
 			});

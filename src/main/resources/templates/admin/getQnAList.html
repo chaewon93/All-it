@@ -43,7 +43,7 @@
 	<th bgcolor="orange" width="100">제목</th>
 	<th bgcolor="orange" width="200">내용</th>
 	<th bgcolor="orange" width="150">등록일</th>
-	<th bgcolor="orange" width="150">답변 상태</th>
+	<th bgcolor="orange" width="200">답변 상태</th>
 	<th bgcolor="orange" width="100">작성자</th>
 	<th bgcolor="orange" width="100">상품명</th>
 	<th bgcolor="orange" width="100">판매자</th>
@@ -53,10 +53,11 @@
 <tr th:each="qna, state : ${list}">
 	<td th:text="${state.count}"></td>
 	<td th:text="${qna.category}"></td>
-	<td th:text="${qna.title}"></td>
+	<td align="left"><a th:href="@{/admin/getQnADetail(qno=${qna.qno})}" th:text="${qna.title}"></a></td>
 	<td align="left"><a th:href="@{/admin/getQnADetail(qno=${qna.qno})}" th:text="${qna.content}"></a></td>
 	<td th:text="${qna.regDate}"></td>
-	<td th:text="${qna.status}"></td>
+	<td th:if="${qna.status} == 0" ><span style="color: red;">답변 대기중</span></td>
+	<td th:if="${qna.status} == 1" ><span style="color: blue;">답변 완료</span></td>
 	<td th:text="${qna.member?.id}"></td>
 	<td th:text="${qna.product}"></td>
 	<td th:text="${qna.seller}"></td>
