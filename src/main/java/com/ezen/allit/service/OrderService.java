@@ -44,6 +44,6 @@ public interface OrderService {
 	Page<OrdersDetail> getCancelList(Member member, int status, Pageable pageable);
 	
   /** 판매자가 주문상태 변경 */
-	void modifyOrderStatus(OrdersDetailRequestDto detailRequestDto, int status);
+	void modifyOrderStatus(OrdersDetailDto ordersDetailDto, int status);
 
 }
