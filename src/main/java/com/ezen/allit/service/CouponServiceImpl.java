@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ezen.allit.domain.Coupon;
-import com.ezen.allit.domain.CustomerCenter;
 import com.ezen.allit.domain.MemCoupon;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Product;

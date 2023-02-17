@@ -18,7 +18,7 @@ public class ProductServiceImpl implements ProductService {
 	private final ProductRepository productRepo;
 	
 	/*
-	 * 상품목록조회
+	 * 상품목록조회 (검색조건 x, 검색어 o)
 	 */
 	@Transactional
 	public Page<Product> getProductList(Pageable pageable) {
@@ -60,23 +60,6 @@ public class ProductServiceImpl implements ProductService {
 	}
 	
 	/*
-	 * 상품조회
-	 */
-	@Transactional
-	public Product getProduct(int pno) {
-		return productRepo.findById(pno).get();
-	}
-	
-	/*
-	 * 상품 조회수 증가
-	 */
-	@Transactional
-	public void updateCount(int pno) {
-		Product product = productRepo.findById(pno).get();
-		product.setCount(product.getCount()+1);
-	}
-	
-	/*
 	 * 상품검색 (검색조건 x, 검색어 o)
 	 */
 	@Transactional
@@ -87,6 +70,21 @@ public class ProductServiceImpl implements ProductService {
 
 		Page<Product> product = 
 				productRepo.findAllByNameContaining(searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+		
+		return product;
+	}
+	
+	/*
+	 * 상품검색 (검색조건 o, 검색어 x), 카테고리별 상품목록조회
+	 */
+	@Transactional
+	public Page<Product> search(int searchCondition, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+
+		int pageSize = 6;
+
+		Page<Product> product = 
+				productRepo.findAllByCategory(searchCondition, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 		
 		return product;
 	}
@@ -105,20 +103,22 @@ public class ProductServiceImpl implements ProductService {
 		
 		return product;
 	}
-	
+
 	/*
-	 * 상품검색 (검색조건 o, 검색어 x), 카테고리별 상품목록조회
+	 * 상품조회
 	 */
 	@Transactional
-	public Page<Product> search(int searchCondition, Pageable pageable) {
-		int page = pageable.getPageNumber() - 1;
-
-		int pageSize = 6;
-
-		Page<Product> product = 
-				productRepo.findAllByCategory(searchCondition, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
-		
-		return product;
+	public Product getProduct(int pno) {
+		return productRepo.findById(pno).get();
+	}
+	
+	/*
+	 * 상품 조회수 증가
+	 */
+	@Transactional
+	public void updateCount(int pno) {
+		Product product = productRepo.findById(pno).get();
+		product.setCount(product.getCount()+1);
 	}
 	
 }

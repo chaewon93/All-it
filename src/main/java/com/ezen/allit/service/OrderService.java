@@ -9,7 +9,7 @@ import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Orders;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
-import com.ezen.allit.dto.OrdersDetailRequestDto;
+import com.ezen.allit.dto.OrdersDetailDto;
 
 public interface OrderService {
 	
@@ -43,6 +43,7 @@ public interface OrderService {
 	/** 취소 내역 조회 */
 	Page<OrdersDetail> getCancelList(Member member, int status, Pageable pageable);
 	
+  /** 판매자가 주문상태 변경 */
 	void modifyOrderStatus(OrdersDetailRequestDto detailRequestDto, int status);
 
 }

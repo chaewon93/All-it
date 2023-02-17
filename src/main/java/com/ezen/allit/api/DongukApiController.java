@@ -1,6 +1,7 @@
 package com.ezen.allit.api;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,15 +9,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ezen.allit.dto.HitSaveRequestDto;
-import com.ezen.allit.dto.OrdersDetailRequestDto;
+import com.ezen.allit.domain.Member;
+import com.ezen.allit.dto.HitDto;
+import com.ezen.allit.dto.MemberDto;
+import com.ezen.allit.dto.OrdersDetailDto;
 import com.ezen.allit.dto.QnADto;
 import com.ezen.allit.dto.ResponseDto;
-import com.ezen.allit.dto.ReviewDeleteRequestDto;
 import com.ezen.allit.dto.ReviewDto;
-import com.ezen.allit.dto.ReviewModifyRequestDto;
-import com.ezen.allit.dto.ReviewReplySaveRequestDto;
-import com.ezen.allit.dto.ReviewSaveRequestDto;
+import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.service.MemberService;
 import com.ezen.allit.service.OrderService;
 import com.ezen.allit.service.QnAService;
@@ -33,6 +33,7 @@ public class DongukApiController {
 	private final MemberService memberService;
 	private final QnAService qnaService;
 	private final OrderService orderService;
+	private final MemberRepository memberRepo;
 
 	/*
 	 * 상품삭제
@@ -48,8 +49,8 @@ public class DongukApiController {
 	 * 상품 좋아요
 	 */
 	@PutMapping("/product/hit/{pno}")
-	public ResponseDto<Integer> hitProduct(@RequestBody HitSaveRequestDto hitSaveRequestDto) {
-		memberService.hitProduct(hitSaveRequestDto);
+	public ResponseDto<Integer> hitProduct(@RequestBody HitDto hitDto) {
+		memberService.hitProduct(hitDto);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
@@ -58,8 +59,8 @@ public class DongukApiController {
 	 * 리뷰작성
 	 */
 	@PostMapping("/review/save/{pno}")
-	public ResponseDto<Integer> saveReview(@RequestBody ReviewSaveRequestDto reviewSaveRequestDto) {
-		reviewService.saveReview(reviewSaveRequestDto);
+	public ResponseDto<Integer> saveReview(@RequestBody ReviewDto reviewDto) {
+		reviewService.saveReview(reviewDto);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
@@ -68,8 +69,8 @@ public class DongukApiController {
 	 * 리뷰수정
 	 */
 	@PutMapping("/review/modify/{pno}/{rvno}")
-	public ResponseDto<Integer> modifyReview(@RequestBody ReviewModifyRequestDto reviewModifyRequestDto) {
-		reviewService.modifyReview(reviewModifyRequestDto);
+	public ResponseDto<Integer> modifyReview(@RequestBody ReviewDto reviewDto) {
+		reviewService.modifyReview(reviewDto);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
@@ -78,8 +79,8 @@ public class DongukApiController {
 	 * 리뷰삭제
 	 */
 	@DeleteMapping("/review/delete/{pno}/{rvno}")
-	public ResponseDto<Integer> deleteReview1(@RequestBody ReviewDeleteRequestDto reviewDeleteRequestDto) {
-		reviewService.deleteReview1(reviewDeleteRequestDto);
+	public ResponseDto<Integer> deleteReview1(@RequestBody ReviewDto reviewDto) {
+		reviewService.deleteReview1(reviewDto);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
@@ -88,8 +89,8 @@ public class DongukApiController {
 	 * 리뷰 좋아요
 	 */
 	@PutMapping("/review/hit/{pno}/{rvno}")
-	public ResponseDto<Integer> hitReview(@RequestBody HitSaveRequestDto hitSaveRequestDto) {
-		reviewService.hitReview(hitSaveRequestDto);
+	public ResponseDto<Integer> hitReview(@RequestBody HitDto hitDto) {
+		reviewService.hitReview(hitDto);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
@@ -98,8 +99,8 @@ public class DongukApiController {
 	 * 리뷰답글작성
 	 */
 	@PostMapping("/review/save/{pno}/reply/{rvno}")
-	public ResponseDto<Integer> saveReviewReply(@RequestBody ReviewReplySaveRequestDto reviewSaveRequestDto) {
-		reviewService.saveReviewReply(reviewSaveRequestDto);
+	public ResponseDto<Integer> saveReviewReply(@RequestBody ReviewDto reviewDto) {
+		reviewService.saveReviewReply(reviewDto);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
@@ -120,7 +121,7 @@ public class DongukApiController {
 	@PutMapping("/product/qna/save/{pno}/response")
 	public ResponseDto<Integer> saveResponse(@RequestBody QnADto qnaDto) {
 		qnaService.saveResponse(qnaDto);
-		qnaService.modifyStatus(qnaDto);
+		qnaService.modifyStatus(qnaDto); // 주문상세 status 변경
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
@@ -131,7 +132,7 @@ public class DongukApiController {
 	@PutMapping("/product/qna/delete/{pno}/response")
 	public ResponseDto<Integer> deleteResponse(@RequestBody QnADto qnaDto) {
 		qnaService.saveResponse(qnaDto);
-		qnaService.undoStatus(qnaDto);
+		qnaService.undoStatus(qnaDto); // 주문상세 status 변경
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
@@ -140,8 +141,8 @@ public class DongukApiController {
 	 * 주문상태 수정
 	 */
 	@PutMapping("/product/modify/{odno}")
-	public ResponseDto<Integer> modifyOrderStatus(@RequestBody OrdersDetailRequestDto detailRequestDto) {
-		orderService.modifyOrderStatus(detailRequestDto, detailRequestDto.getStatus());
+	public ResponseDto<Integer> modifyOrderStatus(@RequestBody OrdersDetailDto ordersDetailDto) {
+		orderService.modifyOrderStatus(ordersDetailDto, ordersDetailDto.getStatus());
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
@@ -154,18 +155,31 @@ public class DongukApiController {
 		reviewService.deleteReview2(reviewDto);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}	
+	
+	/*
+	 * 좋아요취소
+	 */
+	@DeleteMapping("/hit/delete/{hno}")
+	public ResponseDto<Integer> deleteHit(@RequestBody HitDto hitDto) {
+		memberService.deleteHit(hitDto);
+		
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 	
 	/*
-	 * 상품수정
+	 * SNS유저 구매화면 정보저장
 	 */
-//	@PostMapping("/seller/modify/{pno}")
-//	public ResponseDto<Integer> modifyProduct(@PathVariable int pno,
-//											@RequestBody Product product, MultipartFile imageFile) throws Exception {
-//		productService.modifyProduct(pno, product, imageFile);
-//		
-//		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1); 
-//	}
+	@PutMapping("/member/modify/{id}")
+	public ResponseDto<Integer> modifyInfo(Model model,
+										@RequestBody MemberDto memberDto) {
+		System.out.println("memberDto = " + memberDto);
+		memberService.modifySnsMemberInfo(memberDto);
+		Member member = memberRepo.findById(memberDto.getId()).get();
+		model.addAttribute("user", member);
+		
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);		
+	}
 }
 
 

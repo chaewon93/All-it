@@ -14,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Grade;
@@ -33,7 +32,8 @@ import com.ezen.allit.repository.ReviewFileRepository;
 import com.ezen.allit.repository.ReviewRepository;
 import com.ezen.allit.repository.SellerRepository;
 import com.ezen.allit.domain.Product;
-import com.ezen.allit.dto.HitSaveRequestDto;
+import com.ezen.allit.dto.HitDto;
+import com.ezen.allit.dto.MemberDto;
 import com.ezen.allit.dto.ReviewDto;
 import com.ezen.allit.repository.HitRepository;
 import com.ezen.allit.repository.ProductRepository;
@@ -101,7 +101,6 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	@Transactional
 	public Member modifySnsMember(Member member) {
-		System.out.println("member = " + member);
 		Member theMember = memberRepo.findById(member.getId()).get();
 
 		theMember.setEmail(member.getEmail());
@@ -110,8 +109,22 @@ public class MemberServiceImpl implements MemberService {
 		theMember.setAddress(member.getAddress());
 		theMember.setBirth(member.getBirth());
 		theMember.setGender(member.getGender());
-		System.out.println("theMember = " + theMember);
+
 		return theMember;
+	}
+	
+	/** sns 회원 정보 수정 */
+	@Override
+	@Transactional
+	public void modifySnsMemberInfo(MemberDto memberDto) {
+		Member theMember = memberRepo.findById(memberDto.getId()).get();
+
+		theMember.setEmail(memberDto.getEmail());
+		theMember.setPhone(memberDto.getPhone());
+		theMember.setZipcode(memberDto.getZipcode());
+		theMember.setAddress(memberDto.getAddress1()+","+memberDto.getAddress2());
+		theMember.setBirth(memberDto.getBirth());
+		theMember.setGender(memberDto.getGender());
 	}
 
 	/** 아이디 중복확인 */
@@ -138,6 +151,19 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public Member findByPw(Member member) {
 		return memberRepo.findByIdAndNameAndEmail(member.getId(), member.getName(), member.getEmail());
+	}
+	
+	/** 회원 비밀번호 수정 */
+	@Override
+	@Transactional
+	public Member modifyMemberPwd(Member member) {
+		Member theMember = memberRepo.findById(member.getId()).get();
+		String rawPwd = member.getPwd();		// 회원가입 화면에서 넘겨받은 pwd
+		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
+
+		theMember.setPwd(encPwd);
+
+		return theMember;
 	}
 
 	/** 회원 탈퇴 */
@@ -178,10 +204,10 @@ public class MemberServiceImpl implements MemberService {
 
 	/** 상품 좋아요 */
 	@Transactional
-	public void hitProduct(HitSaveRequestDto hitSaveRequestDto) {
-		Optional<Hit> hit = hitRepo.findByProductPnoAndMemberId(hitSaveRequestDto.getPno(), hitSaveRequestDto.getMid());
-		Product product = productRepo.findById(hitSaveRequestDto.getPno()).get();
-		Member member = memberRepo.findById(hitSaveRequestDto.getMid()).get();
+	public void hitProduct(HitDto hitDto) {
+		Optional<Hit> hit = hitRepo.findByProductPnoAndMemberId(hitDto.getPno(), hitDto.getMid());
+		Product product = productRepo.findById(hitDto.getPno()).get();
+		Member member = memberRepo.findById(hitDto.getMid()).get();
 		
 		/* 이전에 좋아요 누른 기록이 없으면 좋아요, 있으면 좋아요 취소 */
 		if(hit.isEmpty()) {
@@ -255,15 +281,13 @@ public class MemberServiceImpl implements MemberService {
 	/** 리뷰작성 */
 	@Transactional
 	public void saveReview(ReviewDto reviewDto) throws Exception {
-		System.out.println("reviewDtoFile = " + reviewDto.getImageFile());
 		Member member = memberRepo.findById(reviewDto.getMid()).get();
 		Seller seller = sellerRepo.findById(reviewDto.getSid()).get();
 		Product product = productRepo.findById(reviewDto.getPno()).get();
 		OrdersDetail ordersDetail = ordersDetailRepo.findById(reviewDto.getOdno()).get();
 
 		/** 파일 미첨부시 */
-		if(reviewDto.getImageFile().get(0).isEmpty()) { // 여기 처리가 안돼요..ㅠㅠ
-			System.out.println("aaaaaaaaaaaaaaaaaa");
+		if(reviewDto.getImageFile().get(0).isEmpty()) {
 			Review review = Review.toSaveReview(reviewDto);
 			review.setMember(member);
 			review.setSeller(seller);
@@ -275,7 +299,6 @@ public class MemberServiceImpl implements MemberService {
 		
 		/** 파일 첨부시(다중가능) */
 		} else {
-			System.out.println("bbbbbbbbbbbbbbbbbbbbbbbb");
 			Review review = Review.toSaveFileReview(reviewDto);
 			review.setMember(member);
 			review.setSeller(seller);
@@ -297,13 +320,44 @@ public class MemberServiceImpl implements MemberService {
 				
 				File saveFile = new File(realPath, imgName); // 저장경로와 파일명을 토대로 새 파일 생성 
 				imageFile.transferTo(saveFile);			     // 생성 완료
-				System.out.println("saveFile = " + saveFile);
-				ReviewFile reviewFile = ReviewFile.toSaveReviewFile(theReview, imgName);
-				System.out.println("reviewFile = " + reviewFile);
+				
+				ReviewFile reviewFile = ReviewFile.toSaveReviewFile(theReview, imgName); // reviewFile에 데이터 저장
 				reviewFile.setRegDate(new Date());
+				
 				reviewFileRepo.save(reviewFile);
 			}
 		}
 	}
+	
+	/** 좋아요목록 조회 */
+	@Transactional
+	public Page<Hit> getLikeList(String id, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 10;
+		
+		Page<Hit> likeList = 
+				hitRepo.findAllByMemberIdAndProductNotNull(id, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "hno")));
+		
+		System.out.println("likeList = " + likeList);
+		return likeList;
+	}
+	
+	/** 리뷰삭제 */
+	@Transactional
+	public void deleteHit(HitDto hitDto) {
+		Hit hit = hitRepo.findById(hitDto.getHno()).get();
+		hitRepo.deleteById(hit.getHno());
+	}
 
 }
+
+
+
+
+
+
+
+
+
+
+

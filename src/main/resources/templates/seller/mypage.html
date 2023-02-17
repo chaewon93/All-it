@@ -231,10 +231,10 @@ $("#modify").click(function(){
 		return false;
 	}
 	var pass1 = $("#pwd").val();
-       var pass2 = $("#pwd2").val();
+    var pass2 = $("#pwd2").val();
        
-       if(pass1 != "" || pass2 != ""){
-        if(pass1 != pass2) {
+    if(pass1 != "" || pass2 != ""){
+    	if(pass1 != pass2) {
         	alert("비밀번호가 틀렸습니다.");
         	return false;
         } else {
@@ -247,7 +247,7 @@ $("#modify").click(function(){
 				return false;
 			}
         }
-       }
+	}
 });
 
 // 회원 탈퇴

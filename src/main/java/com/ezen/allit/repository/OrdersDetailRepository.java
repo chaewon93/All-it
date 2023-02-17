@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Orders;
@@ -47,6 +46,4 @@ public interface OrdersDetailRepository extends JpaRepository<OrdersDetail, Inte
 	
 	// 판매자 주문목록조회 (검색 o)
 	Page<OrdersDetail> findAllByProductSellerIdAndProductNameContaining(String id, String searchKeyword, Pageable pageable);
-
-
 }

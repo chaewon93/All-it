@@ -1,0 +1,68 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
+
+<h1>리뷰내역</h1>
+
+<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
+	<tr>
+		<th bgcolor="orange" width="150">상품</th>
+		<th bgcolor="orange" width="100">가격</th>
+		<th bgcolor="orange" width="100">비고</th>
+	</tr>
+	<tr th:if="${size} == 0">
+		<td colspan="5" align="center" style="font-weight: bold; color: rgb(255, 195, 81);">좋아요 내역이 없습니다.</td>
+	</tr>
+	<tr th:each="like : ${ likeList }">
+		<td align="left">
+			<a th:href="@{ |/product/${ like.product.pno }| }" >
+				<span th:text="${ like.product.name }"></span>
+			</a>
+		</td>
+		<td th:text="${ like.product.price }"></td>
+		<td>
+			<input type="hidden" th:value="${ like.hno }" name="hno" id="hno">
+			<button class="badge" id="hitDelete" style="color: black" th:onclick="'javascript:index.deleteHit(this);'">삭제</button>
+		</td>	  			
+	</tr>
+</table>
+</body>
+
+<!-- 자바스트립트 섹션 시작 -->
+<script type="text/javascript">
+let index = {
+	deleteHit:function(btn) {
+ 		const data = {
+			hno: btn.previousElementSibling.value
+		}
+		console.log('data = ', data);
+		const check = confirm("삭제하시겠습니까?");
+			if(check == true) {
+			$.ajax({
+				type: "delete",
+				url: '/hit/delete/${data.hno}',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('좋아요가 취소되었습니다');
+				window.location.reload();
+			}).fail(function(error){ // 처리 실패 시
+				alert(JSON.stringify(error));
+			});
+		}
+	}	
+}
+
+index.init();
+
+</script>
+<!-- 자바스트립트 섹션 끝 -->
+
+<!-- pagination replace -->
+<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
+
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+</html>

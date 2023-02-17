@@ -16,7 +16,7 @@ import com.ezen.allit.domain.Orders;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.repository.MemCouponRepository;
-import com.ezen.allit.dto.OrdersDetailRequestDto;
+import com.ezen.allit.dto.OrdersDetailDto;
 import com.ezen.allit.repository.OrdersDetailRepository;
 import com.ezen.allit.repository.OrdersRepository;
 
@@ -145,8 +145,8 @@ public class OrderServiceImpl implements OrderService {
 	
 	/** 판매자 주문상태 수정 */
 	@Transactional
-	public void modifyOrderStatus(OrdersDetailRequestDto detailRequestDto, int status) {
-		OrdersDetail ordersDetail = ordersDetailRepo.findById(detailRequestDto.getOdno()).get();
+	public void modifyOrderStatus(OrdersDetailDto ordersDetailDto, int status) {
+		OrdersDetail ordersDetail = ordersDetailRepo.findById(ordersDetailDto.getOdno()).get();
 		ordersDetail.setStatus(status);
 	}
 

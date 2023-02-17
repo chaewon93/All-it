@@ -55,8 +55,8 @@
 					<input type="button" th:if="${detail.status == 1}" id="cancelOrder" value="주문취소" class="btn btn-outline-secondary" th:onclick="'javascript:index.cancelOrder(' +${ order.ono }+ ',' +${ detail.odno }+ ');'">
 					<input type="button" th:if="${detail.status == 2}" id="delivery" value="배송조회" class="btn btn-outline-secondary" data-toggle="modal" data-target="#deliveryModal" th:data-pname="${detail.product.name}">
 					<input type="button" th:if="${detail.status == 3}" id="buyComplete" value="구매확정" class="btn btn-outline-secondary" th:onclick="'javascript:index.buyComplete(' +${ detail.odno }+ ');'">
+          <input type="button" id="qna" value="상품문의" class="btn btn-outline-secondary" data-toggle="modal" data-target="#qnaModal" th:data-product="${ detail.product.name }" th:data-seller="${ detail.product.seller.id }" th:data-pno="${ detail.product.pno }"/> <br> <br>
 					<input type="button" th:if="${detail.status == 3}" id="refund" value="교환/반품 신청" class="btn btn-outline-secondary" data-toggle="modal" data-target="#refundModal" th:data-odno="${ detail.odno }" th:data-pname="${ detail.product.name }">
-					<input type="button" class="btn btn-outline-secondary" id="productQna" value="상품문의">
 					<input type="button" th:if="${detail.status == 4}" id="writeReview" value="리뷰작성" class="btn btn-outline-secondary" th:onclick="'javascript:index.writeReview(' +${ detail.odno }+ ');'">
 			
 					<input type="hidden" th:value="${ order.ono }" id="ono" name="ono">
@@ -157,11 +157,57 @@
 </div>
 <!-- 교환/반품 신청 모달 섹션 끝 -->
 
+<!-- 문의 모달 섹션 시작 -->
+<div class="modal fade" id="qnaModal">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-body">
+				<br>
+				<span>상품명 </span>
+				<input type="text" readonly="readonly" id="qnaname"/> <br><br>
+				<span>판매자 </span>
+				<input type="text" readonly="readonly" id="qnasid"/> <br><br>
+				<span>카테고리 </span>
+				<select id="question-category">
+					<option th:value="0">==카테고리==</option>
+					<option th:value="상품">상품</option>
+					<option th:value="결제">결제</option>
+					<option th:value="신고">신고</option>
+				</select> <br><br>
+				<span>제목 </span>
+				<input type="text" id="question-title"><br><br>
+				<span>문의내용 </span><br>
+				<textarea rows="6"cols="75" id="question-content"></textarea>
+			</div>
+			<div class="modal-footer">
+				<input type="hidden" name="qnapno" id="qnapno" />				
+				<button type="button" class="btn btn-primary" id="question-save">작성</button>
+				<button type="button" class="btn btn-light" data-dismiss="modal">취소</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 문의 모달 섹션 끝 -->
+
 <!-- 자바스트립트 섹션 시작 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script type="text/javascript">
-$(document).ready(function() {
-	
+
+$(document).ready(function(){
+  // 상품문의 모달창 open
+	$("#qna").click(function(){
+		var product = $(this).data('product');
+		var seller = $(this).data('seller');
+		var pno = $(this).data('pno');
+		console.log("pro", product);
+		console.log("sel", seller);
+		console.log("pno", pno);
+		$("#qnaModal #qnaname").val(product);
+		$("#qnaModal #qnasid").val(seller);
+		$("#qnaModal #qnapno").val(pno);
+		$("#qnaModal").modal();
+	});
+  
 	// 교환/반품 신청 모달 open
     $("#refund").click(function() {
     	var odno = $(this).data('odno');
@@ -190,7 +236,10 @@ let index = {
 		$("#refundBtn").on("click", ()=>{ 
 			this.refund();
 		});
-		
+
+		$("#question-save").on("click", () =>{
+			this.saveQuestion();
+		});
 	},
 
 	// 장바구니 담기
@@ -334,6 +383,44 @@ let index = {
 			}).fail(function(error){ // 처리 실패 시
 				alert("다시 시도해주세요.");
 				console.log("[orderComplete() ajax error] "+JSON.stringify(error));
+			});
+		}
+	},
+
+	// 문의 작성
+	saveQuestion:function() {
+		let data = {
+			pno: $("#qnapno").val(),
+			sid: $("#qnasid").val(),
+			mid: $("#mid").val(),
+			category: $("#question-category").val(),
+			title: $("#question-title").val(),
+			content: $("#question-content").val()
+		}
+		console.log('data = ', data);
+		if(data.mid == null || data.mid.trim() == "") {
+			alert('로그인이 필요한 서비스입니다');
+			return false;			
+		} else if(data.category == 0) {
+			alert('카테고리를 선택해주세요');
+			return false;
+		} else if(data.title.trim() == "") {
+			alert('제목을 입력해주세요');
+			return false;
+		} else if(data.content.trim() == "") {
+			alert('내용을 입력해주세요');
+			return false;
+		} else {
+			$.ajax({
+				type: "post",
+				url: '/product/qna/save/${data.pno}',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('상품문의가 완료되었습니다');
+				window.location.reload();
+			}).fail(function(error){ // 처리 실패 시
+				alert(JSON.stringify(error));
 			});
 		}
 	},

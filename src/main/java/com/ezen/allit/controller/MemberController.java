@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ezen.allit.config.auth.PrincipalDetailMember;
 import com.ezen.allit.domain.Coupon;
+import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.MemCoupon;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.OrdersDetail;
@@ -66,7 +67,7 @@ public class MemberController {
 		if(principal != null) {
 			Member member = principal.getMember();
 			System.out.println("member=============== = " + member);
-			return member;         
+			return member;
 		} else {
 			return null;
 		}
@@ -101,6 +102,7 @@ public class MemberController {
 //			return "redirect:/member-login";
 //		}
 //	}
+
 	
 	/** 아이디 찾기 기능 처리 */
 	@PostMapping("/findId")
@@ -127,11 +129,35 @@ public class MemberController {
 		if (findMember != null) {  // 이름과 이메일을 조건으로 아이디 조회 성공
 			model.addAttribute("message", 1);
 			model.addAttribute("pw", findMember.getPwd());
+			model.addAttribute("id", findMember.getId());
+
+			return "member/findPw";
 		} else {
 			model.addAttribute("message", -1);
+			
+			return "member/findPwError";
 		}
 		
-		return "member/findPw";
+	}
+	
+	/** 비밀번호 수정 처리 */
+	@PostMapping("/modifyPwd")
+	public String modifyPwd(Member member, Model model) {
+		System.out.println("[Member infoModify()] Member : "+member);
+
+		memberService.modifyMemberPwd(member);			
+
+		// 세션에 수정된 정보 저장
+		model.addAttribute("user", memberRepo.findById(member.getId()).get());
+		
+		return "redirect:/";
+	}
+	
+	/** SNS사용자 구매화면에서 정보저장 창 */
+	@GetMapping("/infoWrite/{mid}")
+	public String getInfoForm(Model model, @PathVariable String mid) {
+		model.addAttribute("id", mid);
+		return "member/infoWrite";
 	}
 	
 	/** 로그아웃 처리 => Security 적용 */
@@ -166,11 +192,9 @@ public class MemberController {
 		System.out.println("[Member infoModify()] Member : "+member);
 		
 		// 회원 정보 수정
-		if(member.getProvider() == "") {
-			System.out.println("일반회원 : "+member);
+		if(member.getProvider() == "") { // 일반회원 정보수정시
 			memberService.modifyMember(member);			
-		} else {
-			System.out.println("sns회원 : "+member);
+		} else {						 // sns회원 정보수정시
 			memberService.modifySnsMember(member);
 		}
 		
@@ -483,5 +507,27 @@ public class MemberController {
 		memberService.saveReview(reviewDto);
 
 		return "redirect:reviewList";
+	}
+	
+	/** 마이올잇>좋아요리스트 */
+	@GetMapping("/likeList")
+	public String likeView(Model model,
+							@PageableDefault(page = 1) Pageable pageable,
+							@AuthenticationPrincipal PrincipalDetailMember principal) {
+	
+		Page<Hit> likeList = memberService.getLikeList(principal.getMember().getId(), pageable);
+		
+		int naviSize = 10; // 페이지네이션 갯수
+		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+		int endPage = ((startPage + naviSize - 1) < likeList.getTotalPages()) ? startPage + naviSize - 1 : likeList.getTotalPages();
+
+		model.addAttribute("list", likeList);
+		model.addAttribute("startPage", startPage);
+		model.addAttribute("endPage", endPage);	
+		model.addAttribute("url", "/member/likeList");	
+		model.addAttribute("likeList", likeList);
+		if(likeList.getTotalElements() == 0) model.addAttribute("size", 0);
+		
+		return "mypage/likeList";
 	}
 }
