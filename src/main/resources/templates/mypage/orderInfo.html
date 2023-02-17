@@ -4,45 +4,55 @@
 <div th:replace="~{ /fragments/header.html :: header }"></div>
 <!-- header replace -->
 
+<head>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+
 <body th:align="center">
+<div class="container" style="margin-top: 30px; margin-bottom: 50px;">
 <!-- 내용 섹션 시작 -->
-<form id="orderFrm" method="post">
+<form id="orderFrm" method="post" class="form-inline">
 <h3>구매자 정보</h3>
-<table id="buyerInfo" border="1">
+<table th:align="center" id="buyerInfo" class="table">
 	<tr>
-		<th>이름</th>
-		<td id="userName" th:text="${ #authentication.principal.member?.name }">
+		<th width="250">이름</th>
+		<td id="userName" th:text="${ session['user'].name }">
 	</tr>
 	<tr>
-		<th>이메일</th>
-		<td th:text="${ #authentication.principal.member?.email }">
+		<th width="250">이메일</th>
+		<td th:text="${ session['user'].email }">
 	</tr>
 	<tr>
-		<th>연락처</th>
-		<td id="userPhone" th:text="${ #authentication.principal.member?.phone }">
+		<th width="250">연락처</th>
+		<td id="userPhone" th:text="${ session['user'].phone }">
 	</tr>
 </table>
 <hr>
 <h3>받는 사람 정보</h3>
-<table id="receiverInfo" border="1">
-	<input type="checkbox" id="chkbox" name="chkbox"> 구매자 정보와 동일
+
+<table id="receiverInfo" class="table">
 	<tr>
-		<th>이름</th>
-		<td><input type="text" id="name" name="receiverName" required="required"></td>
+		<td class="text-info"><input type="checkbox" id="chkbox" name="chkbox"> 구매자 정보와 동일</td>
+    <input type="button" th:if="${ session['user'].phone  == null }" id="infoWrite" value="주소 저장하기" class="btn btn-primary"><br>
 	</tr>
 	<tr>
-		<th>연락처</th>
-		<td><input type="text" id="phone" name="receiverPhone" required="required"></td>
+		<th width="250">이름</th>
+		<td><input type="text" id="name" name="receiverName" required="required" class="form-control mr-sm-2" placeholder="이름"></td>
 	</tr>
 	<tr>
-		<th>배송 주소</th>
+		<th width="250">연락처</th>
+		<td><input type="text" id="phone" name="receiverPhone" required="required" class="form-control mr-sm-2" placeholder="000-000-0000" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}"></td>
+	</tr>
+	<tr>
+		<th width="250">배송 주소</th>
 		<td>
-			<input type="hidden" name="userZipcode" id="userZipcode" th:value="${ #authentication.principal.member?.zipcode }">
-			<input type="hidden" name="userZipcode" id="userAddress" th:value="${ #authentication.principal.member?.address }">
-			<input type="text" id="zipcode" name="receiverZipcode" required="required" placeholder="우편번호"/>
+			<input type="hidden" name="userZipcode" id="userZipcode" th:value="${ session['user'].zipcode }">
+			<input type="hidden" name="userZipcode" id="userAddress" th:value="${ session['user'].address }">
+			<input type="text" id="zipcode" name="receiverZipcode" required="required" class="form-control mr-sm-2" placeholder="우편번호"/>
 			<input type="button" id="kakaoAddr" value="우편번호 찾기" class="btn btn-light"><br>
-			<input type="text" id="addr" name="receiverAddr" required="required" placeholder="주소"/><br>
-			<input type="text" id="addrDetail" name="receiverAddr" required="required" placeholder="상세주소"/>
+			<input type="text" id="addr" name="receiverAddr" required="required" class="form-control mr-sm-2" placeholder="주소"/>
+			<input type="text" id="addrDetail" name="receiverAddr" required="required" class="form-control mr-sm-2" placeholder="상세주소"/>
 		</td>
 	</tr>
 <!--<tr>
@@ -54,12 +64,12 @@
 </table>
 <hr>
 <h3>주문 상품</h3>
-<table id="prodInfo" border="1">
+<table th:align="center" id="prodInfo" class="table">
 	<tr>
-		<th>상품 정보</th>
-		<th>수량</th>
-		<th>상품금액</th>
-		<th>쿠폰 적용</th>
+		<th width="400">상품 정보</th>
+		<th width="100">수량</th>
+		<th width="150">상품금액</th>
+		<th width="150">쿠폰 적용</th>
 	</tr>
 	<!-- 바로 구매 -->
 	<th:block th:if="${product} != null">
@@ -68,7 +78,7 @@
 				<a th:href="@{ |/product/${ product.pno }| }">
 					<input type="hidden" th:value="${product.pno}" name="ppno" id="ppno"/> 
 					<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="100">
-					<span th:text="${ product.name }"></span>
+					<b class="text-info" th:text="${ product.name }"></b>
 				</a> 
 				<span th:text="${#numbers.formatInteger(product.price, 1, 'COMMA')}+'원'"></span>
 			</td>
@@ -88,7 +98,7 @@
 			<input type="hidden" th:value="${cart?.product.pno}" name="cpno" id="cpno"/> 
 			<a th:href="@{ |/product/${ cart.product.pno }| }">
 				<img class="img-fluid" th:src="@{ /images/ } + ${ cart.product.imageName }" width="100">
-				<span th:text="${ cart.product.name }"></span>
+				<b class="text-info" th:text="${ cart.product.name }"></b>
 			</a> 
 			<span th:text="${#numbers.formatInteger(cart.product.price, 1, 'COMMA')}+'원'"></span>
 		</td>
@@ -105,36 +115,36 @@
 </table>
 <hr>
 <h3>결제 정보</h3>
-<table id="payInfo">
+<table th:align="center" id="payInfo" class="table">
 		<input type="hidden" id="totalPrice" th:if="${product != null}" th:value="${ product.price * quantity }">
 		<input type="hidden" id="totalPrice" th:if="${cartList != null}" th:value="${ totalPrice }">
 	<tr>
-		<th>총 상품가격</th>
+		<th width="250">총 상품가격</th>
 		<td th:if="${product != null}" th:text="${ #numbers.formatInteger(product.price * quantity, 1, 'COMMA') }+'원'">
 		<td th:if="${cartList != null}" th:text="${ #numbers.formatInteger(totalPrice, 1, 'COMMA') }+'원'">
 	</tr>
 	<tr>
-		<th>할인 쿠폰</th>
+		<th width="250">할인 쿠폰</th>
 		<td><input type="text" id="coupon" name="coupon" readonly="readonly" style="color: red;border: none;">
 			<input type="text" id="coucon" name="coucon" readonly="readonly" style="border: none;">
 		</td>
 	</tr>
 	<tr>
-		<th>포인트</th>
+		<th width="250">포인트</th>
 		<td>
-			<input type="text" id="usePoint" name="usePoint" th:value="0" onchange="changePoint()">
+			<input type="text" id="usePoint" name="usePoint" th:value="0" onchange="changePoint()" class="form-control">
 			<button type="button" id="pointBtn" class="btn btn-light">전액 사용</button>
 			<br><span>보유 포인트 <b id="mypoint" th:text="${ #authentication.principal.member?.point }"></b>P</span>
 		</td>
 	</tr>
 	<tr>
-		<th>총 결제금액</th>
+		<th width="250">총 결제금액</th>
 		<td><span id="payPrice" style="font-weight: bold;"></span>
 			<input type="hidden" id="finalPrice" name="finalPrice">
 		</td>
 	</tr>
 	<tr>
-		<th>올잇머니 결제</th>
+		<th width="250">올잇머니 결제</th>
 
 		<td><span th:text="${ #numbers.formatInteger(session['user']?.money, 1, 'COMMA') }+'원'"></span>
 			<input type="hidden" id="money" th:value="${ session['user']?.money }">
@@ -151,33 +161,35 @@
 	<!-- 현금영수증? -->
 </table>
 <br>
-<input type="radio" id="chkrdo"> 위 주문 내용을 확인 하였으며, 회원 본인은 개인정보 이용 및 제공 및 결제에 동의합니다.
+<input type="radio" id="chkrdo"><strong class="text-info">&nbsp; 위 주문 내용을 확인 하였으며, 회원 본인은 개인정보 이용 및 제공 및 결제에 동의합니다.</strong>
 <br><br>
-
+<div style="margin-left: 300px;">
 <input type="hidden" name="memCou" id="memCou" value="0"/>
 <input type="hidden" name="proid" id="proid" value="0"/>
 <input type="hidden" th:value="${ session['user']?.id }" name="mid" id="mid"/>
 <input type="hidden" th:value="${ product?.pno }" name="pno" id="pno"/>
 <input type="hidden" th:if="${product != null}" th:value="${ quantity }" name="quantity" id="quantity"/>
 <!-- <input type="hidden" th:if="${product != null}" th:value="${  }" name="finalPrice" id="finalPrice"/> -->
-<input type="submit" value="결제하기" id="payBtn" onclick="return orderCheck()" class="btn btn-primary">
+<input type="submit" value="결제하기" id="payBtn" onclick="return orderCheck()" class="btn btn-warning">
+</div>
 </form>
+</div>
 
 <!-- 머니 충전 모달 섹션 시작 -->
 <div class="modal fade" id="moneyModal">
 	<div class="modal-dialog modal-xl">
 		<div class="modal-content">
 			<div class="modal-body"> <br>
-				<h2>충전 금액을 입력해주세요.</h2>
-				<span th:text="'보유 중인 올잇 머니 ' + ${ #numbers.formatInteger(session['user']?.money, 1, 'COMMA') }+'원'"></span><br>
-				<input type="text" id="chargeMoney" name="money" placeholder="5만원부터 충전 가능합니다." style="width: 350px;"/> <br>
+				<h2>올잇머니 충전</h2>
+				<span>보유 중인 올잇머니 <b class="text-danger" th:text="${ #numbers.formatInteger(session['user']?.money, 1, 'COMMA') }+'원'"></b></span><br>
+				<input type="text" id="chargeMoney" name="money" placeholder="5만원부터 충전 가능합니다." class="form-control mr-sm-2" style="width: 350px;"/>
 				<input type="button" value="+5만원" class="btn btn-light" onclick="addMoney(this)"/>
 				<input type="button" value="+10만원" class="btn btn-light" onclick="addMoney(this)"/>
 				<input type="button" value="+30만원" class="btn btn-light" onclick="addMoney(this)"/>
 				<input type="button" value="+50만원" class="btn btn-light" onclick="addMoney(this)"/>
 				<br><br>
 				<span>충전 은행 </span>
-				<select id="chargeMoney-bank">
+				<select id="chargeMoney-bank" class="form-control">
 					<option th:value="없음">==은행선택==</option>
 					<option th:value="국민">국민은행</option>
 					<option th:value="기업">기업은행</option>
@@ -189,9 +201,9 @@
 					<option th:value="수협">수협</option>
 					<option th:value="카카오">카카오뱅크</option>
 					<option th:value="토스">토스뱅크</option>
-				</select> <br><br>
+				</select> <br>
 				<span>계좌번호 </span>
-				<input type="text" id="chargeMoney-bankNum" style="width: 300px;"><br><br>
+				<input type="text" id="chargeMoney-bankNum" class="form-control" style="width: 300px;"><br>
 				<input type="checkbox" id="chkAgree"><b> 필수 약관 모두 동의</b><br>
 				<span style="margin-left: 20px;">올잇머니 서비스 이용약관 </span><br>
 				<span style="margin-left: 20px;">올잇머니 전자금융거래 이용약관 </span><br>
@@ -200,8 +212,8 @@
 				<span style="margin-left: 20px;">올잇 개인정보 제3자 제공 </span><br>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" id="moneyBtn">충전</button>
-				<button type="button" class="btn btn-light" data-dismiss="modal">취소</button>
+				<button type="button" class="btn btn-warning" id="moneyBtn">충전</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
 			</div>
 		</div>
 	</div>
@@ -232,7 +244,20 @@ let index = {
 		$("#moneyBtn").on("click", ()=>{ 
 			this.chargeMoney();
 		});
+		
+		// sns회원 주소 화면에서 저장하기
+		$("#infoWrite").on("click", ()=>{ 
+			this.writeInfo();
+		});
 
+	},
+	
+	writeInfo:function() {
+		let mid = $("#mid").val()
+		var url = "/member/infoWrite/"+mid;
+		
+		window.open(url, "_blank_", 
+			"toolbar=no, menubar=no, scrollbars=yes, resizable=no, width=550, height=550");
 	},
 
 	copyInfo:function() {

@@ -8,15 +8,16 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 <body>
-<h1>문의내역</h1>
-
-<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
+<div style="display: flex; height: 800px; margin-top: 30px;">
+<div class="container">
+<h1>문의내역</h1><br>
+<table th:align="center" th:cellpadding="3" th:cellspacing="0" th:width="500" class="table">
 	<tr>
-		<th bgcolor="orange" width="100">번호</th>
-		<th bgcolor="orange" width="150">카테고리</th>
-		<th bgcolor="orange" width="300">제목</th>
-		<th bgcolor="orange" width="150">등록일</th>
-		<th bgcolor="orange" width="150">답변 상태</th>
+		<th width="50">번호</th>
+		<th width="150">카테고리</th>
+		<th width="300">제목</th>
+		<th width="150">등록일</th>
+		<th width="100">답변 상태</th>
 	</tr>
 	<tr th:if="${size} == 0">
 		<td colspan="5" align="center" style="font-weight: bold; color: rgb(255, 195, 81);">문의 내역이 없습니다.</td>
@@ -24,7 +25,7 @@
 	<tr th:each="qna, state : ${list}">
 		<td th:text="${state.count}"></td>
 		<td th:text="${qna.category}"></td>
-		<td align="left"><a th:href="@{/member/qnaDetail(qno=${qna.qno})}" th:text="${qna.title}"></a></td>
+		<td align="left"><b><a th:href="@{/member/qnaDetail(qno=${qna.qno})}" th:text="${qna.title}" class="text-info"></a></b></td>
 		<td th:text="${qna.regDate}"></td>
 		<td th:text="${qna.status == 0 ? '답변 대기 중' : '답변 완료'}"></td>
 		<!-- <td th:text="${qna.member?.id}"></td>
@@ -33,6 +34,8 @@
 		<td th:text="${qna.reply?.content}"></td> -->
 	</tr>
 </table>
+</div>
+</div>
 </body>
 
 <!-- pagination replace -->

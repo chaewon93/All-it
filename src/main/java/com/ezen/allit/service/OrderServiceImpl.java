@@ -1,5 +1,6 @@
 package com.ezen.allit.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -15,7 +16,7 @@ import com.ezen.allit.domain.Orders;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.repository.MemCouponRepository;
-import com.ezen.allit.dto.OrdersDetailRequestDto;
+import com.ezen.allit.dto.OrdersDetailDto;
 import com.ezen.allit.repository.OrdersDetailRepository;
 import com.ezen.allit.repository.OrdersRepository;
 
@@ -53,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public Page<Orders> getOrder(Member member, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 10;
+		int pageSize = 5;
 		
 		return ordersRepo.findAllByMemberId(member.getId(), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "ono")));
 	}
@@ -96,6 +97,25 @@ public class OrderServiceImpl implements OrderService {
 		order.setFinalPrice(finalPrice);
 	}
 	
+	/** 교환/반품 신청 - 주문상태 변경, 사유와 신청일자 삽입 */
+	@Transactional
+	@Override
+	public void refundOrder(int status, String reason, int odno) {
+		OrdersDetail orderDetail = ordersDetailRepo.findById(odno).get();
+		orderDetail.setStatus(status);
+		orderDetail.setReason(reason);
+		orderDetail.setCancelDate(new Date());
+	}
+	
+	/** 취소/교환/반품 내역 조회 */
+	@Override
+	public Page<OrdersDetail> getCancelList(Member member, int status, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 5;
+		
+		return ordersDetailRepo.findByMemberAndStatusAndCancelDateNotNull(member, status, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));
+	}
+	
 	/** 오더 디테일에 사용한 쿠폰 등록 */
 	@Transactional
 	public void saveCouponOrder(int mcid, int couProid) {
@@ -125,21 +145,9 @@ public class OrderServiceImpl implements OrderService {
 	
 	/** 판매자 주문상태 수정 */
 	@Transactional
-	public void modifyOrderStatus(OrdersDetailRequestDto detailRequestDto, int status) {
-		OrdersDetail ordersDetail = ordersDetailRepo.findById(detailRequestDto.getOdno()).get();
+	public void modifyOrderStatus(OrdersDetailDto ordersDetailDto, int status) {
+		OrdersDetail ordersDetail = ordersDetailRepo.findById(ordersDetailDto.getOdno()).get();
 		ordersDetail.setStatus(status);
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-

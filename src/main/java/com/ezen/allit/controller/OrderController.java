@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -28,7 +27,6 @@ import com.ezen.allit.domain.Orders;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.repository.CartRepository;
-import com.ezen.allit.repository.MemCouponRepository;
 import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.service.CouponService;
@@ -293,9 +291,10 @@ public class OrderController {
 					orderService.updateOrders(orderDetailList.get(i).getOrders().getOno(), 
 							orderDetailList.get(i).getOrders().getFinalPrice() - cancelPrice);
 					
-					// OrdersDetail 삭제 -> status를 5(주문 취소)로 변경
+					// OrdersDetail 삭제 -> status를 5(주문 취소)로 변경, 취소 신청일 저장
 					//orderService.deleteOrdersDetail(orderDetailList.get(i).getOdno());
-					orderService.updateStatus(5, orderDetailList.get(i).getOdno());
+					//orderService.updateStatus(5, orderDetailList.get(i).getOdno());
+					orderService.refundOrder(5, null, orderDetailList.get(i).getOdno());
 				
 				} else {
 					System.out.println("========== 전체 주문 취소 ==========");
@@ -311,9 +310,10 @@ public class OrderController {
 					cancelPrice = prodPrice - coupon - point;
 					memberService.addMoney(member.getId(), cancelPrice);
 					
-					// OrdersDetail 삭제
+					// OrdersDetail 삭제 -> status를 5(주문 취소)로 변경, 취소 신청일 저장
 					//orderService.deleteOrdersDetail(orderDetailList.get(i).getOdno());
-					orderService.updateStatus(5, orderDetailList.get(i).getOdno());
+					//orderService.updateStatus(5, orderDetailList.get(i).getOdno());
+					orderService.refundOrder(5, null, orderDetailList.get(i).getOdno());
 					
 					// Orders 삭제
 //					orderService.deleteOrders(orderDetailList.get(i).getOrders().getOno());
@@ -345,6 +345,26 @@ public class OrderController {
 		Member findMember = memberService.getMember(member);
 		model.addAttribute("user", findMember);
 		
+	}
+	
+	/** 교환/반품 신청 */
+	@ResponseBody
+	@PostMapping("/orderRefund")
+	public void orderRefund(@ModelAttribute("user") Member member,
+						@RequestBody Map<String, Object> param) {
+		
+		System.out.println("[orderRefund()] param : "+param);
+		int odno = Integer.parseInt(param.get("odno").toString());
+		String reason = param.get("reason").toString();
+		int status = 0;
+		
+		if(param.get("type").toString().equals("교환")) {
+			status = 6;	// 교환 신청
+		} else if(param.get("type").toString().equals("반품")) {
+			status = 7;	// 반품 신청
+		}
+		
+		orderService.refundOrder(status, reason, odno);
 	}
 
 }

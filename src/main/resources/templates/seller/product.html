@@ -107,16 +107,19 @@ let index = {
 	// 상품 삭제
 	deleteByPno:function() {
 		let pno = $("#pno").val()
-		$.ajax({
-			type: "delete",
-			url: '/seller/product/delete/'+pno,
-			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
-		}).done(function(response){ // 처리 성공 시
-			alert('삭제가 완료되었습니다');
-			location.href="/seller/";
-		}).fail(function(error){ // 처리 실패 시
-			alert(JSON.stringify(error));
-		});
+		let check = confirm('삭제하시겠습니까?');
+		if(check) {
+			$.ajax({
+				type: "delete",
+				url: '/seller/product/delete/'+pno,
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('삭제가 완료되었습니다');
+				location.href="/seller/";
+			}).fail(function(error){ // 처리 실패 시
+				alert(JSON.stringify(error));
+			});
+		}
 	}
 }
 

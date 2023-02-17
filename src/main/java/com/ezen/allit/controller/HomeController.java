@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.support.SessionStatus;
 
 import com.ezen.allit.domain.CustomerCenter;
 import com.ezen.allit.domain.Grade;
@@ -29,11 +28,12 @@ import lombok.RequiredArgsConstructor;
 public class HomeController {
 	private final MemberService memberService;
 	private final SellerService sellerService;
+
 	private final CouponService couponService;
 	private final CustomerCenterService custoService;
 	private final ProductService proService;;
 	
-	// 홈 화면 이동
+	/** 홈 화면 이동 */
 	@GetMapping({"", "/"})
 	public String index(Model model) {
 		// 메인화면에 출력되는 이벤트 리스트와 mdPick 리스트
@@ -56,6 +56,7 @@ public class HomeController {
 	}
 	
 	/** 회원가입 기능 처리 */
+/*	
 	@PostMapping("/member-join")
 	public String join(Member member, SessionStatus status) {
 		member.setGrade(Grade.BRONZE);
@@ -67,6 +68,7 @@ public class HomeController {
 		
 		return "redirect:/member-login";
 	}
+*/	
 	
 	/** 아이디 중복 확인 처리 */
 	@ResponseBody
@@ -94,9 +96,7 @@ public class HomeController {
 		return "seller/apply";
 	}
 	
-	/*
-	 * 판매자 입점신청
-	 */
+	/** 판매자 입점신청 */
 	@PostMapping("/sellerApply")
 	public String apply(Seller seller) {
 		sellerService.saveSeller(seller);
@@ -112,14 +112,14 @@ public class HomeController {
 		return sellerService.idCheck(user_id);
 	}
 	
-	// 판매자 로그인 화면 이동
+	/** 판매자 로그인 화면 이동 */
 	@GetMapping("/sellerLogin")
 	public String loginView() {
 		
 		return "seller/login";
 	}
 	
-	// 권한없는 페이지 요청시
+	/** 권한없는 페이지 요청시 */
 	@GetMapping("/denied")
 	public String loginError() {
 		
