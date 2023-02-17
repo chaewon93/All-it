@@ -150,6 +150,13 @@ public class MemberController {
 		return "redirect:/";
 	}
 	
+	/** SNS사용자 구매화면에서 정보저장 창 */
+	@GetMapping("/infoWrite/{mid}")
+	public String getInfoForm(Model model, @PathVariable String mid) {
+		model.addAttribute("id", mid);
+		return "member/infoWrite";
+	}
+	
 	/** 로그아웃 처리 */
 //	@GetMapping("/logout")
 //	public String logout(SessionStatus status) {

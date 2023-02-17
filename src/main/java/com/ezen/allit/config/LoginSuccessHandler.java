@@ -14,7 +14,9 @@
 //import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 //
 //import com.ezen.allit.domain.Member;
+//import com.ezen.allit.domain.Seller;
 //import com.ezen.allit.repository.MemberRepository;
+//import com.ezen.allit.repository.SellerRepository;
 //
 //import lombok.Data;
 //import lombok.NoArgsConstructor;
@@ -23,17 +25,21 @@
 //@NoArgsConstructor
 //public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 //	@Autowired
-//	private MemberRepository memberRepository;
+//	private MemberRepository memberRepo;
+//	@Autowired
+//	private SellerRepository sellerRepo;
 //
 //	@Override
 //	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 //			Authentication authentication) throws IOException, ServletException {
-//		System.out.println("authentication = " + authentication.getName());
-//		Optional<Member> member = memberRepository.findById(authentication.getName());
-//		System.out.println("mem = " + member);
+//		System.out.println("authentication.getName() = " + authentication.getName());
+////		Optional<Member> member = memberRepository.findById(authentication.getName());
+////		System.out.println("mem = " + member);
+////		HttpSession session = request.getSession();
+////		session.setAttribute("memberDto", member);
 //		
-//		HttpSession session = request.getSession();
-//		session.setAttribute("memberDto", member);
+//		Optional<Seller> seller = sellerRepo.findById(authentication.getName());
+//		System.out.println("seller = " + seller);
 //		
 //		clearSession(request);
 //		

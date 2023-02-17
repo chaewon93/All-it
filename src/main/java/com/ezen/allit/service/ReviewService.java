@@ -1,26 +1,22 @@
 package com.ezen.allit.service;
 
 import com.ezen.allit.dto.HitDto;
-import com.ezen.allit.dto.ReviewDeleteRequestDto;
 import com.ezen.allit.dto.ReviewDto;
-import com.ezen.allit.dto.ReviewModifyRequestDto;
-import com.ezen.allit.dto.ReviewReplySaveRequestDto;
-import com.ezen.allit.dto.ReviewSaveRequestDto;
 
 public interface ReviewService {
 	// 리뷰작성
-	void saveReview(ReviewSaveRequestDto reviewSaveRequestDto);
+	void saveReview(ReviewDto reviewDt);
 
 	// 리뷰수정
-	void modifyReview(ReviewModifyRequestDto reviewModifyRequestDto);
+	void modifyReview(ReviewDto reviewDt);
 	
 	// 리뷰삭제	
-	void deleteReview1(ReviewDeleteRequestDto reviewDeleteRequestDto);
+	void deleteReview1(ReviewDto reviewDt);
 	void deleteReview2(ReviewDto reviewDto);
 	
 	// 리뷰 좋아요
 	void hitReview(HitDto hitSaveRequestDto);
 	
 	// 리뷰답글작성
-	void saveReviewReply(ReviewReplySaveRequestDto reviewReplySaveRequestDto);
+	void saveReviewReply(ReviewDto reviewDt);
 }

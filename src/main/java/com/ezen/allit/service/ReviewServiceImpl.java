@@ -10,11 +10,7 @@ import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Review;
 import com.ezen.allit.dto.HitDto;
-import com.ezen.allit.dto.ReviewDeleteRequestDto;
 import com.ezen.allit.dto.ReviewDto;
-import com.ezen.allit.dto.ReviewModifyRequestDto;
-import com.ezen.allit.dto.ReviewReplySaveRequestDto;
-import com.ezen.allit.dto.ReviewSaveRequestDto;
 import com.ezen.allit.repository.HitRepository;
 import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.ReviewRepository;
@@ -32,18 +28,18 @@ public class ReviewServiceImpl implements ReviewService {
 	 * 리뷰작성
 	 */
 	@Transactional
-	public void saveReview(ReviewSaveRequestDto reviewSaveRequestDto) {
-		reviewRepo.saveReview(reviewSaveRequestDto.getContent(), reviewSaveRequestDto.getImageName(), reviewSaveRequestDto.getRating(), reviewSaveRequestDto.getPno(), reviewSaveRequestDto.getMid());
+	public void saveReview(ReviewDto reviewDto) {
+		reviewRepo.saveReview(reviewDto.getContent(), reviewDto.getTheImageName(), reviewDto.getRating(), reviewDto.getPno(), reviewDto.getMid());
 	}
 	
 	/*
 	 * 리뷰수정
 	 */
 	@Transactional
-	public void modifyReview(ReviewModifyRequestDto reviewModifyRequestDto) {
-		Review review = reviewRepo.findById(reviewModifyRequestDto.getRvno()).get();
-		review.setContent(reviewModifyRequestDto.getContent());
-		review.setRating(reviewModifyRequestDto.getRating());
+	public void modifyReview(ReviewDto reviewDto) {
+		Review review = reviewRepo.findById(reviewDto.getRvno()).get();
+		review.setContent(reviewDto.getContent());
+		review.setRating(reviewDto.getRating());
 		review.setModDate(new Date());
 	}
 	
@@ -51,10 +47,10 @@ public class ReviewServiceImpl implements ReviewService {
 	 * 리뷰삭제
 	 */
 	@Transactional
-	public void deleteReview1(ReviewDeleteRequestDto reviewDeleteRequestDto) {
-		Review review = reviewRepo.findById(reviewDeleteRequestDto.getRvno()).get();
+	public void deleteReview1(ReviewDto reviewDto) {
+		Review review = reviewRepo.findById(reviewDto.getRvno()).get();
 		review.getOrdersDetail().setStatus(4);
-		reviewRepo.deleteById(reviewDeleteRequestDto.getRvno());
+		reviewRepo.deleteById(reviewDto.getRvno());
 	}
 	
 	/*
@@ -81,8 +77,8 @@ public class ReviewServiceImpl implements ReviewService {
 	 */
 
 	@Transactional
-	public void saveReviewReply(ReviewReplySaveRequestDto reviewReplySaveRequestDto) {
-		reviewRepo.saveReviewReply(reviewReplySaveRequestDto.getContent(), reviewReplySaveRequestDto.getPno(), reviewReplySaveRequestDto.getRvno());
+	public void saveReviewReply(ReviewDto reviewDto) {
+		reviewRepo.saveReviewReply(reviewDto.getContent(), reviewDto.getPno(), reviewDto.getRvno());
 	}
 
 	

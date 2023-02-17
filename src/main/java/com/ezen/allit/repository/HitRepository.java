@@ -15,5 +15,6 @@ public interface HitRepository extends JpaRepository<Hit, Integer> {
 	// 댓글 좋아요(중복확인)
 	Optional<Hit> findByReviewRvnoAndMemberId(int rvno, String mid);
 	
-	Page<Hit> findAllByMemberId(String id, Pageable pageable);
+	// 좋아요한 상품목록 조회
+	Page<Hit> findAllByMemberIdAndProductNotNull(String id, Pageable pageable);
 }

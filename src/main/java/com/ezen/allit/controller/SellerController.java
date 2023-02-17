@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.config.auth.PrincipalDetailSeller;
@@ -118,7 +119,8 @@ public class SellerController {
 	 */
 	@RequestMapping("/")
 	public String mainView(Model model,
-						String searchKeyword,
+						@RequestParam(value= "searchCondition", defaultValue = "1") int searchCondition,
+						@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword,
 						@AuthenticationPrincipal PrincipalDetailSeller principal,
 						@PageableDefault(page = 1) Pageable pageable) {
 		

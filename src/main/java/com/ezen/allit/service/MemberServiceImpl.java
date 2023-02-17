@@ -33,6 +33,7 @@ import com.ezen.allit.repository.ReviewRepository;
 import com.ezen.allit.repository.SellerRepository;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.dto.HitDto;
+import com.ezen.allit.dto.MemberDto;
 import com.ezen.allit.dto.ReviewDto;
 import com.ezen.allit.repository.HitRepository;
 import com.ezen.allit.repository.ProductRepository;
@@ -109,6 +110,20 @@ public class MemberServiceImpl implements MemberService {
 		theMember.setGender(member.getGender());
 
 		return theMember;
+	}
+	
+	/** sns 회원 정보 수정 */
+	@Override
+	@Transactional
+	public void modifySnsMemberInfo(MemberDto memberDto) {
+		Member theMember = memberRepo.findById(memberDto.getId()).get();
+
+		theMember.setEmail(memberDto.getEmail());
+		theMember.setPhone(memberDto.getPhone());
+		theMember.setZipcode(memberDto.getZipcode());
+		theMember.setAddress(memberDto.getAddress1()+","+memberDto.getAddress2());
+		theMember.setBirth(memberDto.getBirth());
+		theMember.setGender(memberDto.getGender());
 	}
 
 	/** 아이디 중복확인 */
@@ -320,8 +335,9 @@ public class MemberServiceImpl implements MemberService {
 		int pageSize = 10;
 		
 		Page<Hit> likeList = 
-				hitRepo.findAllByMemberId(id, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "hno")));
+				hitRepo.findAllByMemberIdAndProductNotNull(id, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "hno")));
 		
+		System.out.println("likeList = " + likeList);
 		return likeList;
 	}
 	

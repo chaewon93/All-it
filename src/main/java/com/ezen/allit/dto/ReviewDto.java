@@ -31,6 +31,7 @@ public class ReviewDto {
 	private int rating;
 	private List<MultipartFile> imageFile;
 	private List<String> imageName;
+	private String theImageName;
 	private int fileStatus;
 	private Date regDate;
 	

@@ -15,11 +15,11 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	// 상품검색 (검색조건 x, 검색어 o)
 	Page<Product> findAllByNameContaining(String searchKeyword, Pageable pageable);
 	
-	// 상품검색 (검색조건 o, 검색어 o)
-	Page<Product> findAllByCategoryAndNameContaining(int searchCondition, String searchKeyword, Pageable pageable);
-	
 	// 상품검색 (검색조건 o, 검색어 x), 카테고리별 상품조회 
 	Page<Product> findAllByCategory(int searchCondition, Pageable pageable);
+
+	// 상품검색 (검색조건 o, 검색어 o)
+	Page<Product> findAllByCategoryAndNameContaining(int searchCondition, String searchKeyword, Pageable pageable);
 	
 	Page<Product> findProductByStatus(int status, Pageable pageable);
 
