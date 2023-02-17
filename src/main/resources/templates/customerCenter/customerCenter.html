@@ -41,7 +41,7 @@
 		<option value="/admin/findCusto?cate=배송문의" th:selected="${a} == '배송문의'" >배송문의</option>
 		<option value="/admin/findCusto?cate=반품/교환/환불" th:selected="${a} == '반품/교환/환불'" >반품/교환/환불</option>
 	</select>
-	<button type="button" onclick="insertCustoView()" style="border: none;">글 작성</button>
+	<button type="button" onclick="insertCustoView()" style="border-width: thin; ">글 작성</button>
 	<a th:href="@{/admin/adminMain}">관리자 메인으로</a>
 </div>
 
@@ -53,20 +53,25 @@
 	<th bgcolor="orange" width="200">제목</th>
 	<th bgcolor="orange" width="150">내용</th>
 	<th bgcolor="orange" width="400">이미지</th>
+	<th bgcolor="orange" width="100">메인화면출력여부</th>
 	<th bgcolor="orange" width="100">체크<br>
 		<input type="checkbox" name="checkAll" id="regAll">
 	</th>
 </tr>
 
-<tr th:each="cate, state : ${list}">
-<td align="left"><a th:href="@{/admin/getCustoDetail(cno=${cate.cno})}" th:text="${state.count}"></a></td>
+<tr th:each="cate, state : ${list}" align="center">
+	<td><a th:href="@{/admin/getCustoDetail(cno=${cate.cno})}" th:text="${state.count}"></a></td>
 <!--  	<td th:text="${state.count}"></td>	-->
 	<td th:text="${cate.category}"></td>
 	<td th:text="${cate.title}"></td>
 	<td align="left"><a th:href="@{/admin/getCustoDetail(cno=${cate.cno})}" th:text="${cate.content}"></a></td>
 	<td th:if="${cate.imageName} != null"><img class="img-fluid" th:src="@{ /images/admin/ } + ${ cate.imageName }" width="350"></td>
 	<td th:if="${cate.imageName} == null"></td>
-	<td align="center"><input type="checkbox" name="cno" class="test" th:value="${cate.cno}"></td>
+	<td th:if="${cate.pick} == '1' and ${cate.imageName} != null" style="color: blue;" th:text="등록"></td>
+	<td th:if="${cate.pick} == '0' and ${cate.imageName} != null" style="color: red;" th:text="미등록"></td>
+	<td th:if="${cate.pick} == '0' and ${cate.imageName} == null" style="color: black;" th:text="등록불가"></td>
+	<td th:if="${cate.imageName} != null"><input type="checkbox" name="cno" class="test" th:value="${cate.cno}"></td>
+	<td th:if="${cate.imageName} == null"><input type="checkbox" name="cno" class="test" th:value="${cate.cno}" disabled="disabled"></td>
 </tr>
 
 </table>
@@ -89,10 +94,6 @@
 
 <div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
 <!-- pagination replace -->
-<hr>
-
-<a th:href="@{/admin/insertCustoView}">글 작성</a> <br>
-<a th:href="@{/admin/adminMain}">관리자 메인으로</a> <br>
 
 </body>
 <!-- footer replace -->
@@ -121,11 +122,15 @@ $(document).ready(function(){
 
 function mainBanner(){
 	var chk_arr = [];
+	
 	if ($("input:checkbox[name='cno']").is(":checked")==true){
 		$("input:checkbox[name='cno']:checked").each(function(){
 			var chk = $(this).val();
 			chk_arr.push(chk);
+			
+			console.log("chk : ", chk);
 		})
+		console.log("chk_arr : ", chk_arr);
 		var check =	confirm(chk_arr+" 변경 확인?")
 		if(check){
 			document.getElementById("theform").action = "/admin/mainBanner";

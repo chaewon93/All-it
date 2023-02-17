@@ -104,4 +104,11 @@ public class CustomerCenterServiceImpl implements CustomerCenterService {
 
 	}
 
+	@Override
+	public List<CustomerCenter> findCustomerCenterByPick(String pick) {
+		
+		List<CustomerCenter> custoList = cusRepo.findCustomerCenterByPick(pick);
+		return custoList;
+	}
+
 }
