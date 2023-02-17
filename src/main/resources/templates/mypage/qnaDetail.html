@@ -27,9 +27,13 @@
 		<td><textarea th:text="${qna.content}" cols="40" rows="7" readonly="readonly" class="form-control"></textarea></td>
 	</tr>
 	<tr th:if="${qna.status} == '1'">
-			<th>답변</th>
-			<td><textarea name="content" cols="40" rows="10" th:text="${qna.reply?.content}" readonly="readonly" class="form-control"></textarea>
-			<input type="hidden" name="rno" th:value="${qna.reply?.rno}" ></td>
+		<th>답변</th>
+		<td><textarea name="content" cols="40" rows="10" th:text="${qna.response}" readonly="readonly" class="form-control"></textarea>
+		<input type="hidden" name="rno" th:value="${qna.reply?.rno}" ></td>
+	</tr>
+	<tr th:if="${qna.status} == '1'">
+		<th>답변일</th>
+		<td th:text="${qna.resDate}">
 	</tr>
 	<tr th:if="${qna.status} == '0'">
 		<th>답변</th>
