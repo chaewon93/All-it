@@ -37,6 +37,7 @@ import com.ezen.allit.repository.OrdersDetailRepository;
 import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.service.CouponService;
 import com.ezen.allit.service.MemberService;
+import com.ezen.allit.service.OrderService;
 
 @Controller
 @RequestMapping("/member/")
@@ -48,6 +49,9 @@ public class MemberController {
 	
 	@Autowired
 	private CouponService couponService;
+	
+	@Autowired
+	private OrderService orderService;
 	
 	@Autowired
 	private MemberRepository memberRepo;
@@ -63,7 +67,7 @@ public class MemberController {
 		if(principal != null) {
 			Member member = principal.getMember();
 			System.out.println("member=============== = " + member);
-			return member;			
+			return member;
 		} else {
 			return null;
 		}
@@ -76,30 +80,29 @@ public class MemberController {
 	}
 */	
 
-	/** 로그인 기능 처리 */
-/*	
-	@PostMapping("/login")
-	public String login(Member member, Model model) {
-		
-		Member findMember = memberService.getMember(member);
-		
-		System.out.println("findMember is " + findMember);
-		System.out.println("[login()] findMember : " + findMember);
-		//System.out.println("입력한 비밀번호 : "+member.getPwd());
-		//System.out.println(findMember.getMemCoupon());
-		if(findMember != null && findMember.getPwd().equals(member.getPwd())) {
-			model.addAttribute("user", findMember);
+	/** 로그인 기능 처리 => Security 적용 */ 
+//	@PostMapping("/login")
+//	public String login(Member member, Model model) {
+//		
+//		Member findMember = memberService.getMember(member);
+//		
+//		System.out.println("findMember is " + findMember);
+//		System.out.println("[login()] findMember : " + findMember);
+//		//System.out.println("입력한 비밀번호 : "+member.getPwd());
+//		//System.out.println(findMember.getMemCoupon());
+//		if(findMember != null && findMember.getPwd().equals(member.getPwd())) {
+//			model.addAttribute("user", findMember);
+//
+//			// 비밀번호 일치시 메인 화면으로 이동
+//			return "redirect:/";
+//			
+//		} else {
+//			System.out.println("[Session Check] login fail : "+member);
+//			// 비밀번호 불일치시 로그인 화면으로 이동
+//			return "redirect:/member-login";
+//		}
+//	}
 
-			// 비밀번호 일치시 메인 화면으로 이동
-			return "redirect:/";
-			
-		} else {
-			System.out.println("[Session Check] login fail : "+member);
-			// 비밀번호 불일치시 로그인 화면으로 이동
-			return "redirect:/member-login";
-		}
-	}
-*/	
 	
 	/** 아이디 찾기 기능 처리 */
 	@PostMapping("/findId")
@@ -157,7 +160,7 @@ public class MemberController {
 		return "member/infoWrite";
 	}
 	
-	/** 로그아웃 처리 */
+	/** 로그아웃 처리 => Security 적용 */
 //	@GetMapping("/logout")
 //	public String logout(SessionStatus status) {
 //		status.setComplete();	// 세션 데이터 삭제 및 세션 해지
@@ -272,13 +275,6 @@ public class MemberController {
 		return "mypage/qnaDetail";
 	}
 	
-	/** 올잇머니 관리 페이지 */
-	@GetMapping("/money")
-	public String moneyView() {
-		
-		return "mypage/moneyInfo";
-	}
-	
 	/** 올잇머니 충전 */
 	@ResponseBody
 	@PostMapping("/moneyCharge")
@@ -290,6 +286,95 @@ public class MemberController {
 		// 세션에 수정된 정보 저장
 		model.addAttribute("user", memberService.getMember(member));
 	}
+	
+	/** 주문 취소/교환/반품 내역 */
+	@GetMapping("/cancelList")
+	public String cancelList(Model model, @ModelAttribute("user") Member member,
+						@PageableDefault(page = 1) Pageable pageable) {
+		
+		// 주문취소 내역
+		Page<OrdersDetail> cancelList = orderService.getCancelList(member, 5, pageable);
+		// 교환 내역
+		Page<OrdersDetail> exchangeList = orderService.getCancelList(member, 6, pageable);
+		// 반품 내역
+		Page<OrdersDetail> refundList = orderService.getCancelList(member, 7, pageable);
+		
+//		int naviSize = 10; // 페이지네이션 갯수
+//		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+//		int cancel_endPage = ((startPage + naviSize - 1) < cancelList.getTotalPages()) ? startPage + naviSize - 1 : cancelList.getTotalPages();
+//		int exchange_endPage = ((startPage + naviSize - 1) < exchangeList.getTotalPages()) ? startPage + naviSize - 1 : exchangeList.getTotalPages();
+//		int refund_endPage = ((startPage + naviSize - 1) < refundList.getTotalPages()) ? startPage + naviSize - 1 : refundList.getTotalPages();
+		
+//		model.addAttribute("list", cancelList);
+//		model.addAttribute("startPage", startPage);
+//		model.addAttribute("cancel_endPage", cancel_endPage);
+//		model.addAttribute("exchange_endPage", exchange_endPage);
+//		model.addAttribute("refund_endPage", refund_endPage);
+		model.addAttribute("url", "/member/cancelList");	
+		
+		model.addAttribute("cancelList", cancelList);
+		model.addAttribute("exchangeList", exchangeList);
+		model.addAttribute("refundList", refundList);
+		
+		return "mypage/cancelList";
+	}
+
+	/** 교환 내역 */
+//	@ResponseBody
+//	@GetMapping("/exchangeList")
+//	public String exchangeList(Model model, @ModelAttribute("user") Member member,
+//						@PageableDefault(page = 1) Pageable pageable) {
+//		System.out.println("=================교 환 내 역 조 회======================");
+//		// 교환 내역
+//		Page<OrdersDetail> exchangeList = orderService.getCancelList(member, 6, pageable);
+//		
+//		int naviSize = 10; // 페이지네이션 갯수
+//		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+//		int endPage = ((startPage + naviSize - 1) < exchangeList.getTotalPages()) ? startPage + naviSize - 1 : exchangeList.getTotalPages();
+//		
+//		model.addAttribute("list", exchangeList);
+//		model.addAttribute("startPage", startPage);
+//		model.addAttribute("endPage", endPage);	
+//		model.addAttribute("url", "/member/cancelList");	
+//		
+//		model.addAttribute("exchangeList", exchangeList);
+//
+//		int size = 0;
+//		if(exchangeList.getTotalElements() != 0) {
+//			size = (int) exchangeList.getTotalElements();
+//		}
+//		model.addAttribute("size", size);
+//		
+//		return "mypage/cancelList";
+//	}
+	
+	/** 반품 내역 */
+//	@GetMapping("/refundList")
+//	public String refundList(Model model, @ModelAttribute("user") Member member,
+//							@PageableDefault(page = 1) Pageable pageable) {
+//		System.out.println("=================반 품 내 역 조 회======================");
+//		// 반품 내역
+//		Page<OrdersDetail> refundList = orderService.getCancelList(member, 7, pageable);
+//
+//		int naviSize = 10; // 페이지네이션 갯수
+//		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+//		int endPage = ((startPage + naviSize - 1) < refundList.getTotalPages()) ? startPage + naviSize - 1 : refundList.getTotalPages();
+//
+//		model.addAttribute("list", refundList);
+//		model.addAttribute("startPage", startPage);
+//		model.addAttribute("endPage", endPage);	
+//		model.addAttribute("url", "/member/cancelList");	
+//
+//		model.addAttribute("refundList", refundList);
+//
+//		int size = 0;
+//		if(refundList.getTotalElements() != 0) {
+//			size = (int) refundList.getTotalElements();
+//		}
+//		model.addAttribute("size", size);
+//		
+//		return "mypage/cancelList";
+//	} 
 	
 	@GetMapping("coupon")
 	public String coupon(@ModelAttribute("user") Member member, Model model, 

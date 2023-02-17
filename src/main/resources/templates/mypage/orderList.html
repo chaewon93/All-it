@@ -8,29 +8,31 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 
-<html xmlns:th="http://www.thymeleaf.org"
-	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <body th:align="center">
-<h1>주문 목록</h1>
-<article>
+<div style="display: flex; margin-top: 30px;">
+<div class="container">
+<h1>주문 목록</h1><br>
+	<h3 th:if="${orderList.getTotalElements() == 0}" class="text-danger" th:align="center">주문 내역이 없습니다.</h3>
 	<form id="formm" method="post">
-	<table id="orderList">
-
+	<table id="orderList" class="table">
 		<tr th:each="order : ${orderList}">
-		<table>
+		<table class="table">
 			<tr>
 				<th width="450">상품명</th>
-				<th width="50">수 량</th>
+				<th width="80">수 량</th>
 				<th width="100">가 격</th> 
-				<th width="100">주문일</th> 
+				<th width="150">주문일</th> 
 				<th width="100">진행 상태</th>
 				<th width="150"></th>    
+			</tr>
+			<tr th:if="${orderList.getTotalElements() == 0}">
+				<td colspan="6" class="text-danger">
 			</tr>
 			<tr th:each="detail : ${order.ordersDetail}">      
 				<td>
 					<a th:href="@{ |/product/${ detail.product.pno }| }">
 						<img class="img-fluid" th:src="@{ /images/ } + ${ detail.product.imageName }" width="100">
-							<span th:text="${ detail.product.name }"></span>
+							<b class="text-info" th:text="${ detail.product.name }"></b>
 							<input type="hidden" id="pname" th:value="${ detail.product.name }">
 					</a>
 					<span th:text="${#numbers.formatInteger(detail.product.price, 1, 'COMMA')}+'원'"></span>
@@ -51,11 +53,10 @@
 				</th:block>
 				<td>
 					<input type="button" th:if="${detail.status == 1}" id="cancelOrder" value="주문취소" class="btn btn-outline-secondary" th:onclick="'javascript:index.cancelOrder(' +${ order.ono }+ ',' +${ detail.odno }+ ');'">
-					<input type="button" th:if="${detail.status == 2}" id="delivery" value="배송조회" class="btn btn-outline-secondary" data-toggle="modal" data-target="#deliveryModal">
+					<input type="button" th:if="${detail.status == 2}" id="delivery" value="배송조회" class="btn btn-outline-secondary" data-toggle="modal" data-target="#deliveryModal" th:data-pname="${detail.product.name}">
 					<input type="button" th:if="${detail.status == 3}" id="buyComplete" value="구매확정" class="btn btn-outline-secondary" th:onclick="'javascript:index.buyComplete(' +${ detail.odno }+ ');'">
-					<input type="button" th:if="${detail.status == 3}" id="refund" value="교환/반품 신청" class="btn btn-outline-secondary" data-toggle="modal" data-target="#refundModal">
-					<!-- <input type="button" id="qna" value="문의하기" class="btn btn-outline-secondary" data-toggle="modal" data-target="#qnaModal" th:attr="|data-product='${ detail.product.name }' data-seller='${ detail.product.seller.id }'|"/> <br> <br> -->
-					<input type="button" id="qna" value="문의하기" class="btn btn-outline-secondary" data-toggle="modal" data-target="#qnaModal" th:data-product="${ detail.product.name }" th:data-seller="${ detail.product.seller.id }" th:data-pno="${ detail.product.pno }"/> <br> <br>
+          <input type="button" id="qna" value="상품문의" class="btn btn-outline-secondary" data-toggle="modal" data-target="#qnaModal" th:data-product="${ detail.product.name }" th:data-seller="${ detail.product.seller.id }" th:data-pno="${ detail.product.pno }"/> <br> <br>
+					<input type="button" th:if="${detail.status == 3}" id="refund" value="교환/반품 신청" class="btn btn-outline-secondary" data-toggle="modal" data-target="#refundModal" th:data-odno="${ detail.odno }" th:data-pname="${ detail.product.name }">
 					<input type="button" th:if="${detail.status == 4}" id="writeReview" value="리뷰작성" class="btn btn-outline-secondary" th:onclick="'javascript:index.writeReview(' +${ detail.odno }+ ');'">
 			
 					<input type="hidden" th:value="${ order.ono }" id="ono" name="ono">
@@ -74,12 +75,12 @@
 		</tr>
 	</table>   
 
-	<div class="clear"></div>
 	<div id="buttons" style="float: right">
 		<input type="button" value="쇼핑 계속하기" class="btn btn-outline-warning" onclick="location.href='/'">     
 	</div>
 	</form>  
-</article>
+</div>
+</div>
 
 <!-- 배송조회 모달 섹션 시작 -->
 <div class="modal fade" id="deliveryModal">
@@ -89,9 +90,9 @@
 				<h2 class="modal-title">배송조회</h2>
 			</div>
 			<div class="modal-body">
-				<!-- <span>상품명 </span>
-				<input type="text" id="prodName" readonly="readonly"/>
-				<hr> -->
+				<span>상품명 </span>
+				<input type="text" class="form-control" id="pName" readonly="readonly"/>
+				<hr>
 				
 				<h5>택배사 선택 </h5>
 				<select class="form-control" id="delivery-category">
@@ -102,12 +103,12 @@
 					<option th:value="로젠택배">로젠택배</option>
 					<option th:value="CU편의점택배">CU편의점택배</option>
 					<option th:value="GS25편의점택배">GS25편의점택배</option>
-				</select><hr>
+				</select><br>
 				<input type="text" class="form-control" id="delivery-num" placeholder="운송장번호 - 없이 입력"> <br>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" id="moneyBtn">조회</button>
-				<button type="button" class="btn btn-light" data-dismiss="modal">취소</button>
+				<button type="button" class="btn btn-warning" id="deliveryBtn">조회</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
 			</div>
 		</div>
 	</div>
@@ -116,13 +117,14 @@
 
 <!-- 교환/반품 신청 모달 섹션 시작 -->
 <div class="modal fade" id="refundModal">
-	<div class="modal-dialog modal-xl modal-dialog-scrollable">
+	<div class="modal-dialog modal-xl">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h2 class="modal-title">교환/반품 신청</h2>
 			</div>
 			<div class="modal-body">
 				<span>상품명 </span>
+				<input type="hidden" id="refund-odno" name="odno"/>
 				<input type="text" class="form-control" id="prodName" readonly="readonly"/>
 				<hr>
 				<h5>교환/반품 사유 </h5>
@@ -137,18 +139,18 @@
 				<input type="radio" name="reason" value="상품 결함/기능에 이상이 있음"> 상품 결함/기능에 이상이 있음
 				<hr>
 				<span><b>기타 사유 </b></span>
-				<input type="text" class="form-control" name="reason">
+				<input type="text" class="form-control" id="reason" name="reason">
 				<hr>
 				
 				<h5>해결 방법 선택 </h5>
-				<input type="radio" name="type" value="교환"> 교환 <br>
-				<input type="radio" name="type" value="반품 및 환불"> 반품 및 환불
+				<input type="radio" id="type" name="type" value="교환"> 교환 <br>
+				<input type="radio" id="type" name="type" value="반품"> 반품 및 환불
 				
 				<!-- 배송, 회수 정보 : 상품 회수 주소 -->
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" id="moneyBtn">신청</button>
-				<button type="button" class="btn btn-light" data-dismiss="modal">취소</button>
+				<button type="button" class="btn btn-warning" id="refundBtn">신청</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
 			</div>
 		</div>
 	</div>
@@ -192,6 +194,7 @@
 <script type="text/javascript">
 
 $(document).ready(function(){
+  // 상품문의 모달창 open
 	$("#qna").click(function(){
 		var product = $(this).data('product');
 		var seller = $(this).data('seller');
@@ -204,7 +207,25 @@ $(document).ready(function(){
 		$("#qnaModal #qnapno").val(pno);
 		$("#qnaModal").modal();
 	});
+  
+	// 교환/반품 신청 모달 open
+    $("#refund").click(function() {
+    	var odno = $(this).data('odno');
+    	var name = $(this).data('pname');
+    	
+    	console.log("odno : ",odno);
+    	$("#refund-odno").val(odno);
+    	$("#prodName").val(name);
+    });
+	
+	// 배송 조회 모달 open
+    $("#delivery").click(function() {
+    	var name = $(this).data('pname');
+    	
+    	$("#pName").val(name);
+    });
 });
+
 let index = {
 	init:function() {
 		
@@ -212,10 +233,10 @@ let index = {
 			this.insertCart();
 		});
 		
-		$("#refund").on("click", ()=>{ 
+		$("#refundBtn").on("click", ()=>{ 
 			this.refund();
 		});
-		
+
 		$("#question-save").on("click", () =>{
 			this.saveQuestion();
 		});
@@ -302,7 +323,7 @@ let index = {
 			window.location.href="/member-login";
 			return false;
 		} else {
-			var check = window.confirm("정말 주문 취소하시겠습니까?");
+			var check = window.confirm("주문을 취소하시겠습니까?");
 			if(check) {
 				$.ajax({
 					url: "/order/orderCancel",
@@ -344,7 +365,6 @@ let index = {
 				url: "/order/orderComplete",
 				type: "post",
 				data: JSON.stringify({
-					mid: $("#mid").val(),
 					//pno: $("#pno").val(),
 					//ono: $("#ono").val(),
 					odno: odno,
@@ -405,18 +425,6 @@ let index = {
 		}
 	},
 	
-	// 교환/반품 신청
-	refund:function() {
-		//$("#refund").modal({backdrop: false});
-		console.log("product name : ", $("#pname").val());
-		
-		$("#prodName").val($("#pname").val());
-		
-		if($("input:radio[name='reason']").is(":checked")) {
-			
-		}
-	},
-
 	// 리뷰작성 화면
 	writeReview:function(odno) {
 		
@@ -428,6 +436,48 @@ let index = {
 			return false;
 		}
 		location.href="/member/reviewWrite/"+odno;
+	},
+	
+	// 교환/반품 신청
+	refund:function() {
+		console.log($("input[name=reason]:checked").length);
+		if($("input[name=reason]:checked").length < 1 && $("#reason").val() == "") {
+			alert("사유를 선택하거나 입력해주세요.");
+			$("#reason").focus();
+			return false;
+		} else if($("input[name=type]:checked").length < 1) {
+			alert("해결 방법을 선택해주세요.");
+			return false;
+		} else {
+			var reason;
+			var reason_txt = $("#reason").val();
+			if(reason_txt == "") {
+				reason = $("input[name=reason]:checked").val();
+			} else {
+				reason = reason_txt;
+			}
+			console.log("odno :",$("#reason").val());
+			$.ajax({
+				url: "/order/orderRefund",
+				type: "post",
+				data: JSON.stringify({
+					odno: $("#refund-odno").val(),
+					reason: reason,
+					type: $("#type").val()
+				}),
+				dataType: "text",
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+				success: function(data){ // 처리 성공 시
+					console.log(data);
+					alert("신청 되었습니다.");
+					location.replace("/order/orderList");
+					//location.replace("/order/orderCancelList");
+				}, error: function(xhr,status,err){
+					alert("다시 시도해주세요.");				
+					console.log('[orderRefund() ajax error] '+err);
+				}
+			});
+		}
 	}
 }
 index.init();

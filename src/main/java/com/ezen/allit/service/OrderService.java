@@ -34,11 +34,16 @@ public interface OrderService {
 	/** 주문 취소 - Orders 삭제 */
 //	void deleteOrders(int ono);
 	
-	/** 주문 취소 - 
-	
 	/** 주문 취소 - Orders의 finalPrice 수정 */
 	void updateOrders(int ono, int finalPrice);
 	
-	void modifyOrderStatus(OrdersDetailDto ordersDetailDto, int status);
+	/** 교환/반품 신청 - 주문상태 변경, 사유와 신청일자 삽입 */
+	void refundOrder(int status, String reason, int odno);
+	
+	/** 취소 내역 조회 */
+	Page<OrdersDetail> getCancelList(Member member, int status, Pageable pageable);
+	
+  /** 판매자가 주문상태 변경 */
+	void modifyOrderStatus(OrdersDetailRequestDto detailRequestDto, int status);
 
 }

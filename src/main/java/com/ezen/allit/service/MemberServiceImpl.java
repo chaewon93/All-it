@@ -73,6 +73,7 @@ public class MemberServiceImpl implements MemberService {
 		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
 		member.setPwd(encPwd);
 		member.setRole(Role.MEMBER);
+		member.setRegDate(new Date());
 
 		memberRepo.save(member);
 	}
