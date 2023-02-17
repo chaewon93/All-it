@@ -18,11 +18,11 @@
 	<!-- 미로그인 시작 -->
 	<div class="header-container" sec:authorize="!isAuthenticated()">
 		<ul class="nav container justifiy-content-end">
-	  		<li class="nav-item"><a class="nav-link" th:href="@{ /member-login }">로그인</a>
-	  		<li class="nav-item"><a class="nav-link" th:href="@{ /sellerLogin }">판매자 로그인</a>
-	  		<li class="nav-item"><a class="nav-link" th:href="@{ /member-join }">회원가입</a>
-	  		<li class="nav-item"><a class="nav-link" th:href="@{ /sellerApply }">입점신청</a></li>
-        	<li class="nav-item"><a class="nav-link" href="#">고객센터</a></li>
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /member-login }">로그인</a>
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /sellerLogin }">판매자 로그인</a>
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /member-join }">회원가입</a>
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /sellerApply }">입점신청</a></li>
+        	<li class="nav-item"><a class="nav-link text-info" href="#">고객센터</a></li>
 		</ul>
 		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
 			<h1><a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a></h1>
@@ -125,9 +125,9 @@
 
 	<div class="header-container" th:if="${ session.admin }">
 		<ul class="nav justifiy-content-end"> 
-			<li class="nav-item"><a class="nav-link" th:href="@{ / }">사용자페이지</a></li>
-			<li class="nav-item"><a class="nav-link" th:href="@{ /seller/mypage }">마이페이지</a></li>
-			<li class="nav-item"><a class="nav-link" th:href="@{ /seller/logout }">로그아웃</a></li>
+			<li class="nav-item"><a class="nav-link text-info" th:href="@{ / }">사용자페이지</a></li>
+			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /seller/mypage }">마이페이지</a></li>
+			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /seller/logout }">로그아웃</a></li>
 		</ul>
 		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
 			<a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a> <br><br>

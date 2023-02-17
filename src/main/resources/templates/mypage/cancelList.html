@@ -14,7 +14,7 @@
 <!-- Nav tabs -->
 <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item">
-      <a class="nav-link active text-danger" data-toggle="tab" href="#menu1" onclick="refesh('cancel')">주문취소 내역</a>
+      <a class="nav-link text-danger active" data-toggle="tab" href="#menu1" onclick="refesh('cancel')">주문취소 내역</a>
     </li>
     <li class="nav-item">
     <a class="nav-link text-danger" data-toggle="tab" href="#menu2" onclick="refesh('exchange')">교환 내역</a>
@@ -29,6 +29,7 @@
 	<div id="menu1" class="container tab-pane active"><br>
 		<div style="display: flex;">
 		<table class="table" th:align="center" th:cellpadding="3" th:cellspacing="0">
+		<input type="hidden" name="status5" th:value="5">
 			<tr>
 				<th width="450">상품명</th>
 				<th width="80">수 량</th>
@@ -72,6 +73,8 @@
     <div id="menu2" class="container tab-pane fade"><br>
 		<div style="display: flex;">
 		<table class="table" th:align="center" th:cellpadding="3" th:cellspacing="0">
+		<input type="hidden" name="status6" th:value="6">
+		<input type="hidden" name="status9" th:value="9">
 			<tr>
 				<th width="450">상품명</th>
 				<th width="80">수 량</th>
@@ -116,6 +119,8 @@
     <div id="menu3" class="container tab-pane fade"><br>
     	<div style="display: flex;">
 		<table class="table" th:align="center" th:cellpadding="3" th:cellspacing="0">
+		<input type="hidden" name="status7" th:value="7">
+		<input type="hidden" name="status10" th:value="10">
 			<tr>
 				<th width="450">상품명</th>
 				<th width="80">수 량</th>
@@ -162,6 +167,15 @@
 <!-- 자바스트립트 섹션 시작 -->
 <script type="text/javascript">
 $(document).ready(function(){
+	//refresh();
+	
+//	var menu1 = $(".nav-link text-danger");
+//	menu1.eq(0).addClass("active");
+	
+//	var menu1_con = $(".container tab-pane")
+//	menu1_con.eq(0).addClass("active"); 
+	
+	
 	$("#divCancel").show();
 	$("#divExchange").hide();
 	$("#divRefund").hide();

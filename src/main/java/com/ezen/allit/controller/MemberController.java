@@ -295,9 +295,9 @@ public class MemberController {
 		// 주문취소 내역
 		Page<OrdersDetail> cancelList = orderService.getCancelList(member, 5, pageable);
 		// 교환 내역
-		Page<OrdersDetail> exchangeList = orderService.getCancelList(member, 6, pageable);
+		Page<OrdersDetail> exchangeList = orderService.getExchangeAndRefundList(member, 6, 9, pageable);
 		// 반품 내역
-		Page<OrdersDetail> refundList = orderService.getCancelList(member, 7, pageable);
+		Page<OrdersDetail> refundList = orderService.getExchangeAndRefundList(member, 7, 10, pageable);
 		
 //		int naviSize = 10; // 페이지네이션 갯수
 //		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~

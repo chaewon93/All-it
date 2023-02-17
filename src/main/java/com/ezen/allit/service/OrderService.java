@@ -42,8 +42,11 @@ public interface OrderService {
 	
 	/** 취소 내역 조회 */
 	Page<OrdersDetail> getCancelList(Member member, int status, Pageable pageable);
+
+	/** 교환/반품 내역 조회 */
+	Page<OrdersDetail> getExchangeAndRefundList(Member member, int status1, int status2, Pageable pageable);
 	
-  /** 판매자가 주문상태 변경 */
-	void modifyOrderStatus(OrdersDetailDto ordersDetailDto, int status);
+	/** 판매자가 주문상태 변경 */
+	void modifyOrderStatus(OrdersDetailDto orderDetailDto, int status);
 
 }

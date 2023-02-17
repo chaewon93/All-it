@@ -107,13 +107,22 @@ public class OrderServiceImpl implements OrderService {
 		orderDetail.setCancelDate(new Date());
 	}
 	
-	/** 취소/교환/반품 내역 조회 */
+	/** 주문 취소 내역 조회 */
 	@Override
 	public Page<OrdersDetail> getCancelList(Member member, int status, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
 		int pageSize = 5;
 		
 		return ordersDetailRepo.findByMemberAndStatusAndCancelDateNotNull(member, status, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));
+	}
+	
+	/** 교환/반품 내역 조회 */
+	@Override
+	public Page<OrdersDetail> getExchangeAndRefundList(Member member, int status1, int status2, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 5;
+		
+		return ordersDetailRepo.findByMemberAndStatusOrStatusAndCancelDateNotNull(member, status1, status2, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));
 	}
 	
 	/** 오더 디테일에 사용한 쿠폰 등록 */
