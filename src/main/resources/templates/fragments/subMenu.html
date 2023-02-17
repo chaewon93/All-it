@@ -10,16 +10,13 @@
 	
 </head>
 <body>
-	<div class="col-sm-2" style="float: left; margin-top:30px">
+	<div class="col-sm-2" style="float: left; margin-top:30px; position:relative; height: 100px;">
 		<p><b>MY 정보</b></p>
 		<!-- <ul class="nav nav-pills flex-column"> -->
 		<ul class="nav flex-column">
 	        <li class="nav-item">
 	        	<!-- <a class="nav-link active href="#"> -->
-	          <a class="nav-link text-warning" th:href="@{ /member/info }">내 정보 보기/수정</a>
-	        </li>
-	        <li class="nav-item">
-	          <a class="nav-link text-warning" th:href="@{ /member/money }">올잇머니 관리</a>
+	          <a class="nav-link text-warning" th:href="@{ /member/info }">내 정보 확인 및 수정<br>결제수단 관리</a>
 	        </li>
 	        <!-- <li class="nav-item">
 	          <a class="nav-link disabled" href="#">Disabled</a>
@@ -39,6 +36,9 @@
 	        <li class="nav-item">
 	          <a class="nav-link text-warning" th:href="@{ /member/cancelList }">취소/교환/반품 내역</a>
 	        </li>
+	        <!-- <li class="nav-item">
+	          <a class="nav-link text-warning" th:href="@{ /member/exchangeList }">교환/반품 내역</a>
+	        </li> -->
 		</ul>
 		<hr>
 		
@@ -46,9 +46,6 @@
 		<ul class="nav nav-pills flex-column">
 	        <li class="nav-item">
 	          <a class="nav-link text-warning" th:href="@{ /member/coupon }">할인 쿠폰</a>
-	        </li>
-	        <li class="nav-item">
-	          <a class="nav-link text-warning" th:href="@{ /member/point }">포인트 관리</a>
 	        </li>
 		</ul>
 		<hr>
@@ -70,64 +67,5 @@
 		</ul>
 		<hr>
 	</div>
-
-<!-- 
-	<nav style="float: left;">
-	<div>
-		<div class="myInfo">MY 정보</div>
-		<div>
-			<ul class="sidebar" id="infoSidebar">
-				<li><a class="sidebar-head" th:href="@{ /member/info }">
-					<span>내 정보 보기/수정</span>
-				</a></li>
-				<li><a class="sidebar-head" th:href="@{ /member/money }">
-					<span>올잇머니 관리</span>
-				</a></li>
-			</ul>
-		</div>
-		<div class="myInfo">MY 쇼핑</div>
-		<div>
-			<ul class="sidebar" id="infoSidebar">
-				<li><a class="sidebar-head" th:href="@{ /cart/cartList }">
-					<span>장바구니</span>
-				</a></li>
-				<li><a class="sidebar-head" th:href="@{ /order/orderList }">
-					<span>주문목록</span>
-				</a></li>
-				<li><a class="sidebar-head" th:href="@{ /member/cancelList }">
-					<span>취소/교환/반품 내역</span>
-				</a></li>
-			</ul>
-		</div>
-		<div class="myInfo">MY 혜택</div>
-		<div>
-			<ul class="sidebar" id="infoSidebar">
-				<li><a class="sidebar-head" th:href="@{ /member/coupon }">
-					<span>할인쿠폰</span>
-				</a></li>
-				<!-- <li><a class="sidebar-head" th:href="@{ /member/point }">
-					<span>포인트관리</span>
-				</a></li> -->
-			</ul>
-		</div>
-		<div class="myInfo">MY 활동</div>
-		<div>
-			<ul class="sidebar" id="infoSidebar">
-				<li><a class="sidebar-head" th:href="@{ /member/qna }">
-					<span>문의하기</span>
-				</a></li>
-				<li><a class="sidebar-head" th:href="@{ /member/qnaList }">
-					<span>문의내역</span>
-				</a></li>
-				<li><a class="sidebar-head" th:href="@{ /member/reviewList }">
-					<span>리뷰관리</span>
-				</a></li>
-				<li><a class="sidebar-head" th:href="@{ /member/like }">
-					<span>좋아요 리스트</span>
-				</a></li>
-			</ul>
-		</div>
-	</div>
-	</nav>
--->
+</body>
 </div> 

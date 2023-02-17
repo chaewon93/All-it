@@ -46,11 +46,11 @@
 	<div class="header-container" sec:authorize="!isAuthenticated()">
 
 		<ul class="nav justifiy-content-end" >
-	  		<li class="nav-item"><a class="nav-link" th:href="@{ /member-login }">로그인</a>
-	  		<li class="nav-item"><a class="nav-link" th:href="@{ /sellerLogin }">판매자 로그인</a>
-	  		<li class="nav-item"><a class="nav-link" th:href="@{ /member-join }">회원가입</a>
-	  		<li class="nav-item"><a class="nav-link" th:href="@{ /sellerApply }">입점신청</a></li>
-        	<li class="nav-item"><a class="nav-link" href="#">고객센터</a></li>
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /member-login }">로그인</a>
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /sellerLogin }">판매자 로그인</a>
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /member-join }">회원가입</a>
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /sellerApply }">입점신청</a></li>
+        	<li class="nav-item"><a class="nav-link text-info" href="#">고객센터</a></li>
 		</ul>
 		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
 			<h1><a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a></h1>
@@ -58,7 +58,7 @@
 
 		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 			<div class="dropdown">
-				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">카테고리</button>
+				<button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">카테고리</button>
 				<div class="dropdown-menu">
 					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=1) }">패션</a>
 					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=2) }">식품</a>
@@ -90,10 +90,10 @@
 	<div class="header-container" sec:authorize="hasRole('MEMBER')">
 		<ul class="nav justifiy-content-end" >
 			<span th:text="${ #authentication.principal.member.name }+'님'"></span>
-	  		<li class="nav-item"><a class="nav-link" th:href="@{ /logout }">로그아웃</a></li>
-	  		<li class="nav-item"><a class="nav-link" th:href="@{ /member/info }">마이올잇</a></li>
-	  		<li class="nav-item"><a class="nav-link" th:href="@{ /cart/cartList }">장바구니</a></li>
-        	<li class="nav-item"><a class="nav-link" href="#">고객센터</a></li>
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /logout }">로그아웃</a></li>
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /member/info }">마이올잇</a></li>
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /cart/cartList }">장바구니</a></li>
+        	<li class="nav-item"><a class="nav-link text-info" href="#">고객센터</a></li>
 		</ul>
 		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
 			<h1><a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a></h1>
@@ -101,7 +101,7 @@
 
 		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 			<div class="dropdown">
-				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">카테고리</button>
+				<button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">카테고리</button>
 				<div class="dropdown-menu">
 					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=1) }">패션</a>
 					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=2) }">식품</a>
@@ -131,9 +131,9 @@
  	<div class="header-container" sec:authorize="hasRole('SELLER')">
 		<ul class="nav justifiy-content-end"> 
 			<li class="nav-item"><span th:text="${ #authentication.principal.seller.name }+'님'"></span></li>
-			<li class="nav-item"><a class="nav-link" th:href="@{ /seller/ }">판매자페이지</a></li>
-			<li class="nav-item"><a class="nav-link" th:href="@{ /seller/mypage }">마이페이지</a></li>
-			<li class="nav-item"><a class="nav-link" th:href="@{ /logout }">로그아웃</a></li>
+			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /seller/ }">판매자페이지</a></li>
+			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /seller/mypage }">마이페이지</a></li>
+			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /logout }">로그아웃</a></li>
 		</ul>
 		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
 			<a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a> <br><br>

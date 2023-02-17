@@ -10,73 +10,159 @@
 </head>
 
 <body th:align="center">
-<h1>회원정보</h1>
-<form method="post" id="frm" class="form-inline">
-<table th:align="center" th:cellpadding="3" th:cellspacing="0">
-	<input type="hidden" name="provider" id="provider" th:value=${#authentication.principal.member?.provider}>
-	<input type="hidden" name="id" id="id" th:value="${#authentication.principal.member?.id}" readonly="readonly"/>
-	
-	<tr th:if="${#authentication.principal.member?.provider == null}">
-		<td>아이디</td>
-		<td><input type="text" th:value="${#authentication.principal.member?.id}" class="form-control mr-sm-2" readonly="readonly"/></td>
-	</tr>
-	<tr th:if="${#authentication.principal.member?.provider == null}">
-		<td>비밀번호<b class="text-danger">*</b></td>
-		<td><input type="password" name="pwd" id="pwd" class="form-control mr-sm-2" />
-		<input type="hidden" name="pw" id="pw" th:value="${ session['user'].pwd }" /></td>
-	</tr>
-	<tr th:if="${#authentication.principal.member?.provider == null}">
-		<td>비밀번호 확인<b class="text-danger">*</b></td>
-		<td><input type="password" name="pwdCheck" id="pwdCheck" class="form-control mr-sm-2" />
-		<br><font id="checkPw" size="2"></font></td>
-	</tr>
-	<tr>
-		<td>이름</td>
-		<td><input type="text" name="name" id="name" th:value="${#authentication.principal.member?.name}" class="form-control mr-sm-2" readonly="readonly"></td>
-	</tr>
-	<tr>
-		<td>이메일<b class="text-danger">*</b></td>
-		<td><input type="email" name="email"  th:value="${ session['user'].email }" class="form-control mr-sm-2"/></td>
-	</tr>
-	<tr>
-		<td>전화번호<b class="text-danger">*</b></td>
-		<td><input type="tel" name="phone" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" th:value="${ session['user'].phone }" class="form-control mr-sm-2"/></td>
-	</tr>
-	<tr>
-		<td>주소<b class="text-danger">*</b></td>
-		<td>
-			<input type="text" id="zipcode" name="zipcode"  th:value="${ session['user'].zipcode }" class="form-control mr-sm-2"/>
-			<input type="button" id="kakaoAddr" value="우편번호 찾기" class="btn btn-light"><br>
-			<input type="text" id="addr" name="address"  th:if="${not #arrays.isEmpty(addr)}" th:value="${addr[0]}" class="form-control mr-sm-2"/>
-			<input type="text" id="addr" name="address"  th:unless="${not #arrays.isEmpty(addr)}" class="form-control mr-sm-2"/>
-			<input type="text" id="addrDetail" name="address"  th:if="${not #arrays.isEmpty(addr)}" th:value="${addr[1]}" class="form-control mr-sm-2"/>
-			<input type="text" id="addrDetail" name="address"  th:unless="${not #arrays.isEmpty(addr)}" class="form-control mr-sm-2"/>
-			<!-- <input type="text" id="addrExtra" name="address"  th:if="${addr.length > 1}" th:value="${addr[2]}"/> -->
-			<!-- <input type="text" id="addrExtra" name="address"  th:unless="${addr.length > 1}"/> -->
-		</td>
-	</tr>
-	<tr>
-		<td>생년월일</td>
-		<td><input type="text" name="birth" id="birth" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" th:value="${ session['user'].birth }" class="form-control mr-sm-2"/></td>
-	</tr>
-	<tr>
-		<td>성별<b class="text-danger">*</b></td>
-		<td>
-			<input type="hidden" id="gender" th:value="${session['user']?.gender}">
-			<input type="radio" name="gender" id="m" value="남자" /> 남자
-			<input type="radio" name="gender" id="f" value="여자" /> 여자
-			<input type="radio" name="gender" id="n" value="안함"/> 선택 안 함
-		</td>
-	</tr>
-	<tr>
-		<td colspan="2" align="center">
-			<input type="submit" value="회원탈퇴" formaction="/member/userDel" id="delBtn" class="btn btn-dark"/>
-			<input type="submit" value="정보수정" formaction="/member/infoModify" id="modBtn" class="btn btn-warning"/>			
-			<input type="reset" value="취소" class="btn btn-secondary">
-		</td>
-	</tr>
-</table>
-</form>
+<div class="catainer" style="height: 800px; margin-top: 30px;">
+<h1>마이올잇</h1><br>
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active text-danger" data-toggle="tab" href="#menu1">개인정보 확인 및 수정</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link text-danger" data-toggle="tab" href="#menu2">올잇머니/포인트 확인</a>
+    </li>
+</ul>
+<!-- Tab panes -->
+<div class="tab-content">
+	<!-- 개인정보 확인 및 수정 섹션 시작 -->
+	<div id="menu1" class="container tab-pane active"><br>
+		<form method="post" id="frm" class="form-inline">
+		<table th:align="center" th:cellpadding="3" th:cellspacing="0">
+			<input type="hidden" name="provider" id="provider" th:value=${#authentication.principal.member?.provider}>
+			<input type="hidden" name="id" id="id" th:value="${#authentication.principal.member?.id}" readonly="readonly"/>
+			
+			<tr th:if="${#authentication.principal.member?.provider == null}">
+				<td>아이디</td>
+				<td><input type="text" th:value="${#authentication.principal.member?.id}" class="form-control mr-sm-2" readonly="readonly"/></td>
+			</tr>
+			<tr th:if="${#authentication.principal.member?.provider == null}">
+				<td>비밀번호<b class="text-danger">*</b></td>
+				<td><input type="password" name="pwd" id="pwd" class="form-control mr-sm-2" />
+				<input type="hidden" name="pw" id="pw" th:value="${ session['user'].pwd }" /></td>
+			</tr>
+			<tr th:if="${#authentication.principal.member?.provider == null}">
+				<td>비밀번호 확인<b class="text-danger">*</b></td>
+				<td><input type="password" name="pwdCheck" id="pwdCheck" class="form-control mr-sm-2" />
+				<br><font id="checkPw" size="2"></font></td>
+			</tr>
+			<tr>
+				<td>이름</td>
+				<td><input type="text" name="name" id="name" th:value="${#authentication.principal.member?.name}" class="form-control mr-sm-2" readonly="readonly"></td>
+			</tr>
+			<tr>
+				<td>이메일<b class="text-danger">*</b></td>
+				<td><input type="email" name="email"  th:value="${ session['user'].email }" class="form-control mr-sm-2"/></td>
+			</tr>
+			<tr>
+				<td>전화번호<b class="text-danger">*</b></td>
+				<td><input type="tel" name="phone" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" th:value="${ session['user'].phone }" class="form-control mr-sm-2"/></td>
+			</tr>
+			<tr>
+				<td>주소<b class="text-danger">*</b></td>
+				<td>
+					<input type="text" id="zipcode" name="zipcode"  th:value="${ session['user'].zipcode }" class="form-control mr-sm-2"/>
+					<input type="button" id="kakaoAddr" value="우편번호 찾기" class="btn btn-light"><br>
+					<input type="text" id="addr" name="address"  th:if="${not #arrays.isEmpty(addr)}" th:value="${addr[0]}" class="form-control mr-sm-2"/>
+					<input type="text" id="addr" name="address"  th:unless="${not #arrays.isEmpty(addr)}" class="form-control mr-sm-2"/>
+					<input type="text" id="addrDetail" name="address"  th:if="${not #arrays.isEmpty(addr)}" th:value="${addr[1]}" class="form-control mr-sm-2"/>
+					<input type="text" id="addrDetail" name="address"  th:unless="${not #arrays.isEmpty(addr)}" class="form-control mr-sm-2"/>
+					<!-- <input type="text" id="addrExtra" name="address"  th:if="${addr.length > 1}" th:value="${addr[2]}"/> -->
+					<!-- <input type="text" id="addrExtra" name="address"  th:unless="${addr.length > 1}"/> -->
+				</td>
+			</tr>
+			<tr>
+				<td>생년월일</td>
+				<td><input type="text" name="birth" id="birth" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" th:value="${ session['user'].birth }" class="form-control mr-sm-2"/></td>
+			</tr>
+			<tr>
+				<td>성별<b class="text-danger">*</b></td>
+				<td>
+					<input type="hidden" id="gender" th:value="${session['user']?.gender}">
+					<input type="radio" name="gender" id="m" value="남자" /> 남자
+					<input type="radio" name="gender" id="f" value="여자" /> 여자
+					<input type="radio" name="gender" id="n" value="안함"/> 선택 안 함
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center">
+					<input type="submit" value="회원탈퇴" formaction="/member/userDel" id="delBtn" class="btn btn-dark"/>
+					<input type="submit" value="정보수정" formaction="/member/infoModify" id="modBtn" class="btn btn-warning"/>			
+					<input type="reset" value="취소" class="btn btn-secondary">
+				</td>
+			</tr>
+		</table>
+		</form>
+    </div>
+    <!-- 개인정보 확인 및 수정 섹션 끝 -->
+    <!-- 올잇머니 및 포인트 관리 섹션 시작 -->
+    <div id="menu2" class="container tab-pane fade"><br>
+		<form name="formm" id="cartform" method="post" class="form-inline">
+			<table th:align="center" th:cellpadding="3">
+				<tr>
+					<th width="150">올잇머니 잔액</th>
+					<td th:text="${ #numbers.formatInteger(session['user']?.money, 1, 'COMMA') }+'원'" class="text-danger">
+						<input type="hidden" id="money" th:value="${ session['user']?.money }" />
+					</td>
+					<td>
+						<input type="button" class="btn btn-warning" data-toggle="modal" data-target="#moneyModal" value="충전하기"/>
+					</td>
+				</tr>
+				<tr>
+					<th width="150">사용 가능 포인트</th>
+					<td th:text="${ #numbers.formatInteger(session['user']?.point, 1, 'COMMA') }+'P'" class="text-danger">
+						<input type="button" value="사용 내역" class="btn btn-light">
+				</tr>
+					
+			</table>
+		</form>
+    </div>
+    <!-- 올잇머니 및 포인트 관리 섹션 끝 -->
+</div>
+</div>
+
+<!-- 머니 충전 모달 섹션 시작 -->
+<div class="modal fade" id="moneyModal">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-body"> <br>
+				<h2>올잇머니 충전</h2>
+				<span>보유 중인 올잇머니 <b class="text-danger" th:text="${ #numbers.formatInteger(session['user']?.money, 1, 'COMMA') }+'원'"></b></span><br>
+				<input type="text" id="chargeMoney" name="money" placeholder="5만원부터 충전 가능합니다." class="form-control mr-sm-2" style="width: 350px;"/>
+				<input type="button" value="+5만원" class="btn btn-light" onclick="addMoney(this)"/>
+				<input type="button" value="+10만원" class="btn btn-light" onclick="addMoney(this)"/>
+				<input type="button" value="+30만원" class="btn btn-light" onclick="addMoney(this)"/>
+				<input type="button" value="+50만원" class="btn btn-light" onclick="addMoney(this)"/>
+				<br><br>
+				<span>충전 은행 </span>
+				<select id="chargeMoney-bank" class="form-control mr-sm-2">
+					<option th:value="없음">==은행선택==</option>
+					<option th:value="국민">국민은행</option>
+					<option th:value="기업">기업은행</option>
+					<option th:value="농협">농협은행</option>
+					<option th:value="신한">신한은행</option>
+					<option th:value="하나">하나은행</option>
+					<option th:value="우리">우리은행</option>
+					<option th:value="신협">신협</option>
+					<option th:value="수협">수협</option>
+					<option th:value="카카오">카카오뱅크</option>
+					<option th:value="토스">토스뱅크</option>
+				</select> <br>
+				<span>계좌번호 </span>
+				<input type="text" id="chargeMoney-bankNum" class="form-control mr-sm-2" style="width: 300px;"><br>
+				<input type="checkbox" id="chkAgree"><b> 필수 약관 모두 동의</b><br>
+				<span style="margin-left: 20px;">올잇머니 서비스 이용약관 </span><br>
+				<span style="margin-left: 20px;">올잇머니 전자금융거래 이용약관 </span><br>
+				<span style="margin-left: 20px;">개인정보 수집 및 이용 </span><br>
+				<span style="margin-left: 20px;">개인정보 제3자 제공 </span><br>
+				<span style="margin-left: 20px;">올잇 개인정보 제3자 제공 </span><br>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-warning" id="moneyBtn">충전</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 머니 충전 모달 섹션 끝 -->
 
 <!-- 자바스트립트 섹션 시작 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
