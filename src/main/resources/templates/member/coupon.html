@@ -1,14 +1,93 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<!--
-<html xmlns:th="http://www.thymeleaf.org"
-	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
--->
-
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>All it - I have a All it</title>
+</head>
+<!-- header replace -->
+<th:block th:if="${pno} == 0">
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
+</th:block>
+
+<body th:align="center">
+<div style="display: flex; height: 800px; margin-top: 30px;">
+<div class="catainer">
+<h1>쿠폰 목록</h1><br>
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active text-danger" data-toggle="tab" href="#menu1">내 쿠폰</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link text-danger" data-toggle="tab" href="#menu2">받을 수 있는 쿠폰</a>
+    </li>
+</ul>
+<!-- Tab panes -->
+<div class="tab-content">
+	<!-- 내 쿠폰 목록 시작 -->
+	<div id="menu1" class="container tab-pane active"><br>
+		<form action="/coupon/deleteCoupon" method="post" id="theform" class="">	
+		<table th:align="center" th:cellpadding="3" th:cellspacing="0" th:width="700" class="table">
+		<tr>
+			<th width="100">번호</th>
+			<th width="350">쿠폰 설명</th>
+			<th width="150">등록일</th>
+			<th width="150">만료일</th>
+			<th width="150">쿠폰상태</th>
+			<th th:if="${price}!=0" bgcolor="orange" width="100">쿠폰 사용</th>
+		</tr>
+		<tr th:each="memcou, state : ${list}">
+			<td th:text="${state.count}"></td>
+			<td th:text="${memcou.coupon.couContent}"></td>
+			<td th:text="${#dates.format(memcou.createMemCouDate, 'yyyy-MM-dd')}"></td>
+			<td th:text="${#dates.format(memcou.endMemCouDate, 'yyyy-MM-dd')}"></td>
+			<td th:if="${memcou.status} == 0" th:text="사용가능"></td>
+			<td th:if="${memcou.status} == 1" th:text="사용됨"></td>
+			<td th:if="${memcou.status} == 2" th:text="만료됨"></td>
+			<td th:if="${price}!=0">
+				<input type="hidden" name="memCouCon" id="memCouCon" th:value="${memcou.coupon.couContent}">
+				<input type="hidden" name="memCouid" id="memCouid" th:value="${memcou.mcid}">
+		 		<input type="hidden" name="index" id="index" th:value="${state.index}">	
+				<input type="button" name="useCoupon" th:value="사용" onclick="useCou(this)">
+			</td>
+		</tr>
+		</table>
+		</form>	
+    </div>
+    <!-- 내 쿠폰 목록 끝 -->
+    <!-- 받을 수 있는 쿠폰 목록 시작 -->
+    <div id="menu2" class="container tab-pane fade"><br>
+		<form action="/coupon/deleteCoupon" method="post" id="theform1" class="">
+		<table th:align="center" th:cellpadding="3" th:cellspacing="0" th:width="700" class="table">
+			<tr>
+				<th width="100">번호</th>
+				<th width="350">쿠폰 설명</th>
+				<th width="150">등록일</th>
+				<th width="100">기간</th>
+				<th width="250">조건</th>
+				<th width="100">쿠폰 다운</th>
+			</tr>
+			<tr th:each="couList, state : ${couList}">
+				<td th:text="${state.count}"></td>
+				<td th:text="${couList.couContent}"></td>
+				<td th:text="${couList.createDate}"></td>
+				<td th:text="${couList.period}"></td>
+				<td th:text="${couList.condition}"></td>
+				<td align="center">
+					<input type="hidden" name="couid" th:value="${couList.couId}">	
+					<input type="button" name="downCoupon" th:value="받기" onclick="downCou(this)" class="btn btn-warning">
+				</td>
+			</tr>	
+		</table>
+		</form>
+    </div>
+    <!-- 받을 수 있는 쿠폰 목록 섹션 끝 -->
+</div>
+</div>
+</div>
+
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">
 
@@ -75,69 +154,6 @@ function useCou(btn){
 }
 </script>
 
-</head>
-<body>
-<!-- header replace -->
-<th:block th:if="${pno} == 0">
-<div th:replace="~{ /fragments/header.html :: header }"></div>
-<div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
-</th:block>
-
-<form action="/coupon/deleteCoupon" method="post" id="theform">	
-<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
-<tr>
-	<th bgcolor="orange" width="100">번호</th>
-	<th bgcolor="orange" width="100">쿠폰 설명</th>
-	<th bgcolor="orange" width="100">등록일</th>
-	<th bgcolor="orange" width="100">만료일</th>
-	<th bgcolor="orange" width="100">쿠폰상태</th>
-	<th th:if="${price}!=0" bgcolor="orange" width="100">쿠폰 사용</th>
-</tr>
-<tr th:each="memcou, state : ${list}">
-	<td th:text="${state.count}"></td>
-	<td th:text="${memcou.coupon.couContent}"></td>
-	<td th:text="${#dates.format(memcou.createMemCouDate, 'yyyy-MM-dd')}"></td>
-	<td th:text="${#dates.format(memcou.endMemCouDate, 'yyyy-MM-dd')}"></td>
-	<td align="center" th:if="${memcou.status} == 0" th:text="사용가능"></td>
-	<td align="center" th:if="${memcou.status} == 1" th:text="사용됨"></td>
-	<td align="center" th:if="${memcou.status} == 2" th:text="만료됨"></td>
-	<td align="center" th:if="${price}!=0">
-		<input type="hidden" name="memCouCon" id="memCouCon" th:value="${memcou.coupon.couContent}">
-		<input type="hidden" name="memCouid" id="memCouid" th:value="${memcou.mcid}">
- 		<input type="hidden" name="index" id="index" th:value="${state.index}">	
-		<input type="button" name="useCoupon" th:value="사용" onclick="useCou(this)">
-	</td>
-</tr>
-</table>
-</form>
-
-<hr>
-
-<div>
-<form action="/coupon/deleteCoupon" method="post" id="theform1">	
-<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
-	<tr>
-		<th bgcolor="orange" width="100">번호</th>
-		<th bgcolor="orange" width="100">쿠폰 설명</th>
-		<th bgcolor="orange" width="100">등록일</th>
-		<th bgcolor="orange" width="100">기간</th>
-		<th bgcolor="orange" width="100">조건</th>
-		<th bgcolor="orange" width="100">쿠폰</th>
-	</tr>
-	<tr th:each="couList, state : ${couList}">
-		<td th:text="${state.count}"></td>
-		<td th:text="${couList.couContent}"></td>
-		<td th:text="${couList.createDate}"></td>
-		<td th:text="${couList.period}"></td>
-		<td th:text="${couList.condition}"></td>
-		<td align="center">
-			<input type="hidden" name="couid" th:value="${couList.couId}">	
-			<input type="button" name="downCoupon" th:value="받기" onclick="downCou(this)">
-		</td>
-	</tr>	
-</table>
-</form>
-</div>
 <!-- <div th:replace="~{ /fragments/pagination.html :: pagination }"></div>  -->
 <!-- pagination replace -->
 

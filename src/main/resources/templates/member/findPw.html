@@ -21,7 +21,7 @@
     <!-- User ID <input type=text name="id" th:value="${id}">   --> 
     <div style="margin-top: 20px" th:if="${message == 1}">요청하신 비밀번호는 <b th:text="${pw}"></b>입니다.</div>   
     <div style="margin-top: 20px" th:if="${message == -1}">가입되지 않은 정보입니다.</div>
-    <br><input type="button" value="다시 찾기" class="btn btn-primary" onclick="reFind()">
+    <br><input type="button" value="다시 찾기" class="btn btn-link" onclick="reFind()">
     <input type="button" value="확인" class="btn btn-light" onclick="idok()">
   </form>
 </div>  

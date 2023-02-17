@@ -27,7 +27,7 @@ public class OrdersDetail {
 	@OneToOne
 	@JoinColumn(name = "mcid")
 	private MemCoupon memCoupon; 	// mcid
-	// 주문상태(1:결제완료, 2:배송중, 3:배송완료, 4:구매확정, 5:주문취소, 6:교환신청, 7:반품신청, 8:리뷰작성완료, 9:처리완료)
+	// 주문상태(1:결제완료, 2:배송중, 3:배송완료, 4:구매확정, 5:주문취소, 6:교환신청, 7:반품신청, 8:리뷰작성완료, 9:교환완료, 10:반품완료)
 	private int status; 
 	private String receiverName;	// 받는 사람 이름
 	private String receiverZipcode;	// 받는 사람 우편번호

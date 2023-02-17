@@ -9,11 +9,11 @@
 </head>
 
 <body th:align="center">
-<h1>장바구니</h1>
-<div style="display: flex;">
+<div style="display: flex; height: 900px; margin-top: 30px;">
 <div class="container">
+<h1>장바구니</h1><br>
 	<form name="formm" id="cartform" method="post">
-		<h3 th:if="${cartList.size() == 0}" style="color: red; text-align: center;">장바구니가 비었습니다.</h3>
+		<h3 th:if="${cartList.size() == 0}" class="text-danger" style="text-align: center;">장바구니가 비었습니다.</h3>
 		<th:block th:unless="${cartList.size() == 0}">
 			<table id="cartList" class="table">
 				<tr>
