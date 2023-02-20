@@ -98,7 +98,7 @@ function delete_product(){
 </div>
 
 <form action="/admin/regPro" method="post" id="theform">	
-<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="900">
+<table th:align="center" border="1" th:cellpadding="3" th:cellspacing="0" th:width="900">
 
 <tr>
 	<th bgcolor="orange" width="100">번호</th>
@@ -138,7 +138,7 @@ function delete_product(){
 	<td th:text="${pro.price}"></td>
 	<td th:text="${pro.discount}"></td>	
 	<td th:text="${pro.seller?.id}"></td>
-	<td><img class="img-fluid" th:src="@{ /images/ } + ${ pro.imageName }"></td>
+	<td><img class="img-fluid" th:src="@{ /images/product/ } + ${ pro.imageName }"></td>
 	<td th:if="${a}==1" th:switch="${pro.mdPickyn}" align="center">
 		<p th:case="0" th:text="미등록" style="color:red;"></p>
 		<p th:case="1" th:text="등록완료" style="color:blue;"></p>

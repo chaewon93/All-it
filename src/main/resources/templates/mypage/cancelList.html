@@ -14,22 +14,23 @@
 <!-- Nav tabs -->
 <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item">
-      <a class="nav-link text-danger active" data-toggle="tab" href="#menu1" onclick="refesh('cancel')">주문취소 내역</a>
+      <!-- <a class="nav-link text-danger active" data-toggle="tab" href="#menu1" onclick="refesh('cancel')">주문취소 내역</a> -->
+		<a class="nav-link text-danger" data-toggle="tab" href="#menu1" onclick="refesh('cancel')" id="tab1">주문취소 내역</a>
     </li>
     <li class="nav-item">
-    <a class="nav-link text-danger" data-toggle="tab" href="#menu2" onclick="refesh('exchange')">교환 내역</a>
+		<a class="nav-link text-danger" data-toggle="tab" href="#menu2" onclick="refesh('exchange')" id="tab2">교환 내역</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link text-danger" data-toggle="tab" href="#menu3" onclick="refesh('refund')">반품 내역</a>
+		<a class="nav-link text-danger" data-toggle="tab" href="#menu3" onclick="refesh('refund')" id="tab3">반품 내역</a>
     </li>
 </ul>
 <!-- Tab panes -->
 <div class="tab-content">
 	<!-- 주문취소 내역 섹션 시작 -->
-	<div id="menu1" class="container tab-pane active"><br>
+	<!-- <div id="menu1" class="container tab-pane active"><br> -->
+	<div id="menu1" class="container tab-pane"><br>
 		<div style="display: flex;">
 		<table class="table" th:align="center" th:cellpadding="3" th:cellspacing="0">
-		<input type="hidden" name="status5" th:value="5">
 			<tr>
 				<th width="450">상품명</th>
 				<th width="80">수 량</th>
@@ -45,7 +46,7 @@
 			<tr th:each="cancel : ${cancelList}">      
 				<td>
 					<a th:href="@{ |/product/${ cancel.product.pno }| }">
-						<img class="img-fluid" th:src="@{ /images/ } + ${ cancel.product.imageName }" width="100">
+						<img class="img-fluid" th:src="@{ /images/product/ } + ${ cancel.product.imageName }" width="100">
 							<b class="text-info" th:text="${ cancel.product.name }"></b>
 					</a>
 					<span th:text="${#numbers.formatInteger(cancel.product.price, 1, 'COMMA')}+'원'"></span>
@@ -65,16 +66,16 @@
 		 			<input type="hidden" th:value="${ cancel.odno }" id="odno" name="odno">
 		 			<input type="hidden" th:value="${ cancel.orders.finalPrice }" id="finalPrice" name="finalPrice">
 			</tr>
+		 			<input type="hidden" th:value="${status}" id="status" name="status">
 	 	</table>
 	 	</div>
     </div>
     <!-- 주문취소 내역 섹션 끝 -->
     <!-- 교환 내역 섹션 시작 -->
-    <div id="menu2" class="container tab-pane fade"><br>
+    <!-- <div id="menu2" class="container tab-pane fade"><br> -->
+    <div id="menu2" class="container tab-pane"><br>
 		<div style="display: flex;">
 		<table class="table" th:align="center" th:cellpadding="3" th:cellspacing="0">
-		<input type="hidden" name="status6" th:value="6">
-		<input type="hidden" name="status9" th:value="9">
 			<tr>
 				<th width="450">상품명</th>
 				<th width="80">수 량</th>
@@ -90,7 +91,7 @@
 			<tr th:each="exchange : ${exchangeList}">      
 				<td>
 					<a th:href="@{ |/product/${ exchange.product.pno }| }">
-						<img class="img-fluid" th:src="@{ /images/ } + ${ exchange.product.imageName }" width="100">
+						<img class="img-fluid" th:src="@{ /images/product/ } + ${ exchange.product.imageName }" width="100">
 							<b class="text-info" th:text="${ exchange.product.name }"></b>
 					</a>
 					<span th:text="${#numbers.formatInteger(exchange.product.price, 1, 'COMMA')}+'원'"></span>
@@ -116,11 +117,10 @@
     </div>
     <!-- 교환 내역 섹션 끝 -->
     <!-- 반품 내역 섹션 시작 -->
+    <!-- <div id="menu3" class="container tab-pane fade"><br> -->
     <div id="menu3" class="container tab-pane fade"><br>
     	<div style="display: flex;">
 		<table class="table" th:align="center" th:cellpadding="3" th:cellspacing="0">
-		<input type="hidden" name="status7" th:value="7">
-		<input type="hidden" name="status10" th:value="10">
 			<tr>
 				<th width="450">상품명</th>
 				<th width="80">수 량</th>
@@ -136,7 +136,7 @@
 			<tr th:each="refund : ${refundList}">      
 				<td>
 					<a th:href="@{ |/product/${ refund.product.pno }| }">
-						<img class="img-fluid" th:src="@{ /images/ } + ${ refund.product.imageName }" width="100">
+						<img class="img-fluid" th:src="@{ /images/product/ } + ${ refund.product.imageName }" width="100">
 							<b class="text-info" th:text="${ refund.product.name }"></b>
 					</a>
 					<span th:text="${#numbers.formatInteger(refund.product.price, 1, 'COMMA')}+'원'"></span>
@@ -167,22 +167,43 @@
 <!-- 자바스트립트 섹션 시작 -->
 <script type="text/javascript">
 $(document).ready(function(){
-	//refresh();
 	
-//	var menu1 = $(".nav-link text-danger");
-//	menu1.eq(0).addClass("active");
+	var status = $("#status").val();
+	console.log(status);
 	
-//	var menu1_con = $(".container tab-pane")
-//	menu1_con.eq(0).addClass("active"); 
+	var tab1 = document.getElementById("tab1").classList;
+	var tab2 = document.getElementById("tab2").classList;
+	var tab3 = document.getElementById("tab3").classList;
 	
+	var con1 = document.getElementById("menu1").classList;
+	var con2 = document.getElementById("menu2").classList;
+	var con3 = document.getElementById("menu3").classList;
 	
-	$("#divCancel").show();
-	$("#divExchange").hide();
-	$("#divRefund").hide();
+	if(status == "cancel") {
+		//alert(tab1);
+		tab1.toggle('active');
+		con1.toggle('active');
+		//alert(con1);
+	} else if(status == "exchange") {
+		tab2.toggle('active');
+		con2.toggle('active');
+	} else if(status == "refund") {
+		tab3.toggle('active');
+		con3.toggle('active');
+	}
+	
+//	refresh(status);
+	
+//	$("#divCancel").show();
+//	$("#divExchange").hide();
+//	$("#divRefund").hide();
 });
 
 function refesh(type) {
 	//console.log(type);
+	$("#status").val(type);
+	//alert($("#status").val());
+	
 	if(type == 'cancel') {
 		$("#divCancel").show();
 		$("#divExchange").hide();

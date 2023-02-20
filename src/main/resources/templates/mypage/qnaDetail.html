@@ -28,7 +28,9 @@
 	</tr>
 	<tr th:if="${qna.status} == '1'">
 		<th>답변</th>
-		<td><textarea name="content" cols="40" rows="10" th:text="${qna.response}" readonly="readonly" class="form-control"></textarea>
+		<td>
+			<textarea name="content" cols="40" rows="10" th:if="${qna.response != ''}" th:text="${qna.response}" readonly="readonly" class="form-control"></textarea>
+			<textarea name="content" cols="40" rows="10" th:if="${qna.reply.content != ''}" th:text="${qna.reply.content}" readonly="readonly" class="form-control"></textarea>
 		<input type="hidden" name="rno" th:value="${qna.reply?.rno}" ></td>
 	</tr>
 	<tr th:if="${qna.status} == '1'">

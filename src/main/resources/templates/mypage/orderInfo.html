@@ -77,7 +77,7 @@
 			<td>
 				<a th:href="@{ |/product/${ product.pno }| }">
 					<input type="hidden" th:value="${product.pno}" name="ppno" id="ppno"/> 
-					<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="100">
+					<img class="img-fluid" th:src="@{ /images/product/ } + ${ product.imageName }" width="100">
 					<b class="text-info" th:text="${ product.name }"></b>
 				</a> 
 				<span th:text="${#numbers.formatInteger(product.price, 1, 'COMMA')}+'원'"></span>
@@ -97,7 +97,7 @@
 		<td><input type="hidden" th:value="${ cart?.cno }" name="cno" id="cno"/>
 			<input type="hidden" th:value="${cart?.product.pno}" name="cpno" id="cpno"/> 
 			<a th:href="@{ |/product/${ cart.product.pno }| }">
-				<img class="img-fluid" th:src="@{ /images/ } + ${ cart.product.imageName }" width="100">
+				<img class="img-fluid" th:src="@{ /images/product/ } + ${ cart.product.imageName }" width="100">
 				<b class="text-info" th:text="${ cart.product.name }"></b>
 			</a> 
 			<span th:text="${#numbers.formatInteger(cart.product.price, 1, 'COMMA')}+'원'"></span>
@@ -179,8 +179,10 @@
 <div class="modal fade" id="moneyModal">
 	<div class="modal-dialog modal-xl">
 		<div class="modal-content">
-			<div class="modal-body"> <br>
-				<h2>올잇머니 충전</h2>
+			<div class="modal-header">
+				<h2 class="modal-title">올잇머니 충전</h2>
+			</div>
+			<div class="modal-body">
 				<span>보유 중인 올잇머니 <b class="text-danger" th:text="${ #numbers.formatInteger(session['user']?.money, 1, 'COMMA') }+'원'"></b></span><br>
 				<input type="text" id="chargeMoney" name="money" placeholder="5만원부터 충전 가능합니다." class="form-control mr-sm-2" style="width: 350px;"/>
 				<input type="button" value="+5만원" class="btn btn-light" onclick="addMoney(this)"/>

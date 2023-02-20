@@ -1,6 +1,7 @@
 package com.ezen.allit.service;
 
 import java.io.File;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,18 +57,30 @@ public class CustomerCenterServiceImpl implements CustomerCenterService {
 		custo.setPick(cus.getPick());
 		if(imageFile != null) {
 			String ogName = imageFile.getOriginalFilename(); 										  // 원본 파일명
-			String realPath = "c:/fileUpload/images/admin"; 	// 파일 저장경로
+			//String realPath = "c:/fileUpload/images/admin"; 	// 파일 저장경로
+			String realPath = "c:/allit/images/admin/"; 	// 관리자용 이미지 저장경로
 			
-			/*
-			 * UUID를 이용해 중복되지 않는 파일명 생성
-			 */
-			UUID uuid = UUID.randomUUID();
-			String imgName = uuid + "_" + ogName; 		 // 저장될 파일명
-			
-			File saveFile = new File(realPath, imgName); // 저장경로와 파일명을 토대로 새 파일 생성 
-			imageFile.transferTo(saveFile);			     // 생성 완료
-			
-			custo.setImageName(imgName);				 // DB에 저장될 파일명 (DB 저장을 위해 설정(없으면 DB에 저장 안됨))
+			File saveDir = new File(realPath);
+			if(!saveDir.isDirectory()) {
+				// mkdir() : 해당 경로에 디렉토리가 존재하지 않으면 생성
+				// mkdirs() :  mkdir()과 같으나 상위 폴더들이 없으면 상위 폴더들까지 생성
+				if(saveDir.mkdirs()) {
+					/*
+					 * UUID를 이용해 중복되지 않는 파일명 생성
+					 */
+					UUID uuid = UUID.randomUUID();
+					String imgName = uuid + "_" + ogName; 		 // 저장될 파일명
+					
+					File saveFile = new File(realPath, imgName); // 저장경로와 파일명을 토대로 새 파일 생성 
+					imageFile.transferTo(saveFile);			     // 생성 완료
+					
+					custo.setImageName(imgName);				 // DB에 저장될 파일명 (DB 저장을 위해 설정(없으면 DB에 저장 안됨))
+				} else {
+					System.out.println("[insertCustomerCenter()] "+ realPath + " : 디렉토리가 생성 중 오류");
+				}
+			} else {
+				System.out.println("[insertCustomerCenter()] "+ realPath + " : 디렉토리가 아니거나 존재하지 않음.");
+			}
 		}
 		cusRepo.save(custo);		
 	}

@@ -24,7 +24,7 @@
 		<!-- <tr th:text="${#dates.format(orderDetailList.orders.regDate, 'yyyy-MM-dd')} +' 주문'" /> -->
 		<tr th:each="detail : ${orderDetailList}">
 			<td><a th:href="@{ |/product/${ detail.product.pno }| }">
-				<img class="img-fluid" th:src="@{ /images/ } + ${ detail.product.imageName }" width="100">
+				<img class="img-fluid" th:src="@{ /images/product/ } + ${ detail.product.imageName }" width="100">
 					<b class="text-info" th:text="${ detail.product.name }"></b>
 				</a> 
 				<span th:text="${#numbers.formatInteger(detail.product.price, 1, 'COMMA')}+'원'"></span>

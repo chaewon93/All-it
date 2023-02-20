@@ -290,7 +290,8 @@ public class MemberController {
 	/** 주문 취소/교환/반품 내역 */
 	@GetMapping("/cancelList")
 	public String cancelList(Model model, @ModelAttribute("user") Member member,
-						@PageableDefault(page = 1) Pageable pageable) {
+						@PageableDefault(page = 1) Pageable pageable,
+						@RequestParam(value = "status", defaultValue = "cancel") String status) {
 		
 		// 주문취소 내역
 		Page<OrdersDetail> cancelList = orderService.getCancelList(member, 5, pageable);
@@ -315,6 +316,9 @@ public class MemberController {
 		model.addAttribute("cancelList", cancelList);
 		model.addAttribute("exchangeList", exchangeList);
 		model.addAttribute("refundList", refundList);
+		
+		System.out.println("======> status : " +status);
+		model.addAttribute("status", status);
 		
 		return "mypage/cancelList";
 	}
@@ -376,48 +380,57 @@ public class MemberController {
 //		return "mypage/cancelList";
 //	} 
 	
+	/** 쿠폰조회 팝업창 */
 	@GetMapping("coupon")
 	public String coupon(@ModelAttribute("user") Member member, Model model, 
 						@RequestParam(value="pno", defaultValue = "0")int pno) {
 
 		List<MemCoupon> memCouList = new ArrayList<>();
 		System.out.println("11111111111111");
-		if(pno == 0) {
-			memCouList = member.getMemCoupon();
-			model.addAttribute("list", memCouList);
-			System.out.println("======================== getmemcoupon");
-			System.out.println(memCouList);
-		}else {
-			memCouList = couponService.MemProCouponList(member, pno);
-			model.addAttribute("list", memCouList);
-		}
-		List<Coupon> couList = couponService.forMemberCouponList(member, pno);
-		System.out.println("22222");
-
-		model.addAttribute("pno", pno);
-		int price = 0;
-		if(pno != 0) {
-			 price = proRepo.findById(pno).get().getPrice();
-		}else {
-			price = 0;
-		}
 		
-		model.addAttribute("price", price);
-
-		List<Coupon> couponList = new ArrayList<>();
-		for(MemCoupon memCou : memCouList) {
-			couponList.add(memCou.getCoupon());
+		if(member != null) {
+			if(pno == 0) {
+				// 내가 가지고 있는 쿠폰 조회
+				memCouList = member.getMemCoupon();
+				model.addAttribute("list", memCouList);
+				System.out.println("======================== getmemcoupon");
+				System.out.println(memCouList);
+			}else {
+				memCouList = couponService.MemProCouponList(member, pno);
+				model.addAttribute("list", memCouList);
+			}
+			
+			List<Coupon> couList = couponService.forMemberCouponList(member, pno);
+			System.out.println("22222");
+	
+			model.addAttribute("pno", pno);
+			
+			int price = 0;
+			if(pno != 0) {
+				 price = proRepo.findById(pno).get().getPrice();
+			}else {
+				price = 0;
+			}
+			model.addAttribute("price", price);
+	
+			List<Coupon> couponList = new ArrayList<>();
+			for(MemCoupon memCou : memCouList) {
+				couponList.add(memCou.getCoupon());
+			}
+			System.out.println("33333333333333333");
+			
+			couList.removeAll(couponList);
+	
+			System.out.println("444444444444444");
+			model.addAttribute("couList", couList);
+		} else {
+			model.addAttribute("login", "noLogin");
 		}
-		System.out.println("33333333333333333");
-		
-		couList.removeAll(couponList);
-
-		System.out.println("444444444444444");
-		model.addAttribute("couList", couList);
 		
 		return "member/coupon";
 	}
 	
+	/** 마이올잇>할인쿠폰 */
 	@GetMapping("coupon1")
 	public String coupon1(@ModelAttribute("user") Member member, Model model, 
 						@RequestParam(value="pno", defaultValue = "0") int pno) {
