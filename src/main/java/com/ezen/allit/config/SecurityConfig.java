@@ -36,7 +36,8 @@ public class SecurityConfig {
 	SecurityFilterChain memberFilterChain(HttpSecurity http) throws Exception {
 		http.csrf().disable(); 							   // csrf 필터 해제
 		http.authorizeRequests() 						   // authorizeRequests(): 요청에 관한 지정
-			.antMatchers("/**", "/auth/**", "/product/**", "/css/**", "/img/**", "file:///c:/fileUpload/images/**")
+//			.antMatchers("/**", "/auth/**", "/product/**", "/css/**", "/img/**", "file:///c:/fileUpload/images/**")
+			.antMatchers("/**", "/auth/**", "/product/**", "/css/**", "/img/**", "file:///c:/allit/images/**")
 			.permitAll()  								   // permitAll(): 모두 허가
 //			.antMatchers("/member/**").hasRole("MEMBER")   // antMatchers(): 특정 url에 대한 권한 설정
 			.antMatchers("/seller/**").hasRole("SELLER")   // antMatchers(): 특정 url에 대한 권한 설정

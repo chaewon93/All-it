@@ -1,6 +1,5 @@
 package com.ezen.allit.controller;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -56,19 +55,15 @@ public class HomeController {
 	}
 	
 	/** 회원가입 기능 처리 */
-/*	
 	@PostMapping("/member-join")
-	public String join(Member member, SessionStatus status) {
-		member.setGrade(Grade.BRONZE);
-		member.setRegDate(new Date());
+	public String join(Member member) {
 		memberService.saveMember(member);
-		status.setComplete();
 		
 		couponService.insertMemCoupon(member, 1);
 		
 		return "redirect:/member-login";
 	}
-*/	
+	
 	
 	/** 아이디 중복 확인 처리 */
 	@ResponseBody
