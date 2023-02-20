@@ -1,6 +1,5 @@
 package com.ezen.allit.controller;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -64,7 +63,7 @@ public class HomeController {
 		
 		return "redirect:/member-login";
 	}
-	
+
 	/** 아이디 중복 확인 처리 */
 	@ResponseBody
 	@PostMapping("/member-idCheck")

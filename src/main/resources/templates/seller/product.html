@@ -10,7 +10,7 @@
 		<input type="hidden" th:value="${ product.seller.id }" name="sid" id="sid">
 		<input type="hidden" th:value="${ #authentication.principal.seller.id }" name="seller" id="seller">
 		<input type="hidden" th:value="${ product.pno }" name="pno" id="pno">
-		<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="350"><br>
+		<img class="img-fluid" th:src="@{ /images/product/ } + ${ product.imageName }" width="350"><br>
 		<span>조회수: </span><span th:text="${ product.count }" style="color: green;"></span><br>
 		<span>별점: </span><span th:if="${ product.rating } != 0" th:text="${ product.rating }" style="color: purple;"></span>
 						  <span th:if="${ product.rating } == 0" style="color: purple;"></span><br>

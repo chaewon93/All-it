@@ -27,7 +27,7 @@
 					<td><input type="checkbox" name="cno" id="cno" th:value="${ cart.cno }"></td>
 					<td>
 						<a th:href="@{ |/product/${ cart.product.pno }| }">
-						<img class="img-fluid" th:src="@{ /images/ } + ${ cart.product.imageName }" width="100">
+						<img class="img-fluid" th:src="@{ /images/product/ } + ${ cart.product.imageName }" width="100">
 							<b class="text-info" th:text="${ cart.product.name }"></b>
 						</a>
 						<span th:text="${#numbers.formatInteger(cart.product.price, 1, 'COMMA')}+'원'"></span>
