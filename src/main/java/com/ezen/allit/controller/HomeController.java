@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.support.SessionStatus;
 
 import com.ezen.allit.domain.CustomerCenter;
 import com.ezen.allit.domain.Grade;
@@ -56,19 +57,13 @@ public class HomeController {
 	}
 	
 	/** 회원가입 기능 처리 */
-/*	
 	@PostMapping("/member-join")
-	public String join(Member member, SessionStatus status) {
-		member.setGrade(Grade.BRONZE);
-		member.setRegDate(new Date());
+	public String join(Member member) {
 		memberService.saveMember(member);
-		status.setComplete();
-		
 		couponService.insertMemCoupon(member, 1);
 		
 		return "redirect:/member-login";
 	}
-*/	
 	
 	/** 아이디 중복 확인 처리 */
 	@ResponseBody
@@ -125,4 +120,32 @@ public class HomeController {
 		
 		return "denied";
 	}
+	
+	/** 푸터 : 이용약관 */
+	@GetMapping("/terms-of-service")
+	public String termsOfService() {
+		
+		return "common/terms_of_service";
+	}
+	
+	/** 푸터 : 개인정보 처리방침 */
+	@GetMapping("/privacy")
+	public String privacy() {
+		
+		return "common/privacy";
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

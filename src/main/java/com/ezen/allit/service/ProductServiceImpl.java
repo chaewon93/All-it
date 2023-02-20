@@ -28,7 +28,7 @@ public class ProductServiceImpl implements ProductService {
 		int pageSize = 6;
 
 		Page<Product> product = 
-				productRepo.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+				productRepo.findAllByStatus(1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 
         return product;
 	}
@@ -80,7 +80,7 @@ public class ProductServiceImpl implements ProductService {
 		int pageSize = 6;
 
 		Page<Product> product = 
-				productRepo.findAllByNameContaining(searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+				productRepo.findAllByNameContainingAndStatus(searchKeyword, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 		
 		return product;
 	}
@@ -95,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
 		int pageSize = 6;
 
 		Page<Product> product = 
-				productRepo.findAllByCategory(searchCondition, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+				productRepo.findAllByCategoryAndStatus(searchCondition, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 		
 		return product;
 	}
@@ -110,7 +110,7 @@ public class ProductServiceImpl implements ProductService {
 		int pageSize = 6;
 
 		Page<Product> product = 
-				productRepo.findAllByCategoryAndNameContaining(searchCondition, searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+				productRepo.findAllByCategoryAndNameContainingAndStatus(searchCondition, searchKeyword, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 		
 		return product;
 	}

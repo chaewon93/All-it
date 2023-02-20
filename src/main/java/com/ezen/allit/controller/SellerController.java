@@ -147,6 +147,29 @@ public class SellerController {
 	}
 	
 	/*
+	 * 판매자 미등록상품목록 조회
+	 */
+	@RequestMapping("/unregistered")
+	public String getUnregisteredProductList(Model model,
+						@AuthenticationPrincipal PrincipalDetailSeller principal,
+						@PageableDefault(page = 1) Pageable pageable) {
+
+		Page<Product> productList = sellerService.getUnregisteredProductList(principal.getSeller(), pageable);
+	
+		int naviSize = 10; // 페이지네이션 갯수
+		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+	    int endPage = ((startPage + naviSize - 1) < productList.getTotalPages()) ? startPage + naviSize - 1 : productList.getTotalPages();
+		
+	    model.addAttribute("list", productList);
+	    model.addAttribute("url", "/seller/");
+	    model.addAttribute("productList", productList);
+	    model.addAttribute("startPage", startPage);
+	    model.addAttribute("endPage", endPage);
+		
+		return "seller/unRegisteredProductList";
+	}
+	
+	/*
 	 * 판매자 상품조회
 	 */
 	@GetMapping("/product/{pno}")
@@ -262,7 +285,6 @@ public class SellerController {
 	 */
 	@PostMapping("/product/insert")
 	public String insertProduct(Product product, MultipartFile imageFile) throws Exception {
-		product.setMdPickyn(0);
 		sellerService.saveProduct(product, imageFile);
 		
 		return "redirect:/seller/";

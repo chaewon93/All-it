@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
 import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.SellerRepository;
@@ -31,11 +32,16 @@ public class PrincipalDetailService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
 		Member member = memberRepo.findById(id).orElse(null);
 		Seller seller = sellerRepo.findById(id).orElse(null);
+		System.out.println("seller = " + seller);
 		
 		if(member != null) {
 			return new PrincipalDetailMember(member);
 		} else if(seller != null) {
-			return new PrincipalDetailSeller(seller);
+			if(seller.getRole() == Role.SELLER) {
+				return new PrincipalDetailSeller(seller);				
+			} else {
+				return null;
+			}
 		} else {
 			return null;
 		}

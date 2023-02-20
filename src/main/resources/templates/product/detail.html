@@ -35,7 +35,7 @@
 		<span>좋아요: </span><span th:text="${ product.hit }" style="color: aqua;"></span><br>
 		
 		<input type="button" class="btn btn-light" id="inCart" value="장바구니">
-		<input type="submit" class="btn btn-light" id="buy" formaction="/order/orderNow" value="바로구매">
+		<input type="submit" class="btn btn-light" id="buy" formaction="/order/orderNow" value="바로구매" th:onclick="return buyCheck()"/>
 		<input type="button" class="btn btn-light" id="hit" value="좋아요"/>
 		<input type="button" class="btn btn-light" data-toggle="modal" data-target="#myModal" value="문의하기"/>
 		<input type="button" class="btn btn-light" onclick="allmemproCoupon()" value="쿠폰"><br>
@@ -99,14 +99,14 @@
 	  		</div>
 	  		<div align="center">
 	  			<!-- <div class="font-italic" th:text="${ review.member.id }"></div> &nbsp; -->
-				<button class="badge" id="reviewModifyView" style="color: black" th:if="${ review.member.id == session['user']?.id }" th:onclick="'javascript:index.modifyReviewView(this, ' +${ review.rating }+ ', ' +${ review.rvno }+');'">수정</button> <!-- th:if="${ review.member.id == session['user']?.id }" -->
-	  			<button class="badge" id="reviewDelete" style="color: black" th:if="${ review.member.id == session['user']?.id }" th:onclick="'javascript:index.deleteReview(pno.value, ' +${ review.rvno }+ ');'">삭제</button> <!-- th:if="${ review.member.id == session['user']?.id }" -->
+				<!-- <button class="badge" id="reviewModifyView" style="color: black" th:if="${ review.member.id == session['user']?.id }" th:onclick="'javascript:index.modifyReviewView(this, ' +${ review.rating }+ ', ' +${ review.rvno }+');'">수정</button> -->
+	  			<button class="badge" id="reviewDelete" style="color: black" th:if="${ review.member.id == session['user']?.id }" th:onclick="'javascript:index.deleteReview(pno.value, ' +${ review.rvno }+ ');'">삭제</button>
 	  			<button class="badge" id="reviewHit" style="color: black" th:onclick="'javascript:index.hitReview(pno.value, mid.value, ' +${ review.rvno }+ ');'">좋아요</button>
 	  		</div>
 	  	</li>
 	  	
 	  	<!-- 댓글 수정 섹션 시작 -->
-	    <div id="review-modifying" style="display: none">
+	   <!--  <div id="review-modifying" style="display: none">
   			<div class="card-body">
 				<textarea class="form-control" id="modifying-content" rows=""></textarea>
 			</div>
@@ -119,25 +119,25 @@
 					<option th:value="5">5</option>	
 				</select>
 				<input type="hidden" id="modifying-rvno">
-				<!-- <input type="file" class="form-control-file border" name="reviewImageFile" id="reviewImageFile"/> -->
+				<input type="file" class="form-control-file border" name="reviewImageFile" id="reviewImageFile"/>
 				<button type="button" class="btn btn-primary" id="reviewModify" th:onclick="'javascript:index.modifyReview(this, pno.value);'">수정</button>
 				<button type="button" class="btn btn-primary" id="reviewCancle" th:onclick="'javascript:index.cancleReview(this);'">취소</button>
 			</div>
-  		</div>
+  		</div> -->
   		<!-- 댓글 수정 섹션 끝 -->
   		
   		<!-- 답글 작성 섹션 시작 -->
-	    <div id="review-reply" style="display: none">
+	    <!-- <div id="review-reply" style="display: none">
   			<div class="card-body">
 				<textarea class="form-control" id="reply-content" rows=""></textarea>
 			</div>
 			<div class="card-footer">
 				<input type="text" id="reply-rvno">
-				<!-- <input type="file" class="form-control-file border" name="reviewImageFile" id="reviewImageFile"/> -->
+				<input type="file" class="form-control-file border" name="reviewImageFile" id="reviewImageFile"/>
 				<button type="button" class="btn btn-primary" id="reviewReply" th:onclick="'javascript:index.replyReview(this, pno.value);'">작성</button>
 				<button type="button" class="btn btn-primary" id="reviewCancle" th:onclick="'javascript:index.cancleReview(this);'">취소</button>
 			</div>
-  		</div>
+  		</div> -->
   		<!-- 답글 작성 섹션 끝 -->
 	</ul>
 </div> <br>
@@ -168,6 +168,17 @@
 
 <!-- 자바스트립트 섹션 시작 -->
 <script type="text/javascript">
+//미로그인 바로구매시 false 리턴
+function buyCheck() {
+	let user_id = $("#mid").val();
+	if(user_id == "" || user_id == undefined) {
+		alert('로그인이 필요한 서비스입니다.');
+		return false;
+	} else {
+		return true;
+	}
+}
+
 let index = {
 	init:function() {
 		let type = $("#category").val();
@@ -377,15 +388,15 @@ let index = {
 		}
 	},
 
-	// 리뷰 수정버튼
-	modifyReviewView:function(btn, rating, rvno) {
+	// 기존 리뷰 수정버튼
+/* 	modifyReviewView:function(btn, rating, rvno) {
 		btn.parentElement.parentElement.nextElementSibling.firstElementChild.nextElementSibling.firstElementChild.value = rating;
 		btn.parentElement.parentElement.nextElementSibling.firstElementChild.nextElementSibling.firstElementChild.nextElementSibling.value = rvno;
 		btn.parentElement.parentElement.nextElementSibling.style.display = 'block';
-	},
+	}, */
 	
-	// 리뷰 수정
-	modifyReview:function(btn, pno) {
+	// 기존 리뷰 수정
+/* 	modifyReview:function(btn, pno) {
 		let data = {
 			pno: pno,
 			content: btn.parentElement.previousElementSibling.firstElementChild.value, 
@@ -403,13 +414,13 @@ let index = {
 			}).fail(function(error){ // 처리 실패 시
 				alert(JSON.stringify(error));
 			});
-	},
+	}, */
 	
-	// 리뷰 수정/답글 작성 취소
-	cancleReview:function(btn) {
+	// 기존 리뷰 수정/답글 작성 취소
+/* 	cancleReview:function(btn) {
 		document.getElementById("modifying-content").value = "";
 		btn.parentElement.parentElement.style.display = 'none';
-	},
+	}, */
 	
 	// 리뷰 삭제
 	deleteReview:function(pno, rvno) {
