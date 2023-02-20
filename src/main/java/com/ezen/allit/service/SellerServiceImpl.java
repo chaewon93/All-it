@@ -81,7 +81,7 @@ public class SellerServiceImpl implements SellerService {
 		String rawPwd = seller.getPwd();		// 입점신청 화면에서 넘겨받은 pwd
 		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
 		seller.setPwd(encPwd);
-		seller.setRole(Role.SELLER);
+		seller.setRole(Role.TEMP);
 		sellerRepo.save(seller);
 	}
 
@@ -92,8 +92,8 @@ public class SellerServiceImpl implements SellerService {
 	public Page<Product> getProductList(Pageable pageable, Seller seller) {
 		int page = pageable.getPageNumber() - 1;
 		int pageSize = 3;
-		Page<Product> product = 
-				productRepo.findAllBySellerId(seller.getId(), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+		Page<Product> productList = 
+				productRepo.findAllBySellerIdAndStatus(seller.getId(), 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 
 		/*
         System.out.println("product.getContent() = " + product.getContent()); 			  // 요청 페이지에 해당하는 글
@@ -106,7 +106,35 @@ public class SellerServiceImpl implements SellerService {
         System.out.println("product.isLast() = " + product.isLast()); 					  // 마지막 페이지 여부
 		*/
 		
-        return product;
+        return productList;
+	}
+	
+	/*
+	 * 판매자 상품검색
+	 */
+	@Transactional
+	public Page<Product> search(Seller seller, String searchKeyword, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 3;
+		
+		Page<Product> productList = 
+				productRepo.findAllBySellerIdAndNameContainingAndStatus(seller.getId(), searchKeyword, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+		
+		return productList;
+	}
+	
+	/*
+	 * 판매자 미등록상품목록 조회
+	 */
+	@Transactional
+	public Page<Product> getUnregisteredProductList(Seller seller, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 3;
+		
+		Page<Product> productList = 
+				productRepo.findAllBySellerIdAndStatus(seller.getId(), 0, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+		
+		return productList;
 	}
 
 	/*
@@ -183,20 +211,6 @@ public class SellerServiceImpl implements SellerService {
 		
 		return qna;
 	}
-
-	/*
-	 * 판매자 상품검색
-	 */
-	@Transactional
-	public Page<Product> search(Seller seller, String searchKeyword, Pageable pageable) {
-		int page = pageable.getPageNumber() - 1;
-		int pageSize = 3;
-		
-		Page<Product> product = 
-				productRepo.findAllBySellerIdAndNameContaining(seller.getId(), searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
-		
-		return product;
-	}
 	
 	/*
 	 * 판매자 상품등록
@@ -207,7 +221,7 @@ public class SellerServiceImpl implements SellerService {
 		//String realPath = "c:/fileUpload/images/"; 	// 파일 저장경로
 		
 		String realPath = "c:/allit/images/product/"; 	// 상품 이미지파일 저장경로
-		
+
 		File saveDir = new File(realPath);
 		if(!saveDir.isDirectory()) {
 			
@@ -224,7 +238,9 @@ public class SellerServiceImpl implements SellerService {
 				imageFile.transferTo(saveFile);			     // 생성 완료
 				
 				product.setImageName(imgName);				 // DB에 저장될 파일명 (DB 저장을 위해 설정(없으면 DB에 저장 안됨))
-				
+				product.setMdPickyn(0);
+		    product.setStatus(0);
+    
 				productRepo.save(product);
 				
 			} else {

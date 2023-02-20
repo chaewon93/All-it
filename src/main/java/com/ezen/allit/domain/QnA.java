@@ -36,5 +36,6 @@ public class QnA {
 	@CreationTimestamp
 	private Date regDate;    // 등록일
 	@CreationTimestamp
+	@Column(nullable = true)
 	private Date resDate;    // 답변일
 }

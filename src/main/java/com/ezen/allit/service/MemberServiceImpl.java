@@ -23,31 +23,25 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ezen.allit.domain.Grade;
 import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Member;
-import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.OrdersDetail;
+import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
 import com.ezen.allit.domain.ReviewFile;
 import com.ezen.allit.domain.Role;
-
-import com.ezen.allit.dto.AddressCountDto;
-
 import com.ezen.allit.domain.Seller;
-import com.ezen.allit.repository.MemberRepository;
-import com.ezen.allit.repository.OrdersDetailRepository;
-import com.ezen.allit.repository.QnARepository;
-import com.ezen.allit.repository.ReviewFileRepository;
-import com.ezen.allit.repository.ReviewRepository;
-import com.ezen.allit.repository.SellerRepository;
-import com.ezen.allit.domain.Product;
+import com.ezen.allit.dto.AddressCountDto;
 import com.ezen.allit.dto.HitDto;
 import com.ezen.allit.dto.MemberDto;
 import com.ezen.allit.dto.ReviewDto;
 import com.ezen.allit.repository.HitRepository;
 import com.ezen.allit.repository.MemberRepository;
+import com.ezen.allit.repository.OrdersDetailRepository;
 import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.repository.QnARepository;
+import com.ezen.allit.repository.ReviewFileRepository;
 import com.ezen.allit.repository.ReviewRepository;
+import com.ezen.allit.repository.SellerRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -88,6 +82,7 @@ public class MemberServiceImpl implements MemberService {
 		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
 		member.setPwd(encPwd);
 		member.setRole(Role.MEMBER);
+		member.setGrade(Grade.BRONZE);
 		member.setRegDate(new Date());
 
 		memberRepo.save(member);

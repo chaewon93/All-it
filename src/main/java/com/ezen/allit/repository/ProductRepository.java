@@ -10,18 +10,21 @@ import org.springframework.data.jpa.repository.Query;
 import com.ezen.allit.domain.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
+	// 상품목록조회 (검색조건 x, 검색어 x)
+	Page<Product> findAllByStatus(int status, Pageable pageable);
+
 	// 신상품목록조회
-	@Query(value = "SELECT * FROM product WHERE TO_CHAR(sysdate, 'YYYYMMDD')-TO_CHAR(reg_date, 'YYYYMMDD')<8", nativeQuery = true)
+	@Query(value = "SELECT * FROM product WHERE TO_CHAR(sysdate, 'YYYYMMDD')-TO_CHAR(reg_date, 'YYYYMMDD')<8 AND status = 1", nativeQuery = true)
 	Page<Product> getNewProductList(Pageable pageable);
 
 	// 상품검색 (검색조건 x, 검색어 o)
-	Page<Product> findAllByNameContaining(String searchKeyword, Pageable pageable);
+	Page<Product> findAllByNameContainingAndStatus(String searchKeyword, int status, Pageable pageable);
 	
 	// 상품검색 (검색조건 o, 검색어 x), 카테고리별 상품조회 
-	Page<Product> findAllByCategory(int searchCondition, Pageable pageable);
+	Page<Product> findAllByCategoryAndStatus(int searchCondition, int status, Pageable pageable);
 
 	// 상품검색 (검색조건 o, 검색어 o)
-	Page<Product> findAllByCategoryAndNameContaining(int searchCondition, String searchKeyword, Pageable pageable);
+	Page<Product> findAllByCategoryAndNameContainingAndStatus(int searchCondition, String searchKeyword, int status, Pageable pageable);
 	
 	Page<Product> findProductByStatus(int status, Pageable pageable);
 
@@ -33,10 +36,10 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	List<Product> findFirst3BymdPickynOrderByRegDateDesc(int y);
 
 	// 판매자별 상품검색
-	Page<Product> findAllBySellerIdAndNameContaining(String id, String searchKeyword, Pageable pageable);
+	Page<Product> findAllBySellerIdAndNameContainingAndStatus(String id, String searchKeyword, int status, Pageable pageable);
 
 	// 판매자별 상품조회
-	Page<Product> findAllBySellerId(String id, Pageable pageable);
+	Page<Product> findAllBySellerIdAndStatus(String id, int status, Pageable pageable);
 		
 
 }
