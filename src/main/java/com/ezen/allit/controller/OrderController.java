@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -48,8 +50,14 @@ public class OrderController {
 	private final CouponService couponService;
 	
 	@ModelAttribute("user")
-	public Member setMember() {
-		return new Member();
+	public Member setMember(@AuthenticationPrincipal PrincipalDetailMember principal) {
+		if(principal != null) {
+			Member member = principal.getMember();
+			System.out.println("member=============== = " + member);
+			return member;
+		} else {
+			return null;
+		}
 	}
 	
 	/** 즉시구매 시 주문/결제 페이지 요청 */
@@ -58,6 +66,7 @@ public class OrderController {
 							@RequestParam("quantity") int quantity) {
 		
 		Member member = memberRepo.findById(mid).get();
+		System.out.println("member = " + member);
 		
 		Product theProduct = productRepo.findById(product.getPno()).get();
 		model.addAttribute("user", member);
@@ -69,11 +78,12 @@ public class OrderController {
 	
 	/** 장바구니에서 주문/결제 페이지 요청 */
 	@PostMapping("/orderInfo")
-	public String ordersView(Model model, String mid,
+	public String ordersView(Model model, HttpSession session,
 							@RequestParam(value = "cno") int[] cno) {
 		
 		//System.out.println("[Orders ordersView()] cartList.size : "+cno.length);
-		Member member = memberRepo.findById(mid).orElse(null);
+		Member theMemeber = (Member) session.getAttribute("user");
+		System.out.println("theMemeber = " + theMemeber);
 		
 		int totalPrice = 0;
 		List<Cart> cartList = new ArrayList<>();
@@ -85,7 +95,7 @@ public class OrderController {
 			totalPrice += cart.getProduct().getPrice() * cart.getQuantity();
 		}
  		
- 		model.addAttribute("user", member);
+ 		model.addAttribute("user", theMemeber);
  		model.addAttribute("cartList", cartList);
 		model.addAttribute("totalPrice", totalPrice);
 		//System.out.println("[Orders ordersView()] totalPrice : "+totalPrice);

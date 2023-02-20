@@ -33,13 +33,15 @@ public class PrincipalDetailService implements UserDetailsService {
 		Member member = memberRepo.findById(id).orElse(null);
 		Seller seller = sellerRepo.findById(id).orElse(null);
 		System.out.println("seller = " + seller);
-		
-		if(member != null) {
+		 
+		if(member != null) { 							// 로그인시 member인지 확인
 			return new PrincipalDetailMember(member);
-		} else if(seller != null) {
-			if(seller.getRole() == Role.SELLER) {
+		} else if(seller != null) { 					// 로그인시 seller인지 확인
+			if(seller.getRole() == Role.SELLER) { 		// 역할이 판매자면
 				return new PrincipalDetailSeller(seller);				
-			} else {
+			} else if(seller.getRole() == Role.ADMIN) { // 역할이 관리자면
+				return new PrincipalDetailSeller(seller);
+			} else { 									// 역할이 TEMP면
 				return null;
 			}
 		} else {

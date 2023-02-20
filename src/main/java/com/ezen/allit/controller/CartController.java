@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.ezen.allit.config.auth.PrincipalDetailMember;
 import com.ezen.allit.domain.Cart;
@@ -26,7 +27,8 @@ import com.ezen.allit.service.CartService;
 import com.ezen.allit.service.CouponService;
 
 @Controller
-@RequestMapping("/cart/")
+@RequestMapping("/cart")
+@SessionAttributes("user")
 public class CartController {
 	
 	@Autowired
@@ -36,8 +38,14 @@ public class CartController {
 	private CouponService couponService;
 	
 	@ModelAttribute("user")
-	public Member setMember() {
-		return new Member();
+	public Member setMember(@AuthenticationPrincipal PrincipalDetailMember principal) {
+		if(principal != null) {
+			Member member = principal.getMember();
+			System.out.println("member=============== = " + member);
+			return member;
+		} else {
+			return null;
+		}
 	}
 	
 	/** 장바구니 담기 처리 */
