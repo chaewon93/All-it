@@ -42,12 +42,11 @@ public class PrincipalDetailService implements UserDetailsService {
 				return new PrincipalDetailSeller(seller);            
 			} else if(seller.getRole() == Role.ADMIN) { // 역할이 관리자면
 				return new PrincipalDetailSeller(seller);
-			} else {                            		// 역할이 TEMP면
-				return null;
+			} else if(seller.getRole() == Role.TEMP){   // 역할이 TEMP면
+				return new PrincipalDetailSeller(seller);
 			}
-		} else {
-			return null;
-		}
+		} 
+		return null;
 
 	}
 
