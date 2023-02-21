@@ -9,34 +9,31 @@
 </head>
 
 <body th:align="center">
-<h1>로그인</h1>
-<form action="/member/login" method="post">
-<table th:align="center" border="1" th:cellpadding="0" th:cellspacing="0">
+<form action="/member/login" method="post" class="col-lg-12" style="margin: 100px 0;">
+<table th:align="center" th:cellpadding="3" th:cellspacing="0">
 	<tr>
-		<td>아이디</td>
-		<td><input type="text" name="id"/></td>
-	</tr>
-	<tr>
-		<td>비밀번호</td>
-		<td><input type="password" name="pwd"/></td>
-	</tr>
-	<tr>
-		<td colspan="2" align="center">
-			<input type="submit" value="로그인" class="btn btn-primary"/>
+		<td th:align="center">아이디</td>
+		<td><input type="text" name="id" class="form-control mr-sm-2"/></td>
+		<td colspan="2" rowspan="2" align="center">
+			<input type="submit" value="로그인" class="btn btn-warning" style="height: 100"/>
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2" align="center">
+		<td th:align="center">비밀번호</td>
+		<td><input type="password" name="pwd" class="form-control mr-sm-2"/></td>
+	</tr>
+	<tr>
+		<td colspan="3" align="center">
 			<!-- <a th:href="@{ /member/findIdAndPw }">아이디/비밀번호 찾기</a> -->
 			<input type="button" value="아이디/비밀번호 찾기" onclick="find_form()" class="btn btn-light">
 		</td>
 	</tr>
 </table><br>
 <div align="center">
-	<a href="/oauth2/authorization/google"><img class="img-fluid" th:src="@{ /images/ } + 'google.png'" width="183" height="45" style="margin-bottom: 5px"></a><br>
-	<a href="/oauth2/authorization/facebook"><img class="img-fluid" th:src="@{ /images/ } + 'facebook.png'" width="183" height="45" style="margin-bottom: 5px"></a><br>
-	<a href="/oauth2/authorization/naver"><img class="img-fluid" th:src="@{ /images/ } + 'naver.png'" width="183" height="45" style="margin-bottom: 5px"></a><br>
-	<a href="/oauth2/authorization/kakao"><img class="img-fluid" th:src="@{ /images/ } + 'kakao.png'" width="183" height="45"></a>
+  <a href="/oauth2/authorization/google"><img class="img-fluid" th:src="@{ /img/google.png }" width="183" height="45" style="margin-bottom: 5px"></a><br>
+  <a href="/oauth2/authorization/facebook"><img class="img-fluid" th:src="@{ /img/facebook.png }" width="183" height="45" style="margin-bottom: 5px"></a><br>
+  <a href="/oauth2/authorization/naver"><img class="img-fluid" th:src="@{ /img/naver.png }" width="183" height="45" style="margin-bottom: 5px"></a><br>
+  <a href="/oauth2/authorization/kakao"><img class="img-fluid" th:src="@{ /img/kakao.png }" width="183" height="45"></a>
 </div>
 </form>
 

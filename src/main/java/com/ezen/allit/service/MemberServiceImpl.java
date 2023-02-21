@@ -1,8 +1,11 @@
 package com.ezen.allit.service;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,21 +18,30 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.domain.Grade;
 import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
+import com.ezen.allit.domain.ReviewFile;
 import com.ezen.allit.domain.Role;
+import com.ezen.allit.domain.Seller;
 import com.ezen.allit.dto.AddressCountDto;
-import com.ezen.allit.dto.HitSaveRequestDto;
+import com.ezen.allit.dto.HitDto;
+import com.ezen.allit.dto.MemberDto;
+import com.ezen.allit.dto.ReviewDto;
 import com.ezen.allit.repository.HitRepository;
 import com.ezen.allit.repository.MemberRepository;
+import com.ezen.allit.repository.OrdersDetailRepository;
 import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.repository.QnARepository;
+import com.ezen.allit.repository.ReviewFileRepository;
 import com.ezen.allit.repository.ReviewRepository;
+import com.ezen.allit.repository.SellerRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -41,6 +53,9 @@ public class MemberServiceImpl implements MemberService {
 	private final HitRepository hitRepo;
 	private final QnARepository qnaRepo;
 	private final ReviewRepository reviewRepo;
+	private final ReviewFileRepository reviewFileRepo;
+	private final SellerRepository sellerRepo;
+	private final OrdersDetailRepository ordersDetailRepo;
 	private final BCryptPasswordEncoder encoder;
 	
 	// 
@@ -67,6 +82,8 @@ public class MemberServiceImpl implements MemberService {
 		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
 		member.setPwd(encPwd);
 		member.setRole(Role.MEMBER);
+		member.setGrade(Grade.BRONZE);
+		member.setRegDate(new Date());
 
 		memberRepo.save(member);
 	}
@@ -94,7 +111,6 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	@Transactional
 	public Member modifySnsMember(Member member) {
-		System.out.println("member = " + member);
 		Member theMember = memberRepo.findById(member.getId()).get();
 
 		theMember.setEmail(member.getEmail());
@@ -103,8 +119,22 @@ public class MemberServiceImpl implements MemberService {
 		theMember.setAddress(member.getAddress());
 		theMember.setBirth(member.getBirth());
 		theMember.setGender(member.getGender());
-		System.out.println("theMember = " + theMember);
+
 		return theMember;
+	}
+	
+	/** sns 회원 정보 수정 */
+	@Override
+	@Transactional
+	public void modifySnsMemberInfo(MemberDto memberDto) {
+		Member theMember = memberRepo.findById(memberDto.getId()).get();
+
+		theMember.setEmail(memberDto.getEmail());
+		theMember.setPhone(memberDto.getPhone());
+		theMember.setZipcode(memberDto.getZipcode());
+		theMember.setAddress(memberDto.getAddress1()+","+memberDto.getAddress2());
+		theMember.setBirth(memberDto.getBirth());
+		theMember.setGender(memberDto.getGender());
 	}
 
 	/** 아이디 중복확인 */
@@ -131,6 +161,19 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public Member findByPw(Member member) {
 		return memberRepo.findByIdAndNameAndEmail(member.getId(), member.getName(), member.getEmail());
+	}
+	
+	/** 회원 비밀번호 수정 */
+	@Override
+	@Transactional
+	public Member modifyMemberPwd(Member member) {
+		Member theMember = memberRepo.findById(member.getId()).get();
+		String rawPwd = member.getPwd();		// 회원가입 화면에서 넘겨받은 pwd
+		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
+
+		theMember.setPwd(encPwd);
+
+		return theMember;
 	}
 
 	/** 회원 탈퇴 */
@@ -171,10 +214,10 @@ public class MemberServiceImpl implements MemberService {
 
 	/** 상품 좋아요 */
 	@Transactional
-	public void hitProduct(HitSaveRequestDto hitSaveRequestDto) {
-		Optional<Hit> hit = hitRepo.findByProductPnoAndMemberId(hitSaveRequestDto.getPno(), hitSaveRequestDto.getMid());
-		Product product = productRepo.findById(hitSaveRequestDto.getPno()).get();
-		Member member = memberRepo.findById(hitSaveRequestDto.getMid()).get();
+	public void hitProduct(HitDto hitDto) {
+		Optional<Hit> hit = hitRepo.findByProductPnoAndMemberId(hitDto.getPno(), hitDto.getMid());
+		Product product = productRepo.findById(hitDto.getPno()).get();
+		Member member = memberRepo.findById(hitDto.getMid()).get();
 		
 		/* 이전에 좋아요 누른 기록이 없으면 좋아요, 있으면 좋아요 취소 */
 		if(hit.isEmpty()) {
@@ -244,8 +287,8 @@ public class MemberServiceImpl implements MemberService {
 		
 		return reviewList;
 	}
-
-	// 차트 테스트 중...
+  
+// 차트 테스트 중...
 	@Override
 	public List<AddressCountDto> getListAddressCount() {
 //		String sql ="select , substr(address, 1, 2) as address, COUNT(*) as count from member group by substr(address, 1, 2)";
@@ -255,29 +298,88 @@ public class MemberServiceImpl implements MemberService {
 		return (List<AddressCountDto>) query.getResultList();
 	}
 
+	/** 리뷰작성 */
+	@Transactional
+	public void saveReview(ReviewDto reviewDto) throws Exception {
+		Member member = memberRepo.findById(reviewDto.getMid()).get();
+		Seller seller = sellerRepo.findById(reviewDto.getSid()).get();
+		Product product = productRepo.findById(reviewDto.getPno()).get();
+		OrdersDetail ordersDetail = ordersDetailRepo.findById(reviewDto.getOdno()).get();
 
-	/** 구매확정 후 리뷰 */
-//	@Transactional
-//	public void saveReview(Review review) throws Exception {
-//		int theRvno = reviewRepo.save(review).getRvno();
-//		System.out.println("theRvno = " + theRvno);
-//		Review theReview = reviewRepo.findById(theRvno).get();
-//		System.out.println("theReview = " + theReview);
-//		
-//		for(ReviewFile imageFile : theReview.getReviewFile()) {
-//			String ogName = imageFile.getImageName(); 										  // 원본 파일명
-//			String realPath = "c:/fileUpload/images/"; 	// 파일 저장경로
-//			/*
-//			 * UUID를 이용해 중복되지 않는 파일명 생성
-//			 */
-//			UUID uuid = UUID.randomUUID();
-//			String imgName = uuid + "_" + ogName; 		 // 저장될 파일명
-//			
-//			File saveFile = new File(realPath, imgName); // 저장경로와 파일명을 토대로 새 파일 생성 
-//			imageFile.transferTo(saveFile);			     // 생성 완료
-//			
-//			reviewRepo.save(theReview);
-//		}
-//	}
+		/** 파일 미첨부시 */
+		if(reviewDto.getImageFile().get(0).isEmpty()) {
+			Review review = Review.toSaveReview(reviewDto);
+			review.setMember(member);
+			review.setSeller(seller);
+			review.setProduct(product);
+			review.setOrdersDetail(ordersDetail);
+			ordersDetail.setStatus(8);
+			
+			reviewRepo.save(review);
+		
+		/** 파일 첨부시(다중가능) */
+		} else {
+			Review review = Review.toSaveFileReview(reviewDto);
+			review.setMember(member);
+			review.setSeller(seller);
+			review.setProduct(product);
+			review.setOrdersDetail(ordersDetail);
+			ordersDetail.setStatus(8);
+			
+			int theRvno = reviewRepo.save(review).getRvno();
+			Review theReview = reviewRepo.findById(theRvno).get();
+		
+			for(MultipartFile imageFile : reviewDto.getImageFile()) {
+				String ogName = imageFile.getOriginalFilename(); // 원본 파일명
+				//String realPath = "c:/fileUpload/images/"; 	// 파일 저장경로
+				String realPath = "c:/allit/images/review/"; 	// 리뷰 이미지파일 저장경로
+				
+				File saveDir = new File(realPath);
+				if(!saveDir.isDirectory()) {
+					// mkdir() : 해당 경로에 디렉토리가 존재하지 않으면 생성
+					// mkdirs() :  mkdir()과 같으나 상위 폴더들이 없으면 상위 폴더들까지 생성
+					if(saveDir.mkdirs()) {
+						/*
+						 * UUID를 이용해 중복되지 않는 파일명 생성
+						 */
+						UUID uuid = UUID.randomUUID();
+						String imgName = uuid + "_" + ogName; 		 // 저장될 파일명
+						
+						File saveFile = new File(realPath, imgName); // 저장경로와 파일명을 토대로 새 파일 생성 
+						imageFile.transferTo(saveFile);			     // 생성 완료
+						
+						ReviewFile reviewFile = ReviewFile.toSaveReviewFile(theReview, imgName); // reviewFile에 데이터 저장
+						reviewFile.setRegDate(new Date());
+						
+						reviewFileRepo.save(reviewFile);
+					} else {
+						System.out.println("[saveReview()] "+ realPath + " : 디렉토리가 생성 중 오류");
+					}
+				} else {
+					System.out.println("[saveReview()] "+ realPath + " : 디렉토리가 아니거나 존재하지 않음.");
+				}
+			}
+		}
+	}
+	
+	/** 좋아요목록 조회 */
+	@Transactional
+	public Page<Hit> getLikeList(String id, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 10;
+		
+		Page<Hit> likeList = 
+				hitRepo.findAllByMemberIdAndProductNotNull(id, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "hno")));
+		
+		System.out.println("likeList = " + likeList);
+		return likeList;
+	}
+	
+	/** 리뷰삭제 */
+	@Transactional
+	public void deleteHit(HitDto hitDto) {
+		Hit hit = hitRepo.findById(hitDto.getHno()).get();
+		hitRepo.deleteById(hit.getHno());
+	}
 
 }

@@ -9,13 +9,14 @@
 </head>
 
 <body th:align="center">
-<h1>고객센터(1:1 문의)</h1>
-
+<div class="container" style="height: 800px; margin-top: 30px;">
+<h1>고객센터(1:1 문의)</h1><br>
 <form th:action="@{/member/writeQna}" method="post">
-<table>
+<table th:align="center">
 	<tr>
-		<td>
-			<select name="category">
+		<th th:text="카테고리">
+		<td colspan="2">
+			<select name="category" class="form-control">
 				<option value="주문/결제" selected>주문/결제</option>
 				<option value="취소/교환/반품" >취소/교환/반품</option>
 				<option value="환불" >환불</option>
@@ -26,25 +27,26 @@
 		</td>
 	</tr>
 	<tr>
-		<td bgcolor="orange" width="70" th:text="제목"></td>
-		<td align="left"><input type="hidden" th:value="${ #authentication.principal.member?.id }" name="mid" id="mid">
-			<input type="text" name="title" required="required"/>
+		<th width="70" th:text="제목"></th>
+		<td align="left">
+			<input type="hidden" th:value="${ #authentication.principal.member?.id }" name="mid" id="mid">
+			<input type="text" name="title" required="required" class="form-control"/>
 		</td>
 	</tr>
 	<tr>
-		<td bgcolor="orange" th:text="내용"></td>
+		<th th:text="내용"></th>
 		<td align="left">
-			<textarea name="content" cols="40" rows="10" required="required"></textarea>
+			<textarea name="content" cols="40" rows="10" required="required" class="form-control"></textarea>
 		</td>
 	</tr>
 	<tr>
 		<td colspan="2" align="center">
-			<input type="submit" value="등록" class="btn btn-primary"/>
+			<input type="submit" value="등록" class="btn btn-warning"/>
 		</td>
 	</tr>
 </table>
 </form>
-
+</div>
 </body>
 
 <!-- footer replace -->

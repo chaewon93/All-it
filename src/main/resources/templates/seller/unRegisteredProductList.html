@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<!-- header replace -->
+
+<!-- 내용 섹션 시작 -->
+<div class="container" style="margin-top: 30px; background-color: white">	
+	<div class="row">
+		<div class="col-sm-4" th:each="product : ${ productList }">
+			<a th:href="@{ |/seller/product/${ product.pno }| }">
+				<h2 th:text="${ product.name }"></h2>
+				<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="350">
+				<p th:text="${ product.content }"></p>
+			</a>
+			<hr class="d-sm-none">
+		</div>
+	</div>
+</div>
+<!-- 내용 섹션 끝 -->
+
+<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
+<!-- pagination replace -->
+
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+<!-- footer replace -->
+	

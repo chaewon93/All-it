@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<link rel="stylesheet" th:href="@{ https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css }">
+<script th:src="@{ https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js }"></script>
+<script th:src="@{ https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js }"></script>
+
+<div th:fragment="pager">	 
+	<ul class="pagination justify-content-center">
+
+<!-- 주문 취소 내역 페이징 -->
+<div th:if="${cancelList.getTotalElements() != 0}" id="divCancel" class="form-inline">
+	<!-- 2(Prev) - list.getNumber() 사용자:2페이지 getNumber()=1 -->
+	<li class="page-item"><a class="btn btn-outline-warning" th:href="${ cancelList?.first } ? '#' : @{ ${ url }(page=${ cancelList?.number }, status = cancel) }">&lt; prev</a></li>
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<!-- 4(Next) - 사용자: 2페이지, getNumber: 1, 3페이지-->
+	<li class="page-item"><a class="btn btn-outline-warning" th:href="${ cancelList.last } ? '#' : @{ ${ url }(page=${ cancelList?.number + 2 }, status = cancel) }">next &gt</a></li>
+</div>
+
+<!-- 교환 내역 페이징 -->
+<div th:if="${exchangeList.getTotalElements() != 0}" id="divExchange" class="form-inline">
+	<!-- 2(Prev) - list.getNumber() 사용자:2페이지 getNumber()=1 -->
+	<li class="page-item"><a class="btn btn-outline-warning" th:href="${ exchangeList?.first } ? '#' : @{ ${ url }(page=${ exchangeList?.number }, status = exchange) }">&lt; prev</a></li>
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<!-- 4(Next) - 사용자: 2페이지, getNumber: 1, 3페이지-->
+	<li class="page-item"><a class="btn btn-outline-warning" th:href="${ exchangeList.last } ? '#' : @{ ${ url }(page=${ exchangeList?.number + 2 }, status = exchange) }">next &gt</a></li>
+</div>
+
+<!-- 환불 내역 내역 페이징 -->
+<div th:if="${refundList.getTotalElements() != 0}" id="divRefund" class="form-inline">
+	<!-- 2(Prev) - list.getNumber() 사용자:2페이지 getNumber()=1 -->
+	<li class="page-item"><a class="btn btn-outline-warning" th:href="${ refundList?.first } ? '#' : @{ ${ url }(page=${ refundList?.number }, status = refund) }">&lt; prev</a></li>
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<!-- 4(Next) - 사용자: 2페이지, getNumber: 1, 3페이지-->
+	<li class="page-item"><a class="btn btn-outline-warning" th:href="${ refundList.last } ? '#' : @{ ${ url }(page=${ refundList?.number + 2 }, status = refund) }">next &gt</a></li>
+</div>
+
+	</ul>
+</div>

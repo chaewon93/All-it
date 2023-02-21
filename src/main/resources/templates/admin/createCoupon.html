@@ -37,7 +37,7 @@ function setCondition(){
 		<td>쿠폰 설명(이름)</td>
 		<td>
 			<input type="text" name="couContent" id="couContent" required="required"/>
-			<input type="hidden" name="regId" id="regId" th:value="${session['admin'].id}"/>
+			<input type="hidden" name="regId" id="regId" th:value="${#authentication.principal.seller.id}"/>
 		</td>	
 	</tr>
 

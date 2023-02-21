@@ -1,6 +1,5 @@
 package com.ezen.allit.controller;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -29,11 +28,12 @@ import lombok.RequiredArgsConstructor;
 public class HomeController {
 	private final MemberService memberService;
 	private final SellerService sellerService;
+
 	private final CouponService couponService;
 	private final CustomerCenterService custoService;
 	private final ProductService proService;;
 	
-	// 홈 화면 이동
+	/** 홈 화면 이동 */
 	@GetMapping({"", "/"})
 	public String index(Model model) {
 		// 메인화면에 출력되는 이벤트 리스트와 mdPick 리스트
@@ -57,17 +57,13 @@ public class HomeController {
 	
 	/** 회원가입 기능 처리 */
 	@PostMapping("/member-join")
-	public String join(Member member, SessionStatus status) {
-		member.setGrade(Grade.BRONZE);
-		member.setRegDate(new Date());
+	public String join(Member member) {
 		memberService.saveMember(member);
-		status.setComplete();
-		
 		couponService.insertMemCoupon(member, 1);
 		
 		return "redirect:/member-login";
 	}
-	
+
 	/** 아이디 중복 확인 처리 */
 	@ResponseBody
 	@PostMapping("/member-idCheck")
@@ -94,9 +90,7 @@ public class HomeController {
 		return "seller/apply";
 	}
 	
-	/*
-	 * 판매자 입점신청
-	 */
+	/** 판매자 입점신청 */
 	@PostMapping("/sellerApply")
 	public String apply(Seller seller) {
 		sellerService.saveSeller(seller);
@@ -112,17 +106,45 @@ public class HomeController {
 		return sellerService.idCheck(user_id);
 	}
 	
-	// 판매자 로그인 화면 이동
+	/** 판매자 로그인 화면 이동 */
 	@GetMapping("/sellerLogin")
 	public String loginView() {
 		
 		return "seller/login";
 	}
 	
-	// 권한없는 페이지 요청시
+	/** 권한없는 페이지 요청시 */
 	@GetMapping("/denied")
 	public String loginError() {
 		
 		return "denied";
 	}
+	
+	/** 푸터 : 이용약관 */
+	@GetMapping("/terms-of-service")
+	public String termsOfService() {
+		
+		return "common/terms_of_service";
+	}
+	
+	/** 푸터 : 개인정보 처리방침 */
+	@GetMapping("/privacy")
+	public String privacy() {
+		
+		return "common/privacy";
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

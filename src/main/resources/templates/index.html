@@ -40,9 +40,11 @@ $(document).ready(function() {
 	<br><br>
 	<div class="row">
 		<div class="col-sm-4" th:each="mdPick : ${proList}">
-			<h2 th:text="${mdPick.name}" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"></h2>
-			<img class="img-fluid" th:src="@{ /images/ } + ${ mdPick.imageName }" width="350">
-			<p th:text="${mdPick.content}" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"></p>
+			<a th:href="@{ |/product/${ mdPick.pno }| }" class="text-info">
+				<h2 th:text="${mdPick.name}" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"></h2>
+				<img class="img-fluid" th:src="@{ /images/product/ } + ${ mdPick.imageName }" width="350">
+				<p th:text="${mdPick.content}" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"></p>
+			</a>
 			<hr class="d-sm-none">
 		</div>
 	<!-- 

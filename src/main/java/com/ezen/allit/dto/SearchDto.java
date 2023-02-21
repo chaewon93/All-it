@@ -3,7 +3,7 @@ package com.ezen.allit.dto;
 import lombok.Data;
 
 @Data
-public class Search {
+public class SearchDto {
 	private int searchCondition;
 	private String searchKeyword;
 }

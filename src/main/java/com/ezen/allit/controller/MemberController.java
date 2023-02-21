@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +11,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -28,16 +25,19 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ezen.allit.config.auth.PrincipalDetailMember;
 import com.ezen.allit.domain.Coupon;
+import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.MemCoupon;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
+import com.ezen.allit.dto.ReviewDto;
 import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.OrdersDetailRepository;
 import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.service.CouponService;
 import com.ezen.allit.service.MemberService;
+import com.ezen.allit.service.OrderService;
 
 @Controller
 @RequestMapping("/member/")
@@ -51,6 +51,9 @@ public class MemberController {
 	private CouponService couponService;
 	
 	@Autowired
+	private OrderService orderService;
+	
+	@Autowired
 	private MemberRepository memberRepo;
 	
 	@Autowired
@@ -61,9 +64,13 @@ public class MemberController {
 	
 	@ModelAttribute("user")
 	public Member setMember(@AuthenticationPrincipal PrincipalDetailMember principal) {
-		Member member = principal.getMember();
-		System.out.println("member=============== = " + member);
-		return member;
+		if(principal != null) {
+			Member member = principal.getMember();
+			System.out.println("member=============== = " + member);
+			return member;
+		} else {
+			return null;
+		}
 	}
 	
 	/** 메인 페이지 */
@@ -73,7 +80,7 @@ public class MemberController {
 	}
 */	
 
-	/** 로그인 기능 처리 */
+	/** 로그인 기능 처리 => Security 적용 */ 
 //	@PostMapping("/login")
 //	public String login(Member member, Model model) {
 //		
@@ -95,6 +102,7 @@ public class MemberController {
 //			return "redirect:/member-login";
 //		}
 //	}
+
 	
 	/** 아이디 찾기 기능 처리 */
 	@PostMapping("/findId")
@@ -121,14 +129,38 @@ public class MemberController {
 		if (findMember != null) {  // 이름과 이메일을 조건으로 아이디 조회 성공
 			model.addAttribute("message", 1);
 			model.addAttribute("pw", findMember.getPwd());
+			model.addAttribute("id", findMember.getId());
+
+			return "member/findPw";
 		} else {
 			model.addAttribute("message", -1);
+			
+			return "member/findPwError";
 		}
 		
-		return "member/findPw";
 	}
 	
-	/** 로그아웃 처리 */
+	/** 비밀번호 수정 처리 */
+	@PostMapping("/modifyPwd")
+	public String modifyPwd(Member member, Model model) {
+		System.out.println("[Member infoModify()] Member : "+member);
+
+		memberService.modifyMemberPwd(member);			
+
+		// 세션에 수정된 정보 저장
+		model.addAttribute("user", memberRepo.findById(member.getId()).get());
+		
+		return "redirect:/";
+	}
+	
+	/** SNS사용자 구매화면에서 정보저장 창 */
+	@GetMapping("/infoWrite/{mid}")
+	public String getInfoForm(Model model, @PathVariable String mid) {
+		model.addAttribute("id", mid);
+		return "member/infoWrite";
+	}
+	
+	/** 로그아웃 처리 => Security 적용 */
 //	@GetMapping("/logout")
 //	public String logout(SessionStatus status) {
 //		status.setComplete();	// 세션 데이터 삭제 및 세션 해지
@@ -160,11 +192,9 @@ public class MemberController {
 		System.out.println("[Member infoModify()] Member : "+member);
 		
 		// 회원 정보 수정
-		if(member.getProvider() == "") {
-			System.out.println("일반회원 : "+member);
+		if(member.getProvider() == "") { // 일반회원 정보수정시
 			memberService.modifyMember(member);			
-		} else {
-			System.out.println("sns회원 : "+member);
+		} else {						 // sns회원 정보수정시
 			memberService.modifySnsMember(member);
 		}
 		
@@ -245,13 +275,6 @@ public class MemberController {
 		return "mypage/qnaDetail";
 	}
 	
-	/** 올잇머니 관리 페이지 */
-	@GetMapping("/money")
-	public String moneyView() {
-		
-		return "mypage/moneyInfo";
-	}
-	
 	/** 올잇머니 충전 */
 	@ResponseBody
 	@PostMapping("/moneyCharge")
@@ -264,48 +287,150 @@ public class MemberController {
 		model.addAttribute("user", memberService.getMember(member));
 	}
 	
+	/** 주문 취소/교환/반품 내역 */
+	@GetMapping("/cancelList")
+	public String cancelList(Model model, @ModelAttribute("user") Member member,
+						@PageableDefault(page = 1) Pageable pageable,
+						@RequestParam(value = "status", defaultValue = "cancel") String status) {
+		
+		// 주문취소 내역
+		Page<OrdersDetail> cancelList = orderService.getCancelList(member, 5, pageable);
+		// 교환 내역
+		Page<OrdersDetail> exchangeList = orderService.getExchangeAndRefundList(member, 6, 9, pageable);
+		// 반품 내역
+		Page<OrdersDetail> refundList = orderService.getExchangeAndRefundList(member, 7, 10, pageable);
+		
+//		int naviSize = 10; // 페이지네이션 갯수
+//		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+//		int cancel_endPage = ((startPage + naviSize - 1) < cancelList.getTotalPages()) ? startPage + naviSize - 1 : cancelList.getTotalPages();
+//		int exchange_endPage = ((startPage + naviSize - 1) < exchangeList.getTotalPages()) ? startPage + naviSize - 1 : exchangeList.getTotalPages();
+//		int refund_endPage = ((startPage + naviSize - 1) < refundList.getTotalPages()) ? startPage + naviSize - 1 : refundList.getTotalPages();
+		
+//		model.addAttribute("list", cancelList);
+//		model.addAttribute("startPage", startPage);
+//		model.addAttribute("cancel_endPage", cancel_endPage);
+//		model.addAttribute("exchange_endPage", exchange_endPage);
+//		model.addAttribute("refund_endPage", refund_endPage);
+		model.addAttribute("url", "/member/cancelList");	
+		
+		model.addAttribute("cancelList", cancelList);
+		model.addAttribute("exchangeList", exchangeList);
+		model.addAttribute("refundList", refundList);
+		
+		System.out.println("======> status : " +status);
+		model.addAttribute("status", status);
+		
+		return "mypage/cancelList";
+	}
+
+	/** 교환 내역 */
+//	@ResponseBody
+//	@GetMapping("/exchangeList")
+//	public String exchangeList(Model model, @ModelAttribute("user") Member member,
+//						@PageableDefault(page = 1) Pageable pageable) {
+//		System.out.println("=================교 환 내 역 조 회======================");
+//		// 교환 내역
+//		Page<OrdersDetail> exchangeList = orderService.getCancelList(member, 6, pageable);
+//		
+//		int naviSize = 10; // 페이지네이션 갯수
+//		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+//		int endPage = ((startPage + naviSize - 1) < exchangeList.getTotalPages()) ? startPage + naviSize - 1 : exchangeList.getTotalPages();
+//		
+//		model.addAttribute("list", exchangeList);
+//		model.addAttribute("startPage", startPage);
+//		model.addAttribute("endPage", endPage);	
+//		model.addAttribute("url", "/member/cancelList");	
+//		
+//		model.addAttribute("exchangeList", exchangeList);
+//
+//		int size = 0;
+//		if(exchangeList.getTotalElements() != 0) {
+//			size = (int) exchangeList.getTotalElements();
+//		}
+//		model.addAttribute("size", size);
+//		
+//		return "mypage/cancelList";
+//	}
+	
+	/** 반품 내역 */
+//	@GetMapping("/refundList")
+//	public String refundList(Model model, @ModelAttribute("user") Member member,
+//							@PageableDefault(page = 1) Pageable pageable) {
+//		System.out.println("=================반 품 내 역 조 회======================");
+//		// 반품 내역
+//		Page<OrdersDetail> refundList = orderService.getCancelList(member, 7, pageable);
+//
+//		int naviSize = 10; // 페이지네이션 갯수
+//		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+//		int endPage = ((startPage + naviSize - 1) < refundList.getTotalPages()) ? startPage + naviSize - 1 : refundList.getTotalPages();
+//
+//		model.addAttribute("list", refundList);
+//		model.addAttribute("startPage", startPage);
+//		model.addAttribute("endPage", endPage);	
+//		model.addAttribute("url", "/member/cancelList");	
+//
+//		model.addAttribute("refundList", refundList);
+//
+//		int size = 0;
+//		if(refundList.getTotalElements() != 0) {
+//			size = (int) refundList.getTotalElements();
+//		}
+//		model.addAttribute("size", size);
+//		
+//		return "mypage/cancelList";
+//	} 
+	
+	/** 쿠폰조회 팝업창 */
 	@GetMapping("coupon")
 	public String coupon(@ModelAttribute("user") Member member, Model model, 
 						@RequestParam(value="pno", defaultValue = "0")int pno) {
 
 		List<MemCoupon> memCouList = new ArrayList<>();
 		System.out.println("11111111111111");
-		if(pno == 0) {
-			memCouList = member.getMemCoupon();
-			model.addAttribute("list", memCouList);
-			System.out.println("======================== getmemcoupon");
-			System.out.println(memCouList);
-		}else {
-			memCouList = couponService.MemProCouponList(member, pno);
-			model.addAttribute("list", memCouList);
-		}
-		List<Coupon> couList = couponService.forMemberCouponList(member, pno);
-		System.out.println("22222");
-
-		model.addAttribute("pno", pno);
-		int price = 0;
-		if(pno != 0) {
-			 price = proRepo.findById(pno).get().getPrice();
-		}else {
-			price = 0;
-		}
 		
-		model.addAttribute("price", price);
-
-		List<Coupon> couponList = new ArrayList<>();
-		for(MemCoupon memCou : memCouList) {
-			couponList.add(memCou.getCoupon());
+		if(member != null) {
+			if(pno == 0) {
+				// 내가 가지고 있는 쿠폰 조회
+				memCouList = member.getMemCoupon();
+				model.addAttribute("list", memCouList);
+				System.out.println("======================== getmemcoupon");
+				System.out.println(memCouList);
+			}else {
+				memCouList = couponService.MemProCouponList(member, pno);
+				model.addAttribute("list", memCouList);
+			}
+			
+			List<Coupon> couList = couponService.forMemberCouponList(member, pno);
+			System.out.println("22222");
+	
+			model.addAttribute("pno", pno);
+			
+			int price = 0;
+			if(pno != 0) {
+				 price = proRepo.findById(pno).get().getPrice();
+			}else {
+				price = 0;
+			}
+			model.addAttribute("price", price);
+	
+			List<Coupon> couponList = new ArrayList<>();
+			for(MemCoupon memCou : memCouList) {
+				couponList.add(memCou.getCoupon());
+			}
+			System.out.println("33333333333333333");
+			
+			couList.removeAll(couponList);
+	
+			System.out.println("444444444444444");
+			model.addAttribute("couList", couList);
+		} else {
+			model.addAttribute("login", "noLogin");
 		}
-		System.out.println("33333333333333333");
-		
-		couList.removeAll(couponList);
-
-		System.out.println("444444444444444");
-		model.addAttribute("couList", couList);
 		
 		return "member/coupon";
 	}
 	
+	/** 마이올잇>할인쿠폰 */
 	@GetMapping("coupon1")
 	public String coupon1(@ModelAttribute("user") Member member, Model model, 
 						@RequestParam(value="pno", defaultValue = "0") int pno) {
@@ -381,19 +506,41 @@ public class MemberController {
 	@GetMapping("/reviewWrite/{odno}")
 	public String reviewWriteView(Model model,
 								@PathVariable int odno) {
-		System.out.println("odno = " + odno);
+
 		OrdersDetail ordersDetail = ordersDetailRepo.findById(odno).get();
 		model.addAttribute("ordersDetail", ordersDetail);
-		System.out.println("odno = " + odno);
 		
 		return "mypage/reviewWrite";
 	}
 	
 	/** 마이올잇>리뷰작성 */
-//	@PostMapping("/writeReview")
-//	public String writeReview(Review review) throws Exception {
-//		memberService.saveReview(review);
-//		
-//		return "redirect:qnaList";
-//	}
+	@PostMapping("/writeReview")
+	public String writeReview(ReviewDto reviewDto) throws Exception {
+		System.out.println("reviewDto1 = " + reviewDto);
+		memberService.saveReview(reviewDto);
+
+		return "redirect:reviewList";
+	}
+	
+	/** 마이올잇>좋아요리스트 */
+	@GetMapping("/likeList")
+	public String likeView(Model model,
+							@PageableDefault(page = 1) Pageable pageable,
+							@AuthenticationPrincipal PrincipalDetailMember principal) {
+	
+		Page<Hit> likeList = memberService.getLikeList(principal.getMember().getId(), pageable);
+		
+		int naviSize = 10; // 페이지네이션 갯수
+		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+		int endPage = ((startPage + naviSize - 1) < likeList.getTotalPages()) ? startPage + naviSize - 1 : likeList.getTotalPages();
+
+		model.addAttribute("list", likeList);
+		model.addAttribute("startPage", startPage);
+		model.addAttribute("endPage", endPage);	
+		model.addAttribute("url", "/member/likeList");	
+		model.addAttribute("likeList", likeList);
+		if(likeList.getTotalElements() == 0) model.addAttribute("size", 0);
+		
+		return "mypage/likeList";
+	}
 }

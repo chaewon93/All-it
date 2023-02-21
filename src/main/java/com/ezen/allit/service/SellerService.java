@@ -21,9 +21,11 @@ public interface SellerService {
 
 	Page<Product> getProductList(Pageable pageable, Seller seller);
 	
+	Product getProduct(int pno);
+
 	Page<Product> search(Seller seller, String searchKeyword, Pageable pageable);
 	
-	Product getProduct(int pno);
+	Page<Product> getUnregisteredProductList(Seller seller, Pageable pageable);
 	
 	Page<OrdersDetail> getOrderList(Seller seller, Pageable pageable);
 	

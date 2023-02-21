@@ -20,7 +20,7 @@ public class ProductServiceImpl implements ProductService {
 	private final ProductRepository productRepo;
 	
 	/*
-	 * 상품목록조회
+	 * 상품목록조회 (검색조건 x, 검색어 o)
 	 */
 	@Transactional
 	public Page<Product> getProductList(Pageable pageable) {
@@ -28,7 +28,7 @@ public class ProductServiceImpl implements ProductService {
 		int pageSize = 6;
 
 		Page<Product> product = 
-				productRepo.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+				productRepo.findAllByStatus(1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 
         return product;
 	}
@@ -71,23 +71,6 @@ public class ProductServiceImpl implements ProductService {
 	}
 	
 	/*
-	 * 상품조회
-	 */
-	@Transactional
-	public Product getProduct(int pno) {
-		return productRepo.findById(pno).get();
-	}
-	
-	/*
-	 * 상품 조회수 증가
-	 */
-	@Transactional
-	public void updateCount(int pno) {
-		Product product = productRepo.findById(pno).get();
-		product.setCount(product.getCount()+1);
-	}
-	
-	/*
 	 * 상품검색 (검색조건 x, 검색어 o)
 	 */
 	@Transactional
@@ -97,22 +80,7 @@ public class ProductServiceImpl implements ProductService {
 		int pageSize = 6;
 
 		Page<Product> product = 
-				productRepo.findAllByNameContaining(searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
-		
-		return product;
-	}
-	
-	/*
-	 * 상품검색 (검색조건 o, 검색어 o)
-	 */
-	@Transactional
-	public Page<Product> search(int searchCondition, String searchKeyword, Pageable pageable) {
-		int page = pageable.getPageNumber() - 1;
-
-		int pageSize = 6;
-
-		Page<Product> product = 
-				productRepo.findAllByCategoryAndNameContaining(searchCondition, searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+				productRepo.findAllByNameContainingAndStatus(searchKeyword, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 		
 		return product;
 	}
@@ -127,9 +95,41 @@ public class ProductServiceImpl implements ProductService {
 		int pageSize = 6;
 
 		Page<Product> product = 
-				productRepo.findAllByCategory(searchCondition, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+				productRepo.findAllByCategoryAndStatus(searchCondition, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 		
 		return product;
+	}
+	
+	/*
+	 * 상품검색 (검색조건 o, 검색어 o)
+	 */
+	@Transactional
+	public Page<Product> search(int searchCondition, String searchKeyword, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+
+		int pageSize = 6;
+
+		Page<Product> product = 
+				productRepo.findAllByCategoryAndNameContainingAndStatus(searchCondition, searchKeyword, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+		
+		return product;
+	}
+
+	/*
+	 * 상품조회
+	 */
+	@Transactional
+	public Product getProduct(int pno) {
+		return productRepo.findById(pno).get();
+	}
+	
+	/*
+	 * 상품 조회수 증가
+	 */
+	@Transactional
+	public void updateCount(int pno) {
+		Product product = productRepo.findById(pno).get();
+		product.setCount(product.getCount()+1);
 	}
 	
 }

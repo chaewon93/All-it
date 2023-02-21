@@ -73,25 +73,18 @@ public class SellerServiceImpl implements SellerService {
 	}
 	
 
-	// 판매자 입점신청
+	/*
+	 *  판매자 입점신청
+	 */
 	@Transactional
 	public void saveSeller(Seller seller) {
 		String rawPwd = seller.getPwd();		// 입점신청 화면에서 넘겨받은 pwd
 		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
 		seller.setPwd(encPwd);
-		seller.setRole(Role.SELLER);
+		seller.setRole(Role.TEMP);
 		sellerRepo.save(seller);
 	}
-	
-	/*
-	 *  판매자 입점신청
-	 */
-//	@Transactional
-//	public void saveSeller(Seller seller) {
-//		seller.setRole(Role.TEMP);		
-//		sellerRepo.save(seller);
-//	}
-	
+
 	/*
 	 * 판매자 상품목록조회
 	 */
@@ -99,8 +92,8 @@ public class SellerServiceImpl implements SellerService {
 	public Page<Product> getProductList(Pageable pageable, Seller seller) {
 		int page = pageable.getPageNumber() - 1;
 		int pageSize = 3;
-		Page<Product> product = 
-				productRepo.findAllBySellerId(seller.getId(), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+		Page<Product> productList = 
+				productRepo.findAllBySellerIdAndStatus(seller.getId(), 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 
 		/*
         System.out.println("product.getContent() = " + product.getContent()); 			  // 요청 페이지에 해당하는 글
@@ -113,7 +106,35 @@ public class SellerServiceImpl implements SellerService {
         System.out.println("product.isLast() = " + product.isLast()); 					  // 마지막 페이지 여부
 		*/
 		
-        return product;
+        return productList;
+	}
+	
+	/*
+	 * 판매자 상품검색
+	 */
+	@Transactional
+	public Page<Product> search(Seller seller, String searchKeyword, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 3;
+		
+		Page<Product> productList = 
+				productRepo.findAllBySellerIdAndNameContainingAndStatus(seller.getId(), searchKeyword, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+		
+		return productList;
+	}
+	
+	/*
+	 * 판매자 미등록상품목록 조회
+	 */
+	@Transactional
+	public Page<Product> getUnregisteredProductList(Seller seller, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 3;
+		
+		Page<Product> productList = 
+				productRepo.findAllBySellerIdAndStatus(seller.getId(), 0, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+		
+		return productList;
 	}
 
 	/*
@@ -125,7 +146,7 @@ public class SellerServiceImpl implements SellerService {
 	}
 
 	/*
-	 * 판매자 주문목록조회 (검색 x)
+	 * 판매자 주문목록조회 (검색조선 x, 검색어 x)
 	 */
 	@Transactional
 	public Page<OrdersDetail> getOrderList(Seller seller, Pageable pageable) {
@@ -139,7 +160,7 @@ public class SellerServiceImpl implements SellerService {
 	}
 	
 	/*
-	 * 판매자 주문목록조회 (검색 o)
+	 * 판매자 주문목록조회 (검색조건 x, 검색어 o)
 	 */
 	@Transactional
 	public Page<OrdersDetail> getSearhcedOrderList(Seller seller, String searchKeyword, Pageable pageable) {
@@ -151,6 +172,7 @@ public class SellerServiceImpl implements SellerService {
 		
 		return orderList;
 	}
+	
 	
 	/*
 	 * 판매자 qna목록조회 (검색 x)
@@ -189,20 +211,6 @@ public class SellerServiceImpl implements SellerService {
 		
 		return qna;
 	}
-
-	/*
-	 * 판매자 상품검색
-	 */
-	@Transactional
-	public Page<Product> search(Seller seller, String searchKeyword, Pageable pageable) {
-		int page = pageable.getPageNumber() - 1;
-		int pageSize = 3;
-		
-		Page<Product> product = 
-				productRepo.findAllBySellerIdAndNameContaining(seller.getId(), searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
-		
-		return product;
-	}
 	
 	/*
 	 * 판매자 상품등록
@@ -210,20 +218,38 @@ public class SellerServiceImpl implements SellerService {
 	@Transactional
 	public void saveProduct(Product product, MultipartFile imageFile) throws Exception {
 		String ogName = imageFile.getOriginalFilename(); 										  // 원본 파일명
-		String realPath = "c:/fileUpload/images/"; 	// 파일 저장경로
+		//String realPath = "c:/fileUpload/images/"; 	// 파일 저장경로
 		
-		/*
-		 * UUID를 이용해 중복되지 않는 파일명 생성
-		 */
-		UUID uuid = UUID.randomUUID();
-		String imgName = uuid + "_" + ogName; 		 // 저장될 파일명
-		
-		File saveFile = new File(realPath, imgName); // 저장경로와 파일명을 토대로 새 파일 생성 
-		imageFile.transferTo(saveFile);			     // 생성 완료
-		
-		product.setImageName(imgName);				 // DB에 저장될 파일명 (DB 저장을 위해 설정(없으면 DB에 저장 안됨))
-		
-		productRepo.save(product);
+		String realPath = "c:/allit/images/product/"; 	// 상품 이미지파일 저장경로
+
+		File saveDir = new File(realPath);
+		if(!saveDir.isDirectory()) {
+			
+			// mkdir() : 해당 경로에 디렉토리가 존재하지 않으면 생성
+			// mkdirs() :  mkdir()과 같으나 상위 폴더들이 없으면 상위 폴더들까지 생성
+			if(saveDir.mkdirs()) {
+				/*
+				 * UUID를 이용해 중복되지 않는 파일명 생성
+				 */
+				UUID uuid = UUID.randomUUID();
+				String imgName = uuid + "_" + ogName; 		 // 저장될 파일명
+				
+				File saveFile = new File(realPath, imgName); // 저장경로와 파일명을 토대로 새 파일 생성 
+				imageFile.transferTo(saveFile);			     // 생성 완료
+				
+				product.setImageName(imgName);				 // DB에 저장될 파일명 (DB 저장을 위해 설정(없으면 DB에 저장 안됨))
+				product.setMdPickyn(0);
+		    product.setStatus(0);
+    
+				productRepo.save(product);
+				
+			} else {
+				System.out.println("[saveProduct()] "+ realPath + " : 디렉토리가 생성 중 오류");
+			}
+			
+		} else {
+			System.out.println("[saveProduct()] "+ realPath + " : 디렉토리가 아니거나 존재하지 않음.");
+		}
 	}
 	
 	/*
@@ -232,29 +258,40 @@ public class SellerServiceImpl implements SellerService {
 	@Transactional
 	public void modifyProduct(int pno, Product product, MultipartFile imageFile) throws Exception {
 		String ogName = imageFile.getOriginalFilename(); // 원본 파일명
-		String realPath = "c:/fileUpload/images/"; 		 // 파일 저장경로
+		//String realPath = "c:/fileUpload/images/"; 		 // 파일 저장경로
+		String realPath = "c:/allit/images/product/"; 	// 상품 이미지파일 저장경로
 		
-		/*
-		 * 기존 이미지 파일 삭제
-		 */
+		/* 기존 이미지 파일 삭제 */
 		File oldFile = new File(realPath, product.getImageName());
 		oldFile.delete();
 		
-		/*
-		 * UUID를 이용해 중복되지 않는 파일명 생성
-		 */
-		UUID uuid = UUID.randomUUID();
-		String imgName = uuid + "_" + ogName; 			 // 저장될 파일명
-		
-		File saveFile = new File(realPath, imgName);     // 저장경로와 파일명을 토대로 새 파일 생성 
-		imageFile.transferTo(saveFile);					 // 생성 완료
-		
-		Product theProduct = productRepo.findById(pno).get();
-		theProduct.setCategory(product.getCategory());
-		theProduct.setName(product.getName());
-		theProduct.setPrice(product.getPrice());
-		theProduct.setContent(product.getContent());
-		theProduct.setImageName(imgName);
+		File saveDir = new File(realPath);
+		if(!saveDir.isDirectory()) {
+			// mkdir() : 해당 경로에 디렉토리가 존재하지 않으면 생성
+			// mkdirs() :  mkdir()과 같으나 상위 폴더들이 없으면 상위 폴더들까지 생성
+			if(saveDir.mkdirs()) {
+				/*
+				 * UUID를 이용해 중복되지 않는 파일명 생성
+				 */
+				UUID uuid = UUID.randomUUID();
+				String imgName = uuid + "_" + ogName; 			 // 저장될 파일명
+				
+				File saveFile = new File(realPath, imgName);     // 저장경로와 파일명을 토대로 새 파일 생성 
+				imageFile.transferTo(saveFile);					 // 생성 완료
+				
+				Product theProduct = productRepo.findById(pno).get();
+				theProduct.setCategory(product.getCategory());
+				theProduct.setName(product.getName());
+				theProduct.setPrice(product.getPrice());
+				theProduct.setContent(product.getContent());
+				theProduct.setImageName(imgName);
+				
+			} else {
+				System.out.println("[modifyProduct()] "+ realPath + " : 디렉토리가 생성 중 오류");
+			}
+		} else {
+			System.out.println("[modifyProduct()] "+ realPath + " : 디렉토리가 아니거나 존재하지 않음.");
+		}
 	}
 	
 	/*
@@ -265,9 +302,7 @@ public class SellerServiceImpl implements SellerService {
 		productRepo.deleteById(pno);
 	}
 
-	/*
-	 * 현일파트
-	 */
+	/** 현일파트 **/
 	@Override
 	public Seller getSeller(Seller seller) {		
 		

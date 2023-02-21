@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
 import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.SellerRepository;
@@ -24,18 +25,23 @@ public class PrincipalDetailService implements UserDetailsService {
 	private final SellerRepository sellerRepo;
 	
 	/*
-	 * UserDetails 타입으로 시큐리티 세션 저장소에 유저정보가 들어감
+	 * UserDetails 타입으로 시큐리티 세션 저장소에 로그인하는 객체의 정보가 들어감
 	 * 그리고 해당 매서드가 종료될 때 @AuthenticationPrincipal 어노테이션이 생성
 	 */
 	@Override
 	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
 		Member member = memberRepo.findById(id).orElse(null);
 		Seller seller = sellerRepo.findById(id).orElse(null);
+		System.out.println("seller = " + seller);
 		
 		if(member != null) {
 			return new PrincipalDetailMember(member);
 		} else if(seller != null) {
-			return new PrincipalDetailSeller(seller);
+			if(seller.getRole() == Role.SELLER) {
+				return new PrincipalDetailSeller(seller);				
+			} else {
+				return null;
+			}
 		} else {
 			return null;
 		}
