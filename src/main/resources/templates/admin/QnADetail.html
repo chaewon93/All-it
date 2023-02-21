@@ -3,19 +3,16 @@
 <!-- header replace -->
 <div th:replace="~{ /fragments/header.html :: header }"></div>
 
-<!-- 시큐리티 부분?
-<html xmlns:th="http://www.thymeleaf.org"
-	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
- -->
-
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 <body>
-
-<div align="center">
-	<table>
+<!-- 관리자 QnA 답변 작성 섹션 시작 -->
+<div style="display: flex; margin-top: 30px;">
+<div class="container">
+<h1>1:1문의(QnA) 답변하기</h1>
+	<table class="table">
 		<tr>
 			<th>작성자</th>
 			<td th:text="${qna.member.id}"></td>
@@ -26,33 +23,39 @@
 		</tr>
 		<tr>
 			<th>내용</th>
-			<td th:text="${qna.content}"></td>
+			<td><textarea cols="40" rows="10" th:text="${qna.content}" readonly="readonly" class="form-control"></textarea></td>
 		</tr>
 		<tr th:if="${qna.status} == '1'">
+			<th>답변</th>
+			<td>
 			<form id="rep" name="rep" action="/admin/updateReply" method="post">
 				<input type="hidden" name="rno" th:value="${qna.reply?.rno}" >
-				<th>답변</th>
-				<td><textarea name="content" cols="40" rows="10" th:text="${qna.reply?.content}"></textarea></td>
-				<td><input type="submit" value="수정"><br>
-					<input type="button" value="뒤로가기" onclick="history.back()"><br>
-					<button type="button" th:if="${qna.status} == '1'" th:onclick="|location.href='@{/admin/deleteReply(qno=${qna.qno})}'|" th:text="답변삭제" style="border-color: white;"></button>				
-				</td>
-			</form>		
+				<textarea name="content" cols="40" rows="10" th:text="${qna.reply?.content}" class="form-control"></textarea><hr>
+				<div class="form-inline ">
+					<input type="button" value="≪ 문의내역 돌아가기" onclick="history.back()" class="form-control mr-sm-2 btn btn-outline-warning"><br>
+					<input type="submit" value="수정" class="form-control mr-sm-2 btn btn-warning"><br>
+					<button type="button" th:if="${qna.status} == '1'" th:onclick="|location.href='@{/admin/deleteReply(qno=${qna.qno})}'|" th:text="답변삭제" class="form-control mr-sm-2 btn btn-secondary"></button>
+				</div>				
+			</form>
+			</td>	
 		</tr>
 		<tr th:if="${qna.status} == '0'">
+			<th>답변</th>
+			<td>
 			<form id="rep" name="rep" action="/admin/insertReply" method="post">
 				<input type="hidden" name="qno" th:value="${qna.qno}" >
-				<th>답변</th>
-				<td><textarea name="content" rows="10" cols="40"></textarea></td>   
-				<td><input type="submit" value="저장"><br>
-					<input type="button" value="뒤로가기" onclick="history.back()"><br>
-					<button type="button" th:if="${qna.status} == '1'" th:onclick="|location.href='@{/admin/deleteReply(qno=${qna.qno})}'|" th:text="답변삭제" style="border-color: white;"></button>
-				</td> 
-			</form>		
+				<textarea name="content" rows="10" cols="40"></textarea><hr>
+				<div class="form-inline">
+					<input type="button" value="≪ 문의내역 돌아가기" onclick="history.back()" class="form-control mr-sm-2 btn btn-outline-warning"><br>
+					<input type="submit" value="저장" class="form-control mr-sm-2 btn btn-warning"><br>
+					<button type="button" th:if="${qna.status} == '1'" th:onclick="|location.href='@{/admin/deleteReply(qno=${qna.qno})}'|" th:text="답변삭제" class="form-control mr-sm-2 btn btn-secondary"></button>
+				</div>
+			</form>
+			</td>	
 		</tr>	
 	</table>
 </div>
-
+</div>
 </body>
 <!-- footer replace -->
 <div th:replace="~{ /fragments/footer.html :: footer }"></div>

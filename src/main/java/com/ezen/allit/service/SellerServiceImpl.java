@@ -247,40 +247,41 @@ public class SellerServiceImpl implements SellerService {
 		String ogName = imageFile.getOriginalFilename();                                 // 원본 파일명
 	    String realPath = "c:/allit/images/product/";    // 상품 이미지파일 저장경로
 
-	    /*
-	     * UUID를 이용해 중복되지 않는 파일명 생성
-	     */
-	    UUID uuid = UUID.randomUUID();
-	    String imgName = uuid + "_" + ogName;        // 저장될 파일명
-	      
-	    product.setImageName(imgName);             // DB에 저장될 파일명 (DB 저장을 위해 설정(없으면 DB에 저장 안됨))
-	    product.setMdPickyn(0);
-	    product.setStatus(0);
-	      
-	    File saveDir = new File(realPath);
-	    if(!saveDir.isDirectory()) {
-	         
-	       // mkdir() : 해당 경로에 디렉토리가 존재하지 않으면 생성
-	       // mkdirs() :  mkdir()과 같으나 상위 폴더들이 없으면 상위 폴더들까지 생성
-	       if(saveDir.mkdirs()) {
-	          File saveFile = new File(realPath, imgName); // 저장경로와 파일명을 토대로 새 파일 생성 
-	          imageFile.transferTo(saveFile);              // 생성 완료
-	    
-	          productRepo.save(product);
-	          
-	       } else {
-	          System.out.println("[saveProduct()] "+ realPath + " : 디렉토리가 생성 중 오류");
-	       }
-	         
-	    } else {
-	       System.out.println("[saveProduct()] 폴더가 이미 있는 경우");
-	       
-	       File saveFile = new File(realPath, imgName); // 저장경로와 파일명을 토대로 새 파일 생성 
-	       imageFile.transferTo(saveFile);              // 생성 완료
+		/*
+		 * UUID를 이용해 중복되지 않는 파일명 생성
+		 */
+		UUID uuid = UUID.randomUUID();
+		String imgName = uuid + "_" + ogName; 		 // 저장될 파일명
+		
+		product.setImageName(imgName);				 // DB에 저장될 파일명 (DB 저장을 위해 설정(없으면 DB에 저장 안됨))
+		product.setMdPickyn(0);
+		product.setStatus(0);
+		
+		File saveDir = new File(realPath);
+		// 디렉토리가 존재하지 않거나 디렉토리가 아닌 경우
+		if(!saveDir.isDirectory()) {
+			
+			// mkdir() : 해당 경로에 디렉토리가 존재하지 않으면 생성
+			// mkdirs() :  mkdir()과 같으나 상위 폴더들이 없으면 상위 폴더들까지 생성
+			if(saveDir.mkdirs()) {
+				File saveFile = new File(realPath, imgName); // 저장경로와 파일명을 토대로 새 파일 생성 
+				imageFile.transferTo(saveFile);			     // 생성 완료
+    
+				productRepo.save(product);
+				
+			} else {
+				System.out.println("[saveProduct()] "+ realPath + " : 디렉토리가 생성 중 오류");
+			}
+			
+		} else {
+			System.out.println("[saveProduct()] 폴더가 이미 있는 경우");
+			
+			File saveFile = new File(realPath, imgName); // 저장경로와 파일명을 토대로 새 파일 생성 
+			imageFile.transferTo(saveFile);			     // 생성 완료
 
-	       productRepo.save(product);
-	    }
-	 }
+			productRepo.save(product);
+		}
+	}
 	
 	/*
 	 * 판매자 상품수정
@@ -295,17 +296,18 @@ public class SellerServiceImpl implements SellerService {
 		File oldFile = new File(realPath, product.getImageName());
 		oldFile.delete();
 		
+		/*
+		 * UUID를 이용해 중복되지 않는 파일명 생성
+		 */
+		UUID uuid = UUID.randomUUID();
+		String imgName = uuid + "_" + ogName; 			 // 저장될 파일명
+		
 		File saveDir = new File(realPath);
+		// 디렉토리가 존재하지 않거나 디렉토리가 아닌 경우
 		if(!saveDir.isDirectory()) {
 			// mkdir() : 해당 경로에 디렉토리가 존재하지 않으면 생성
 			// mkdirs() :  mkdir()과 같으나 상위 폴더들이 없으면 상위 폴더들까지 생성
 			if(saveDir.mkdirs()) {
-				/*
-				 * UUID를 이용해 중복되지 않는 파일명 생성
-				 */
-				UUID uuid = UUID.randomUUID();
-				String imgName = uuid + "_" + ogName; 			 // 저장될 파일명
-				
 				File saveFile = new File(realPath, imgName);     // 저장경로와 파일명을 토대로 새 파일 생성 
 				imageFile.transferTo(saveFile);					 // 생성 완료
 				
@@ -320,7 +322,17 @@ public class SellerServiceImpl implements SellerService {
 				System.out.println("[modifyProduct()] "+ realPath + " : 디렉토리가 생성 중 오류");
 			}
 		} else {
-			System.out.println("[modifyProduct()] "+ realPath + " : 디렉토리가 아니거나 존재하지 않음.");
+			System.out.println("[modifyProduct()] 이미 폴더가 존재하는 경우");
+			
+			File saveFile = new File(realPath, imgName);     // 저장경로와 파일명을 토대로 새 파일 생성 
+			imageFile.transferTo(saveFile);					 // 생성 완료
+			
+			Product theProduct = productRepo.findById(pno).get();
+			theProduct.setCategory(product.getCategory());
+			theProduct.setName(product.getName());
+			theProduct.setPrice(product.getPrice());
+			theProduct.setContent(product.getContent());
+			theProduct.setImageName(imgName);
 		}
 	}
 	

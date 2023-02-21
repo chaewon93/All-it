@@ -4,11 +4,14 @@
 <div th:replace="~{ /fragments/header.html :: header }"></div>
 <!-- header replace -->
 
-<!-- 내용 섹션 시작 -->
-<form method="post" th:action="@{ /seller/product/insert }" enctype="multipart/form-data">
-	<div class="form-group">
+<!-- 상품 등록 섹션 시작 -->
+<div class="container" style="margin-top: 30px; margin-bottom: 50px;">
+<div class="row">
+	<div class="col-sm-12">
+	<form method="post" th:action="@{ /seller/product/insert }" enctype="multipart/form-data">
 		<input type="hidden" th:value="${ #authentication.principal.seller.id }" name="seller" id="seller">
-		<label for="sel1">카테고리</label>
+		
+		<label for="sel1"><b>카테고리</b></label>
 		<select class="form-control" name="category" id="category">
 			<option th:value="0">==카테고리==</option>
 			<option th:value="1">패션</option>
@@ -21,19 +24,22 @@
 			<option th:value="8">도서/음반/DVD</option>
 			<option th:value="9">반려동물용품</option>
 			<option th:value="10">건강식품</option>
-		</select>
-		<label for="name">상품명</label>
-		<input type="text" class="form-control" name="name" id="name"/>
-		<label for="price">판매가</label>
-		<input type="text" class="form-control" name="price" id="price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/>
-		<label for="content">상품설명</label>
-		<textarea class="form-control" rows="5" name="content" id="content"></textarea>
-		<label for="image">이미지 업로드</label>
+		</select><br>
+		<label for="name"><b>상품명</b></label>
+		<input type="text" class="form-control" name="name" id="name"/><br>
+		<label for="price"><b>판매가</b></label>
+		<input type="text" class="form-control" name="price" id="price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/><br>
+		<label for="content"><b>상품설명</b></label>
+		<textarea class="form-control" rows="5" name="content" id="content"></textarea><br>
+		<label for="image"><b>상품 이미지 업로드</b></label>
 		<input type="file" class="form-control-file border" name="imageFile" id="imageFile">
+		<br>
+		<button type="submit" class="btn btn-warning" name="save" id="save">상품등록</button>
+	</form>
 	</div>
-	<button type="submit" class="btn btn-primary" name="save" id="save">상품등록</button>
-</form>
 <!-- 내용 섹션 끝 -->
+</div>
+</div>
 
 <!-- 자바스트립트 섹션 시작 -->
 <script type="text/javascript">
@@ -71,3 +77,4 @@ $("#save").click(function() {
 
 <div th:replace="~{ /fragments/footer.html :: footer }"></div>
 <!-- footer replace -->
+</html>

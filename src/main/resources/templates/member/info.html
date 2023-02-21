@@ -50,7 +50,7 @@
 			</tr>
 			<tr>
 				<td>이메일<b class="text-danger">*</b></td>
-				<td><input type="email" name="email"  th:value="${ session['user'].email }" class="form-control mr-sm-2"/></td>
+				<td><input type="email" name="email"  th:value="${ #authentication.principal.member?.email }" class="form-control mr-sm-2"/></td>
 			</tr>
 			<tr>
 				<td>전화번호<b class="text-danger">*</b></td>
@@ -59,31 +59,31 @@
 			<tr>
 				<td>주소<b class="text-danger">*</b></td>
 				<td>
-					<input type="text" id="zipcode" name="zipcode"  th:value="${ session['user'].zipcode }" class="form-control mr-sm-2"/>
+					<input type="text" id="zipcode" name="zipcode"  th:value="${ #authentication.principal.member?.zipcode }" class="form-control mr-sm-2"/>
 					<input type="button" id="kakaoAddr" value="우편번호 찾기" class="btn btn-light"><br>
-					<input type="text" id="addr" name="address"  th:if="${not #arrays.isEmpty(addr)}" th:value="${addr[0]}" class="form-control mr-sm-2"/>
-					<input type="text" id="addr" name="address"  th:unless="${not #arrays.isEmpty(addr)}" class="form-control mr-sm-2"/>
-					<input type="text" id="addrDetail" name="address"  th:if="${not #arrays.isEmpty(addr)}" th:value="${addr[1]}" class="form-control mr-sm-2"/>
-					<input type="text" id="addrDetail" name="address"  th:unless="${not #arrays.isEmpty(addr)}" class="form-control mr-sm-2"/>
+					<input type="text" id="addr" name="address" th:if="${not #arrays.isEmpty(addr)}" th:value="${addr[0]}" class="form-control mr-sm-2"/>
+					<input type="text" id="addr" name="address" th:unless="${not #arrays.isEmpty(addr)}" class="form-control mr-sm-2"/>
+					<input type="text" id="addrDetail" name="address" th:if="${not #arrays.isEmpty(addr)}" th:value="${addr[1]}" class="form-control mr-sm-2"/>
+					<input type="text" id="addrDetail" name="address" th:unless="${not #arrays.isEmpty(addr)}" class="form-control mr-sm-2"/>
 					<!-- <input type="text" id="addrExtra" name="address"  th:if="${addr.length > 1}" th:value="${addr[2]}"/> -->
 					<!-- <input type="text" id="addrExtra" name="address"  th:unless="${addr.length > 1}"/> -->
 				</td>
 			</tr>
 			<tr>
 				<td>생년월일</td>
-				<td><input type="text" name="birth" id="birth" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" th:value="${ session['user'].birth }" class="form-control mr-sm-2"/></td>
+				<td><input type="text" name="birth" id="birth" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" th:value="${ #authentication.principal.member?.birth }" class="form-control mr-sm-2"/></td>
 			</tr>
 			<tr>
 				<td>성별<b class="text-danger">*</b></td>
 				<td>
-					<input type="hidden" id="gender" th:value="${session['user']?.gender}">
+					<input type="hidden" id="gender" th:value="${#authentication.principal.member?.gender}">
 					<input type="radio" name="gender" id="m" value="남자" /> 남자
 					<input type="radio" name="gender" id="f" value="여자" /> 여자
 					<input type="radio" name="gender" id="n" value="안함"/> 선택 안 함
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2" align="center">
+				<td colspan="2" align="center"><br>
 					<input type="submit" value="회원탈퇴" formaction="/member/userDel" id="delBtn" class="btn btn-dark"/>
 					<input type="submit" value="정보수정" formaction="/member/infoModify" id="modBtn" class="btn btn-warning"/>			
 					<input type="reset" value="취소" class="btn btn-secondary">
