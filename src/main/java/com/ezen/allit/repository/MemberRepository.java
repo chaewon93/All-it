@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.dto.AddressCount;
+import com.ezen.allit.dto.Chart;
+import com.ezen.allit.dto.GenderCount;
 
 public interface MemberRepository extends JpaRepository<Member, String> {
 	
@@ -32,6 +34,13 @@ public interface MemberRepository extends JpaRepository<Member, String> {
 //	@Query(value="select substr(address, 1, 2) from member group by substr(address, 1, 2)", nativeQuery = true)
 //	List<Map<String, Object>> chartAddressGroup();
 	
+	// 차트에 필요한 쿼리
+	@Query(value="select gender, COUNT(*) as gendercount from member group by gender", nativeQuery = true)
+	List<GenderCount> chartGenderGroup();
+	
 	@Query(value="select substr(address, 1, 2) as address, COUNT(*) as addressCount from member group by substr(address, 1, 2)", nativeQuery = true)
 	List<AddressCount> chartAddressGroup();
+	
+	@Query(value="select grade, COUNT(*) as count from member group by grade", nativeQuery = true)
+	List<Chart> chartGradeGroup();
 }
