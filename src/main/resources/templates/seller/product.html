@@ -9,80 +9,103 @@
 
 <!-- 상품 내용 섹션 시작 -->
 <div class="container" style="margin-top: 30px; margin-bottom: 50px;">
-<div class="row">
-	<div class="col-sm-4">
-		<img class="img-fluid" th:src="@{ /images/product/ } + ${ product.imageName }" width="350"><br>
-		<label><i class="fas fa-heart">조회수 </i> <span th:text="${ product.count }" class="text-info"></span></label><br>
-		<label><i class="fas fa-star">별점 </i> <span th:if="${ product.rating } != 0" th:text="${ product.rating }" class="text-warning"></span></label>
-						  <span th:if="${ product.rating } == 0" class="text-warning">0</span><br>
-		<label><i class="fas fa-thumbs-up">좋아요 </i> <span th:text="${ product.hit }" class="text-primary"></span></label><br>
-	</div>
-	<div class="col-sm-8">
-	<form method="post" th:action="@{ /seller/product/modify }" id="productDetail" enctype="multipart/form-data">
-		<input type="hidden" th:value="${ product.seller.id }" name="sid" id="sid">
-		<input type="hidden" th:value="${ #authentication.principal.seller.id }" name="seller" id="seller">
-		<input type="hidden" th:value="${ product.pno }" name="pno" id="pno">
-		
-		<label for="sel1">카테고리</label>
-		<select class="form-control" name="category" id="category">
-			<option>==카테고리==</option>
-			<option th:value="1" th:selected="${ product.category }=='1'">패션</option>
-			<option th:value="2" th:selected="${ product.category }=='2'">식품</option>
-			<option th:value="3" th:selected="${ product.category }=='3'">주방용품</option>
-			<option th:value="4" th:selected="${ product.category }=='4'">생활용품</option>
-			<option th:value="5" th:selected="${ product.category }=='5'">인테리어</option>
-			<option th:value="6" th:selected="${ product.category }=='6'">가전제품</option>
-			<option th:value="7" th:selected="${ product.category }=='7'">스포츠/레저</option>
-			<option th:value="8" th:selected="${ product.category }=='8'">도서/음반/DVD</option>
-			<option th:value="9" th:selected="${ product.category }=='9'">반려동물용품</option>
-			<option th:value="10" th:selected="${ product.category }=='10'">건강식품</option>	
-		</select>
-		<label for="name">상품명</label>
-		<input type="text" class="form-control" th:value="${ product.name }" name="name" id="name"/>
-		<label for="price">판매가</label>
-		<input type="text" class="form-control" th:value="${ product.price }" name="price" id="price"/>
-		<label for="content">상품설명</label>
-		<textarea class="form-control" th:text="${ product.content }" rows="5" name="content" id="content"></textarea>
-		<label for="image">이미지 업로드</label>
-		<input type="hidden" th:value="${ product.imageName }" name="imageName" id="imageName">
-		<input type="file" class="form-control-file border" name="imageFile" id="imageFile"/>
-		<br>
-		<button type="submit" class="btn btn-warning" id="modify">상품수정</button>
-		<button type="button" class="btn btn-secondary" id="delete">삭제</button>
-		<!-- <button type="button" class="btn btn-light" id="hit">좋아요</button> <br> <br> -->
-	</form>
-	</div>
-</div> <br>
+	<div class="row">
+		<div class="col-sm-4">
+			<img class="img-fluid" th:src="@{ /images/product/ } + ${ product.imageName }" width="350"><br>
+			<label><i class="fas fa-heart">조회수 </i> <span th:text="${ product.count }" class="text-info"></span></label><br>
+			<label><i class="fas fa-star">별점 </i> <span th:if="${ product.rating } != 0" th:text="${ product.rating }" class="text-warning"></span></label>
+							  <span th:if="${ product.rating } == 0" class="text-warning">0</span><br>
+			<label><i class="fas fa-thumbs-up">좋아요 </i> <span th:text="${ product.hit }" class="text-primary"></span></label><br>
+		</div>
+		<div class="col-sm-8">
+		<form method="post" th:action="@{ /seller/product/modify }" id="productDetail" enctype="multipart/form-data">
+			<input type="hidden" th:value="${ product.seller.id }" name="sid" id="sid">
+			<input type="hidden" th:value="${ #authentication.principal.seller.id }" name="seller" id="seller">
+			<input type="hidden" th:value="${ product.pno }" name="pno" id="pno">
+			
+			<label for="sel1">카테고리</label>
+			<select class="form-control" name="category" id="category">
+				<option>==카테고리==</option>
+				<option th:value="1" th:selected="${ product.category }=='1'">패션</option>
+				<option th:value="2" th:selected="${ product.category }=='2'">식품</option>
+				<option th:value="3" th:selected="${ product.category }=='3'">주방용품</option>
+				<option th:value="4" th:selected="${ product.category }=='4'">생활용품</option>
+				<option th:value="5" th:selected="${ product.category }=='5'">인테리어</option>
+				<option th:value="6" th:selected="${ product.category }=='6'">가전제품</option>
+				<option th:value="7" th:selected="${ product.category }=='7'">스포츠/레저</option>
+				<option th:value="8" th:selected="${ product.category }=='8'">도서/음반/DVD</option>
+				<option th:value="9" th:selected="${ product.category }=='9'">반려동물용품</option>
+				<option th:value="10" th:selected="${ product.category }=='10'">건강식품</option>	
+			</select>
+			<label for="name">상품명</label>
+			<input type="text" class="form-control" th:value="${ product.name }" name="name" id="name"/>
+			<label for="price">판매가</label>
+			<input type="text" class="form-control" th:value="${ product.price }" name="price" id="price"/>
+			<label for="discount">할인율</label>
+			<input type="text" class="form-control" th:value="${ product.discount }" name="discount" id="discount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" onfocusout="priceCheck()"/>
+			<label for="finalPrice">최종 판매가</label>
+			<input type="text" class="form-control" th:value="${ product.finalPrice }" name="finalPrice" id="finalPrice" readonly/>
+			<label for="content">상품설명</label>
+			<textarea class="form-control" th:text="${ product.content }" rows="5" name="content" id="content"></textarea>
+			<label for="image">이미지 업로드</label>
+			<input type="hidden" th:value="${ product.imageName }" name="imageName" id="imageName">
+			<input type="file" class="form-control-file border" name="imageFile" id="imageFile"/>
+			<br>
+			<button type="submit" class="btn btn-warning" id="modify">상품수정</button>
+			<button type="button" class="btn btn-secondary" id="delete">삭제</button>
+			<!-- <button type="button" class="btn btn-light" id="hit">좋아요</button> <br> <br> -->
+		</form>
+		</div>
+	</div> <br>
 <!-- 내용 섹션 끝 -->
 
 <!-- 리뷰 출력 섹션 시작 -->
-<div class="card">
-	<div class="card-header">
-		<span>리뷰</span>
-	</div>
-	<ul class="list-group" id="reply--box" th:each="review : ${ product.review }" th:if="${ review.prvno == 0 }">
-		<li class="list-group-item d-flex justify-content-between" id="reply--1">
-	  		<div> 
-				<span>평점:</span><span th:text="${ review.rating }" id="review-rating"></span>점 <br>
-				<span>작성일:</span><span th:if="${ review.modDate == null }" th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span>
-								  <span th:if="${ review.modDate != null }" th:text="${ #dates.format(review.modDate, 'yyyy-MM-dd') }+(' (수정됨)')"></span> <br>
-		  		<span>상품명:</span><span th:text="${ review.product.name }"></span> <br>
-		  		<span>리뷰:</span><span th:text="${ review.content }" id="review-content"></span> <br>
-		  		<span>좋아요 </span><span th:text="${ review.hit }"></span>개
-	  			<!-- <p th:text="${ review.member.id }"></p> -->
-	  		</div>
-	  	</li>
-	</ul>
-</div> 
+	<div class="card">
+		<div class="card-header">
+			<span>리뷰</span>
+		</div>
+		<ul class="list-group" id="reply--box" th:each="review : ${ product.review }" th:if="${ review.prvno == 0 }">
+			<li class="list-group-item d-flex justify-content-between" id="reply--1">
+		  		<div> 
+					<span>평점:</span><span th:text="${ review.rating }" id="review-rating"></span>점 <br>
+					<span>작성일:</span><span th:if="${ review.modDate == null }" th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span>
+									  <span th:if="${ review.modDate != null }" th:text="${ #dates.format(review.modDate, 'yyyy-MM-dd') }+(' (수정됨)')"></span> <br>
+			  		<span>상품명:</span><span th:text="${ review.product.name }"></span> <br>
+			  		<span>리뷰:</span><span th:text="${ review.content }" id="review-content"></span> <br>
+			  		<span>좋아요 </span><span th:text="${ review.hit }"></span>개
+		  			<!-- <p th:text="${ review.member.id }"></p> -->
+		  		</div>
+		  	</li>
+		</ul>
+	</div> 
 <!-- 리뷰 출력 섹션 끝 -->
 </div>
 
 <!-- 자바스트립트 섹션 시작 -->
 <script type="text/javascript">
+
+// 할인가 등록시 자동 계산
+function priceCheck() {
+	let price = $("#price").val();
+	let discount = $("#discount").val();
+	let finalPrice = '';
+
+	if(0 <= discount && discount < 100) {
+		finalPrice = price-(price*(discount/100));
+		document.getElementById("finalPrice").value = finalPrice;	
+	} else {
+		alert('책정한 할인을 적용할 수 없습니다.\n할인은 1~100 사이의 숫자만 가능합니다');
+		document.getElementById("finalPrice").value = '';
+	}
+}
+
+// 상품수정 시 빈칸체크
 $("#modify").click(function() {
 	let category = $("#category").val();
 	let name = $("#name").val();
 	let price = $("#price").val();
+	let discount = $("#discount").val();
+	let finalPrice = $("#finalPrice").val();
 	let content = $("#content").val();
 	let imageFile = $("#imageFile").val();
 	
@@ -96,6 +119,13 @@ $("#modify").click(function() {
 	}
 	if(price.trim() == "") {
 		alert('판매가를 입력해주세요');
+		return false;
+	}
+	if(discount.trim() == "") {
+		document.getElementById("discount").value = 0;
+	}
+	if(finalPrice.trim() == "") {
+		alert('최종 판매가를 정상적으로 책정해주세요');
 		return false;
 	}
 	if(content.trim() == "") {

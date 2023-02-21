@@ -24,6 +24,7 @@ public class Product {
 	private String name;		 	   				 // 상품명
 	private int price;			 	   				 // 판매가
 	private int discount;			   				 // 할인
+	private int finalPrice;							 // 최종 판매가
 	private String content;		 	   				 // 내용
 	private String imageName; 		   				 // 상품 이미지
 	private float rating;		 	   				 // 상품별점

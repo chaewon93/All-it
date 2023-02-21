@@ -21,16 +21,17 @@
 	<form name="findId" id="findId" action="/member/findId" method="post">
 		<table>
 			<tr>
-				<td>비밀번호<b class="text-danger">*</b></td>
+				<td>비밀번호</td>
 				<td><input type="password" id="pwd" name="pwd" required="required" class="form-control mr-sm-2" placeholder="비밀번호"/></td>
 			</tr>
 			<tr>
-				<td>비밀번호 확인<b class="text-danger">*</b></td>
+				<td>비밀번호 확인</td>
 				<td><input type="password" id="pwdCheck" name="pwdCheck" required="required" class="form-control mr-sm-2" placeholder="비밀번호 확인"/>
 				<br><font id="checkPw" size="2"></font></td>
 			</tr>
 			<tr>
 				<td align="center" colspan="2">
+					<input type="text" name="id" id="id">
 					<button type="button" class="btn btn-warning" id="checkBtn" th:text="비밀번호확인"></button>
 				</td>
 			</tr>
@@ -40,63 +41,66 @@
 
 <!-- 자바스트립트 섹션 시작 -->
 <script type="text/javascript">
+document.getElementById("id").value = opener.document.getElementById("id").value;
 
-/** 비밀번호 확인 */
-$("#checkBtn").click(function(){
-	let pwd = $("#pwd").val();
-	let pwd2 = $("#pwdCheck").val();
-	console.log('pwd = ', pwd);
-	console.log('pwd2 = ', pwd2);
-	
-/* 	if(pwd.trim() == '' || pwd2.trim() == '') {
-    	alert("비밀번호를 입력해주세요.");
-    	return false;
-	} else {
-		if(pwd == pwd2) {
-			var url = "modifyPwdInfo";
-
-			window.open(url, "_blank_", 
-				"toolbar=no, menubar=no, scrollbars=yes, resizable=no, width=550, height=550");
-			window.close();
-		}		
-	} */
-		
+/* 비밀번호 확인 */
+$("#pwdCheck").focusout(function(){
+	var pass1 = $("#pwd").val();
+    var pass2 = $("#pwdCheck").val();
+    
+    if (pass1 != "" || pass2 != ""){
+    	if (pass1 == pass2){
+        	$("#checkPw").html('비밀번호가 일치합니다.');
+        	$("#checkPw").attr('color','green');
+        } else {
+        	$("#checkPw").html('비밀번호가 일치하지 않습니다. 다시 입력해주세요.');
+            $("#checkPw").attr('color','red');
+        }
+    }
 });
 
-/* 아이디 찾기 */
-function findMemberId() {
-	var name = $("#name").val();
-	var email = $("#email").val();
+/** 비밀번호확인 버튼 이벤트 */
+/*
+$("#checkBtn").click(function(){
+	let data = {
+		id : $("#id").val(),
+		pwd : $("#pwd").val(),
+		pwd2 : $("#pwdCheck").val()
+	}
 	
-	if ($("#name").val()=="") {
-		alert("이름을 입력해 주세요.");
-		return false;
-	} else if ($("#email").val()=="") {
-		alert("이메일을 입력해 주세요.");
-		return false;
-	} else {
-		var form = $("#findId")
-		form.action="findId";  // 컨트롤러로 요청 URL설정
-		form.submit();
-	}
-}
+ 	if(data.pwd.trim() == '' || data.pwd2.trim() == '') {
+    	alert("비밀번호를 입력해주세요.");
+    	return false;
+	} else if(data.pwd != data.pwd2) {
+	    alert("비밀번호를 확인해주세요.");
+    	return false;
+	} else if(data.pwd == data.pwd2) {
+		$.ajax({
+			type: "post",
+			url: '/member/modify/{data.pwd}',
+			data: JSON.stringify(data),
+			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+		}).done(function(response){ // 처리 성공 시
+			if(response == 1) {
+				var url = "modifyPwdInfo";
+				window.open(url, "_blank_", 
+					"toolbar=no, menubar=no, scrollbars=yes, resizable=no, width=550, height=550");
+				window.close();	
+			} else {
+				alert('비밀번호가 틀렸습니다.');
+			}
+		}).fail(function(error){ // 처리 실패 시
+			alert(error);
+		});
 
-/* 비밀번호 찾기 */
-function findPassword() {
-	if ($("#id2").val() == "") {
-		alert("아이디를 입력해 주세요.");
-		return false;
-	} else if ($("#name2").val() == "") {
-		alert("이름을 입력해 주세요.");
-		return false;
-	} else if ($("#email2").val() == "") {
-		alert("이메일을 입력해 주세요.");
-		return false;
-	} else {
-		$("#findPW").action = "findPw";  // 비밀번호 찾기 URL
-		$("#findPW").submit();
-	}
-}
+	
+	}	
+});
+*/
+
+		
+
+
 </script>
 <!-- 자바스트립트 섹션 끝 -->
 </body>

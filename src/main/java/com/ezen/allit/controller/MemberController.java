@@ -66,7 +66,6 @@ public class MemberController {
 	public Member setMember(@AuthenticationPrincipal PrincipalDetailMember principal) {
 		if(principal != null) {
 			Member member = principal.getMember();
-			System.out.println("member=============== = " + member);
 			return member;
 		} else {
 			return null;
@@ -522,7 +521,6 @@ public class MemberController {
 	/** 마이올잇>리뷰작성 */
 	@PostMapping("/writeReview")
 	public String writeReview(ReviewDto reviewDto) throws Exception {
-		System.out.println("reviewDto1 = " + reviewDto);
 		memberService.saveReview(reviewDto);
 
 		return "redirect:reviewList";

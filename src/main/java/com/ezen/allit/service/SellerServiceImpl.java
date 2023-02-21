@@ -315,6 +315,8 @@ public class SellerServiceImpl implements SellerService {
 				theProduct.setCategory(product.getCategory());
 				theProduct.setName(product.getName());
 				theProduct.setPrice(product.getPrice());
+				theProduct.setDiscount(product.getDiscount());
+				theProduct.setFinalPrice(product.getFinalPrice());
 				theProduct.setContent(product.getContent());
 				theProduct.setImageName(imgName);
 				
@@ -331,6 +333,8 @@ public class SellerServiceImpl implements SellerService {
 			theProduct.setCategory(product.getCategory());
 			theProduct.setName(product.getName());
 			theProduct.setPrice(product.getPrice());
+			theProduct.setDiscount(product.getDiscount());
+			theProduct.setFinalPrice(product.getFinalPrice());
 			theProduct.setContent(product.getContent());
 			theProduct.setImageName(imgName);
 		}

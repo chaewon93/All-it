@@ -311,9 +311,7 @@ public class SellerController {
 	 */
 	@PostMapping("/product/insert")
 	public String insertProduct(Product product, MultipartFile imageFile) throws Exception {
-		System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 		sellerService.saveProduct(product, imageFile);
-		System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
 		
 		return "redirect:/seller/";
 	}
