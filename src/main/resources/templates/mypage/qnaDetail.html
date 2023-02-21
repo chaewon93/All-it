@@ -28,10 +28,14 @@
 	</tr>
 	<tr th:if="${qna.status} == '1'">
 		<th>답변</th>
-		<td>
-			<textarea name="content" cols="40" rows="10" th:if="${qna.response != ''}" th:text="${qna.response}" readonly="readonly" class="form-control"></textarea>
-			<textarea name="content" cols="40" rows="10" th:if="${qna.reply.content != ''}" th:text="${qna.reply.content}" readonly="readonly" class="form-control"></textarea>
-		<input type="hidden" name="rno" th:value="${qna.reply?.rno}" ></td>
+		<td th:if="${qna.category == '상품'}">
+			<textarea name="content" cols="40" rows="10" th:text="${qna.response}" readonly="readonly" class="form-control"></textarea>
+			<input type="hidden" name="rno" th:value="${qna.reply?.rno}" >
+		</td>
+		<td th:unless="${qna.category == '상품'}">
+			<textarea name="content" cols="40" rows="10" th:text="${qna.reply.content}" readonly="readonly" class="form-control"></textarea>
+			<input type="hidden" name="rno" th:value="${qna.reply?.rno}" >
+		</td>
 	</tr>
 	<tr th:if="${qna.status} == '1'">
 		<th>답변일</th>
@@ -45,7 +49,7 @@
 	</tr>	
 	<tr>
 		<td colspan="2" align="center">
-		<input type="button" value="< 문의내역 돌아가기" onclick="history.back()" class="btn btn-outline-warning"> <br>
+		<input type="button" value="≪ 문의내역 돌아가기" onclick="history.back()" class="btn btn-outline-warning"> <br>
 		</td>
 	</tr>
 

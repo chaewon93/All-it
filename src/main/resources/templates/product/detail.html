@@ -4,6 +4,7 @@
 <div th:replace="~{ /fragments/header.html :: header }"></div>
 <!-- header replace -->
 
+<!-- 아이콘 사용 위해 필요 -->
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 
 <!-- 상품 내용 섹션 시작 -->
@@ -37,7 +38,7 @@
 		<textarea class="form-control" th:text="${ product.content }" rows="5" name="content" id="content" disabled="disabled"></textarea><br>
     
 		<input type="button" class="btn btn-warning" id="inCart" value="장바구니">
-    <input type="submit" class="btn btn-warning" id="buy" formaction="/order/orderNow" value="바로구매" th:onclick="return buyCheck()"/>
+    	<input type="submit" class="btn btn-warning" id="buy" formaction="/order/orderNow" value="바로구매" th:onclick="return buyCheck()"/>
 		<input type="button" class="btn btn-warning" onclick="allmemproCoupon()" value="쿠폰">
 		<input type="button" class="btn btn-outline-warning" id="hit" value="좋아요"/>
 		<input type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#myModal" value="문의하기"/><br>
@@ -68,13 +69,13 @@
 					<option th:value="결제">결제</option>
 					<option th:value="신고">신고</option>
 				</select> <br>
-				<span>문의 제목 </span>
+				<span>제목 </span>
 				<input type="text" id="question-title" class="form-control"><br>
 				<span>문의내용 </span><br>
 				<textarea rows="6"cols="75" id="question-content" class="form-control"></textarea>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" id="question-save">작성</button>
+				<button type="button" class="btn btn-warning" id="question-save">작성</button>
 				<button type="button" class="btn btn-light" data-dismiss="modal">취소</button>
 			</div>
 		</div>
@@ -82,10 +83,10 @@
 </div>
 <!-- 문의 모달 섹션 끝 -->
 
-<!-- 댓글 출력 섹션 시작 -->
+<!-- 리뷰 출력 섹션 시작 -->
 <div class="col-sm-12" style="height: 300px;">
 	<div class="card-header">
-		<span>댓글</span>
+		<span>리뷰</span>
 	</div>
 	<ul class="list-group" id="reply--box" th:each="review : ${ product.review }" th:if="${ review.prvno == 0 }">
 		<li class="list-group-item d-flex justify-content-between" id="reply--1">
@@ -145,7 +146,7 @@
   		<!-- 답글 작성 섹션 끝 -->
 	</ul>
 </div> <br>
-<!-- 댓글 출력 섹션 끝 -->
+<!-- 리뷰 출력 섹션 끝 -->
 
 <!-- 상품평 작성 섹션 시작 -->
 <!-- <div class="form-group">

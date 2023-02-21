@@ -81,10 +81,21 @@ public class SellerController {
 	
 	// 판매자 마이페이지 이동
 	@GetMapping("/mypage")
-	public String mypageView() {
+	public String mypageView(Model model,
+						@AuthenticationPrincipal PrincipalDetailSeller principal) {
 		
+		Seller seller = principal.getSeller();
+		System.out.println("seller = " + seller);
+
+		String fullAddr = seller.getAddress();
 		
+		if(fullAddr != null) {
+			String[] addr = fullAddr.split(",");
+			model.addAttribute("addr", addr);
+		}
+
 		return "seller/mypage";
+
 	}
 	
 	/*

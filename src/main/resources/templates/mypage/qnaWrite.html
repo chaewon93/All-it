@@ -9,12 +9,14 @@
 </head>
 
 <body th:align="center">
-<div class="container" style="height: 800px; margin-top: 30px;">
+<!-- QnA 상세보기 섹션 시작 -->
+<div style="display: flex; height: 800px; margin-top: 30px;">
+<div class="container">
 <h1>고객센터(1:1 문의)</h1><br>
 <form th:action="@{/member/writeQna}" method="post">
-<table th:align="center">
+<table th:align="center" class="table">
 	<tr>
-		<th th:text="카테고리">
+		<th width="120" th:text="카테고리">
 		<td colspan="2">
 			<select name="category" class="form-control">
 				<option value="주문/결제" selected>주문/결제</option>
@@ -22,12 +24,13 @@
 				<option value="환불" >환불</option>
 				<option value="배송" >배송</option>
 				<option value="회원서비스" >회원서비스</option>
+				<option value="판매자 신고" >판매자 신고</option>
 				<option value="기타" >기타</option>
 			</select>
 		</td>
 	</tr>
 	<tr>
-		<th width="70" th:text="제목"></th>
+		<th th:text="제목"></th>
 		<td align="left">
 			<input type="hidden" th:value="${ #authentication.principal.member?.id }" name="mid" id="mid">
 			<input type="text" name="title" required="required" class="form-control"/>
@@ -41,11 +44,12 @@
 	</tr>
 	<tr>
 		<td colspan="2" align="center">
-			<input type="submit" value="등록" class="btn btn-warning"/>
+			<input type="submit" value="문의하기" class="btn btn-warning"/>
 		</td>
 	</tr>
 </table>
 </form>
+</div>
 </div>
 </body>
 

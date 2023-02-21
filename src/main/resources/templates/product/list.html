@@ -29,7 +29,7 @@
 	<div class="row">
 		<div class="col-sm-4" th:each="product : ${ productList }">
 			<!-- <a th:href="@{ /product/detail(pno=${ product.pno }) }"> -->
-			<a th:href="@{ |/product/${ product.pno }| }">
+			<a th:href="@{ |/product/${ product.pno }| }" class="text-info">
 				<h2 th:text="${ product.name }"></h2>
 				<img th:if="${#strings.isEmpty(product.imageName)}" class="img-fluid" th:src="@{ /img/noimage.gif }" width="350">
 				<img th:if="${not #strings.isEmpty(product.imageName)}" class="img-fluid" th:src="@{ /images/product/ } + ${ product.imageName }" width="350">

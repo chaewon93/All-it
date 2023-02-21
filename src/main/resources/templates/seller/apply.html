@@ -59,11 +59,11 @@
 		</td>
 	</tr>
 	<tr>
-		<td>사업자번호</td>
+		<td>사업자번호<b class="text-danger">*</b></td>
 		<td><input type="text" name="regno" id="regno" required="required" class="form-control mr-sm-2" placeholder="사업자번호"></td>
 	</tr>
 	<tr>
-		<td colspan="2" align="center">
+		<td colspan="2" align="center"><br>
 			<input type="submit" value="입점신청" class="btn btn-warning" onclick="reruapplyCheck()" id="apply"/>
 			<input type="reset" value="취소" class="btn btn-secondary">
 		</td>
@@ -107,20 +107,20 @@ $("#checkBtn").click(function(){
 });
 
 // 비밀번호 확인
-$("#pwd2").focusout(function(){
+$("#pwdCheck").focusout(function(){
    	var pass1 = $("#pwd").val();
-       var pass2 = $("#pwd2").val();
+	var pass2 = $("#pwdCheck").val();
        
-       if (pass1 != "" || pass2 != ""){
+	if (pass1 != "" || pass2 != ""){
        	if (pass1 == pass2){
            	$("#checkPw").html('비밀번호가 일치합니다.');
            	$("#checkPw").attr('color','green');
-           } else {
-           	$("#checkPw").html('비밀번호가 일치하지 않습니다. 다시 입력해주세요.');
-               $("#checkPw").attr('color','red');
-           }
-       }
-   });
+		} else {
+			$("#checkPw").html('비밀번호가 일치하지 않습니다. 다시 입력해주세요.');
+			$("#checkPw").attr('color','red');
+		}
+	}
+});
 
 //
 function applyCheck() {
@@ -157,7 +157,7 @@ $("#kakaoAddr").click(function(){
 		
                // 우편번호와 주소 정보를 해당 필드에 넣는다.
                document.getElementById('zipcode').value = data.zonecode;
-               document.getElementById("address").value = addr;
+               document.getElementById("addr").value = addr;
                // 커서를 상세주소 필드로 이동한다.
                document.getElementById("addrDetail").focus();
            }

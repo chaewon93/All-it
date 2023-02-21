@@ -3,32 +3,53 @@
 	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <div th:replace="~{ /fragments/header.html :: header }"></div>
 <!-- header replace -->
-
-<!-- 내용 섹션 시작 -->
+<head>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+<!-- 상품문의 답변 작성 섹션 시작 -->
+<div style="display: flex; margin-top: 30px;">
+<div class="container">
 <form method="post">
-	<div>
-		<br>
-		<span>카테고리 </span>
-		<input type="text" th:value="${ qna.category }"/> <br><br>
-		<span>상품 </span>
-		<input type="text" th:value="${ qna.product.name }"/> <br><br>
-		<span>제목 </span>
-		<input type="text" th:value="${ qna.title }"/> <br><br>
-		<span>질문자 </span>
-		<input type="text" th:value="${ qna.member.id }"/> <br><br>
-		<span>문의내용 </span><br>
-		<textarea rows="9"cols="75" th:text="${ qna.content }"></textarea><br><br>
-		<span>답변 </span><br>
-		<textarea th:if="${ qna.response }" th:text="${ qna.response }" rows="9"cols="75" id="response" readonly="readonly"></textarea>
-		<textarea th:unless="${ qna.response }" th:text="${ qna.response }" rows="9"cols="75" id="response"></textarea>
-	</div>
-	<div>
-		<input type="hidden" th:value="${ qna.product.pno }" id="pno">
-		<input type="hidden" th:value="${ qna.qno }" id="qno">
-		<button type="button" class="btn btn-primary" onclick="saveit()">작성</button>
-		<button type="button" class="btn btn-light" th:if="${ qna.response }" onclick="deleteit()">답변삭제</button>
-	</div>
+	<table class="table">
+		<tr>
+			<th>카테고리 </th>
+			<td><input type="text" th:value="${ qna.category }" class="form-control" readonly="readonly"><br></td>
+		</tr>
+		<tr>
+			<th>상품 </th>
+			<td><input type="text" th:value="${ qna.product.name }" class="form-control" readonly="readonly"/> <br></td>
+		</tr>
+		<tr>
+			<th>제목 </th>
+			<td><input type="text" th:value="${ qna.title }" class="form-control" readonly="readonly"/> <br></td>
+		</tr>
+		<tr>
+			<th>질문자 </th>
+			<td><input type="text" th:value="${ qna.member.id }" class="form-control" readonly="readonly"/> <br></td>
+		</tr>
+		<tr>
+			<th>문의내용 </th><br>
+			<td><textarea rows="9"cols="75" th:text="${ qna.content }" class="form-control" readonly="readonly"></textarea><br></td>
+		</tr>
+		<tr>
+			<th>답변 </th><br>
+			<td><textarea th:if="${ qna.response }" th:text="${ qna.response }" rows="9"cols="75" id="response" readonly="readonly" class="form-control"></textarea>
+			<textarea th:unless="${ qna.response }" th:text="${ qna.response }" rows="9"cols="75" id="response" class="form-control"></textarea></td>
+		</tr>
+		<tr>
+			<td colspan="2" align="right">
+			<input type="hidden" th:value="${ qna.product.pno }" id="pno">
+			<input type="hidden" th:value="${ qna.qno }" id="qno">
+			<input type="button" value="≪ 문의내역 돌아가기" onclick="history.back()" class="btn btn-outline-warning">
+			<button type="button" class="btn btn-warning" th:unless="${ qna.response }" onclick="saveit()">작성</button>
+			<button type="button" class="btn btn-secondary" th:if="${ qna.response }" onclick="deleteit()">답변삭제</button></td>
+		</tr>
+	</table>
 </form>
+</div>
+</div>
 <!-- 내용 섹션 시작 -->
 
 <!-- 자바스트립트 섹션 시작 -->
@@ -112,3 +133,4 @@ function deleteit() {
 
 <div th:replace="~{ /fragments/footer.html :: footer }"></div>
 <!-- footer replace -->
+</body>

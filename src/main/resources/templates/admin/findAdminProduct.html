@@ -3,14 +3,81 @@
 <!-- header replace -->
 <div th:replace="~{ /fragments/header.html :: header }"></div>
 
-<!-- 
-<html xmlns:th="http://www.thymeleaf.org"
-	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
- -->
-
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+
+<body>
+<div class="container" style="margin-top: 30px; background-color: white">
+<div class="form-inline">
+<nav class="navbar navbar-expand-sm" >	
+	<select name="category" onchange="location.href=(this.value)" class="form-control">
+		<option value="/admin/findAdminProduct?a=1" th:selected="${a} == 1">등록 상품 조회</option>
+		<option value="/admin/findAdminProduct?a=0" th:selected="${a} == 0">등록 대기 상품 조회</option>
+	</select>
+</nav>
+</div>
+
+<form action="/admin/regPro" method="post" id="theform">	
+<table th:align="center" th:cellpadding="3" th:cellspacing="0" th:width="900" class="table">
+
+<tr>
+	<th width="100">번호</th>
+	<th width="200">카테고리</th>
+	<th width="100">상품 번호</th>
+	<th width="300">상품 이미지</th>
+	<th width="300">상품명</th>
+	<!-- <th width="300">내용</th> -->
+	<th width="150">등록일</th>
+	<th width="100">가격</th>
+	<th width="100">할인률</th>
+	<th width="100">판매자</th>
+	<th th:if="${a}==1" width="100">MDPick 등록 여부</th>
+	<th width="100"><input type="checkbox" name="checkAll" id="regAll"> 체크</th>
+	
+</tr>
+<tr th:each="pro, state : ${list}">
+	<td th:text="${state.count}"></td>
+	<td th:switch="${pro.category}">
+			<p th:case="1" th:text="패션"></p>
+			<p th:case="2" th:text="식품"></p>
+			<p th:case="3" th:text="주방용품"></p>
+			<p th:case="4" th:text="생활용품"></p>
+			<p th:case="5" th:text="인테리어"></p>
+			<p th:case="6" th:text="가전"></p>
+			<p th:case="7" th:text="|스포츠/레저|"></p>
+			<p th:case="8" th:text="|도서/음반/DVD|"></p>
+			<p th:case="9" th:text="반려동물용품"></p>
+			<p th:case="10" th:text="건강식품"></p>
+	</td>
+	<td th:text="${pro.pno}"></td>
+	<td><img class="img-fluid" th:src="@{ /images/product/ } + ${ pro.imageName }"></td>
+	<td align="left"><a th:href="@{|/product/detail/${pro.pno}|}" th:text="${pro.name}"></a></td>
+	<!-- <td th:text="${pro.content}"></td> -->
+	<td th:text="${#dates.format(pro.regDate, 'yyyy-MM-dd')}"></td>
+	<td th:text="${#numbers.formatInteger(pro.price, 1, 'COMMA') }+'원'"></td>
+	<td th:text="${pro.discount}"></td>	
+	<td th:text="${pro.seller?.id}"></td>
+	<td th:if="${a}==1" th:switch="${pro.mdPickyn}" align="center">
+		<p th:case="0" th:text="미등록" style="color:red;"></p>
+		<p th:case="1" th:text="등록완료" style="color:blue;"></p>
+	</td>
+	<td align="center"><input type="checkbox" name="pno" class="test" th:value="${pro.pno}"></td>
+	
+</tr>
+</table>
+<div align="right">
+	<input th:if="${a}==1" type="button" value="MDPick 변경" onclick="changeProMDPick()" class="btn btn-outline-warning">
+	<input th:if="${a}==0" type="button" value="승인" onclick="reg_product()" class="btn btn-warning">
+	<input type="button" value="삭제" onclick="delete_product()" class="btn btn-secondary">
+</div>
+</form>
+</div>
+
+<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
+<!-- pagination replace -->
+
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">
 
@@ -87,80 +154,6 @@ function delete_product(){
 }
 
 </script>
-</head>
-<body>
-
-<div align="center">	
-	<select name="category" onchange="location.href=(this.value)">
-		<option value="/admin/findAdminProduct?a=1" th:selected="${a} == 1">등록 상품 조회</option>
-		<option value="/admin/findAdminProduct?a=0" th:selected="${a} == 0">등록 대기 상품 조회</option>
-	</select>
-</div>
-
-<form action="/admin/regPro" method="post" id="theform">	
-<table th:align="center" border="1" th:cellpadding="3" th:cellspacing="0" th:width="900">
-
-<tr>
-	<th bgcolor="orange" width="100">번호</th>
-	<th bgcolor="orange" width="200">카테고리</th>
-	<th bgcolor="orange" width="100">상품 번호</th>
-	<th bgcolor="orange" width="300">상품명</th>
-	<th bgcolor="orange" width="300">내용</th>
-	<th bgcolor="orange" width="150">등록일</th>
-	<th bgcolor="orange" width="100">가격</th>
-	<th bgcolor="orange" width="100">할인률</th>
-	<th bgcolor="orange" width="100">판매자</th>
-	<th bgcolor="orange" width="300">이미지</th>
-	<th th:if="${a}==1" bgcolor="orange" width="100">MDPick 등록 여부</th>
-	<th bgcolor="orange" width="100">체크<br>
-		<input type="checkbox" name="checkAll" id="regAll">
-	</th>
-	
-</tr>
-<tr th:each="pro, state : ${list}">
-	<td th:text="${state.count}"></td>
-	<td th:switch="${pro.category}">
-			<p th:case="1" th:text="패션"></p>
-			<p th:case="2" th:text="식품"></p>
-			<p th:case="3" th:text="주방용품"></p>
-			<p th:case="4" th:text="생활용품"></p>
-			<p th:case="5" th:text="인테리어"></p>
-			<p th:case="6" th:text="가전"></p>
-			<p th:case="7" th:text="|스포츠/레저|"></p>
-			<p th:case="8" th:text="|도서/음반/DVD|"></p>
-			<p th:case="9" th:text="반려동물용품"></p>
-			<p th:case="10" th:text="건강식품"></p>
-	</td>
-	<td th:text="${pro.pno}"></td>
-	<td align="left"><a th:href="@{|/product/detail/${pro.pno}|}" th:text="${pro.name}"></a></td>
-	<td th:text="${pro.content}"></td>
-	<td th:text="${pro.regDate}"></td>
-	<td th:text="${pro.price}"></td>
-	<td th:text="${pro.discount}"></td>	
-	<td th:text="${pro.seller?.id}"></td>
-	<td><img class="img-fluid" th:src="@{ /images/product/ } + ${ pro.imageName }"></td>
-	<td th:if="${a}==1" th:switch="${pro.mdPickyn}" align="center">
-		<p th:case="0" th:text="미등록" style="color:red;"></p>
-		<p th:case="1" th:text="등록완료" style="color:blue;"></p>
-	</td>
-	<td align="center"><input type="checkbox" name="pno" class="test" th:value="${pro.pno}"></td>
-	
-</tr>
-</table>
-<div align="center">
-	<input th:if="${a}==0" type="button" value="승인" onclick="reg_product()">
-	<input type="button" value="삭제" onclick="delete_product()">
-	<input th:if="${a}==1" type="button" value="MDPick 변경" onclick="changeProMDPick()">
-</div>
-</form>
-
-<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
-<!-- pagination replace -->
-<hr>
-<a th:href="@{/admin/adminMain}">관리자 메인으로</a> <br>
-<a th:if="${a}==0" th:href="@{/admin/findAdminProduct(a=1)}">등록 상품 조회</a>
-<a th:if="${a}==1" th:href="@{/admin/findAdminProduct(a=0)}">등록 대기 상품 조회</a> <br>
-
 </body>
 <!-- footer replace -->
 <div th:replace="~{ /fragments/footer.html :: footer }"></div>

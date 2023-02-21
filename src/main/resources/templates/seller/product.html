@@ -4,17 +4,25 @@
 <div th:replace="~{ /fragments/header.html :: header }"></div>
 <!-- header replace -->
 
-<!-- 내용 섹션 시작 -->
-<form method="post" th:action="@{ /seller/product/modify }" id="productDetail" enctype="multipart/form-data">
-	<div class="form-group">
+<!-- 아이콘 사용 위해 필요 -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+<!-- 상품 내용 섹션 시작 -->
+<div class="container" style="margin-top: 30px; margin-bottom: 50px;">
+<div class="row">
+	<div class="col-sm-4">
+		<img class="img-fluid" th:src="@{ /images/product/ } + ${ product.imageName }" width="350"><br>
+		<label><i class="fas fa-heart">조회수 </i> <span th:text="${ product.count }" class="text-info"></span></label><br>
+		<label><i class="fas fa-star">별점 </i> <span th:if="${ product.rating } != 0" th:text="${ product.rating }" class="text-warning"></span></label>
+						  <span th:if="${ product.rating } == 0" class="text-warning">0</span><br>
+		<label><i class="fas fa-thumbs-up">좋아요 </i> <span th:text="${ product.hit }" class="text-primary"></span></label><br>
+	</div>
+	<div class="col-sm-8">
+	<form method="post" th:action="@{ /seller/product/modify }" id="productDetail" enctype="multipart/form-data">
 		<input type="hidden" th:value="${ product.seller.id }" name="sid" id="sid">
 		<input type="hidden" th:value="${ #authentication.principal.seller.id }" name="seller" id="seller">
 		<input type="hidden" th:value="${ product.pno }" name="pno" id="pno">
-		<img class="img-fluid" th:src="@{ /images/product/ } + ${ product.imageName }" width="350"><br>
-		<span>조회수: </span><span th:text="${ product.count }" style="color: green;"></span><br>
-		<span>별점: </span><span th:if="${ product.rating } != 0" th:text="${ product.rating }" style="color: purple;"></span>
-						  <span th:if="${ product.rating } == 0" style="color: purple;"></span><br>
-		<span>좋아요: </span><span th:text="${ product.hit }" style="color: aqua;"></span><br>
+		
 		<label for="sel1">카테고리</label>
 		<select class="form-control" name="category" id="category">
 			<option>==카테고리==</option>
@@ -38,17 +46,19 @@
 		<label for="image">이미지 업로드</label>
 		<input type="hidden" th:value="${ product.imageName }" name="imageName" id="imageName">
 		<input type="file" class="form-control-file border" name="imageFile" id="imageFile"/>
+		<br>
+		<button type="submit" class="btn btn-warning" id="modify">상품수정</button>
+		<button type="button" class="btn btn-secondary" id="delete">삭제</button>
+		<!-- <button type="button" class="btn btn-light" id="hit">좋아요</button> <br> <br> -->
+	</form>
 	</div>
-	<button type="submit" class="btn btn-light" id="modify">상품수정</button>
-	<button type="button" class="btn btn-light" id="delete">삭제</button>
-	<!-- <button type="button" class="btn btn-light" id="hit">좋아요</button> <br> <br> -->
-</form>
+</div> <br>
 <!-- 내용 섹션 끝 -->
 
 <!-- 리뷰 출력 섹션 시작 -->
 <div class="card">
 	<div class="card-header">
-		<span>댓글</span>
+		<span>리뷰</span>
 	</div>
 	<ul class="list-group" id="reply--box" th:each="review : ${ product.review }" th:if="${ review.prvno == 0 }">
 		<li class="list-group-item d-flex justify-content-between" id="reply--1">
@@ -63,8 +73,9 @@
 	  		</div>
 	  	</li>
 	</ul>
-</div>  <br>
+</div> 
 <!-- 리뷰 출력 섹션 끝 -->
+</div>
 
 <!-- 자바스트립트 섹션 시작 -->
 <script type="text/javascript">

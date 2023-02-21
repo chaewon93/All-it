@@ -23,6 +23,7 @@
 			</td>
 		</tr>
 		<tr>
+			<th>별점</th>
 			<td>
 				<select class="form-control" name="rating" id="rating">
 					<option th:value="1">1</option>
@@ -48,7 +49,7 @@
 
 <!-- 자바스트립트 섹션 시작 -->
 <script type="text/javascript">
-/* 아이디 찾기 */
+/* 리뷰 작성 폼 체크 */
 function save() {
 	let imageFile = $("#imageFile").val();
 	let content = $("#content").val();
@@ -75,23 +76,6 @@ function save() {
 	} else if(content.trim() == '') {
 		alert("리뷰내용을 작성해주세요");
 		return false;
-	}
-}
-
-/* 비밀번호 찾기 */
-function findPassword() {
-	if ($("#id2").val() == "") {
-		alert("아이디를 입력해 주세요.");
-		return false;
-	} else if ($("#name2").val() == "") {
-		alert("이름을 입력해 주세요.");
-		return false;
-	} else if ($("#email2").val() == "") {
-		alert("이메일을 입력해 주세요.");
-		return false;
-	} else {
-		$("#findPW").action = "findPw";  // 비밀번호 찾기 URL
-		$("#findPW").submit();
 	}
 }
 </script>

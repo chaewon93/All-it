@@ -19,7 +19,7 @@
 	<div class="header-container" sec:authorize="!isAuthenticated()">
 		<ul class="nav container justifiy-content-end">
 	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /member-login }">로그인</a>
-	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /sellerLogin }">판매자 로그인</a>
+	  		<!-- <li class="nav-item"><a class="nav-link text-info" th:href="@{ /sellerLogin }">판매자 로그인</a> -->
 	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /member-join }">회원가입</a>
 	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /sellerApply }">입점신청</a></li>
         	<li class="nav-item"><a class="nav-link text-info" href="#">고객센터</a></li>
@@ -99,7 +99,8 @@
 	</div>
 	<!-- 회원 로그인 끝 -->
 	
-	<!-- 판매자 로그인 시작 -->
+	<!-- 판매자/관리자 로그인 시작 -->
+	<!-- 판매자 -->
  	<div class="header-container" sec:authorize="hasRole('SELLER')">
 		<ul class="nav justifiy-content-end"> 
 			<li class="nav-item"><span th:text="${ #authentication.principal.seller.name }+'님'"></span></li>
@@ -114,16 +115,16 @@
 		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 			<div class="collapse navbar-collapse" id="collapsibleNavbar">
 				<ul class="navbar-nav">
-					<li class="nav-item"><a class="nav-link" th:href="@{ /seller/insert }">상품등록</a></li>
-					<li class="nav-item"><a class="nav-link" th:href="@{ /seller/ }">상품목록</a></li>
-					<li class="nav-item"><a class="nav-link" th:href="@{ /seller/order }">주문목록</a></li>
-					<li class="nav-item"><a class="nav-link" th:href="@{ /seller/qna }">QnA목록</a></li>
-					<li class="nav-item"><a class="nav-link" th:href="@{ /seller/unregistered }">미승인상품목록</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /seller/insert }">상품 등록</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /seller/ }">상품 목록</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /seller/order }">주문 목록</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /seller/qna }">QnA 목록</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /seller/unregistered }">미승인 상품목록</a></li>
 				</ul>
 			</div>
 		</nav>
 	</div>
-
+	<!-- 관리자 -->
 	<div class="header-container" sec:authorize="hasRole('ADMIN')">
 		<ul class="nav justifiy-content-end"> 
 			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /seller/mypage }">마이페이지</a></li>
@@ -144,7 +145,7 @@
 					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/couponList }">쿠폰</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/createCoupon }">쿠폰 생성</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{ /chart/mainCharts }">통계</a></li>
-					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/adminMain }">판매자 메인화면</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/adminMain }">관리자 메인화면</a></li>
 				</ul>
 			</div>
 		</nav>
