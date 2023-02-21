@@ -53,10 +53,10 @@
 				</th:block>
 				<td>
 					<input type="button" th:if="${detail.status == 1}" id="cancelOrder" value="주문취소" class="btn btn-outline-secondary" th:onclick="'javascript:index.cancelOrder(' +${ order.ono }+ ',' +${ detail.odno }+ ');'">
-					<input type="button" th:if="${detail.status == 2}" id="delivery" value="배송조회" class="btn btn-outline-secondary" data-toggle="modal" data-target="#deliveryModal" th:data-pname="${detail.product.name}">
+					<input type="button" th:if="${detail.status == 2}" id="delivery" value="배송조회" class="btn btn-outline-secondary" th:onclick="'javascript:index.openDelivery(this);'" data-toggle="modal" data-target="#deliveryModal" th:data-pname="${detail.product.name}">
 					<input type="button" th:if="${detail.status == 3}" id="buyComplete" value="구매확정" class="btn btn-outline-secondary" th:onclick="'javascript:index.buyComplete(' +${ detail.odno }+ ');'">
-          <input type="button" id="qna" value="상품문의" class="btn btn-outline-secondary" data-toggle="modal" data-target="#qnaModal" th:data-product="${ detail.product.name }" th:data-seller="${ detail.product.seller.id }" th:data-pno="${ detail.product.pno }"/> <br> <br>
-					<input type="button" th:if="${detail.status == 3}" id="refund" value="교환/반품 신청" class="btn btn-outline-secondary" data-toggle="modal" data-target="#refundModal" th:data-odno="${ detail.odno }" th:data-pname="${ detail.product.name }">
+          			<input type="button" id="qna" value="상품문의" class="btn btn-outline-secondary" th:onclick="'javascript:index.openQna(this);'" data-toggle="modal" data-target="#qnaModal" th:data-product="${ detail.product.name }" th:data-seller="${ detail.product.seller.id }" th:data-pno="${ detail.product.pno }"/>
+					<input type="button" th:if="${detail.status == 3}" id="refund" value="교환/반품 신청" class="btn btn-outline-secondary" th:onclick="'javascript:index.openRefund(this);'" data-toggle="modal" data-target="#refundModal" th:data-odno="${ detail.odno }" th:data-pname="${ detail.product.name }">
 					<input type="button" th:if="${detail.status == 4}" id="writeReview" value="리뷰작성" class="btn btn-outline-secondary" th:onclick="'javascript:index.writeReview(' +${ detail.odno }+ ');'">
 			
 					<input type="hidden" th:value="${ order.ono }" id="ono" name="ono">
@@ -169,10 +169,7 @@
 				<input type="text" readonly="readonly" id="qnasid"/> <br><br>
 				<span>카테고리 </span>
 				<select id="question-category">
-					<option th:value="0">==카테고리==</option>
 					<option th:value="상품">상품</option>
-					<option th:value="결제">결제</option>
-					<option th:value="신고">신고</option>
 				</select> <br><br>
 				<span>제목 </span>
 				<input type="text" id="question-title"><br><br>
@@ -192,40 +189,6 @@
 <!-- 자바스트립트 섹션 시작 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script type="text/javascript">
-
-$(document).ready(function(){
-  // 상품문의 모달창 open
-	$("#qna").click(function(){
-		var product = $(this).data('product');
-		var seller = $(this).data('seller');
-		var pno = $(this).data('pno');
-		console.log("pro", product);
-		console.log("sel", seller);
-		console.log("pno", pno);
-		$("#qnaModal #qnaname").val(product);
-		$("#qnaModal #qnasid").val(seller);
-		$("#qnaModal #qnapno").val(pno);
-		$("#qnaModal").modal();
-	});
-  
-	// 교환/반품 신청 모달 open
-    $("#refund").click(function() {
-    	var odno = $(this).data('odno');
-    	var name = $(this).data('pname');
-    	
-    	console.log("odno : ",odno);
-    	$("#refund-odno").val(odno);
-    	$("#prodName").val(name);
-    });
-	
-	// 배송 조회 모달 open
-    $("#delivery").click(function() {
-    	var name = $(this).data('pname');
-    	
-    	$("#pName").val(name);
-    });
-});
-
 let index = {
 	init:function() {
 		
@@ -241,6 +204,36 @@ let index = {
 			this.saveQuestion();
 		});
 	},
+	
+	// 상품문의 모달창 open
+	openQna:function(btn) {
+		var product = $(btn).data('product');
+		var seller = $(btn).data('seller');
+		var pno = $(btn).data('pno');
+		console.log("pro", product);
+		console.log("sel", seller);
+		console.log("pno", pno);
+		$("#qnaname").val(product);
+		$("#qnasid").val(seller);
+		$("#qnapno").val(pno);
+	},
+	
+	// 교환/반품 신청 모달 open
+    openRefund:function(btn) {
+    	var odno = $(btn).data('odno');
+    	var name = $(btn).data('pname');
+    	
+    	console.log("odno : ",odno);
+    	$("#refund-odno").val(odno);
+    	$("#prodName").val(name);
+    },
+	
+	// 배송 조회 모달 open
+   	openDelivery:function(btn) {
+    	var name = $(btn).data('pname');
+    	
+    	$("#pName").val(name);
+    },
 
 	// 장바구니 담기
 	insertCart:function() {

@@ -269,7 +269,6 @@ public class MemberController {
 	@GetMapping("/qnaDetail")
 	public String getQnaDetail(Model model, int qno) {
 		QnA qna = memberService.getQnaDetail(qno);
-		
 		model.addAttribute("qna", qna);
 		
 		return "mypage/qnaDetail";

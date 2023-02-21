@@ -7,7 +7,7 @@
 <!-- 내용 섹션 시작 -->
 <div class="container" style="margin-top: 30px; background-color: white">	
 	<form method="get" th:action="@{ /seller/order }">
-		<input type="text" name="searchKeyword" id="searchKeyword" placeholder="검색어를 입력해주세요">
+		<input type="text" name="searchKeyword" id="searchKeyword" placeholder="상품명을 입력해주세요">
 		<button type="submit" class="btn btn-light">검색</button>
 	</form> <br>
 	<table>
@@ -32,16 +32,16 @@
 			<td th:text="${ order.quantity }"></td>
 			<td>
 				<select id="status">
-					<option th:value="1" th:selected="${ order.status }=='1'">결제완료</option>
-					<option th:value="2" th:selected="${ order.status }=='2'">배송중</option>
-					<option th:value="3" th:selected="${ order.status }=='3'">배송완료</option>
-					<option th:value="4" th:selected="${ order.status }=='4'">구매확정</option>
-					<option th:value="5" th:selected="${ order.status }=='5'">주문취소</option>
-					<option th:value="2" th:selected="${ order.status }=='6'">교환신청</option>
-					<option th:value="3" th:selected="${ order.status }=='7'">반품신청</option>
-					<option th:value="4" th:selected="${ order.status }=='8'">리뷰작성완료</option>
-					<option th:value="5" th:selected="${ order.status }=='9'">교환완료</option>
-					<option th:value="5" th:selected="${ order.status }=='10'">반품완료</option>					
+					<option th:value="1" th:selected="${ order.status }=='1'" style="font-style: italic;" disabled="disabled">결제완료</option>
+					<option th:value="2" th:selected="${ order.status }=='2'" style="font-weight: bolder;">배송중</option>
+					<option th:value="3" th:selected="${ order.status }=='3'" style="font-weight: bolder;">배송완료</option>
+					<option th:value="4" th:selected="${ order.status }=='4'" style="font-style: italic;" disabled="disabled">구매확정</option>
+					<option th:value="5" th:selected="${ order.status }=='5'" style="font-style: italic;" disabled="disabled">주문취소</option>
+					<option th:value="2" th:selected="${ order.status }=='6'" style="font-style: italic;" disabled="disabled">교환신청</option>
+					<option th:value="3" th:selected="${ order.status }=='7'" style="font-style: italic;" disabled="disabled">반품신청</option>
+					<option th:value="4" th:selected="${ order.status }=='8'" style="font-style: italic;" disabled="disabled">리뷰작성완료</option>
+					<option th:value="5" th:selected="${ order.status }=='9'" style="font-weight: bolder;">교환완료</option>
+					<option th:value="5" th:selected="${ order.status }=='10'" style="font-weight: bolder;">반품완료</option>					
 				</select>
 				<input type="hidden" th:value="${ order.odno }" id="odno">
 				<button type="button" class="badge" name="btn" id="btn" th:onclick="'javascript:index.modifyStatus(this);'">확인</button>

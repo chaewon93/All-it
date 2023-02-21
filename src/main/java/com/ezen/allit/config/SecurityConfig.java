@@ -115,11 +115,12 @@ public class SecurityConfig {
 	/*
 	 * accessDeniedHandler
 	 */
-    private AccessDeniedHandler accessDeniedHandler() {
+	@Bean
+    public AccessDeniedHandler accessDeniedHandler() {
         CustomAccessDeniedHandler accessDeniedHandler = new CustomAccessDeniedHandler();
         accessDeniedHandler.setErrorPage("/denied");
         return accessDeniedHandler;
-      }
+    }
 }
 
 

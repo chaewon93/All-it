@@ -19,7 +19,6 @@
 	<div class="header-container" sec:authorize="!isAuthenticated()">
 		<ul class="nav container justifiy-content-end">
 	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /member-login }">로그인</a>
-	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /sellerLogin }">판매자 로그인</a>
 	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /member-join }">회원가입</a>
 	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /sellerApply }">입점신청</a></li>
         	<li class="nav-item"><a class="nav-link" th:href="@{ /customerCenter/userCustomerCenter }">고객센터</a></li>

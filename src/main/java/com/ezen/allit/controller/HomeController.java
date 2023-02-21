@@ -117,7 +117,7 @@ public class HomeController {
 	@GetMapping("/denied")
 	public String loginError() {
 		
-		return "denied";
+		return "common/denied";
 	}
 	
 	/** 푸터 : 이용약관 */

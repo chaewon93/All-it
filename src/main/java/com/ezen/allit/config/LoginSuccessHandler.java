@@ -18,11 +18,6 @@
 //import com.ezen.allit.repository.MemberRepository;
 //import com.ezen.allit.repository.SellerRepository;
 //
-//import lombok.Data;
-//import lombok.NoArgsConstructor;
-//
-//@Data
-//@NoArgsConstructor
 //public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 //	@Autowired
 //	private MemberRepository memberRepo;
@@ -33,13 +28,13 @@
 //	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 //			Authentication authentication) throws IOException, ServletException {
 //		System.out.println("authentication.getName() = " + authentication.getName());
-////		Optional<Member> member = memberRepository.findById(authentication.getName());
-////		System.out.println("mem = " + member);
-////		HttpSession session = request.getSession();
-////		session.setAttribute("memberDto", member);
+//		Optional<Member> member = memberRepo.findById(authentication.getName());
+//		System.out.println("mem = " + member);
+//		HttpSession session = request.getSession();
+//		session.setAttribute("memberDto", member);
 //		
-//		Optional<Seller> seller = sellerRepo.findById(authentication.getName());
-//		System.out.println("seller = " + seller);
+////		Optional<Seller> seller = sellerRepo.findById(authentication.getName());
+////		System.out.println("seller = " + seller);
 //		
 //		clearSession(request);
 //		

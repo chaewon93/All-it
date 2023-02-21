@@ -177,6 +177,7 @@ public class DongukApiController {
 		memberService.modifySnsMemberInfo(memberDto);
 		Member member = memberRepo.findById(memberDto.getId()).get();
 		model.addAttribute("user", member);
+		System.out.println("member = " + member);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);		
 	}

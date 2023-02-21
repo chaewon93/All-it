@@ -110,7 +110,7 @@ public class SellerServiceImpl implements SellerService {
 	}
 	
 	/*
-	 * 판매자 상품검색
+	 * 판매자 상품검색 (검색조선 x, 검색어 o)
 	 */
 	@Transactional
 	public Page<Product> search(Seller seller, String searchKeyword, Pageable pageable) {
@@ -119,6 +119,34 @@ public class SellerServiceImpl implements SellerService {
 		
 		Page<Product> productList = 
 				productRepo.findAllBySellerIdAndNameContainingAndStatus(seller.getId(), searchKeyword, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+		
+		return productList;
+	}
+	
+	/*
+	 * 판매자 상품검색 (검색조선 o, 검색어 x)
+	 */
+	@Transactional
+	public Page<Product> search(Seller seller, int searchCondition, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 3;
+		
+		Page<Product> productList = 
+				productRepo.findAllBySellerIdAndCategoryAndStatus(seller.getId(), searchCondition, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+		
+		return productList;
+	}
+	
+	/*
+	 * 판매자 상품검색 (검색조선 o, 검색어 o)
+	 */
+	@Transactional
+	public Page<Product> search(Seller seller, String searchKeyword, int searchCondition, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 3;
+		
+		Page<Product> productList = 
+				productRepo.findAllBySellerIdAndCategoryAndNameContainingAndStatus(seller.getId(), searchCondition, searchKeyword, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 		
 		return productList;
 	}
@@ -171,8 +199,7 @@ public class SellerServiceImpl implements SellerService {
 				ordersDetailRepo.findAllByProductSellerIdAndProductNameContaining(seller.getId(), searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));
 		
 		return orderList;
-	}
-	
+	}	
 	
 	/*
 	 * 판매자 qna목록조회 (검색 x)
@@ -217,40 +244,43 @@ public class SellerServiceImpl implements SellerService {
 	 */
 	@Transactional
 	public void saveProduct(Product product, MultipartFile imageFile) throws Exception {
-		String ogName = imageFile.getOriginalFilename(); 										  // 원본 파일명
-		//String realPath = "c:/fileUpload/images/"; 	// 파일 저장경로
-		
-		String realPath = "c:/allit/images/product/"; 	// 상품 이미지파일 저장경로
+		String ogName = imageFile.getOriginalFilename();                                 // 원본 파일명
+	    String realPath = "c:/allit/images/product/";    // 상품 이미지파일 저장경로
 
-		File saveDir = new File(realPath);
-		if(!saveDir.isDirectory()) {
-			
-			// mkdir() : 해당 경로에 디렉토리가 존재하지 않으면 생성
-			// mkdirs() :  mkdir()과 같으나 상위 폴더들이 없으면 상위 폴더들까지 생성
-			if(saveDir.mkdirs()) {
-				/*
-				 * UUID를 이용해 중복되지 않는 파일명 생성
-				 */
-				UUID uuid = UUID.randomUUID();
-				String imgName = uuid + "_" + ogName; 		 // 저장될 파일명
-				
-				File saveFile = new File(realPath, imgName); // 저장경로와 파일명을 토대로 새 파일 생성 
-				imageFile.transferTo(saveFile);			     // 생성 완료
-				
-				product.setImageName(imgName);				 // DB에 저장될 파일명 (DB 저장을 위해 설정(없으면 DB에 저장 안됨))
-				product.setMdPickyn(0);
-		    product.setStatus(0);
-    
-				productRepo.save(product);
-				
-			} else {
-				System.out.println("[saveProduct()] "+ realPath + " : 디렉토리가 생성 중 오류");
-			}
-			
-		} else {
-			System.out.println("[saveProduct()] "+ realPath + " : 디렉토리가 아니거나 존재하지 않음.");
-		}
-	}
+	    /*
+	     * UUID를 이용해 중복되지 않는 파일명 생성
+	     */
+	    UUID uuid = UUID.randomUUID();
+	    String imgName = uuid + "_" + ogName;        // 저장될 파일명
+	      
+	    product.setImageName(imgName);             // DB에 저장될 파일명 (DB 저장을 위해 설정(없으면 DB에 저장 안됨))
+	    product.setMdPickyn(0);
+	    product.setStatus(0);
+	      
+	    File saveDir = new File(realPath);
+	    if(!saveDir.isDirectory()) {
+	         
+	       // mkdir() : 해당 경로에 디렉토리가 존재하지 않으면 생성
+	       // mkdirs() :  mkdir()과 같으나 상위 폴더들이 없으면 상위 폴더들까지 생성
+	       if(saveDir.mkdirs()) {
+	          File saveFile = new File(realPath, imgName); // 저장경로와 파일명을 토대로 새 파일 생성 
+	          imageFile.transferTo(saveFile);              // 생성 완료
+	    
+	          productRepo.save(product);
+	          
+	       } else {
+	          System.out.println("[saveProduct()] "+ realPath + " : 디렉토리가 생성 중 오류");
+	       }
+	         
+	    } else {
+	       System.out.println("[saveProduct()] 폴더가 이미 있는 경우");
+	       
+	       File saveFile = new File(realPath, imgName); // 저장경로와 파일명을 토대로 새 파일 생성 
+	       imageFile.transferTo(saveFile);              // 생성 완료
+
+	       productRepo.save(product);
+	    }
+	 }
 	
 	/*
 	 * 판매자 상품수정

@@ -141,8 +141,8 @@
 				contentType: "application/json; charset=utf-8",
 			}).done(function(response) {
 				alert('정보가 저장되었습니다');
-				window.close();
 				opener.location.reload();
+				window.close();
 			}).fail(function(error){
 				alert(JSON.stringify(error));
 			});
