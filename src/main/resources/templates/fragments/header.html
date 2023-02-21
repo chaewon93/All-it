@@ -150,5 +150,19 @@
 			</div>
 		</nav>
 	</div>	
+	<!-- 입점대기 -->
+	 <div class="header-container" sec:authorize="hasRole('TEMP')">
+		<ul class="nav justifiy-content-end"> 
+			<li class="nav-item"><span th:text="${ #authentication.principal.seller.name }+'님'"></span></li>
+			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /logout }">로그아웃</a></li>
+		</ul>
+		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
+			<a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a> <br><br>
+			<p style="color: red">현재 입점승인 대기 중입니다.</p>
+			<p style="color: red">입점대기 상태에는 아무런 기능이 주어지지 않습니다.</p>
+			<p style="color: red">입점승인까지는 약 1~2일이 소요됩니다.</p>
+			<p style="color: red">빠른 시간내에 승인처리 해드리겠습니다.</p>
+		</div>
+	</div>
 	<!-- 판매자 로그인 끝 -->
 </div>

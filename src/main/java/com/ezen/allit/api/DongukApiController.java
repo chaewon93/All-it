@@ -131,7 +131,7 @@ public class DongukApiController {
 	 */
 	@PutMapping("/product/qna/delete/{pno}/response")
 	public ResponseDto<Integer> deleteResponse(@RequestBody QnADto qnaDto) {
-		qnaService.saveResponse(qnaDto);
+		qnaService.deleteResponse(qnaDto);
 		qnaService.undoStatus(qnaDto); // 주문상세 status 변경
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);

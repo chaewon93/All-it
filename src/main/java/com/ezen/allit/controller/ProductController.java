@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.ezen.allit.config.auth.PrincipalDetailMember;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.Review;
@@ -144,7 +142,6 @@ public class ProductController {
 	@GetMapping("/{pno}")
 	public String getProduct(Model model,
 							@PathVariable int pno,
-							@AuthenticationPrincipal PrincipalDetailMember principal,
 							@PageableDefault(page = 1) Pageable pageable) {
 		Product theProduct = productService.getProduct(pno);
 		
@@ -167,7 +164,7 @@ public class ProductController {
 			theProduct.setRating(0);
 		}
 		
-		Member member = principal.getMember();
+		Member member = (Member) model.getAttribute("user");
 		System.out.println("memebr = " + member);
 		
 		

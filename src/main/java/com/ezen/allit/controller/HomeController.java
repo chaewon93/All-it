@@ -28,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 public class HomeController {
 	private final MemberService memberService;
 	private final SellerService sellerService;
-
 	private final CouponService couponService;
 	private final CustomerCenterService custoService;
 	private final ProductService proService;;
@@ -66,9 +65,17 @@ public class HomeController {
 
 	/** 아이디 중복 확인 처리 */
 	@ResponseBody
-	@PostMapping("/member-idCheck")
-	public int memberIdCheck(@RequestParam("userId") String user_id) {
-		return memberService.idCheck(user_id);
+	@PostMapping("/idCheck")
+	public int idCheck(@RequestParam("userId") String user_id) {
+		int result = 0;
+		if(0 == memberService.idCheck(user_id)) {
+			result = 0;
+		} else if(0 == sellerService.idCheck(user_id)) {
+			result = 0;
+		} else {
+			result = -1;
+		}
+		return result;
 	}
 	
 	/** 사용자 로그인 페이지 */
@@ -80,6 +87,7 @@ public class HomeController {
 	/** 아이디/비밀번호 찾기 창 */
 	@GetMapping("/findIdAndPw")
 	public String findForm() {
+		System.out.println("개짱나네!!!");
 		return "member/findIdAndPw";
 	}
 
@@ -97,13 +105,6 @@ public class HomeController {
 		
 		return "redirect:/";
 
-	}
-	
-	/** 판매자 아이디 중복확인 */
-	@ResponseBody
-	@PostMapping("/sellerIdCheck")
-	public int sellerIdCheck(@RequestParam("userId") String user_id) {
-		return sellerService.idCheck(user_id);
 	}
 	
 	/** 판매자 로그인 화면 이동 */
