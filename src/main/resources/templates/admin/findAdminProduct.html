@@ -156,10 +156,6 @@ function delete_product(){
 
 <div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
 <!-- pagination replace -->
-<hr>
-<a th:href="@{/admin/adminMain}">관리자 메인으로</a> <br>
-<a th:if="${a}==0" th:href="@{/admin/findAdminProduct(a=1)}">등록 상품 조회</a>
-<a th:if="${a}==1" th:href="@{/admin/findAdminProduct(a=0)}">등록 대기 상품 조회</a> <br>
 
 </body>
 <!-- footer replace -->

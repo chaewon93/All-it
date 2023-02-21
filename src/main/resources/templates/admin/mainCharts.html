@@ -7,44 +7,177 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 -->
-
   <head>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
+    $(document).ready(function(){
+        
+    	$.ajax({
+    		url:'/chart/mainChartGender',
+    		type:'post',
+    		success: function(res){
+    			console.log("res=", res);
+    			console.log("res=", res[0]);
+    			console.log("gender=", res[0]['gender']);
+    			console.log("genderCount=", res[0]['genderCount']);
 
-      function drawChart() {
-		var man = $("#man").val();
-		var woman = $("#woman").val();
-		var none = $("#none").val();
+    	      	google.charts.load('current', {'packages':['corechart']});
+    	      	google.charts.setOnLoadCallback(function() {
+    	      		drawChartGender(res);
+    			});
+
+    		}, error: function(xhr,status,err){
+				alert("다시 실행하세요.");				
+			}	
+    	});
+    	
+    	$.ajax({
+    		url:'/chart/mainChartAddress',
+    		type:'post',
+    		success: function(res){
+    			console.log("res=", res);
+    			console.log("res=", res[0]);
+    			console.log("address=", res[0]['address']);
+    			console.log("addressCount=", res[0]['addressCount']);
+
+    	      	google.charts.load('current', {'packages':['corechart']});
+    	      	google.charts.setOnLoadCallback(function() {
+    	      		drawChartAddress(res);
+    			});
+
+    		}, error: function(xhr,status,err){
+				alert("다시 실행하세요.");				
+			}	
+    	});    	
+
+    
+		$.ajax({
+			url:'/chart/mainChartGrade',
+			type:'post',
+			success: function(res){
+				console.log("res=", res);
+				console.log("res=", res[0]);
+				console.log("grade=", res[0]['grade']);
+				console.log("gradeCount=", res[0]['gradeCount']);
+	
+		      	google.charts.load('current', {'packages':['corechart']});
+		      	google.charts.setOnLoadCallback(function() {
+		      		drawChartGrade(res);
+				});
+	
+			}, error: function(xhr,status,err){
+				alert("다시 실행하세요.");				
+			}	
+		});    
 		
-        var data = google.visualization.arrayToDataTable([
-          ['성별', '수'],
-          ['남자', Number(man) ],
-          ['여자', Number(woman) ],
-          ['모름', Number(none) ]     
-        ]);
+		$.ajax({
+			url:'/chart/mainChartCategory',
+			type:'post',
+			success: function(res){
+	
+		      	google.charts.load('current', {'packages':['corechart']});
+		      	google.charts.setOnLoadCallback(function() {
+		      		drawChartCategory(res);
+				});
+	
+			}, error: function(xhr,status,err){
+				alert("다시 실행하세요.");				
+			}	
+		}); 
+    });
+    
+      function drawChartGender(res) {
+	          
+		var data = new google.visualization.DataTable();
+		        
+		data.addColumn('string', '성별');
+		data.addColumn('number', '수');
+		
+		for(var i=0; i<res.length; i++){
+			data.addRow([res[i]['gender'], res[i]['genderCount']]);
+		};
+
         var options = {
-          title: '남녀 비율'
+          title: '남녀'
         };
-        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        var chart = new google.visualization.PieChart(document.getElementById('piechartGender'));
 
         chart.draw(data, options);
       }
+      
+      function drawChartAddress(res) {
+  		var data = new google.visualization.DataTable();
+        
+		data.addColumn('string', '지역');
+		data.addColumn('number', '수');
+		
+		var view = new google.visualization.DataView(data);
+		
+		for(var i=0; i<res.length; i++){
+			data.addRow([res[i]['address'], res[i]['addressCount']]);
+		};
+
+          var options = {
+            title: "지역",
+            width: 600,
+            height: 400,
+          };
+          var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_valuesAddress"));
+          chart.draw(view, options);
+      }
+      
+      function drawChartGrade(res) {
+          
+  		var data = new google.visualization.DataTable();
+  		        
+  		data.addColumn('string', '등급');
+  		data.addColumn('number', '수');
+  		
+  		for(var i=0; i<res.length; i++){
+			console.log("grade=", res[i]['grade']);
+			console.log("count=", res[i]['count']);
+  			data.addRow([res[i]['grade'], res[i]['count']]);
+  		};
+
+          var options = {
+            title: '등급',
+          };
+          var chart = new google.visualization.PieChart(document.getElementById('piechartGrade'));
+
+          chart.draw(data, options);
+        }     
+      
+      function drawChartCategory(res) {
+          
+    		var data = new google.visualization.DataTable();
+    		        
+    		data.addColumn('string', '카테고리');
+    		data.addColumn('number', '수');
+    		
+    		for(var i=0; i<res.length; i++){
+  			console.log("category=", res[i]['category']);
+  			console.log("count=", res[i]['count']);
+    			data.addRow([res[i]['category'], res[i]['count']]);
+    		};
+
+            var options = {
+              title: '카테고리 별 상품',
+              is3D: true,       
+              sliceVisibilityThreshold: .05
+            };
+            var chart = new google.visualization.PieChart(document.getElementById('piechartCategory'));
+
+            chart.draw(data, options);
+          }        
         
     </script>
   </head>
   <body>
-  	<input type="hidden" name="man" id="man" th:value="${m}">
-  	<input type="hidden" name="woman" id="woman" th:value="${w}">
-  	<input type="hidden" name="none" id="none" th:value="${x}">
-  	<!-- 
-  	<input type="text" name="mapAdd" id="mapAdd" th:value="${mapAdd}">
-  	<input type="text" name="listAdd" id="listAdd" th:value="${listAdd}">
-  	<input type="text" name="listCount" id="listCount" th:value="${listCount}">
-  	-->
-    <div id="piechart" style="width: 900px; height: 500px;"></div>
+    <div id="piechartGender" style="width: 600px; height: 400px; float: left;"></div>
+    <div id="columnchart_valuesAddress" style="width: 600px; height: 300px; float: left;"></div><div style="clear:both;"></div>
+    <div id="piechartGrade" style="width: 600px; height: 400px; float: left;"></div>
+    <div id="piechartCategory" style="width: 600px; height: 400px; float: left;"></div><div style="clear:both;"></div>
+    
   </body>
 
 <!-- footer replace -->

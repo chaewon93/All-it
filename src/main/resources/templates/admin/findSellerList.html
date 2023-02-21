@@ -79,7 +79,6 @@ function delete_seller(){
 		<option value="/admin/findSellerList?a=3" th:selected="${a} == 3" >등록된 판매자 조회</option>
 		<option value="/admin/findSellerList?a=4" th:selected="${a} == 4" >등록 대기 판매자 조회</option>
 	</select>
-	<a th:href="@{/admin/adminMain}">관리자 메인으로</a>
 </div>
 
 <form action="/admin/regSeller" method="post" id="theform">
@@ -126,15 +125,7 @@ function delete_seller(){
 </form>
 <div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
 <!-- pagination replace -->
-<hr>
 
-<a th:href="@{/admin/adminMain}">관리자 메인으로...</a> <br>
-<a th:href="@{/admin/findSellerList(a=0)}">관리자, 판매자 조회</a> <br>
-<a th:href="@{/admin/findSellerList(a=1)}">관리자 조회</a> <br>
-<a th:href="@{/admin/findSellerList(a=2)}">전체 판매자 조회</a> <br>
-<a th:href="@{/admin/findSellerList(a=3)}">등록된 판매자 조회</a> <br>
-<a th:href="@{/admin/findSellerList(a=4)}">등록 대기 판매자 조회</a> <br>
-	
 </body>
 <!-- footer replace -->
 <div th:replace="~{ /fragments/footer.html :: footer }"></div>
