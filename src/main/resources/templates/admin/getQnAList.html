@@ -63,17 +63,12 @@
 	<td th:if="${qna.status} == 0" ><span style="color: red;">답변 대기</span></td>
 	<!-- <td th:text="${qna.reply?.content}"></td> -->
 </tr>
-
 </table>
 </div>
 
 <div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
 <!-- pagination replace -->
-<!-- <hr>
-<a th:href="@{/admin/adminMain}">관리자 메인으로</a> <br>
-<a th:href="@{/admin/getQnAList}">QnA 조회</a> <br>
-<a th:href="@{/admin/getNoQnAList}">미답변 QnA 조회</a> <br>
- -->	
+
 </body>
 <!-- footer replace -->
 <div th:replace="~{ /fragments/footer.html :: footer }"></div>

@@ -110,7 +110,7 @@ public class SellerServiceImpl implements SellerService {
 	}
 	
 	/*
-	 * 판매자 상품검색
+	 * 판매자 상품검색 (검색조선 x, 검색어 o)
 	 */
 	@Transactional
 	public Page<Product> search(Seller seller, String searchKeyword, Pageable pageable) {
@@ -119,6 +119,34 @@ public class SellerServiceImpl implements SellerService {
 		
 		Page<Product> productList = 
 				productRepo.findAllBySellerIdAndNameContainingAndStatus(seller.getId(), searchKeyword, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+		
+		return productList;
+	}
+	
+	/*
+	 * 판매자 상품검색 (검색조선 o, 검색어 x)
+	 */
+	@Transactional
+	public Page<Product> search(Seller seller, int searchCondition, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 3;
+		
+		Page<Product> productList = 
+				productRepo.findAllBySellerIdAndCategoryAndStatus(seller.getId(), searchCondition, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+		
+		return productList;
+	}
+	
+	/*
+	 * 판매자 상품검색 (검색조선 o, 검색어 o)
+	 */
+	@Transactional
+	public Page<Product> search(Seller seller, String searchKeyword, int searchCondition, Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 3;
+		
+		Page<Product> productList = 
+				productRepo.findAllBySellerIdAndCategoryAndNameContainingAndStatus(seller.getId(), searchCondition, searchKeyword, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 		
 		return productList;
 	}
@@ -171,8 +199,7 @@ public class SellerServiceImpl implements SellerService {
 				ordersDetailRepo.findAllByProductSellerIdAndProductNameContaining(seller.getId(), searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));
 		
 		return orderList;
-	}
-	
+	}	
 	
 	/*
 	 * 판매자 qna목록조회 (검색 x)
@@ -217,10 +244,8 @@ public class SellerServiceImpl implements SellerService {
 	 */
 	@Transactional
 	public void saveProduct(Product product, MultipartFile imageFile) throws Exception {
-		String ogName = imageFile.getOriginalFilename(); 										  // 원본 파일명
-		//String realPath = "c:/fileUpload/images/"; 	// 파일 저장경로
-		
-		String realPath = "c:/allit/images/product/"; 	// 상품 이미지파일 저장경로
+		String ogName = imageFile.getOriginalFilename();                                 // 원본 파일명
+	    String realPath = "c:/allit/images/product/";    // 상품 이미지파일 저장경로
 
 		/*
 		 * UUID를 이용해 중복되지 않는 파일명 생성

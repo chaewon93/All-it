@@ -28,6 +28,7 @@ import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
 import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
+import com.ezen.allit.dto.SearchDto;
 import com.ezen.allit.service.SellerService;
 
 import lombok.RequiredArgsConstructor;
@@ -130,7 +131,7 @@ public class SellerController {
 	 */
 	@RequestMapping("/")
 	public String mainView(Model model,
-						@RequestParam(value= "searchCondition", defaultValue = "1") int searchCondition,
+						@RequestParam(value= "searchCondition", defaultValue = "0") int searchCondition,
 						@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword,
 						@AuthenticationPrincipal PrincipalDetailSeller principal,
 						@PageableDefault(page = 1) Pageable pageable) {
@@ -138,10 +139,23 @@ public class SellerController {
 		/* productList null값으로 전역변수 선언 */
 		Page<Product> productList = null; 
 		
-		if(searchKeyword == null || searchKeyword.equals("")) { // 검색어가 없을 경우
-			productList = sellerService.getProductList(pageable, principal.getSeller());
-		} else {				 								// 검색어가 있을 경우
-			productList = sellerService.search(principal.getSeller(), searchKeyword, pageable);
+		/* SearchDto라는 검색만을 위한 dto를 만들어 사용 */
+		SearchDto search = new SearchDto();
+		search.setSearchCondition(searchCondition);
+		search.setSearchKeyword(searchKeyword);
+		
+		if(searchCondition == 0) { 		   							// 검색 조건이 없을 경우
+			if(searchKeyword == null || searchKeyword.equals("")) { // 검색어가 없을 경우
+				productList = sellerService.getProductList(pageable, principal.getSeller());
+			} else {				 								// 검색어가 있을 경우
+				productList = sellerService.search(principal.getSeller(), searchKeyword, pageable);
+			}
+		} else { 	 				   		   						// 검색 조건이 있을 경우
+			if(searchKeyword == null || searchKeyword.equals("")) { // 검색어가 없을 경우
+				productList = sellerService.search(principal.getSeller(), searchCondition, pageable);
+			} else {				 								// 검색어가 있을 경우
+				productList = sellerService.search(principal.getSeller(), searchKeyword, searchCondition, pageable);
+			}
 		}
 		
 		int naviSize = 10; // 페이지네이션 갯수
@@ -151,6 +165,7 @@ public class SellerController {
 	    model.addAttribute("list", productList);
 	    model.addAttribute("url", "/seller/");
 	    model.addAttribute("productList", productList);
+	    model.addAttribute("search", search);
 	    model.addAttribute("startPage", startPage);
 	    model.addAttribute("endPage", endPage);
 		
@@ -296,7 +311,9 @@ public class SellerController {
 	 */
 	@PostMapping("/product/insert")
 	public String insertProduct(Product product, MultipartFile imageFile) throws Exception {
+		System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 		sellerService.saveProduct(product, imageFile);
+		System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
 		
 		return "redirect:/seller/";
 	}

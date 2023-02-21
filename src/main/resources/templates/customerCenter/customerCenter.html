@@ -28,8 +28,8 @@
 <a th:href="@{/admin/findCusto(cate='배송문의')}">배송문의</a> <br>
 <a th:href="@{/admin/findCusto(cate='반품/교환/환불')}">반품/교환/환불</a> <br>
 <a th:href="@{/admin/findCusto(cate='모두 보기')}">모두 보기</a> <br>
- -->
-<p th:text="${a}"></p>
+<p th:text="${a}"></p>-->
+
 <div align="center">	
 	<select name="category" onchange="location.href=(this.value)">
 		<option value="/admin/findCusto?cate=모두 보기" th:selected="${a} == '모두 보기'">모두 보기</option>
@@ -42,7 +42,6 @@
 		<option value="/admin/findCusto?cate=반품/교환/환불" th:selected="${a} == '반품/교환/환불'" >반품/교환/환불</option>
 	</select>
 	<button type="button" onclick="insertCustoView()" style="border-width: thin; ">글 작성</button>
-	<a th:href="@{/admin/adminMain}">관리자 메인으로</a>
 </div>
 
 <form method="post" id="theform" action="/product/mainBanner">

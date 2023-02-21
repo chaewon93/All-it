@@ -64,10 +64,7 @@
 				<input type="text" th:value="${ product.seller.name }" readonly="readonly" class="form-control"/> <hr>
 				<span>카테고리 </span>
 				<select id="question-category" class="form-control">
-					<option th:value="0">==문의 구분==</option>
 					<option th:value="상품">상품</option>
-					<option th:value="결제">결제</option>
-					<option th:value="신고">신고</option>
 				</select> <br>
 				<span>제목 </span>
 				<input type="text" id="question-title" class="form-control"><br>
@@ -443,7 +440,7 @@ let index = {
 				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 			}).done(function(response){ // 처리 성공 시
 				alert('댓글이 삭제되었습니다');
-				window.location.reload();
+				$("#reply--box").load(location.href+' #reply--box');
 			}).fail(function(error){ // 처리 실패 시
 				alert(JSON.stringify(error));
 			});

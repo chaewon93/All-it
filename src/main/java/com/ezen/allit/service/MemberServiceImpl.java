@@ -123,18 +123,20 @@ public class MemberServiceImpl implements MemberService {
 		return theMember;
 	}
 	
-	/** sns 회원 정보 수정 */
+	/** 구매화면에서 sns 회원 정보 수정 */
 	@Override
 	@Transactional
 	public void modifySnsMemberInfo(MemberDto memberDto) {
+		System.out.println("memberDto = " + memberDto);
 		Member theMember = memberRepo.findById(memberDto.getId()).get();
 
 		theMember.setEmail(memberDto.getEmail());
 		theMember.setPhone(memberDto.getPhone());
 		theMember.setZipcode(memberDto.getZipcode());
-		theMember.setAddress(memberDto.getAddress1()+","+memberDto.getAddress2());
+		theMember.setAddress(memberDto.getAddress1()+", "+memberDto.getAddress2());
 		theMember.setBirth(memberDto.getBirth());
 		theMember.setGender(memberDto.getGender());
+		System.out.println("theMember = " + theMember);
 	}
 
 	/** 아이디 중복확인 */

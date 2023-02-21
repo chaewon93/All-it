@@ -1,4 +1,9 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+	 
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
 
 <head>
 	<title>All it - I have a All it</title>
@@ -9,42 +14,73 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
 <body th:align="center">
-<form th:action="@{ /member/writeReview }" method="post" enctype="multipart/form-data">
-	<table>
-		<tr>
-			<td>
-				<input type="file" name="imageFile" id="imageFile" multiple>
-			</td>
-		</tr>
-		<tr>
-			<td bgcolor="orange" th:text="내용"></td>
-			<td align="left">
-				<textarea name="content" id="content" cols="40" rows="10"></textarea>
-			</td>
-		</tr>
-		<tr>
-			<th>별점</th>
-			<td>
-				<select class="form-control" name="rating" id="rating">
-					<option th:value="1">1</option>
-					<option th:value="2">2</option>
-					<option th:value="3">3</option>
-					<option th:value="4">4</option>
-					<option th:value="5">5</option>	
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2" align="center">
-				<input type="hidden" th:value="${ ordersDetail.odno }" name="odno" id="odno">
-				<input type="hidden" th:value="${ ordersDetail.product.pno }" name="pno" id="pno">
-				<input type="hidden" th:value="${ ordersDetail.product.seller.id }" name="sid" id="sid">
-				<input type="hidden" th:value="${ #authentication.principal.member?.id }" name="mid" id="mid">
-				<input type="submit" class="btn btn-primary" value="등록" onclick="return save()"/>
-			</td>
-		</tr>
-	</table>
-</form>
+<div class="container" style="height: 800px; margin-top: 30px;">
+	<form th:action="@{ /member/writeReview }" method="post" enctype="multipart/form-data">
+		<br>
+		<table th:align="center">		
+			<tr>
+				<th></th>
+				<th>상품 품질 리뷰</th>
+			</tr>
+			<tr><th></th></tr><tr><th></th></tr><tr><th></th></tr><tr><th></th></tr>
+			<tr>
+				<th></th>
+				<td>이 상품의 품질에 대해 만족하시나요?</td>
+			</tr>
+			<tr><th></th></tr><tr><th></th></tr><tr><th></th></tr><tr><th></th></tr>
+			<tr>
+				<th></th>
+				<td style="font-weight: bold;">
+					<img class="img-fluid" th:src="@{ /images/product/ } + ${ ordersDetail.product.imageName }" width="250"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<span th:text="${ ordersDetail.product.name }"></span>
+					<span>, </span>
+					<span th:text="${ ordersDetail.quantity }"></span>
+					<span>개</span>
+				</td>
+			</tr>
+			<tr><th></th></tr><tr><th></th></tr><tr><th></th></tr><tr><th></th></tr>
+			<tr>
+				<th width="70" th:text="별점"></th>
+				<td>
+					<select class="form-control" name="rating" id="rating">
+						<option th:value="1">1</option>
+						<option th:value="2">2</option>
+						<option th:value="3">3</option>
+						<option th:value="4">4</option>
+						<option th:value="5">5</option>	
+					</select>
+				</td>
+			</tr>
+			<tr><th></th></tr><tr><th></th></tr><tr><th></th></tr><tr><th></th></tr>	
+			<tr>
+				<th width="70" th:text="상세"></th>
+				<td align="left">
+					<textarea name="content" id="content" cols="60" rows="10" placeholder="타인에게 불쾌감을 주는 내용을 삼가해주세요."></textarea>
+				</td>
+			</tr>
+			<tr><th></th></tr><tr><th></th></tr><tr><th></th></tr><tr><th></th></tr>
+			<tr>
+				<th></th>
+				<td>
+					<label class="badge badge-light" for="imageFile" style="cursor: pointer; line-height: 35px; width: 90px; border: 1px solid black;">
+						사진첨부
+						<input type="file" name="imageFile" id="imageFile" style="display: none;" multiple>
+					</label>
+				</td>
+			</tr>
+			<tr><th></th></tr><tr><th></th></tr><tr><th></th></tr><tr><th></th></tr>
+			<tr>
+				<td colspan="2" align="center">
+					<input type="hidden" th:value="${ ordersDetail.odno }" name="odno" id="odno">
+					<input type="hidden" th:value="${ ordersDetail.product.pno }" name="pno" id="pno">
+					<input type="hidden" th:value="${ ordersDetail.product.seller.id }" name="sid" id="sid">
+					<input type="hidden" th:value="${ #authentication.principal.member?.id }" name="mid" id="mid">
+					<input type="submit" class="btn btn-primary" value="등록" onclick="return save()"/>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>
 </body>
 
 <!-- 자바스트립트 섹션 시작 -->

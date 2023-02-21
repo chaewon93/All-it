@@ -17,7 +17,7 @@ import com.ezen.allit.repository.CustomerCenterRepository;
 import com.ezen.allit.service.CustomerCenterService;
 
 @Controller
-@RequestMapping("/admin/")
+//@RequestMapping("/admin/")
 public class CustomerCenterController {
 	
 	@Autowired
@@ -26,7 +26,7 @@ public class CustomerCenterController {
 	@Autowired
 	CustomerCenterRepository cusRepo;
 	
-	@RequestMapping("/getCusto")
+	@RequestMapping("/admin/getCusto")
 	public String getCusto(Model model, @PageableDefault(page = 1) Pageable pageable,
 			@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword,
 			@RequestParam(value= "a", defaultValue = "") String a) {
@@ -58,19 +58,19 @@ public class CustomerCenterController {
 		return "customerCenter/customerCenter";
 	}
 	
-	@RequestMapping("/insertCustoView")
+	@RequestMapping("/admin/insertCustoView")
 	public String insertCustoView() {
 		return "customerCenter/insertCusto";
 	}
 	
-	@RequestMapping("/insertCusto")
+	@RequestMapping("/admin/insertCusto")
 	public String insertCusto(CustomerCenter cus, MultipartFile imageFile) throws Exception {
 		cusService.insertCustomerCenter(cus, imageFile);
 		
 		return "redirect:getCusto";
 	}
 	
-	@RequestMapping("/findCusto")
+	@RequestMapping("/admin/findCusto")
 	public String findCusto(Model model, @PageableDefault(page = 1) Pageable pageable,
 			@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword,
 			@RequestParam(value= "cate", defaultValue = "") String cate) {
@@ -97,7 +97,7 @@ public class CustomerCenterController {
 		return "customerCenter/customerCenter";
 	}
 	
-	@GetMapping("/getCustoDetail")
+	@GetMapping("/admin/getCustoDetail")
 	public String getCustoDetail(int cno, Model model) {
 		CustomerCenter custo = cusRepo.findCustomerCenterByCno(cno);
 		
@@ -106,7 +106,7 @@ public class CustomerCenterController {
 		return "/customerCenter/custoDetail";
 	}
 	
-	@PostMapping("/updateCusto")
+	@PostMapping("/admin/updateCusto")
 	public String updateCusto(CustomerCenter cus) {
 		
 		cusService.updateCusto(cus);
@@ -114,14 +114,14 @@ public class CustomerCenterController {
 		return "redirect:getCusto";
 	}
 	
-	@GetMapping("/deleteCusto")
+	@GetMapping("/admin/deleteCusto")
 	public String deleteCusto(int cno) {
 		
 		cusService.deleteCusto(cno);
 		return "redirect:getCusto";
 	}
 	
-	@PostMapping("/mainBanner")
+	@PostMapping("/admin/mainBanner")
 	public String mainBanner(@RequestParam(value = "cno") int[] cno) {
 		
 		for(int i=0; i<cno.length; i++) {
@@ -139,6 +139,50 @@ public class CustomerCenterController {
 		}
 		
 		return "redirect:findCusto";
+	}
+	
+	@GetMapping("/customerCenter/userCustomerCenter")
+	public String userCustomerCenterView(Model model, @PageableDefault(page = 1) Pageable pageable,
+			@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword,
+			@RequestParam(value= "cate", defaultValue = "") String cate) {
+
+			Page<CustomerCenter> custoList = null;
+			
+			if(cate.equals("모두 보기")) {
+				custoList = cusService.getCustomercenter(pageable);
+			}else {
+				if(cate.equals("전체")) {
+					cate = "자주하는질문";
+				}
+				custoList = cusService.findCustomerCenterByCategoryContaining(cate, pageable);
+			}
+				
+			if(searchKeyword.equals("")) {
+				System.out.println("검색 키워드 없음");
+//				custoList = cusService.getCustomercenter(pageable);
+			} else {
+				System.out.printf("검색 키워드: [%s]\n", searchKeyword);
+//				proList = adminService.searchByAdminPro(a, searchKeyword, pageable);
+			}			
+			
+			int naviSize = 10; // 페이지네이션 갯수
+			int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+			int endPage = ((startPage + naviSize - 1) < custoList.getTotalPages()) ? startPage + naviSize - 1 : custoList.getTotalPages();
+
+			System.out.println("-----------------------------------");
+			System.out.println(custoList);
+			System.out.println(custoList.getTotalElements());
+			System.out.println(custoList.getTotalPages());
+			System.out.println("-----------------------------------");
+			
+			model.addAttribute("list", custoList);
+			model.addAttribute("url", "/customerCenter/userCustomerCenter");
+			model.addAttribute("startPage", startPage);
+			model.addAttribute("endPage", endPage);	
+			model.addAttribute("cate", cate);
+			System.out.println("=========================================cate : "+cate);
+			
+		return "customerCenter/userCustomerCenter";
 	}
 
 }
