@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.ezen.allit.domain.Product;
+import com.ezen.allit.dto.Chart;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 	// 상품목록조회 (검색조건 x, 검색어 x)
@@ -30,6 +31,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
 	Page<Product> findByStatusAndNameContaining(int status, String searchKeyword, Pageable pageable);
 	
+	// mdPick 목록
 	Page<Product> findProductBymdPickyn(int y, Pageable pageable);
 	
 	// 메인화면에 나오는 mdPick 목록
@@ -41,5 +43,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	// 판매자별 상품조회
 	Page<Product> findAllBySellerIdAndStatus(String id, int status, Pageable pageable);
 		
-
+	// 차트에 필요한 쿼리
+	@Query(value="select category, COUNT(*) as count from product group by category ORDER BY category ASC", nativeQuery = true)
+	List<Chart> chartCategoryGroup();
 }
