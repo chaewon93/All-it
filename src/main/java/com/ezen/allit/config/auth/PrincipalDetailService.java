@@ -32,6 +32,7 @@ public class PrincipalDetailService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
 		Member member = memberRepo.findById(id).orElse(null);
 		Seller seller = sellerRepo.findById(id).orElse(null);
+		System.out.println("member = " + member);
 		System.out.println("seller = " + seller);
 		 
 		if(member != null) { 							// 로그인시 member인지 확인

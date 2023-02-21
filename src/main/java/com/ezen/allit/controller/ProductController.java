@@ -5,13 +5,17 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.ezen.allit.config.auth.PrincipalDetailMember;
+import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.Review;
 import com.ezen.allit.dto.SearchDto;
@@ -22,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequestMapping("/product")
 @RequiredArgsConstructor
+@SessionAttributes("user")
 public class ProductController {
 	private final ProductService productService;
 
@@ -122,9 +127,10 @@ public class ProductController {
 		int naviSize = 10; // 페이지네이션 갯수
 		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
 		int endPage = ((startPage + naviSize - 1) < productList.getTotalPages()) ? startPage + naviSize - 1 : productList.getTotalPages();
-		
+
 		model.addAttribute("list", productList);
 		model.addAttribute("url", "/product/mdpickList");
+		
 		model.addAttribute("productList", productList);
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
@@ -138,6 +144,7 @@ public class ProductController {
 	@GetMapping("/{pno}")
 	public String getProduct(Model model,
 							@PathVariable int pno,
+							@AuthenticationPrincipal PrincipalDetailMember principal,
 							@PageableDefault(page = 1) Pageable pageable) {
 		Product theProduct = productService.getProduct(pno);
 		
@@ -160,6 +167,11 @@ public class ProductController {
 			theProduct.setRating(0);
 		}
 		
+		Member member = principal.getMember();
+		System.out.println("memebr = " + member);
+		
+		
+		model.addAttribute("user", member);
 		model.addAttribute("product", theProduct);
 		model.addAttribute("page", pageable.getPageNumber());
 		
