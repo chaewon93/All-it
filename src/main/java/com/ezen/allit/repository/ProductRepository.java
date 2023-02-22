@@ -17,6 +17,10 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	// 신상품목록조회
 	@Query(value = "SELECT * FROM product WHERE TO_CHAR(sysdate, 'YYYYMMDD')-TO_CHAR(reg_date, 'YYYYMMDD')<8 AND status = 1", nativeQuery = true)
 	Page<Product> getNewProductList(Pageable pageable);
+	
+	// 베스트상품목록조회
+	@Query(value = "SELECT * FROM product WHERE ROWNUM >= 1 AND ROWNUM <=18 ORDER BY hit DESC", nativeQuery = true)
+	Page<Product> getBestProductList(Pageable pageable);
 
 	// 상품검색 (검색조건 x, 검색어 o)
 	Page<Product> findAllByNameContainingAndStatus(String searchKeyword, int status, Pageable pageable);
@@ -26,7 +30,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
 	// 상품검색 (검색조건 o, 검색어 o)
 	Page<Product> findAllByCategoryAndNameContainingAndStatus(int searchCondition, String searchKeyword, int status, Pageable pageable);
-	
+
 	Page<Product> findProductByStatus(int status, Pageable pageable);
 
 	Page<Product> findByStatusAndNameContaining(int status, String searchKeyword, Pageable pageable);

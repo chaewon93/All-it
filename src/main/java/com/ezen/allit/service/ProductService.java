@@ -12,6 +12,8 @@ public interface ProductService {
 	
 	Page<Product> getNewProductList(Pageable pageable);
 	
+	Page<Product> getBestProductList(Pageable pageable);
+	
 	Page<Product> getMdpickProductList(Pageable pageable);
 	
 	List<Product> getMdpickProductMainPage();
@@ -25,4 +27,5 @@ public interface ProductService {
 	Page<Product> search(int searchCondition, String searchKeyword, Pageable pageable);
 	
 	Page<Product> search(int searchCondition, Pageable pageable);
+
 }
