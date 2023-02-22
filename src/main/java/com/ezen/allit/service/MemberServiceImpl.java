@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

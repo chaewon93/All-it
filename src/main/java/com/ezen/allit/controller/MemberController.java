@@ -180,7 +180,7 @@ public class MemberController {
 //	}
 	
 	/** 내 정보 확인 전 비밀번호 체크 화면 */
-	@GetMapping("/infoCheck")
+	@GetMapping("/infoCheckView")
 	public String infoCheckView(Model model) throws IOException {
 		Member member = (Member) model.getAttribute("user");
 		System.out.println("member - " + member);
@@ -206,6 +206,7 @@ public class MemberController {
 	@PostMapping("/infoCheck")
 	public String infoCheck(MemberDto memberDto, Model model,
 							HttpServletResponse response) throws IOException {
+
 		boolean result = memberService.checkPwd(memberDto);
 		response.setContentType("text/html; charset=UTF-8");
 		PrintWriter out = response.getWriter();
