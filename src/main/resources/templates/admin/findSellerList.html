@@ -10,6 +10,7 @@
 
 <body>
 <div class="container" style="margin-top: 30px; background-color: white">
+<h1>관리자/판매자 조회</h1>
 <div class="form-inline">
 <nav class="navbar navbar-expand-sm" >	
 	<select name="category" onchange="location.href=(this.value)" class="form-control">
@@ -65,16 +66,8 @@
 </div>
 </form><br>
 
-<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
+<div th:replace="~{ /fragments/admin_pagination.html :: pagination }"></div>
 <!-- pagination replace -->
-<!-- 
-<hr>
-<a th:href="@{/admin/adminMain}">관리자 메인으로...</a> <br>
-<a th:href="@{/admin/findSellerList(a=0)}">관리자, 판매자 조회</a> <br>
-<a th:href="@{/admin/findSellerList(a=1)}">관리자 조회</a> <br>
-<a th:href="@{/admin/findSellerList(a=2)}">전체 판매자 조회</a> <br>
-<a th:href="@{/admin/findSellerList(a=3)}">등록된 판매자 조회</a> <br>
-<a th:href="@{/admin/findSellerList(a=4)}">등록 대기 판매자 조회</a> <br> -->
 </div>
 
 <!-- 자바 스크립트 섹션 시작 -->

@@ -367,6 +367,7 @@ public class SellerServiceImpl implements SellerService {
 		else return null;
 	}
 
+	/** 판매자 입점신청 아이디 중복확인 */
 	@Override
 	public int idCheck(String id) {
 		Optional<Seller> findId = sellerRepo.findById(id);

@@ -142,7 +142,7 @@ public class OrderController {
 	
 	/** 주문하기 - 장바구니 */
 	@PostMapping("/orders")
-  public String insertOrders(Model model, OrdersDetail ordersDetail,
+	public String insertOrders(Model model, OrdersDetail ordersDetail,
 							@ModelAttribute("user") Member member,
 							@RequestParam(value = "cno") int[] cno,
 							@RequestParam(value = "finalPrice") int finalPrice,
@@ -348,8 +348,8 @@ public class OrderController {
 		// OrdersDetail의 status를 4(구매확정)로 변경
 		orderService.updateStatus(4, Integer.parseInt(param.get("odno").toString()));
 		
-		// 포인트 적립(등급별 적립) : 결제금액의 1%(BRONZE)
-		memberService.addPoint(member.getId(), Integer.parseInt(param.get("finalPrice").toString()) / 100);
+		// 포인트 적립(등급별 적립)
+		memberService.addPoint(member.getId(), Integer.parseInt(param.get("finalPrice").toString()));
 		
 		// 세션에 수정된 정보 저장
 		Member findMember = memberService.getMember(member);

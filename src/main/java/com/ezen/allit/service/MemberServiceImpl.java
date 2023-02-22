@@ -263,18 +263,18 @@ public class MemberServiceImpl implements MemberService {
 	/** 상품 구매 완료 후 포인트 적립 */
 	@Transactional
 	@Override
-	public void addPoint(String id, int amount) {
+	public void addPoint(String id, int finalPrice) {
 		System.out.println("==========================================포인트 적립");
 		Member member = memberRepo.findById(id).get();
 		String grade = member.getGrade().toString();
-		if(grade.equals(Grade.BRONZE.toString())) {
-			member.setPoint(member.getPoint() + amount);
-		}else if(grade.equals(Grade.SILVER.toString())) {
-
-		}else if(grade.equals(Grade.GOLD.toString())) {
-			
-		}else if(grade.equals(Grade.VIP.toString())) {
-			
+		if(grade.equals(Grade.BRONZE.toString())) {			// 1% 적립
+			member.setPoint(member.getPoint() + finalPrice / 100);
+		}else if(grade.equals(Grade.SILVER.toString())) {	// 3% 적립
+			member.setPoint(member.getPoint() + finalPrice / 100 * 3);
+		}else if(grade.equals(Grade.GOLD.toString())) {		// 5% 적립
+			member.setPoint(member.getPoint() + finalPrice / 100 * 5);
+		}else if(grade.equals(Grade.VIP.toString())) {		// 7% 적립
+			member.setPoint(member.getPoint() + finalPrice / 100 * 7);
 		}
 	}
 	
