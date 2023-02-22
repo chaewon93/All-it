@@ -190,7 +190,7 @@ $("#apply").click(function() {
 	let addrDetail = $("#addrDetail").val();
 	let regno = $("#regno").val();
 	
-	let regId = /^[0-9a-z]{8,16}$/;
+	let regId = /^[a-z0-9]{6,12}$/;
 	let regPw = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*_-]).{7,}$/;
 	
 	if(id.trim() == "") {
