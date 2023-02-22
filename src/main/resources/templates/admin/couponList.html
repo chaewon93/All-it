@@ -21,7 +21,7 @@
 <tr align="center" th:each="coupon, state : ${list}">
 	<td th:text="${state.count}"></td>
 	<td><span th:text="${coupon.couContent}" class="text-info"></span><br>
-					<span th:text="${coupon.couName}"></span></td>
+					<a th:href="@{/admin/createCoupon(couno=${coupon.couId})}" th:text="${coupon.couName}"></a></td>
 	<td><span th:text="${coupon.createDate}"></span><br>
 					<span th:text="${coupon.endDate}"></span><br>
 					<span th:text="${coupon.period}"></span>일</td>

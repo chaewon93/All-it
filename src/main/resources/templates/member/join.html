@@ -86,14 +86,15 @@
 	
 	// 아이디 중복확인
 	$("#checkBtn").click(function(){
-		// 6-12자 소문자+숫자
-		var regId = /^[a-z0-9]{6,12}$/;
+		// 6-12자 소문자+숫자  
+		var regId =  /^[a-z0-9]{6,12}$/;
 		var userId = $("#id").val(); // input_id에 입력되는 값
 		
 		if(userId == "") {
 			alert("아이디를 입력해주세요.");
 			return false;
 		} else if(!regId.exec(userId)) {
+			alert(!regId.exec(userId));
 			alert("아이디를 6-12자의 소문자+숫자로 입력해주세요.");
 			return false;
 		} else {
