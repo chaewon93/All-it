@@ -144,19 +144,6 @@ public class MemberController {
 		
 	}
 	
-	/** 비밀번호 수정 처리 */
-	@PostMapping("/modifyPwd")
-	public String modifyPwd(Member member, Model model) {
-		System.out.println("[Member infoModify()] Member : "+member);
-
-		memberService.modifyMemberPwd(member);			
-
-		// 세션에 수정된 정보 저장
-		model.addAttribute("user", memberRepo.findById(member.getId()).get());
-		
-		return "redirect:/";
-	}
-	
 	/** 비밀번호변경 창 */
 	@GetMapping("/modifyPwdInfo")
 	public String modifyForm() {
@@ -202,7 +189,7 @@ public class MemberController {
 		}
 	}
 	
-	/** 내 정보 확인 전 비밀번호 체크 로직 */
+	/** 내 정보 확인 전 비밀번호 체크 처리 */
 	@PostMapping("/infoCheck")
 	public String infoCheck(MemberDto memberDto, Model model,
 							HttpServletResponse response) throws IOException {
@@ -223,7 +210,7 @@ public class MemberController {
 			}
 			
 			// 세션에 수정된 정보 저장
-			model.addAttribute("user", memberRepo.findById(member.getId()).orElse(member));	
+			model.addAttribute("user", member);	
 			
 			return "member/info";
 		} else {
@@ -248,7 +235,7 @@ public class MemberController {
 		}
 		
 		// 세션에 수정된 정보 저장
-		model.addAttribute("user", memberRepo.findById(member.getId()).orElse(member));
+		model.addAttribute("user", member);
 		
 		return "member/info";
 	}
@@ -263,7 +250,7 @@ public class MemberController {
 		System.out.println("theMember = " + theMember);
 		
 		// 세션에 수정된 정보 저장
-		model.addAttribute("user", memberRepo.findById(theMember.getId()).get());
+		model.addAttribute("user", theMember);
 		
 		return "redirect:/";
 	}
@@ -285,29 +272,28 @@ public class MemberController {
 	}
 	
 	/** 일반회원 탈퇴 처리 */
-	@PostMapping("/userDel")
-	public String userDel(Member member, HttpServletResponse response) throws IOException {
-		System.out.println("[Member userDel()] Member : "+member);
-		boolean match = memberService.checkPwd2(member);
-		System.out.println("결과 = " + match);
-		
-		response.setContentType("text/html; charset=UTF-8");
-		PrintWriter out = response.getWriter();
-		
-		if(match) {
-			memberService.deleteMember(member.getId());
-			SecurityContextHolder.clearContext();	
-			return "redirect:/";
-		} else {
-			System.out.println("처리하니?");
-			out.println("<script>alert('비밀번호가 틀렸습니다.');</script>");
-			out.println("<script>window.close();</script>");
-			out.flush();
-			out.close();
-			return null;
-		}
-		
-	}
+//	@PostMapping("/userDel")
+//	public String userDel(Member member, HttpServletResponse response) throws IOException {
+//		System.out.println("[Member userDel()] Member : "+member);
+//		boolean match = memberService.checkPwd2(member);
+//		
+//		response.setContentType("text/html; charset=UTF-8");
+//		PrintWriter out = response.getWriter();
+//		
+//		if(match) {
+//			memberService.deleteMember(member.getId());
+//			SecurityContextHolder.clearContext();	
+//			return "redirect:/";
+//		} else {
+//			System.out.println("처리하니?");
+//			out.println("<script>alert('비밀번호가 틀렸습니다.');</script>");
+//			out.println("<script>window.close();</script>");
+//			out.flush();
+//			out.close();
+//			return null;
+//		}
+//		
+//	}
 	
 	/*
 	 * @ResponseBody
