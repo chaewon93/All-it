@@ -13,6 +13,8 @@ public interface CouponService {
 
 	void createCoupon(Coupon coupon);
 	
+	void updateCoupon(Coupon coupon);
+	
 	void insertMemCoupon(Member member, int couid);
 	
 	List<Coupon> forMemberCouponList(Member member, int pno); 

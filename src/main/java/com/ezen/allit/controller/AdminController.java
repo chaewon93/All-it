@@ -23,6 +23,7 @@ import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Reply;
 import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
+import com.ezen.allit.repository.CouponRepository;
 import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.repository.QnARepository;
@@ -51,6 +52,9 @@ public class AdminController {
 	
 	@Autowired
 	private CouponService couponService;
+	
+	@Autowired
+	private CouponRepository couponRepo;
 	
 	// 관리자 고객 조회
 	@GetMapping("/getMemberList")
@@ -409,15 +413,36 @@ public class AdminController {
 	}
 	
 	@GetMapping("createCoupon")
-	public String createCouponView() {
-		return "admin/createCoupon";
+	public String createCouponView(Model model, @RequestParam(value="couno", defaultValue = "0") int couno) {
+		if(couno == 0) {
+			return "admin/createCoupon";
+		}else {
+			Coupon coupon = couponRepo.findById(couno).get();
+			model.addAttribute("coupon", coupon);
+			return "admin/createCoupon";
+		}		
 	}
   
 	@PostMapping("createCoupon")
 	public String createCoupon(Coupon coupon) {
 
-		couponService.createCoupon(coupon);
+		if(couponRepo.findById(coupon.getCouId()).isPresent()) {
+			System.out.println("=========================쿠폰이 이미 있습니다 수정입니다.===========================");
+			System.out.println(coupon.getCouId());
+			couponService.updateCoupon(coupon);
+		}else {
+			System.out.println("=========================쿠폰이 없습니다 생성합니다.===========================");
+			System.out.println(coupon.getCouId());
+			couponService.createCoupon(coupon);
+		}
 		
+		
+		return "redirect:couponList";
+	}
+	
+	@RequestMapping("deleteCoupon")
+	public String deleteCoupon(Coupon coupon) {
+		couponRepo.delete(coupon);		
 		return "redirect:couponList";
 	}
 	

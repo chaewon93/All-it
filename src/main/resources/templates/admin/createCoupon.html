@@ -14,41 +14,56 @@
 <div class="container" style="margin-top: 30px;">
 <h1 align="center">쿠폰생성</h1><br>
 <form method="post" th:action="@{/admin/createCoupon}" id="theform" class="form-inline">
+<input th:if="${coupon} != null" type="text" name="couId" id="couId" th:value="${coupon.couId}">
 <table th:align="center" th:cellpadding="3" th:cellspacing="0" class="table">
 	
 	<tr>
 		<th width="200">쿠폰명(쿠폰 설명)</th>
 		<td>
-			<input type="text" name="couContent" id="couContent" required="required" class="form-control mr-sm-2"/>
+			<input type="text" th:if="${coupon} == null" name="couContent" id="couContent" required="required" class="form-control mr-sm-2"/>
+			<input type="text" th:if="${coupon} != null" th:value="${coupon.couContent}" name="couContent" id="couContent" required="required" class="form-control mr-sm-2"/>
 			<input type="hidden" name="regId" id="regId" th:value="${#authentication.principal.seller.id}" class="form-control mr-sm-2"/>
 		</td>	
 	</tr>
 
 	<tr>
 		<th>쿠폰 종료일</th>
-		<td><input type="date" name="endDate" id="endDate" value="2099-12-31" required="required" class="form-control mr-sm-2"/></td>
+		<td>
+			<input type="date" th:if="${coupon} == null" name="endDate" id="endDate" value="2099-12-31" required="required" class="form-control mr-sm-2"/>
+			<input type="date" th:if="${coupon} != null" name="endDate" id="endDate" th:value="${coupon.endDate}" required="required" class="form-control mr-sm-2"/>
+		</td>
 	</tr>
 	<tr>
 		<th>사용 가능 기간</th>
-		<td><input type="text" name="period" id="period" value="15" required="required" class="form-control mr-sm-2"/>일</td>
+		<td>
+			<input type="text" th:if="${coupon} == null" name="period" id="period" value="15" required="required" class="form-control mr-sm-2"/>
+			<input type="text" th:if="${coupon} != null" name="period" id="period" th:value="${coupon.period}" required="required" class="form-control mr-sm-2"/>일
+		</td>
 	</tr>
 	<tr>
 		<th>할인 금액/할인율</th>
 		<td>
-			<input type="radio" name="dis" id="dis1"  value="할인금액" checked="checked"/>할인금액
-			<input type="radio" name="dis" id="dis2" value="할인율" /> 할 인 율
+			<input type="radio" th:if="${coupon} == null" name="dis" id="dis1"  value="할인금액" checked="checked"/>
+			<input type="radio" th:if="${coupon} != null" name="dis" id="dis1"  value="할인금액" th:checked="${coupon.discount > 100}"/>할인금액
+			<input type="radio" th:if="${coupon} == null" name="dis" id="dis2" value="할인율" />
+			<input type="radio" th:if="${coupon} != null" name="dis" id="dis2" value="할인율" th:checked="${coupon.discount <= 100}"/> 할 인 율			
 			<br>
-			<input type="text" name="discount" id="discount" value="1000" required="required" class="form-control mr-sm-2">
+			<input type="text" th:if="${coupon} == null" name="discount" id="discount" value="1000" required="required" class="form-control mr-sm-2">
+			<input type="text" th:if="${coupon} != null" name="discount" id="discount" th:value="${coupon.discount}" required="required" class="form-control mr-sm-2">
 		</td>
 	</tr>
 	<tr>
 		<th>최소 사용 금액</th>
-		<td><input type="text" name="minPrice" id="minPrice" value="10000" class="form-control mr-sm-2"/></td>
+		<td>
+			<input type="text" th:if="${coupon} == null" name="minPrice" id="minPrice" value="10000" class="form-control mr-sm-2"/>
+			<input type="text" th:if="${coupon} != null" name="minPrice" id="minPrice" th:value="${coupon.minPrice}" class="form-control mr-sm-2"/>
+		</td>
 	</tr>
 	<tr>
 		<th>최대 할인 금액</th>
 		<td>
-			<input type="text" id="maxValue" name="maxValue" value="10000" class="form-control mr-sm-2"/>
+			<input type="text" th:if="${coupon} == null" id="maxValue" name="maxValue" value="10000" class="form-control mr-sm-2"/>
+			<input type="text" th:if="${coupon} != null" id="maxValue" name="maxValue" th:value="${coupon.maxValue}" class="form-control mr-sm-2"/>
 		</td>
 	</tr>
 	<tr>
@@ -60,7 +75,7 @@
 				<option value="SILVER">SILVER</option>
 				<option value="GOLD">GOLD</option>
 				<option value="VIP">VIP</option>
-			</select>
+			</select>			
 		</td>
 	</tr>
 	<tr>
@@ -106,8 +121,11 @@
 	</tr>
 	<tr>
 		<td colspan="2" align="center">
-			<input type="hidden" name="condition" id="condition" value="">
-			<input type="submit" value="쿠폰생성" onclick="setCondition()" class="btn btn-warning"/>
+			<input type="hidden" th:if="${coupon} == null" name="condition" id="condition" value="">
+			<input type="hidden" th:if="${coupon} != null" name="condition" id="condition" th:value="${coupon.condition}">
+			<input type="submit" th:if="${coupon} == null" value="쿠폰생성" onclick="setCondition()" class="btn btn-warning"/>
+			<input type="submit" th:if="${coupon} != null" value="쿠폰수정" onclick="setCondition()" class="btn btn-warning"/>
+			<input type="button" th:if="${coupon} != null" value="쿠폰삭제" onclick="deleteCoupon()" class="btn btn-warning"/>
 			<input type="reset" value="취소" class="btn btn-secondary">
 			<!-- <input type="button" value="뒤로가기" onclick="history.back()" class="btn btn-secondary"> <br> -->
 		</td>
@@ -119,6 +137,49 @@
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">
+
+$(document).ready(function(){
+
+	let con = $("#condition").val();
+	alert(con);
+	if(con != ""){
+		if(con.match("ALL")){
+			$('#grade').val('ALL').prop("selected",true);
+		}else if(con.match("BRONZE")){
+			$('#grade').val('BRONZE').prop("selected",true);
+		}else if(con.match("SILVER")){
+			$('#grade').val('SILVER').prop("selected",true);
+		}else if(con.match("GOLD")){
+			$('#grade').val('GOLD').prop("selected",true);
+		}else if(con.match("VIP")){
+			$('#grade').val('VIP').prop("selected",true);
+		}
+		
+		if(con.match("남녀")){
+			$('#gender').val('남녀').prop("selected",true);
+		}else if(con.match("남자")){
+			$('#gender').val('남자').prop("selected",true);
+		}else if(con.match("여자")){
+			$('#gender').val('여자').prop("selected",true);
+		}
+		
+		for(let i = 10; i>-1; i--){
+			if(con.match(i)){
+				$('#category').val(i).prop("selected",true);	
+				break;
+			}	
+		}
+		
+		if(con.match("YES")){
+			$('#mdpickYes').val('YES').prop("checked",true);
+		}else if(con.match("NO")){
+			$('#mdpickNo').val('NO').prop("checked",true);
+		}
+		let [a,b,c,d,e] = con.split(', ');
+		document.getElementById('seller').value = e;
+	}
+	
+});
 
 function setCondition(){
 	let grade = $("#grade").val();
@@ -133,6 +194,11 @@ function setCondition(){
 
 	document.getElementById("theform").action = "/admin/createCoupon";
 	document.getElementById("theform").submit();		
+}
+
+function deleteCoupon(){	
+	document.getElementById("theform").action = "/admin/deleteCoupon";
+	document.getElementById("theform").submit();
 }
 
 </script>

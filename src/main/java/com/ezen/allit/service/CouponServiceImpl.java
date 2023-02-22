@@ -82,6 +82,21 @@ public class CouponServiceImpl implements CouponService {
         
         couponRepo.save(coupon);
 	}
+	
+	@Override
+	public void updateCoupon(Coupon coupon) {
+		Coupon cou = couponRepo.findById(coupon.getCouId()).get();
+		
+		cou.setCouContent(coupon.getCouContent());
+		cou.setEndDate(coupon.getEndDate());
+		cou.setPeriod(coupon.getPeriod());
+		cou.setDiscount(coupon.getDiscount());
+		cou.setMinPrice(coupon.getMinPrice());
+		cou.setMaxValue(coupon.getMaxValue());
+		cou.setCondition(coupon.getCondition());
+		
+		couponRepo.save(cou);
+	}	
 
 	@Override
 	public void insertMemCoupon(Member member, int couid) {
@@ -195,4 +210,5 @@ public class CouponServiceImpl implements CouponService {
 		MemCoupon memCoupon = memCouRepo.findById(memCouid).get();
 		memCoupon.setStatus(status);
 	}
+
 }
