@@ -66,9 +66,25 @@ public class HomeController {
 
 	/** 아이디 중복 확인 처리 */
 	@ResponseBody
-	@PostMapping("/member-idCheck")
+	@PostMapping("/idCheck")
 	public int memberIdCheck(@RequestParam("userId") String user_id) {
-		return memberService.idCheck(user_id);
+		
+		// 0 : 이미 사용중, -1 : 사용 가능
+		int member_id_chk = memberService.idCheck(user_id);
+		
+		// member 테이블에서 사용 가능한 아이디인 경우 seller 테이블 체크
+		if(member_id_chk == -1) {
+			// 0 : 이미 사용중, -1 : 사용 가능
+			int seller_id_chk = sellerService.idCheck(user_id);
+			
+			if(seller_id_chk == -1) {	// member, seller 테이블 모두에서 사용 가능한 아이디
+				return seller_id_chk;
+			} else {					// seller 테이블에서 중복이라 사용 불가한 아이디
+				return 0;
+			}
+		} else {						// member 테이블에서 중복이라 사용 불가한 아이디
+			return 0;
+		}
 	}
 	
 	/** 사용자 로그인 페이지 */
@@ -99,13 +115,6 @@ public class HomeController {
 
 	}
 	
-	/** 판매자 아이디 중복확인 */
-	@ResponseBody
-	@PostMapping("/sellerIdCheck")
-	public int sellerIdCheck(@RequestParam("userId") String user_id) {
-		return sellerService.idCheck(user_id);
-	}
-	
 	/** 판매자 로그인 화면 이동 */
 	@GetMapping("/sellerLogin")
 	public String loginView() {
@@ -120,14 +129,14 @@ public class HomeController {
 		return "common/denied";
 	}
 	
-	/** 푸터 : 이용약관 */
+	/** footer : 이용약관 */
 	@GetMapping("/terms-of-service")
 	public String termsOfService() {
 		
 		return "common/terms_of_service";
 	}
 	
-	/** 푸터 : 개인정보 처리방침 */
+	/** footer : 개인정보 처리방침 */
 	@GetMapping("/privacy")
 	public String privacy() {
 		

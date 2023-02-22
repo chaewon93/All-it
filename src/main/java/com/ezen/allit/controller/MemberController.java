@@ -167,8 +167,14 @@ public class MemberController {
 //		
 //		return "redirect:/";
 //	}
+	/** 내 정보 확인 전 비밀번호 체크 화면 */
+	@GetMapping("/infoCheck")
+	public String infoCheckView() {
+		
+		return "member/infoCheck";
+	}
 	
-	/** 마이 페이지(내 정보 확인) */
+	/** 내 정보 확인 */
 	@GetMapping("/info")
 	public void info(Model model) {
 		Member member = (Member) model.getAttribute("user");

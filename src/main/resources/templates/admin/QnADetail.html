@@ -11,7 +11,7 @@
 <!-- 관리자 QnA 답변 작성 섹션 시작 -->
 <div style="display: flex; margin-top: 30px;">
 <div class="container">
-<h1>1:1문의(QnA) 답변하기</h1>
+<h1>1:1문의(QnA) 답변</h1>
 	<table class="table">
 		<tr>
 			<th>작성자</th>
@@ -44,7 +44,8 @@
 			<td>
 			<form id="rep" name="rep" action="/admin/insertReply" method="post">
 				<input type="hidden" name="qno" th:value="${qna.qno}" >
-				<textarea name="content" rows="10" cols="40"></textarea><hr>
+				<textarea th:if="${qna.category != '상품'}" name="content" rows="10" cols="40" class="form-control"></textarea>
+				<textarea th:if="${qna.category == '상품'}" name="content" rows="10" cols="40" class="form-control" readonly="readonly"></textarea><hr>
 				<div class="form-inline">
 					<input type="button" value="≪ 문의내역 돌아가기" onclick="history.back()" class="form-control mr-sm-2 btn btn-outline-warning"><br>
 					<input type="submit" value="저장" class="form-control mr-sm-2 btn btn-warning"><br>

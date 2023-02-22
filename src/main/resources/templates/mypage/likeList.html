@@ -18,7 +18,7 @@
 		<th width="50">번호</th>
 		<th width="300">좋아요 상품명</th>
 		<th width="100">가격</th>
-		<th width="100">삭제</th>
+		<th width="100">좋아요 취소</th>
 	</tr>
 	<tr th:if="${size} == 0">
 		<td colspan="5" align="center" style="font-weight: bold; color: rgb(255, 195, 81);">좋아요 내역이 없습니다.</td>
@@ -34,7 +34,7 @@
 		<td th:text="${ #numbers.formatInteger(like.product.price, 1, 'COMMA')}+'원'"></td>
 		<td>
 			<input type="hidden" th:value="${ like.hno }" name="hno" id="hno">
-			<button class="btn btn-warning" id="hitDelete" style="color: black" th:onclick="'javascript:index.deleteHit(this);'">삭제</button>
+			<button class="btn btn-warning" id="hitDelete" style="color: black" th:onclick="'javascript:index.deleteHit(this);'">취소</button>
 		</td>	  			
 	</tr>
 </table>

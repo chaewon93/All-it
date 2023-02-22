@@ -36,7 +36,9 @@
 							<input type="hidden" id="pname" th:value="${ detail.product.name }">
 					</a>
 					<span th:text="${#numbers.formatInteger(detail.product.price, 1, 'COMMA')}+'원'"></span>
-					<input type="button" class="btn btn-outline-secondary" id="inCart" value="장바구니 담기">    
+					<div align="right">
+						<input type="button" class="btn btn-outline-secondary" id="inCart" value="장바구니 담기">
+					</div>    
 				</td>
 				<td th:text="${detail.quantity}+'개'"/> 
 				<td th:text="${#numbers.formatInteger(detail.product.price*detail.quantity, 1, 'COMMA')}+'원'" />      

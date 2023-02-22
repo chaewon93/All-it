@@ -18,11 +18,11 @@
 	<!-- 미로그인 시작 -->
 	<div class="header-container" sec:authorize="!isAuthenticated()">
 		<ul class="nav container justifiy-content-end">
-	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /member-login }">로그인</a>
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /member-login }">로그인</a></li>
 	  		<!-- <li class="nav-item"><a class="nav-link text-info" th:href="@{ /sellerLogin }">판매자 로그인</a> -->
 	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /member-join }">회원가입</a>
 	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /sellerApply }">입점신청</a></li>
-        	<li class="nav-item"><a class="nav-link" th:href="@{ /customerCenter/userCustomerCenter }">고객센터</a></li>
+        	<li class="nav-item"><a class="nav-link text-info" th:href="@{ /customerCenter/userCustomerCenter }">고객센터</a></li>
 		</ul>
 		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
 			<h1><a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a></h1>
@@ -61,11 +61,11 @@
 	<!-- 회원 로그인 시작 -->
 	<div class="header-container" sec:authorize="hasRole('MEMBER')">
 		<ul class="nav justifiy-content-end" >
-			<span th:text="${ #authentication.principal.member.name }+'님'"></span>
+			<li class="nav-item"><b class="nav-link" th:text="${ #authentication.principal.member.name }+'님'"></b></li>
 	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /logout }">로그아웃</a></li>
-	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /member/info }">마이올잇</a></li>
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /order/orderList }">마이올잇</a></li>
 	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /cart/cartList }">장바구니</a></li>
-        	<li class="nav-item"><a class="nav-link text-info" href="#">고객센터</a></li>
+        	<li class="nav-item"><a class="nav-link text-info" th:href="@{ /customerCenter/userCustomerCenter }">고객센터</a></li>
 		</ul>
 		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
 			<h1><a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a></h1>
@@ -93,6 +93,7 @@
 					<li class="nav-item"><a class="nav-link" href="#">베스트상품</a></li>
 					<li class="nav-item"><a class="nav-link" href="#">특가세일</a></li>
 					<li class="nav-item"><a class="nav-link" href="#">쿠폰세일</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /product/mdpickList }">MDPICK 상품</a></li>
 				</ul>
 			</div>
 		</nav>
@@ -103,7 +104,7 @@
 	<!-- 판매자 -->
  	<div class="header-container" sec:authorize="hasRole('SELLER')">
 		<ul class="nav justifiy-content-end"> 
-			<li class="nav-item"><span th:text="${ #authentication.principal.seller.name }+'님'"></span></li>
+			<li class="nav-item"><b class="nav-link" th:text="${ #authentication.principal.seller.name }+'님'"></b></li>
 			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /seller/ }">판매자페이지</a></li>
 			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /seller/mypage }">마이페이지</a></li>
 			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /logout }">로그아웃</a></li>
@@ -142,10 +143,10 @@
 					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/getCusto }">고객센터</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/findSellerList(a=0) }">판매자 조회</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/findAdminProduct(a=0) }">판매 상품 조회</a></li>
-					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/couponList }">쿠폰</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/couponList }">쿠폰목록</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/createCoupon }">쿠폰 생성</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{ /chart/mainCharts }">통계</a></li>
-					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/adminMain }">관리자 메인화면</a></li>
+					<!-- <li class="nav-item"><a class="nav-link" th:href="@{ /admin/adminMain }">관리자 메인화면</a></li> -->
 				</ul>
 			</div>
 		</nav>

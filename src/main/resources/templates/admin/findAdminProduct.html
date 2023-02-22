@@ -10,6 +10,7 @@
 
 <body>
 <div class="container" style="margin-top: 30px; background-color: white">
+<h1>판매 상품 조회</h1>
 <div class="form-inline">
 <nav class="navbar navbar-expand-sm" >	
 	<select name="category" onchange="location.href=(this.value)" class="form-control">
@@ -53,7 +54,7 @@
 	</td>
 	<td th:text="${pro.pno}"></td>
 	<td><img class="img-fluid" th:src="@{ /images/product/ } + ${ pro.imageName }"></td>
-	<td align="left"><a th:href="@{|/product/detail/${pro.pno}|}" th:text="${pro.name}"></a></td>
+	<td align="left"><a th:href="@{|/product/${pro.pno}|}" th:text="${pro.name}"></a></td>
 	<!-- <td th:text="${pro.content}"></td> -->
 	<td th:text="${#dates.format(pro.regDate, 'yyyy-MM-dd')}"></td>
 	<td th:text="${#numbers.formatInteger(pro.price, 1, 'COMMA') }+'원'"></td>
@@ -75,7 +76,7 @@
 </form>
 </div>
 
-<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
+<div th:replace="~{ /fragments/admin_pagination.html :: pagination }"></div>
 <!-- pagination replace -->
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>

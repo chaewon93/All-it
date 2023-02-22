@@ -7,63 +7,35 @@
 <title>Insert title here</title>
 </head>
 <body>
-<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
+<div class="container" style="margin-top: 30px;">
+<h1>쿠폰 목록</h1>
+<table th:align="center" th:cellpadding="0" th:cellspacing="0" th:width="700" class="table">
 <tr align="center">	
-	<th bgcolor="orange" width="100">index</th>	
-	<th bgcolor="orange" width="300">쿠폰 설명<br>쿠폰 이름</th>
-	<th bgcolor="orange" width="200">생성일<br>만료일<br>사용 기한</th>
-	<th bgcolor="orange" width="200">할인율<br>최대할인금액<br>최소사용금액</th>	
-	<th bgcolor="orange" width="300">사용 조건<br>(등급,성별,카테고리,MDPICK,판매자)</th>
-	
-	<!-- 
-	<th bgcolor="orange" width="100">index</th>	
-	<th bgcolor="orange" width="300">쿠폰 설명</th>
-	<th bgcolor="orange" width="100">쿠폰 이름</th>
-	<th bgcolor="orange" width="100">생성일</th>
-	<th bgcolor="orange" width="100">만료일</th>
-	<th bgcolor="orange" width="200">할인율</th>
-	<th bgcolor="orange" width="200">최대 할인 금액</th>
-	<th bgcolor="orange" width="200">최소 사용 금액</th>
-	<th bgcolor="orange" width="200">사용 기한</th>
-	<th bgcolor="orange" width="200">사용 조건<br>(등급,성별,카테고리,MDPICK,판매자)</th>
-	 -->	
+	<th width="100">번호</th>	
+	<th width="300">쿠폰 설명<br>쿠폰 이름</th>
+	<th width="200">생성일<br>만료일<br>사용 기한</th>
+	<th width="200">할인율<br>최대할인금액<br>최소사용금액</th>	
+	<th width="300">사용 조건<br>(등급,성별,카테고리,MDPICK,판매자)</th>
 </tr>
 
 <tr align="center" th:each="coupon, state : ${list}">
 	<td th:text="${state.count}"></td>
-	<td><span th:text="${coupon.couContent}"></span><br>
+	<td><span th:text="${coupon.couContent}" class="text-info"></span><br>
 					<span th:text="${coupon.couName}"></span></td>
 	<td><span th:text="${coupon.createDate}"></span><br>
 					<span th:text="${coupon.endDate}"></span><br>
-					<span th:text="${coupon.period}"></span></td>
-	<td><span th:text="${coupon.discount}"></span><br>
-					<span th:text="${coupon.maxValue}"></span><br>
-					<span th:text="${coupon.minPrice}"></span></td>	
+					<span th:text="${coupon.period}"></span>일</td>
+	<td><span th:if="${coupon.discount > 100}" th:text="${#numbers.formatInteger(coupon.discount, 1, 'COMMA')}+'원'"></span>
+		<span th:unless="${coupon.discount > 100}" th:text="${coupon.discount}+'%'"></span><br>
+					<span th:text="${#numbers.formatInteger(coupon.maxValue, 1, 'COMMA')}+'원'"></span><br>
+					<span th:text="${#numbers.formatInteger(coupon.minPrice, 1, 'COMMA')}+'원'"></span></td>	
 	<td><span th:text="${coupon.condition}"></span>
 					</td>														
 </tr>
-
-
-<!-- 
-<tr th:each="coupon, state : ${list}">
-	<td th:text="${state.count}"></td>
-	<td th:text="${coupon.couContent}"></td>
-	<td th:text="${coupon.couName}"></td>
-	<td th:text="${coupon.createDate}"></td>
-	<td th:text="${coupon.endDate}"></td>
-	<td th:text="${coupon.discount}"></td>
-	<td th:text="${coupon.maxValue}"></td>
-	<td th:text="${coupon.minPrice}"></td>
-	<td th:text="${coupon.period}"></td>
-	<td th:text="${coupon.condition}"></td>
-</tr> -->
-
 </table>
-
 <div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
 <!-- pagination replace -->
-<hr>
-<a th:href="@{/admin/adminMain}">관리자 메인으로...</a>
+</div>
 	
 </body>
 <!-- footer replace -->
