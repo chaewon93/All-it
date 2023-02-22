@@ -314,9 +314,9 @@ public class SellerServiceImpl implements SellerService {
 				Product theProduct = productRepo.findById(pno).get();
 				theProduct.setCategory(product.getCategory());
 				theProduct.setName(product.getName());
-				theProduct.setPrice(product.getPrice());
+				theProduct.setFirstPrice(product.getFirstPrice());
 				theProduct.setDiscount(product.getDiscount());
-				theProduct.setFinalPrice(product.getFinalPrice());
+				theProduct.setPrice(product.getPrice());
 				theProduct.setContent(product.getContent());
 				theProduct.setImageName(imgName);
 				
@@ -332,9 +332,9 @@ public class SellerServiceImpl implements SellerService {
 			Product theProduct = productRepo.findById(pno).get();
 			theProduct.setCategory(product.getCategory());
 			theProduct.setName(product.getName());
-			theProduct.setPrice(product.getPrice());
+			theProduct.setFirstPrice(product.getFirstPrice());
 			theProduct.setDiscount(product.getDiscount());
-			theProduct.setFinalPrice(product.getFinalPrice());
+			theProduct.setPrice(product.getPrice());
 			theProduct.setContent(product.getContent());
 			theProduct.setImageName(imgName);
 		}

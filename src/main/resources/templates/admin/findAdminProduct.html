@@ -53,7 +53,7 @@
 	</td>
 	<td th:text="${pro.pno}"></td>
 	<td><img class="img-fluid" th:src="@{ /images/product/ } + ${ pro.imageName }"></td>
-	<td align="left"><a th:href="@{|/product/detail/${pro.pno}|}" th:text="${pro.name}"></a></td>
+	<td align="left"><a th:href="@{|/product/${pro.pno}|}" th:text="${pro.name}"></a></td>
 	<!-- <td th:text="${pro.content}"></td> -->
 	<td th:text="${#dates.format(pro.regDate, 'yyyy-MM-dd')}"></td>
 	<td th:text="${#numbers.formatInteger(pro.price, 1, 'COMMA') }+'원'"></td>

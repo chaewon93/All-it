@@ -28,11 +28,11 @@
 		<label for="name"><b>상품명</b></label>
 		<input type="text" class="form-control" name="name" id="name"/><br>
 		<label for="price"><b>판매가</b></label>
-		<input type="text" class="form-control" name="price" id="price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/><br>
+		<input type="text" class="form-control" name="firstPrice" id="firstPrice" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/><br>
 		<label for="discount"><b>할인율</b></label>
 		<input type="text" class="form-control" name="discount" id="discount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" onfocusout="priceCheck()"/><br>
 		<label for="finalPrice"><b>최종 판매가</b></label>
-		<input type="text" class="form-control" name="finalPrice" id="finalPrice" readonly/><br>
+		<input type="text" class="form-control" name="price" id="price" readonly/><br>
 		<label for="content"><b>상품설명</b></label>
 		<textarea class="form-control" rows="5" name="content" id="content"></textarea><br>
 		<label for="image"><b>상품 이미지 업로드</b></label>
@@ -50,16 +50,16 @@
 
 // 할인가 등록시 자동 계산
 function priceCheck() {
-	let price = $("#price").val();
+	let firstPrice = $("#firstPrice").val();
 	let discount = $("#discount").val();
-	let finalPrice = '';
+	let price = '';
 
 	if(0 <= discount && discount < 100) {
-		finalPrice = price-(price*(discount/100));
-		document.getElementById("finalPrice").value = finalPrice;	
+		price = firstPrice-(firstPrice*(discount/100));
+		document.getElementById("price").value = price;	
 	} else {
 		alert('책정한 할인을 적용할 수 없습니다.\n할인은 1~100 사이의 숫자만 가능합니다');
-		document.getElementById("finalPrice").value = '';
+		document.getElementById("price").value = '';
 	}
 }
 
@@ -67,9 +67,9 @@ function priceCheck() {
 $("#save").click(function() {
 	let category = $("#category").val();
 	let name = $("#name").val();
-	let price = $("#price").val();
+	let firstPrice = $("#firstPrice").val();
 	let discount = $("#discount").val();
-	let finalPrice = $("#finalPrice").val();
+	let price = $("#price").val();
 	let content = $("#content").val();
 	let imageFile = $("#imageFile").val();
 	
@@ -81,14 +81,14 @@ $("#save").click(function() {
 		alert('상품명을 입력해주세요');
 		return false;
 	}
-	if(price.trim() == "") {
+	if(firstPrice.trim() == "") {
 		alert('판매가를 입력해주세요');
 		return false;
 	}
 	if(discount.trim() == "") {
 		document.getElementById("discount").value = 0;
 	}
-	if(finalPrice.trim() == "") {
+	if(price.trim() == "") {
 		alert('최종 판매가를 정상적으로 책정해주세요');
 		return false;
 	}

@@ -61,19 +61,27 @@ public class HomeController {
 		return "redirect:/member-login";
 	}
 
-	/** 아이디 중복 확인 처리 */
+	/** 아이디 중복 확인 처리 - 사용자, 판매자 모두 조회 */
 	@ResponseBody
 	@PostMapping("/idCheck")
-	public int idCheck(@RequestParam("userId") String user_id) {
-		int result = 0;
-		if(0 == memberService.idCheck(user_id)) {
-			result = 0;
-		} else if(0 == sellerService.idCheck(user_id)) {
-			result = 0;
-		} else {
-			result = -1;
-		}
-		return result;
+	public int memberIdCheck(@RequestParam("userId") String user_id) {
+	      
+		// 0 : 이미 사용중, -1 : 사용 가능
+	    int member_id_chk = memberService.idCheck(user_id);
+	      
+	    // member 테이블에서 사용 가능한 아이디인 경우 seller 테이블 체크
+	    if(member_id_chk == -1) {
+	       // 0 : 이미 사용중, -1 : 사용 가능
+	       int seller_id_chk = sellerService.idCheck(user_id);
+	         
+	       if(seller_id_chk == -1) {   // member, seller 테이블 모두에서 사용 가능한 아이디
+	          return seller_id_chk;
+	       } else {               // seller 테이블에서 중복이라 사용 불가한 아이디
+	          return 0;
+	       }
+	    } else {                  // member 테이블에서 중복이라 사용 불가한 아이디
+	       return 0;
+	    }
 	}
 	
 	/** 사용자 로그인 페이지 */

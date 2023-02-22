@@ -29,19 +29,19 @@
 		<input type="hidden" class="form-control" th:value="${ product.category }" name="category" id="category"/>
 		<input type="text" class="form-control" id="type" disabled="disabled"/>
 		<label for="name">상품명</label>
-		<input type="text" class="form-control" th:value="${ product.name }" name="name" id="name" disabled="disabled"/>
+		<input type="text" class="form-control" th:value="${ product.name }" name="name" id="name" readonly/>
 		<label for="price">판매가</label>
-		<input type="text" class="form-control" th:value="${ product.price }" name="price" id="price" disabled="disabled"/>
+		<input type="text" class="form-control" th:value="${ product.firstPrice }" name="firstPrice" id="firstPrice" readonly/>
 		<div th:if="${ product.discount } > 0">
 			<label for="discount">할인</label>
 			<input type="text" class="form-control" th:value="|${ product.discount }%|" name="discount" id="discount" readonly/>
 			<label for="finalPrice">최종 판매가</label>
-			<input type="text" class="form-control" th:value="${ product.finalPrice }" name="finalPrice" id="finalPrice" readonly/>
+			<input type="text" class="form-control" th:value="${ product.price }" name="price" id="price" readonly/>
 		</div>
 		<label for="quantity">수량</label>
 		<input type="number" class="form-control" th:value="1" name="quantity" id="quantity" min="1"/>
 		<label for="content">상품설명</label>
-		<textarea class="form-control" th:text="${ product.content }" rows="5" name="content" id="content" disabled="disabled"></textarea><br>
+		<textarea class="form-control" th:text="${ product.content }" rows="5" name="content" id="content" readonly></textarea><br>
     
 		<input type="button" class="btn btn-warning" id="inCart" value="장바구니">
     	<input type="submit" class="btn btn-warning" id="buy" formaction="/order/orderNow" value="바로구매" th:onclick="return buyCheck()"/>

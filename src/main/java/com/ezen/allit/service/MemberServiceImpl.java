@@ -147,6 +147,23 @@ public class MemberServiceImpl implements MemberService {
 //		System.out.println("memberDto = " + memberDto);
 //		Member member = memberRepo.findById(memberDto.getId()).get();
 //		String dbPwd = member.getPwd();
+//		String rawPwd = memberDto.getPwd();
+//		System.out.println("dbPwd = " + dbPwd);
+//		System.out.println("rawPwd = " + rawPwd);
+//		
+//		boolean matches = encoder.matches(rawPwd, dbPwd);
+//		
+//		if
+//		
+//		return result;
+//	}
+//	@Override
+//	@Transactional
+//	public int checkPwd(MemberDto memberDto) {
+//		int result = 0;
+//		System.out.println("memberDto = " + memberDto);
+//		Member member = memberRepo.findById(memberDto.getId()).get();
+//		String dbPwd = member.getPwd();
 //		System.out.println("dbPwd = " + dbPwd);
 //		
 //		String rawPwd = memberDto.getPwd();
