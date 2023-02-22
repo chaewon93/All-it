@@ -59,7 +59,7 @@
 			<tr>
 				<td>주소<b class="text-danger">*</b></td>
 				<td>
-					<input type="text" id="zipcode" name="zipcode"  th:value="${ #authentication.principal.member?.zipcode }" class="form-control mr-sm-2"/>
+					<input type="text" id="zipcode" name="zipcode" th:value="${ #authentication.principal.member?.zipcode }" class="form-control mr-sm-2"/>
 					<input type="button" id="kakaoAddr" value="우편번호 찾기" class="btn btn-light"><br>
 					<input type="text" id="addr" name="address" th:if="${not #arrays.isEmpty(addr)}" th:value="${addr[0]}" class="form-control mr-sm-2"/>
 					<input type="text" id="addr" name="address" th:unless="${not #arrays.isEmpty(addr)}" class="form-control mr-sm-2"/>
