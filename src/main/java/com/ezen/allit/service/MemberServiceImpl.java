@@ -30,7 +30,6 @@ import com.ezen.allit.domain.Review;
 import com.ezen.allit.domain.ReviewFile;
 import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
-import com.ezen.allit.dto.AddressCountDto;
 import com.ezen.allit.dto.HitDto;
 import com.ezen.allit.dto.MemberDto;
 import com.ezen.allit.dto.ReviewDto;
@@ -328,16 +327,6 @@ public class MemberServiceImpl implements MemberService {
 				reviewRepo.findAllByMemberId(id, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "rvno")));
 		
 		return reviewList;
-	}
-  
-// 차트 테스트 중...
-	@Override
-	public List<AddressCountDto> getListAddressCount() {
-//		String sql ="select , substr(address, 1, 2) as address, COUNT(*) as count from member group by substr(address, 1, 2)";
-		String sql ="select 1 seq, a.ADDR addr, a.cnt cnt"
-				+ "            from(select substr(address, 1, 2) as addr, COUNT(substr(address, 1, 2)) cnt from member group by substr(address, 1, 2)) a";
-		Query query = entityManager.createNativeQuery(sql, AddressCountDto.class);
-		return (List<AddressCountDto>) query.getResultList();
 	}
 
 	/** 리뷰작성 */

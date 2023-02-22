@@ -19,10 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ezen.allit.dto.AddressCount;
-import com.ezen.allit.dto.AddressCountDto;
 import com.ezen.allit.dto.Chart;
-import com.ezen.allit.dto.GenderCount;
 import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.ProductRepository;
 import com.ezen.allit.service.MemberService;
@@ -70,16 +67,16 @@ public class ChartController {
 	@ResponseBody
 	public List<Map<String, Object>> genderChart(){
 		
-		List<GenderCount> gender = memRepo.chartGenderGroup();
+		List<Chart> gender = memRepo.chartGenderGroup();
 		List<Map<String, Object>> mapList = new ArrayList<>();
 		
 		System.out.println("============================= 성별 통계");
-		for(GenderCount gen : gender) {
+		for(Chart gen : gender) {
 			Map<String, Object> map = new HashMap<>();
 			System.out.println(gen.getGender());
-			System.out.println(gen.getGenderCount());
+			System.out.println(gen.getCount());
 			map.put("gender",gen.getGender());
-			map.put("genderCount", gen.getGenderCount());
+			map.put("genderCount", gen.getCount());
 			mapList.add(map);
 			System.out.println("=============================");
 		}
@@ -93,16 +90,16 @@ public class ChartController {
 	@ResponseBody
 	public List<Map<String, Object>> addressChart(){
 		
-		List<AddressCount> address = memRepo.chartAddressGroup();
+		List<Chart> address = memRepo.chartAddressGroup();
 		List<Map<String, Object>> mapList = new ArrayList<>();
 		
 		System.out.println("============================= 주소 통계");
-		for(AddressCount add : address) {
+		for(Chart add : address) {
 			Map<String, Object> map = new HashMap<>();
 			System.out.println(add.getAddress());
-			System.out.println(add.getAddressCount());
+			System.out.println(add.getCount());
 			map.put("address",add.getAddress());
-			map.put("addressCount", add.getAddressCount());
+			map.put("addressCount", add.getCount());
 			mapList.add(map);
 			System.out.println("=============================");
 		}
