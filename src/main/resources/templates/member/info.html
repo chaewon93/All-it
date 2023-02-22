@@ -194,8 +194,69 @@ let index = {
 				break;
 			}
 		}
+
+		// 올잇머니 충전하기 버튼 이벤트
+		$("#moneyBtn").on("click", ()=>{ 
+			this.chargeMoney();
+		});
+	},
+	
+	chargeMoney:function() {
+		var charge = parseInt($("#chargeMoney").val());
+		//console.log("충전금액:",charge);
+		if(charge < 50000) {
+			alert("5만원부터 충전 가능합니다.");
+		} else if($("#chargeMoney").val() == "") {
+			alert("충전 금액을 입력해주세요.");
+		} else if($("#chargeMoney-bank").val() == "없음" || $("#chargeMoney-bank").val() == "") {
+			alert("충전 은행을 선택해주세요.");
+		} else if($("#chargeMoney-bankNum").val() == "") {
+			alert("계좌번호를 입력해주세요.");
+		} else if(!$("#chkAgree").is(":checked")) {
+			alert("필수 약관에 동의해주세요.");
+		} else {
+			$.ajax({
+				url: "/member/moneyCharge",
+				type: "post",
+				data: JSON.stringify({
+					mid: $("#mid").val(),
+					money: charge
+				}),
+				dataType: "text",
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+				success: function(data){ // 처리 성공 시
+					console.log(data);
+					alert(charge + "원 충전되었습니다.");
+					window.location.reload();
+					//location.replace("/order/orderList");
+				}, error: function(xhr,status,err){
+					alert("충전 중 오류가 발생했습니다.\n다시 시도해주세요.");				
+					console.log('[chargeMoney() ajax error] '+err);
+				}
+			});
+		}
 	}
 }; index.init();
+
+	//충전 머니 금액 버튼 이벤트
+	function addMoney(val) {
+		var money = val.value;
+		var charge = $("#chargeMoney").val() == "" ? 0 : parseInt($("#chargeMoney").val());
+		//console.log(money);
+		
+		if(money == "+5만원") {
+			$("#chargeMoney").val(charge + 50000);
+		}
+		if(money == "+10만원") {
+			$("#chargeMoney").val(charge + 100000);
+		}
+		if(money == "+30만원") {
+			$("#chargeMoney").val(charge + 300000);
+		}
+		if(money == "+50만원") {
+			$("#chargeMoney").val(charge + 500000);
+		}
+	}
 	
 	// 비밀번호 확인
 	$("#pwdCheck").focusout(function(){
