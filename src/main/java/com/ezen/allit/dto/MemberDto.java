@@ -2,10 +2,9 @@ package com.ezen.allit.dto;
 
 import lombok.*;
 
-@Getter
-@Setter
-@ToString
-
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class MemberDto {
 	private String id; 		   					 		   		 // 아이디
 	private String pwd; 	   		 					   		 // 패스워드

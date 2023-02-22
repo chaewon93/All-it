@@ -25,11 +25,13 @@ public interface MemberService {
 	
 	Member modifyMember(Member member);
 	
-	Member modifySnsMember(Member member);
+	Member modifySnsMemberInfo(MemberDto memberDto);
 	
-	void modifySnsMemberInfo(MemberDto memberDto);
+	boolean checkPwd(MemberDto memberDto);
 	
-//	int checkPwd(MemberDto memberDto);
+	boolean checkPwd2(Member member);
+	
+	Member modifyPwd(MemberDto memberDto);
 	
 	public int idCheck(String id);
 	

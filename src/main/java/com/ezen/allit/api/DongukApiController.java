@@ -173,24 +173,24 @@ public class DongukApiController {
 	@PutMapping("/member/modify/{id}")
 	public ResponseDto<Integer> modifyInfo(Model model,
 										@RequestBody MemberDto memberDto) {
-		System.out.println("memberDto = " + memberDto);
-		memberService.modifySnsMemberInfo(memberDto);
-		Member member = memberRepo.findById(memberDto.getId()).get();
-		model.addAttribute("user", member);
-		System.out.println("member = " + member);
 		
+		Member member = memberService.modifySnsMemberInfo(memberDto);		
+		model.addAttribute("user", member);
+
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);		
 	}
 	
 	/*
-	 * 비밀번호변경 값 반환
+	 * 비밀번호변경
 	 */
-//	@PostMapping("/member/modify/{pwd}")
-//	public int modifysInfo(@RequestBody MemberDto memberDto) {
-//		int result = memberService.checkPwd(memberDto);
-//		
-//		return result;
-//	}
+	@PutMapping("/member/Pwdmodify/{pwd}")
+	public ResponseDto<Integer> modifyPwd(Model model,
+										@RequestBody MemberDto memberDto) {
+
+		memberService.modifyPwd(memberDto);
+		
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);		
+	}
 }
 
 

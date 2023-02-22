@@ -84,11 +84,10 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 		
 		String provider = oAuth2UserInfo.getProvider(); // 플랫폼명
 		String providerId = oAuth2UserInfo.getProviderId(); // 플랫폼 자체에서 사용자를 저장하는 id 값 -> 대부분 123456456489789asddas와 같은 난수
-		String username = provider + "_" + providerId; // sns로 부터 받은 정보로 사이트 측에서 임의로 회원가입을 시켜줘야 하는데 이때 사용할 id
+		String username = provider + "_" + oAuth2UserInfo.getEmail(); // sns로 부터 받은 정보로 사이트 측에서 임의로 회원가입을 시켜줘야 하는데 이때 사용할 id
 		String password = encoder.encode("1234"); // 마찬가지로 임의로 지정할 pwd -> 절대 외부에 공개돼서는 안됨
 		String email = oAuth2UserInfo.getEmail(); // sns 가입 시 제출한 email
-		System.out.println("email = " + email);
-		
+
 		Member member = memberRepo.findById(username).orElse(null); // sns로그인시 id를 매개로 DB에서 가입기록을 조회
 		if(member == null) { // 기존 가입기록이 없으면 회원가입 진행, 없으면 곧바로 로그인
 			System.out.println(provider + " 플랫폼으로 최초 로그인 시도로 회원가입을 진행합니다.");

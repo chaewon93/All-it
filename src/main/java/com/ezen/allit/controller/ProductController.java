@@ -5,14 +5,18 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.ezen.allit.config.auth.PrincipalDetailMember;
+import com.ezen.allit.config.auth.PrincipalDetailSeller;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.Review;
@@ -27,6 +31,16 @@ import lombok.RequiredArgsConstructor;
 @SessionAttributes("user")
 public class ProductController {
 	private final ProductService productService;
+	
+	@ModelAttribute("user")
+	public Member setMember(@AuthenticationPrincipal PrincipalDetailMember principal) {
+		if(principal != null) {
+			Member member = principal.getMember();
+			return member;
+		} else {
+			return null;
+		}
+	}
 
 	/** 상품 검색 조회 */
 	@GetMapping("/")
@@ -142,11 +156,9 @@ public class ProductController {
 	@GetMapping("/{pno}")
 	public String getProduct(Model model,
 							@PathVariable int pno,
+							@AuthenticationPrincipal PrincipalDetailSeller principal,
 							@PageableDefault(page = 1) Pageable pageable) {
 		Product theProduct = productService.getProduct(pno);
-		
-		/* 조회수 증가 */
-		productService.updateCount(theProduct.getPno());
 		
 		/* 별점 평균 구하기 */
 		List<Review> reviewList = theProduct.getReview();
@@ -164,9 +176,12 @@ public class ProductController {
 			theProduct.setRating(0);
 		}
 		
+		/* 사용자가 조회할 시에만 조회수 증가 (관리자가 조회할 시에는 카운트 x) */		
+		if(principal == null) {
+			productService.updateCount(theProduct.getPno());			
+		}		
+
 		Member member = (Member) model.getAttribute("user");
-		System.out.println("memebr = " + member);
-		
 		
 		model.addAttribute("user", member);
 		model.addAttribute("product", theProduct);

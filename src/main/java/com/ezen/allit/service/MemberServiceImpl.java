@@ -93,25 +93,6 @@ public class MemberServiceImpl implements MemberService {
 	@Transactional
 	public Member modifyMember(Member member) {
 		Member theMember = memberRepo.findById(member.getId()).get();
-		String rawPwd = member.getPwd();		// 회원가입 화면에서 넘겨받은 pwd
-		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
-
-		theMember.setPwd(encPwd);
-		theMember.setEmail(member.getEmail());
-		theMember.setPhone(member.getPhone());
-		theMember.setZipcode(member.getZipcode());
-		theMember.setAddress(member.getAddress());
-		theMember.setBirth(member.getBirth());
-		theMember.setGender(member.getGender());
-		
-		return theMember;
-	}
-	
-	/** sns 회원 정보 수정 */
-	@Override
-	@Transactional
-	public Member modifySnsMember(Member member) {
-		Member theMember = memberRepo.findById(member.getId()).get();
 
 		theMember.setEmail(member.getEmail());
 		theMember.setPhone(member.getPhone());
@@ -126,7 +107,7 @@ public class MemberServiceImpl implements MemberService {
 	/** 구매화면에서 sns 회원 정보 수정 */
 	@Override
 	@Transactional
-	public void modifySnsMemberInfo(MemberDto memberDto) {
+	public Member modifySnsMemberInfo(MemberDto memberDto) {
 		System.out.println("memberDto = " + memberDto);
 		Member theMember = memberRepo.findById(memberDto.getId()).get();
 
@@ -137,47 +118,48 @@ public class MemberServiceImpl implements MemberService {
 		theMember.setBirth(memberDto.getBirth());
 		theMember.setGender(memberDto.getGender());
 		System.out.println("theMember = " + theMember);
+		
+		return theMember;
 	}
 	
-	/** 비밀번호변경을 위한 DB 비밀번호 확인 */
-//	@Override
-//	@Transactional
-//	public int checkPwd(MemberDto memberDto) {
-//		int result = 0;
-//		System.out.println("memberDto = " + memberDto);
-//		Member member = memberRepo.findById(memberDto.getId()).get();
-//		String dbPwd = member.getPwd();
-//		String rawPwd = memberDto.getPwd();
-//		System.out.println("dbPwd = " + dbPwd);
-//		System.out.println("rawPwd = " + rawPwd);
-//		
-//		boolean matches = encoder.matches(rawPwd, dbPwd);
-//		
-//		if
-//		
-//		return result;
-//	}
-//	@Override
-//	@Transactional
-//	public int checkPwd(MemberDto memberDto) {
-//		int result = 0;
-//		System.out.println("memberDto = " + memberDto);
-//		Member member = memberRepo.findById(memberDto.getId()).get();
-//		String dbPwd = member.getPwd();
-//		System.out.println("dbPwd = " + dbPwd);
-//		
-//		String rawPwd = memberDto.getPwd();
-//		String encPwd = encoder.encode(rawPwd);
-//		System.out.println("encPwd = " + encPwd);
-//
-//		if(dbPwd == encPwd) {
-//			result = 1;
-//		} else {
-//			result = 0;
-//		}
-//		System.out.println("result = " + result);
-//		return result;
-//	}
+	/** 비밀번호변경을 위한 DB 비밀번호 확인(Dto) */
+	@Override
+	@Transactional
+	public boolean checkPwd(MemberDto memberDto) {
+		Member member = memberRepo.findById(memberDto.getId()).get();
+		String dbPwd = member.getPwd();     // DB상 비밀번호
+		String rawPwd = memberDto.getPwd(); // 입력한 비밀번호
+
+		boolean match = encoder.matches(rawPwd, dbPwd); // encoder.matches(입력Pwd, DBPwd) 맞으면 true, 틀리면 false 반환
+
+		return match;
+	}
+	
+	/** 비밀번호변경을 위한 DB 비밀번호 확인(엔티티) */
+	@Override
+	@Transactional
+	public boolean checkPwd2(Member member) {
+		Member theMember = memberRepo.findById(member.getId()).get();
+		String dbPwd = theMember.getPwd();     // DB상 비밀번호
+		String rawPwd = member.getPwd(); // 입력한 비밀번호
+
+		boolean match = encoder.matches(rawPwd, dbPwd); // encoder.matches(입력Pwd, DBPwd) 맞으면 true, 틀리면 false 반환
+
+		return match;
+	}
+	
+	/** 비밀번호변경 */
+	@Override
+	@Transactional
+	public Member modifyPwd(MemberDto memberDto) {
+		System.out.println("memberDto = " + memberDto);
+		Member member = memberRepo.findById(memberDto.getId()).get();
+		System.out.println("member = " + member);
+		
+		member.setPwd(memberDto.getPwd());
+
+		return member;
+	}
 
 	/** 아이디 중복확인 */
 	@Override
