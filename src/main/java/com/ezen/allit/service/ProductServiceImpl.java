@@ -27,10 +27,10 @@ public class ProductServiceImpl implements ProductService {
 		int page = pageable.getPageNumber() - 1;
 		int pageSize = 6;
 
-		Page<Product> product = 
+		Page<Product> productList = 
 				productRepo.findAllByStatus(1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 
-        return product;
+        return productList;
 	}
 	
 	/*
@@ -41,10 +41,24 @@ public class ProductServiceImpl implements ProductService {
 		int page = pageable.getPageNumber() - 1;
 		int pageSize = 6;
 
-		Page<Product> product = 
+		Page<Product> productList = 
 				productRepo.getNewProductList(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 
-        return product;
+        return productList;
+	}
+	
+	/*
+	 * 베스트상품목록조회
+	 */
+	@Transactional
+	public Page<Product> getBestProductList(Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 6;
+
+		Page<Product> productList = 
+				productRepo.getBestProductList(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "hit")));
+
+        return productList;
 	}
 	
 	/*
@@ -55,19 +69,19 @@ public class ProductServiceImpl implements ProductService {
 		int page = pageable.getPageNumber() - 1;
 		int pageSize = 6;
 
-		Page<Product> product = 
+		Page<Product> productList = 
 				productRepo.findProductBymdPickyn(1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 
-        return product;
+        return productList;
 	}
 	
 	@Transactional
 	public List<Product> getMdpickProductMainPage() {
 
-		List<Product> product = 
+		List<Product> productList = 
 				productRepo.findFirst3BymdPickynOrderByRegDateDesc(1);
 
-        return product;
+        return productList;
 	}
 	
 	/*
@@ -76,13 +90,12 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public Page<Product> search(String searchKeyword, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-
 		int pageSize = 6;
 
-		Page<Product> product = 
+		Page<Product> productList = 
 				productRepo.findAllByNameContainingAndStatus(searchKeyword, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 		
-		return product;
+		return productList;
 	}
 	
 	/*
@@ -91,13 +104,12 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public Page<Product> search(int searchCondition, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-
 		int pageSize = 6;
 
-		Page<Product> product = 
+		Page<Product> productList = 
 				productRepo.findAllByCategoryAndStatus(searchCondition, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 		
-		return product;
+		return productList;
 	}
 	
 	/*
@@ -106,14 +118,14 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public Page<Product> search(int searchCondition, String searchKeyword, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-
 		int pageSize = 6;
 
-		Page<Product> product = 
+		Page<Product> productList = 
 				productRepo.findAllByCategoryAndNameContainingAndStatus(searchCondition, searchKeyword, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 		
-		return product;
+		return productList;
 	}
+
 
 	/*
 	 * 상품조회

@@ -29,20 +29,9 @@
 		<table th:align="center" th:cellpadding="3" th:cellspacing="0">
 			<input type="hidden" name="provider" id="provider" th:value=${#authentication.principal.member?.provider}>
 			<input type="hidden" name="id" id="id" th:value="${#authentication.principal.member?.id}" readonly="readonly"/>
-			
-			<tr th:if="${#authentication.principal.member?.provider == null}">
+			<tr>
 				<td>아이디</td>
 				<td><input type="text" th:value="${#authentication.principal.member?.id}" class="form-control mr-sm-2" readonly="readonly"/></td>
-			</tr>
-			<tr th:if="${#authentication.principal.member?.provider == null}">
-				<td>비밀번호<b class="text-danger">*</b></td>
-				<td><input type="password" name="pwd" id="pwd" class="form-control mr-sm-2" />
-				<input type="hidden" name="pw" id="pw" th:value="${ session['user'].pwd }" /></td>
-			</tr>
-			<tr th:if="${#authentication.principal.member?.provider == null}">
-				<td>비밀번호 확인<b class="text-danger">*</b></td>
-				<td><input type="password" name="pwdCheck" id="pwdCheck" class="form-control mr-sm-2" />
-				<br><font id="checkPw" size="2"></font></td>
 			</tr>
 			<tr>
 				<td>이름</td>
@@ -59,7 +48,7 @@
 			<tr>
 				<td>주소<b class="text-danger">*</b></td>
 				<td>
-					<input type="text" id="zipcode" name="zipcode"  th:value="${ #authentication.principal.member?.zipcode }" class="form-control mr-sm-2"/>
+					<input type="text" id="zipcode" name="zipcode" th:value="${ #authentication.principal.member?.zipcode }" class="form-control mr-sm-2"/>
 					<input type="button" id="kakaoAddr" value="우편번호 찾기" class="btn btn-light"><br>
 					<input type="text" id="addr" name="address" th:if="${not #arrays.isEmpty(addr)}" th:value="${addr[0]}" class="form-control mr-sm-2"/>
 					<input type="text" id="addr" name="address" th:unless="${not #arrays.isEmpty(addr)}" class="form-control mr-sm-2"/>
@@ -85,8 +74,8 @@
 			<tr>
 				<td colspan="2" align="center"><br>
 					<input type="submit" value="정보수정" formaction="/member/infoModify" id="modBtn" class="btn btn-warning"/>
-					<button type="button" th:text="비밀번호변경" id="pwdBtn" class="btn btn-dark"></button>
-					<input type="submit" value="회원탈퇴" formaction="/member/userDel" id="delBtn" class="btn btn-dark"/>
+					<button type="button" th:if="${#authentication.principal.member?.provider == null}" th:text="비밀번호변경" id="pwdBtn" class="btn btn-warning"></button>
+					<input type="submit" value="회원탈퇴" id="delBtn" class="btn btn-dark"/> <!-- formaction="/member/userDel" -->
 					<input type="reset" value="취소" class="btn btn-secondary">
 				</td>
 			</tr>
@@ -258,25 +247,6 @@ let index = {
 		}
 	}
 	
-	// 비밀번호 확인
-	$("#pwdCheck").focusout(function(){
-    	var pass1 = $("#pwd").val();
-        var pass2 = $("#pwdCheck").val();
-        
-        if (pass1 != "" || pass2 != ""){
-        	if (pass1 == pass2){
-            	$("#checkPw").html('비밀번호가 일치합니다.');
-            	$("#checkPw").attr('color','green');
-            } else {
-            	$("#checkPw").html('비밀번호가 일치하지 않습니다. 다시 입력해주세요.');
-                $("#checkPw").attr('color','red');
-            }
-        } else {
-        	$("#checkPw").html('비밀번호를 입력해주세요.');
-            $("#checkPw").attr('color','red');
-        }
-    });
-	
 	// 카카오 주소api 사용
 	$("#kakaoAddr").click(function(){
 		// 카카오 지도 입력창
@@ -329,39 +299,13 @@ let index = {
 	
 	// 회원 정보수정
 	$("#modBtn").click(function(){
-		var provider = $("#provider").val();
-
-        if(provider == '') {
-			var pass1 = $("#pwd").val();
-	        var pass2 = $("#pwdCheck").val();
-        
-	        if(pass1 != "" || pass2 != ""){
-		        if(pass1 != pass2) {
-		        	alert("비밀번호를 확인해주세요.");
-		        	return false;
-		        } else {
-					var modCheck = window.confirm("이대로 정보를 수정하시겠습니까?");
-					
-					if(modCheck) {
-						$("#frm").submit();
-					} else {
-						return false;
-					}
-		        }
-	        } else {
-	        	alert("비밀번호를 입력해주세요.");
-	        	return false;
-	        }
-        } else {
-        	var modCheck = window.confirm("이대로 정보를 수정하시겠습니까?");
-			
-
-			if(modCheck) {
-				$("#frm").submit();
-			} else {
-				return false;
-			}
-        }
+		var modCheck = window.confirm("이대로 정보를 수정하시겠습니까?");
+		
+		if(modCheck) {
+			$("#frm").submit();
+		} else {
+			return false;
+		}
 	});
 	
 	// 비밀번호변경 화면 요청
@@ -374,39 +318,36 @@ let index = {
 	
 	// 회원 탈퇴
 	$("#delBtn").click(function(){
-		var provider = $("#provider").val();
-
-        if(provider == '') {
-			var pass1 = $("#pwd").val();
-	        var pass2 = $("#pwdCheck").val();
-	        
-	        if(pass1 != "" || pass2 != ""){
-		        if(pass1 != pass2) {
-		        	alert("비밀번호를 확인해주세요.");
-		        	return false;
-		        } else {
-		        	var delCheck = window.confirm("정말 탈퇴하시겠습니까? \n탈퇴하시면 모든 정보는 삭제됩니다.");
-		    		
-		    		if(delCheck) {
-		    			$("#frm").submit();
-		    		} else {
-		    			return false;
-		    		}
-		        }
-	        } else {
-	        	alert("비밀번호를 입력해주세요.");
-	        	return false;
-	        }
-        } else {
-        	var delCheck = window.confirm("정말 탈퇴하시겠습니까? \n탈퇴하시면 모든 정보는 삭제됩니다.");
-
-			if(delCheck) {
-				$("#frm").submit();
-			} else {
-				return false;
-			}
-        }
+		let provider = $("#provider").val();
+		console.log("provider = ", provider);
 		
+	   	/* 일반회원이면 비밀번호 재확인 후 삭제 */
+		if(provider.trim() == undefined || provider.trim() == "") {
+			var url = "deleteConfirm";
+	
+			window.open(url, "_blank_", 
+				"toolbar=no, menubar=no, scrollbars=yes, resizable=no, width=550, height=550");
+			
+	       	/* var delCheck = window.confirm("정말 탈퇴하시겠습니까? \n탈퇴하시면 모든 정보는 삭제됩니다.");
+	   		if(delCheck) {
+	   			$("#frm").attr("action", "/member/userDel");
+	   			$("#frm").submit();
+	   		} else {
+	   			return false;
+	   		} */			
+		/* sns회원이면 즉시 삭제 */
+		} else {
+			var delCheck = window.confirm("정말 탈퇴하시겠습니까? \n탈퇴하시면 모든 정보는 삭제됩니다.");
+	   		
+	   		if(delCheck) {
+	   			$("#frm").attr("action", "/member/snsUserDel");
+	   			$("#frm").submit();
+	   		} else {
+	   			return false;
+	   		}
+		}
+   	});
+        
 		/*
 		var userid = $("#id").val();
 		var delCheck = window.confirm("정말 탈퇴하시겠습니까? \n탈퇴하시면 모든 정보는 삭제됩니다.");
@@ -427,7 +368,6 @@ let index = {
 			});
 		}
 		*/
-	});
 </script>
 <!-- 자바스트립트 섹션 끝 -->
 

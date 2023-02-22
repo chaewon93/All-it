@@ -49,40 +49,6 @@
     </div>
     <!-- 회원정보 확인 전 비밀번호 확인 섹션 끝 -->
 </div>
-
-<!-- 자바스트립트 섹션 시작 -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<script type="text/javascript">
-
-let index = {
-	init:function() {
-		
-	}
-	
-}; index.init();
-	
-	// 비밀번호 확인
-	$("#pwdCheck").focusout(function(){
-    	var pass1 = $("#pwd").val();
-        var pass2 = $("#pwdCheck").val();
-        
-        if (pass1 != "" || pass2 != ""){
-        	if (pass1 == pass2){
-            	$("#checkPw").html('비밀번호가 일치합니다.');
-            	$("#checkPw").attr('color','green');
-            } else {
-            	$("#checkPw").html('비밀번호가 일치하지 않습니다. 다시 입력해주세요.');
-                $("#checkPw").attr('color','red');
-            }
-        } else {
-        	$("#checkPw").html('비밀번호를 입력해주세요.');
-            $("#checkPw").attr('color','red');
-        }
-    });
-	
-</script>
-<!-- 자바스트립트 섹션 끝 -->
-
 </body>
 
 <!-- footer replace -->

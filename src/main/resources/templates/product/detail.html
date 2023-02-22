@@ -20,7 +20,7 @@
 	</div>
 	<div class="col-sm-8">
 	<form method="post" id="productDetail">
-		<input type="hidden" sec:authorize="isAuthenticated()" th:value="${ #authentication.principal.member.id }" name="mid" id="mid"><!-- th:if="${ session['user'].id } ne null" -->
+		<input type="hidden" th:if="${ session['user'] }" th:value="${ #authentication.principal.member.id }" name="mid" id="mid"><!-- th:if="${ session['user'].id } ne null" -->
 		<input type="hidden" th:value="${ product.seller.id }" name="sid" id="sid">
 		<input type="hidden" th:value="${ product.pno }" name="pno" id="pno">
 		<input type="hidden" th:value="${ product.imageName }" name="imageName" id="imageName">
@@ -179,6 +179,11 @@
 //미로그인 바로구매시 false 리턴
 function buyCheck() {
 	let user_id = $("#mid").val();
+	let discount = $("#discount").val();
+
+	let discount2 = discount.substr(0, discount.length-1);
+	document.getElementById("discount").value = discount2;
+
 	if(user_id == "" || user_id == undefined) {
 		alert('로그인이 필요한 서비스입니다.');
 		return false;
