@@ -34,7 +34,7 @@
 <table id="receiverInfo" class="table">
 	<tr>
 		<td class="text-info"><input type="checkbox" id="chkbox" name="chkbox"> 구매자 정보와 동일</td>
-    <input type="button" th:if="${ session['user'].phone  == null }" id="infoWrite" value="주소 저장하기" class="btn btn-primary"><br>
+    <input type="button" th:if="${ session['user'].address  == null }" id="infoWrite" value="주소 저장하기" class="btn btn-primary"><br>
 	</tr>
 	<tr>
 		<th width="250">이름</th>
@@ -255,8 +255,8 @@ let index = {
 	},
 	
 	writeInfo:function() {
-		let mid = $("#mid").val()
-		var url = "/member/infoWrite/"+mid;
+		let id = $("#mid").val()
+		var url = "/member/infoWrite/"+id;
 		
 		window.open(url, "_blank_", 
 			"toolbar=no, menubar=no, scrollbars=yes, resizable=no, width=550, height=550");

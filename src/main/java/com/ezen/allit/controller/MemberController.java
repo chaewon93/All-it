@@ -1,8 +1,12 @@
 package com.ezen.allit.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,6 +35,7 @@ import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
+import com.ezen.allit.dto.MemberDto;
 import com.ezen.allit.dto.ReviewDto;
 import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.OrdersDetailRepository;
@@ -173,16 +178,64 @@ public class MemberController {
 //		
 //		return "redirect:/";
 //	}
+	
 	/** 내 정보 확인 전 비밀번호 체크 화면 */
 	@GetMapping("/infoCheck")
-	public String infoCheckView() {
+	public String infoCheckView(Model model) throws IOException {
+		Member member = (Member) model.getAttribute("user");
+		System.out.println("member - " + member);
 		
-		return "member/infoCheck";
+		if(member.getProvider() == null) {
+			return "member/infoCheck";
+		} else {
+			String fullAddr = member.getAddress();
+			//System.out.println("[Member info()] user Address : "+fullAddr);
+			if(fullAddr != null) {
+				String[] addr = fullAddr.split(",");
+				model.addAttribute("addr", addr);
+			}
+			
+			// 세션에 수정된 정보 저장
+			model.addAttribute("user", memberRepo.findById(member.getId()).orElse(member));
+			
+			return "member/info";
+		}
+	}
+	
+	/** 내 정보 확인 전 비밀번호 체크 로직 */
+	@PostMapping("/infoCheck")
+	public String infoCheck(MemberDto memberDto, Model model,
+							HttpServletResponse response) throws IOException {
+		boolean result = memberService.checkPwd(memberDto);
+		response.setContentType("text/html; charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		
+		if(result) {
+			Member member = (Member) model.getAttribute("user");
+			System.out.println("member = " + member);
+
+			String fullAddr = member.getAddress();
+			//System.out.println("[Member info()] user Address : "+fullAddr);
+			if(fullAddr != null) {
+				String[] addr = fullAddr.split(",");
+				model.addAttribute("addr", addr);
+			}
+			
+			// 세션에 수정된 정보 저장
+			model.addAttribute("user", memberRepo.findById(member.getId()).orElse(member));	
+			
+			return "member/info";
+		} else {
+			out.println("<script>alert('비밀번호가 틀렸습니다.'); location.href='/member/infoCheck'</script>");
+			out.flush();
+			out.close();
+			return null;
+		}
 	}
 	
 	/** 내 정보 확인 */
 	@GetMapping("/info")
-	public void info(Model model) {
+	public String info(Model model) {
 		Member member = (Member) model.getAttribute("user");
 		System.out.println("member = " + member);
 
@@ -196,6 +249,7 @@ public class MemberController {
 		// 세션에 수정된 정보 저장
 		model.addAttribute("user", memberRepo.findById(member.getId()).orElse(member));
 		
+		return "member/info";
 	}
 	
 	/** 내 정보 수정 처리 */
@@ -204,27 +258,56 @@ public class MemberController {
 		System.out.println("[Member infoModify()] Member : "+member);
 		
 		// 회원 정보 수정
-		if(member.getProvider() == "") { // 일반회원 정보수정시
-			memberService.modifyMember(member);			
-		} else {						 // sns회원 정보수정시
-			memberService.modifySnsMember(member);
-		}
+		Member theMember = memberService.modifyMember(member);
+		System.out.println("theMember = " + theMember);
 		
 		// 세션에 수정된 정보 저장
-		model.addAttribute("user", memberRepo.findById(member.getId()).get());
+		model.addAttribute("user", memberRepo.findById(theMember.getId()).get());
 		
 		return "redirect:/";
 	}
 	
-	/** 회원 탈퇴 처리 */
-	@PostMapping("/userDel")
-	public String userDel(Member member) {
-		System.out.println("[Member userDel()] Member : "+member);
+	/** 회원탈퇴 창 */
+	@GetMapping("/deleteConfirm")
+	public String deleteForm() {
+
+		return "member/deleteConfirm";
+	}
+	
+	/** sns회원 탈퇴 처리 */
+	@PostMapping("/snsUserDel")
+	public String snsUserDel(Member member) {
 		memberService.deleteMember(member.getId());
-		SecurityContextHolder.clearContext();
+		SecurityContextHolder.clearContext();	
 		
 		return "redirect:/";
 	}
+	
+	/** 일반회원 탈퇴 처리 */
+	@PostMapping("/userDel")
+	public String userDel(Member member, HttpServletResponse response) throws IOException {
+		System.out.println("[Member userDel()] Member : "+member);
+		boolean match = memberService.checkPwd2(member);
+		System.out.println("결과 = " + match);
+		
+		response.setContentType("text/html; charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		
+		if(match) {
+			memberService.deleteMember(member.getId());
+			SecurityContextHolder.clearContext();	
+			return "redirect:/";
+		} else {
+			System.out.println("처리하니?");
+			out.println("<script>alert('비밀번호가 틀렸습니다.');</script>");
+			out.println("<script>window.close();</script>");
+			out.flush();
+			out.close();
+			return null;
+		}
+		
+	}
+	
 	/*
 	 * @ResponseBody
 	 * @PostMapping("/userDel") 
