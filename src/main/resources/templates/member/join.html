@@ -16,19 +16,27 @@
 	<tr>
 		<td>아이디<b class="text-danger">*</b></td>
 		<td>
-			<input type="text" id="id" name="id" required="required" class="form-control mr-sm-2" placeholder="아이디" pattern="[0-9a-zA-Z]+"/>
+			<input type="text" id="id" name="id" required="required" class="form-control mr-sm-2" placeholder="아이디" pattern="[0-9a-z]+"/>
 			<input type="hidden" id="chk_id">
 			<input type="button" id="checkBtn" value="중복확인" class="btn btn-light">
-			<br><font id="checkId" size="2"></font>
 		</td>
 	</tr>
 	<tr>
+		<td></td>
+		<td><span id="infoId" class="text-info" style="font-size: 13px;">아이디: 소문자 or 숫자 6~12자</span>
+			<br><font id="checkId" size="2"></font></td>
+	</tr>
+	<tr>
 		<td>비밀번호<b class="text-danger">*</b></td>
-		<td><input type="password" id="pwd" name="pwd" required="required" class="form-control mr-sm-2" placeholder="비밀번호" pattern="[0-9a-zA-Z]+"/></td>
+		<td><input type="password" id="pwd" name="pwd" required="required" class="form-control mr-sm-2" placeholder="비밀번호"/></td>
 	</tr>
 	<tr>
 		<td>비밀번호 확인<b class="text-danger">*</b></td>
-		<td><input type="password" id="pwdCheck" name="pwdCheck" required="required" class="form-control mr-sm-2" placeholder="비밀번호 확인" pattern="[0-9a-zA-Z]+"/>
+		<td><input type="password" id="pwdCheck" name="pwdCheck" required="required" class="form-control mr-sm-2" placeholder="비밀번호 확인"/>
+	</tr>
+	<tr>
+		<td></td>
+		<td><span id="infoPw" class="text-info" style="font-size: 13px;">비밀번호: 대문자+소문자+숫자+특수문자(~, !, @, #, $, %, ^, &, *, _, -) 7자 이상</span>
 		<br><font id="checkPw" size="2"></font></td>
 	</tr>
 	<tr>
@@ -79,13 +87,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script type="text/javascript">
-	$(document).ready(function(){
-		$("#checkId").html('아이디: 소문자+숫자 6~12자');
-		$("#checkId").attr('color','skyblue');
-		
-		$("#checkPw").html('비밀번호: 대소문자+숫자+특수문자(~,!,@,#,$,%,^,&,*,_,-) 모두 포함해서 7자 이상');
-        $("#checkPw").attr('color','skyblue');
-	})
 	/* == 정규식 사용 == */
 	// ^ : 줄의 시작에서 일치
 	// $ : 줄의 끝에서 일치
@@ -105,15 +106,15 @@
 	// 아이디 중복확인
 	$("#checkBtn").click(function(){
 		// 6-12자 소문자+숫자
-		var regId = /^(?=.*?[a-z])(?=.*?[0-9]).{6,12}$/;
+		//var regId = /^(?=.*?[a-z])(?=.*?[0-9]).{6,12}$/;
+		var regId = /^[a-z0-9]{6,12}$/; 
 		var userId = $("#id").val(); // input_id에 입력되는 값
 		
 		if(userId == "") {
 			alert("아이디를 입력해주세요.");
 			return false;
 		} else if(!regId.test(userId)) {
-			alert("아이디를 6-12자의 소문자+숫자로 입력해주세요.");
-			$("#checkId").html('사용할 수 없는 아이디입니다.');
+			$("#checkId").html('6-12자의 소문자 또는 숫자로 입력해주세요.');
 			$("#checkId").attr('color','red');
 			return false;
 		} else {
@@ -144,10 +145,11 @@
 		// 숫자, 영어(대소문자 상관없음), 특수문자(!,@,#,$,%,^,+,-,=) 하나 이상씩 포함
 		/* /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^+\-=])(?=\S+$).*$/ */
 		
-		// 대소문자+숫자+특수문자(~,!,@,#,$,%,^,&,*,_,-) 모두 포함해서 7자 이상
+		// 대문자+소문자+숫자+특수문자(~,!,@,#,$,%,^,&,*,_,-) 모두 포함해서 7자 이상
 		//var regPw = /^(?=.*?[a-zA-Z])(?=.*?[0-9])(?=.*?[~!@#$%^&*_-])(?=.*?[^가-힣]).{7,}$/;
 		//var regPw = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[~!@#$%^&*_-]){7,}$/g;
-		var regPw = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*_-]).{7,}$/;
+		//var regPw = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*_-]).{7,}$/;
+		var regPw = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[~!@#$%^&*_-])[a-zA-Z0-9~!@#$%^&*_-]{7,}$/;
     	var pass1 = $("#pwd").val();
         var pass2 = $("#pwdCheck").val();
         
@@ -226,6 +228,11 @@
 		var regPw = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*_-]).{7,}$/;
 		//console.log($("#checkId").css('color'));
 		
+		if($("#id").val() == "") {
+			alert("아이디를 입력해주세요.");
+			$("#id").focus();
+			return false;
+		}
 		if($("#id").val() != $("#chk_id").val()) {
 			alert("아이디 중복확인 해주세요.");
 			$("#checkId").text("");
@@ -237,18 +244,66 @@
 		}
 		if($("#checkId").attr('color') == "red") {
 			alert("사용할 수 있는 아이디로 다시 입력해주세요.");
+			$("#id").focus();
 			return false;
 		}
-		if(!regId.exec($("#id").val())) {
-			alert("아이디를 6-12자의 소문자+숫자로 입력해주세요.");
+		if(!regId.test($("#id").val())) {
+			alert("아이디를 6-12자의 소문자 또는 숫자로 입력해주세요.");
+			$("#id").focus();
+			return false;
+		}
+		if($("#pwd").val() == "") {
+			alert("비밀번호를 입력해주세요.");
+			$("#pwd").focus();
+			return false;
+		}
+		if($("#pwdCheck").val() == "") {
+			alert("비밀번호를 한번 더 입력해주세요.");
+			$("#pwdCheck").focus();
 			return false;
 		}
 		if($("#checkPw").attr('color') == "red") {
 			alert("사용할 수 있는 비밀번호로 다시 입력해주세요.");
+			$("#pwd").focus();
 			return false;
 		}
-		if(!regPw.exec($("#pwd").val())) {
-			alert("아이디를 6-12자의 소문자+숫자로 입력해주세요.");
+		if(!regPw.test($("#pwd").val())) {
+			alert("비밀번호를 형식에 맞게 입력해주세요.");
+			$("#pwd").focus();
+			return false;
+		}
+		if($("#name").val() == "") {
+			alert("이름을 입력해주세요.");
+			$("#name").focus();
+			return false;
+		}
+		if($("#email").val() == "") {
+			alert("이메일을 입력해주세요.");
+			$("#email").focus();
+			return false;
+		}
+		if($("#phone").val() == "") {
+			alert("전화번호를 입력해주세요.");
+			$("#phone").focus();
+			return false;
+		}
+		if($("#zipcode").val() == "") {
+			alert("우편번호를 입력해주세요.");
+			$("#zipcode").focus();
+			return false;
+		}
+		if($("#addr").val() == "") {
+			alert("주소를 입력해주세요.");
+			$("#addr").focus();
+			return false;
+		}
+		if($("#addrDetail").val() == "") {
+			alert("상세주소를 입력해주세요.");
+			$("#addrDetail").focus();
+			return false;
+		}
+		if($("#gender").val() == "") {
+			alert("성별을 선택해주세요.");
 			return false;
 		}
 		

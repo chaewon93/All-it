@@ -74,7 +74,7 @@
 			<tr>
 				<td colspan="2" align="center"><br>
 					<input type="submit" value="정보수정" formaction="/member/infoModify" id="modBtn" class="btn btn-warning"/>
-					<button type="button" th:if="${#authentication.principal.member?.provider == null}" th:text="비밀번호변경" id="pwdBtn" class="btn btn-dark"></button>
+					<button type="button" th:if="${#authentication.principal.member?.provider == null}" th:text="비밀번호변경" id="pwdBtn" class="btn btn-warning"></button>
 					<input type="submit" value="회원탈퇴" id="delBtn" class="btn btn-dark"/> <!-- formaction="/member/userDel" -->
 					<input type="reset" value="취소" class="btn btn-secondary">
 				</td>
@@ -321,18 +321,8 @@ let index = {
 		let provider = $("#provider").val();
 		console.log("provider = ", provider);
 		
-		/* sns회원이면 즉시 삭제 */
-		if(provider != undefined) {
-			var delCheck = window.confirm("정말 탈퇴하시겠습니까? \n탈퇴하시면 모든 정보는 삭제됩니다.");
-	   		
-	   		if(delCheck) {
-	   			$("#frm").attr("action", "/member/snsUserDel");
-	   			$("#frm").submit();
-	   		} else {
-	   			return false;
-	   		}
 	   	/* 일반회원이면 비밀번호 재확인 후 삭제 */
-		} else {
+		if(provider.trim() == undefined || provider.trim() == "") {
 			var url = "deleteConfirm";
 	
 			window.open(url, "_blank_", 
@@ -345,6 +335,16 @@ let index = {
 	   		} else {
 	   			return false;
 	   		} */			
+		/* sns회원이면 즉시 삭제 */
+		} else {
+			var delCheck = window.confirm("정말 탈퇴하시겠습니까? \n탈퇴하시면 모든 정보는 삭제됩니다.");
+	   		
+	   		if(delCheck) {
+	   			$("#frm").attr("action", "/member/snsUserDel");
+	   			$("#frm").submit();
+	   		} else {
+	   			return false;
+	   		}
 		}
    	});
         
