@@ -27,15 +27,15 @@ public interface MemberService {
 	
 	boolean checkPwd2(Member member);
 	
-	Member modifyPwd(MemberDto memberDto);
+	Member modifyMemberPwd(MemberDto memberDto);
+
+	void modifyPwd(MemberDto memberDto);
 	
 	public int idCheck(String id);
 	
 	public Member findById(Member member); 
 	
 	public Member findByPw(Member member);
-	
-	Member modifyMemberPwd(Member member);
 	
 	public void deleteMember(String id);
 	

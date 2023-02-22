@@ -92,7 +92,7 @@ $("#checkBtn").click(function(){
     	return false;
 	} else if(data.pwd == data.pwd2) {
 		$.ajax({
-			type: "post",
+			type: "put",
 			url: '/member/Pwdmodify/{data.pwd}',
 			data: JSON.stringify(data),
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
