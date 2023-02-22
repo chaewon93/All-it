@@ -3,7 +3,7 @@
 	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <div th:fragment="header">	 
 	<head>
-	<title>올잇</title>
+	<title>All it - I have a All it</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" th:href="@{ https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css }">
@@ -15,7 +15,7 @@
 	<body>
 	<div class="header-container">
 		<ul class="nav justifiy-content-end" >
-	  		<li class="nav-item"><a class="nav-link" th:href="@{ / }">홈</a></li>
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ / }">홈</a></li>
 		</ul>
 		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
 			<a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a>
@@ -23,3 +23,4 @@
 	</div>
 	</body>
 </div>
+</html>
