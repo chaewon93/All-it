@@ -33,7 +33,6 @@ public class DongukApiController {
 	private final MemberService memberService;
 	private final QnAService qnaService;
 	private final OrderService orderService;
-	private final MemberRepository memberRepo;
 
 	/*
 	 * 상품삭제
