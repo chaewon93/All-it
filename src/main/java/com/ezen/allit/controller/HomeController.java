@@ -8,10 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.support.SessionStatus;
 
 import com.ezen.allit.domain.CustomerCenter;
-import com.ezen.allit.domain.Grade;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.Seller;
@@ -63,7 +61,7 @@ public class HomeController {
 		return "redirect:/member-login";
 	}
 
-	/** 아이디 중복 확인 처리 */
+	/** 아이디 중복 확인 처리 - 사용자, 판매자 모두 조회 */
 	@ResponseBody
 	@PostMapping("/idCheck")
 	public int idCheck(@RequestParam("userId") String user_id) {

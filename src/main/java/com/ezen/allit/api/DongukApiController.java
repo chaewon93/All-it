@@ -76,7 +76,7 @@ public class DongukApiController {
 	}
 	
 	/*
-	 * 리뷰삭제
+	 * 리뷰삭제1
 	 */
 	@DeleteMapping("/review/delete/{pno}/{rvno}")
 	public ResponseDto<Integer> deleteReview1(@RequestBody ReviewDto reviewDto) {
@@ -84,6 +84,16 @@ public class DongukApiController {
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
+	
+	/*
+	 * 리뷰삭제2
+	 */
+	@DeleteMapping("/review/delete/{rvno}")
+	public ResponseDto<Integer> deleteReview2(@RequestBody ReviewDto reviewDto) {
+		reviewService.deleteReview2(reviewDto);
+		
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}	
 	
 	/*
 	 * 리뷰 좋아요
@@ -101,6 +111,16 @@ public class DongukApiController {
 	@PostMapping("/review/save/{pno}/reply/{rvno}")
 	public ResponseDto<Integer> saveReviewReply(@RequestBody ReviewDto reviewDto) {
 		reviewService.saveReviewReply(reviewDto);
+		
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}
+	
+	/*
+	 * 좋아요취소
+	 */
+	@DeleteMapping("/hit/delete/{hno}")
+	public ResponseDto<Integer> deleteHit(@RequestBody HitDto hitDto) {
+		memberService.deleteHit(hitDto);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
@@ -148,26 +168,6 @@ public class DongukApiController {
 	}
 	
 	/*
-	 * 리뷰삭제
-	 */
-	@DeleteMapping("/review/delete/{rvno}")
-	public ResponseDto<Integer> deleteReview2(@RequestBody ReviewDto reviewDto) {
-		reviewService.deleteReview2(reviewDto);
-		
-		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
-	}	
-	
-	/*
-	 * 좋아요취소
-	 */
-	@DeleteMapping("/hit/delete/{hno}")
-	public ResponseDto<Integer> deleteHit(@RequestBody HitDto hitDto) {
-		memberService.deleteHit(hitDto);
-		
-		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
-	}
-	
-	/*
 	 * SNS유저 구매화면 정보저장
 	 */
 	@PutMapping("/member/modify/{id}")
@@ -181,8 +181,17 @@ public class DongukApiController {
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);		
 	}
+	
+	/*
+	 * 비밀번호변경 값 반환
+	 */
+//	@PostMapping("/member/modify/{pwd}")
+//	public int modifysInfo(@RequestBody MemberDto memberDto) {
+//		int result = memberService.checkPwd(memberDto);
+//		
+//		return result;
+//	}
 }
-
 
 
 

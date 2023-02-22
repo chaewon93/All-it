@@ -138,6 +138,46 @@ public class MemberServiceImpl implements MemberService {
 		theMember.setGender(memberDto.getGender());
 		System.out.println("theMember = " + theMember);
 	}
+	
+	/** 비밀번호변경을 위한 DB 비밀번호 확인 */
+//	@Override
+//	@Transactional
+//	public int checkPwd(MemberDto memberDto) {
+//		int result = 0;
+//		System.out.println("memberDto = " + memberDto);
+//		Member member = memberRepo.findById(memberDto.getId()).get();
+//		String dbPwd = member.getPwd();
+//		String rawPwd = memberDto.getPwd();
+//		System.out.println("dbPwd = " + dbPwd);
+//		System.out.println("rawPwd = " + rawPwd);
+//		
+//		boolean matches = encoder.matches(rawPwd, dbPwd);
+//		
+//		if
+//		
+//		return result;
+//	}
+//	@Override
+//	@Transactional
+//	public int checkPwd(MemberDto memberDto) {
+//		int result = 0;
+//		System.out.println("memberDto = " + memberDto);
+//		Member member = memberRepo.findById(memberDto.getId()).get();
+//		String dbPwd = member.getPwd();
+//		System.out.println("dbPwd = " + dbPwd);
+//		
+//		String rawPwd = memberDto.getPwd();
+//		String encPwd = encoder.encode(rawPwd);
+//		System.out.println("encPwd = " + encPwd);
+//
+//		if(dbPwd == encPwd) {
+//			result = 1;
+//		} else {
+//			result = 0;
+//		}
+//		System.out.println("result = " + result);
+//		return result;
+//	}
 
 	/** 아이디 중복확인 */
 	@Override

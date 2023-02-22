@@ -29,6 +29,8 @@ public interface MemberService {
 	
 	void modifySnsMemberInfo(MemberDto memberDto);
 	
+//	int checkPwd(MemberDto memberDto);
+	
 	public int idCheck(String id);
 	
 	public Member findById(Member member); 
