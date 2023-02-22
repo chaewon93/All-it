@@ -153,6 +153,13 @@ public class MemberController {
 		return "redirect:/";
 	}
 	
+	/** 비밀번호변경 창 */
+	@GetMapping("/modifyPwdInfo")
+	public String modifyForm() {
+
+		return "member/modifyPwd";
+	}
+	
 	/** SNS사용자 구매화면에서 정보저장 창 */
 	@GetMapping("/infoWrite/{mid}")
 	public String getInfoForm(Model model, @PathVariable String mid) {

@@ -28,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 public class HomeController {
 	private final MemberService memberService;
 	private final SellerService sellerService;
-
 	private final CouponService couponService;
 	private final CustomerCenterService custoService;
 	private final ProductService proService;;
@@ -67,7 +66,7 @@ public class HomeController {
 	/** 아이디 중복 확인 처리 */
 	@ResponseBody
 	@PostMapping("/idCheck")
-	public int memberIdCheck(@RequestParam("userId") String user_id) {
+	public int idCheck(@RequestParam("userId") String user_id) {
 		
 		// 0 : 이미 사용중, -1 : 사용 가능
 		int member_id_chk = memberService.idCheck(user_id);
@@ -96,6 +95,7 @@ public class HomeController {
 	/** 아이디/비밀번호 찾기 창 */
 	@GetMapping("/findIdAndPw")
 	public String findForm() {
+		System.out.println("개짱나네!!!");
 		return "member/findIdAndPw";
 	}
 

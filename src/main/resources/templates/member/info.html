@@ -84,8 +84,9 @@
 			</tr>
 			<tr>
 				<td colspan="2" align="center"><br>
+					<input type="submit" value="정보수정" formaction="/member/infoModify" id="modBtn" class="btn btn-warning"/>
+					<button type="button" th:text="비밀번호변경" id="pwdBtn" class="btn btn-dark"></button>
 					<input type="submit" value="회원탈퇴" formaction="/member/userDel" id="delBtn" class="btn btn-dark"/>
-					<input type="submit" value="정보수정" formaction="/member/infoModify" id="modBtn" class="btn btn-warning"/>			
 					<input type="reset" value="취소" class="btn btn-secondary">
 				</td>
 			</tr>
@@ -363,10 +364,18 @@ let index = {
         }
 	});
 	
+	// 비밀번호변경 화면 요청
+	$("#pwdBtn").click(function(){
+		var url = "modifyPwdInfo";
+
+		window.open(url, "_blank_", 
+			"toolbar=no, menubar=no, scrollbars=yes, resizable=no, width=550, height=550");
+	});
+	
 	// 회원 탈퇴
 	$("#delBtn").click(function(){
 		var provider = $("#provider").val();
-		console.log("pro 1= ", provider);
+
         if(provider == '') {
 			var pass1 = $("#pwd").val();
 	        var pass2 = $("#pwdCheck").val();
@@ -390,12 +399,9 @@ let index = {
 	        }
         } else {
         	var delCheck = window.confirm("정말 탈퇴하시겠습니까? \n탈퇴하시면 모든 정보는 삭제됩니다.");
-			
-        	console.log("pro 2= ", provider);
-			if(modCheck) {
-				console.log("pro 3= ", provider);
+
+			if(delCheck) {
 				$("#frm").submit();
-				console.log("pro 4= ", provider);
 			} else {
 				return false;
 			}
