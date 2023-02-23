@@ -42,7 +42,7 @@ public class AdminServiceImpl implements AdminService {
 	public Page<QnA> getQnAList(Pageable pageable) {
 
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 6;
+		int pageSize = 10;
 		
 		Page<QnA> qnaList = 
 				qnaRepo.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "qno")));
@@ -98,7 +98,7 @@ public class AdminServiceImpl implements AdminService {
 	public Page<Product> findProductByStatus(int status, Pageable pageable) {
 		
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 7;
+		int pageSize = 10;
 		
 		Page<Product> product = 
 				proRepo.findProductByStatus(status, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
@@ -124,8 +124,7 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public Page<Member> searchByAdminMem(String searchKeyword, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-
-		int pageSize = 7;
+		int pageSize = 10;
 
 		Page<Member> member = 
 				memberRepo.findMemberByIdContaining(searchKeyword, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
@@ -137,7 +136,7 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public Page<Member> getMemberList(Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 6;
+		int pageSize = 10;
 
 		Page<Member> member = 
 				memberRepo.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
@@ -159,7 +158,7 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public Page<QnA> findQnAByStatus(int status, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 6;
+		int pageSize = 10;
 
 		Page<QnA> qna = 
 				qnaRepo.findNoQnAByStatus(status ,PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "qno")));
@@ -181,7 +180,7 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public Page<QnA> findQnAByCategoryContaining(String cate, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 6;
+		int pageSize = 10;
 		
 		Page<QnA> qna = 
 				qnaRepo.findCateQnAByCategoryContaining(cate, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "qno")));
@@ -192,7 +191,7 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public Page<Seller> findSellerByRole(Role role, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 6;
+		int pageSize = 10;
 		
 		Page<Seller> seller = 
 				sellerRepo.findSellerByRole(role, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
@@ -202,7 +201,7 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public Page<Seller> findSellerByRoleNot(Role role, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 6;
+		int pageSize = 10;
 		
 		Page<Seller> seller = 
 				sellerRepo.findSellerByRoleNot(role, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
@@ -212,7 +211,7 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public Page<Seller> findAllSeller(Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 6;
+		int pageSize = 10;
 		
 		Page<Seller> seller = 
 				sellerRepo.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
