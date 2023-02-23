@@ -94,17 +94,14 @@ function mainBanner(){
 		$("input:checkbox[name='cno']:checked").each(function(){
 			var chk = $(this).val();
 			chk_arr.push(chk);
-			
-			console.log("chk : ", chk);
 		})
-		console.log("chk_arr : ", chk_arr);
-		var check =	confirm(chk_arr+" 변경 확인?")
+		var check =	confirm("선택한 게시글을 메인화면에 노출할까요?")
 		if(check){
 			document.getElementById("theform").action = "/admin/mainBanner";
 			document.getElementById("theform").submit();				
 		}		
 	}else{
-		alert("체크된 값이 없습니다.");
+		alert("선택된 글이 없습니다");
 		return;
 	}
 }

@@ -33,10 +33,10 @@ public interface MemberRepository extends JpaRepository<Member, String> {
 //	List<Map<String, Object>> chartAddressGroup();
 	
 	// 차트에 필요한 쿼리
-	@Query(value="select gender, COUNT(*) as gendercount from member group by gender", nativeQuery = true)
+	@Query(value="select gender, COUNT(*) as count from member group by gender", nativeQuery = true)
 	List<Chart> chartGenderGroup();
 	
-	@Query(value="select substr(address, 1, 2) as address, COUNT(*) as addressCount from member group by substr(address, 1, 2)", nativeQuery = true)
+	@Query(value="select substr(address, 1, 2) as address, COUNT(*) as count from member group by substr(address, 1, 2)", nativeQuery = true)
 	List<Chart> chartAddressGroup();
 	
 	@Query(value="select grade, COUNT(*) as count from member group by grade", nativeQuery = true)

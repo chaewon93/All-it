@@ -65,6 +65,8 @@ public class CustomerCenterController {
 	
 	@RequestMapping("/admin/insertCusto")
 	public String insertCusto(CustomerCenter cus, MultipartFile imageFile) throws Exception {
+		System.out.println("=================================첫등록 이미지파일:");
+		System.out.println(imageFile);
 		cusService.insertCustomerCenter(cus, imageFile);
 		
 		return "redirect:getCusto";
@@ -107,9 +109,8 @@ public class CustomerCenterController {
 	}
 	
 	@PostMapping("/admin/updateCusto")
-	public String updateCusto(CustomerCenter cus) {
-		
-		cusService.updateCusto(cus);
+	public String updateCusto(CustomerCenter cus, MultipartFile imageFile) throws Exception {
+		cusService.updateCusto(cus, imageFile);
 		
 		return "redirect:getCusto";
 	}
@@ -127,9 +128,6 @@ public class CustomerCenterController {
 		for(int i=0; i<cno.length; i++) {
 			
 			CustomerCenter customerCenter = cusRepo.findById(cno[i]).get();
-			System.out.println("======================================= 고객센터");
-			System.out.println(customerCenter);
-//			customerCenter.setPick("1");
 			if(customerCenter.getPick().equals("0")) {
 				customerCenter.setPick("1");
 			}else {
