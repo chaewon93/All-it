@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<!-- header replace -->
+
+<!-- 내용 섹션 시작 -->
+<br>
+<h1 align="center">판매자 정보 확인</h1><br>
+<form method="post" id="frm" class="form-inline" style="margin-bottom: 100px;">
+<table th:align="center" th:cellpadding="3" th:cellspacing="0">
+	<tr>
+		<td>아이디</td>
+		<td><input type="text" class="form-control" th:value="${ #authentication.principal.seller.id }" name="id" id="id" readonly="readonly"></td>
+	</tr>
+	<tr>
+		<td>비밀번호</td>
+		<td><input type="password" class="form-control" placeholder="비밀번호" name="pwd" id="pwd"></td>
+	</tr>
+	<tr>
+		<td colspan="2" align="center"><br>
+			<input type="hidden" th:value="${ #authentication.principal.seller.pwd }" name="dbPwd" id="dbPwd">
+			<input type="submit" class="btn btn-warning" value="확인" formaction="/seller/infoCheck">
+			<input type="reset" class="btn btn-light" value="취소">
+		</td>
+	</tr>
+</table>
+</form>
+<!-- 내용 섹션 끝 -->
+
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+<!-- footer replace -->

@@ -4,10 +4,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Seller;
+import com.ezen.allit.dto.MemberDto;
 
 public interface SellerService {
 
@@ -50,4 +52,8 @@ public interface SellerService {
 	void deleteProduct(int pno);
 	
 	public int idCheck(String id);
+	
+	public boolean pwdCheck(Seller seller);
+	
+	public Seller modifySellerPwd(Seller seller);
 }

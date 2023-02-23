@@ -39,6 +39,7 @@
 			<tr>
 				<td align="center" colspan="2"><br>
 					<input type="hidden" name="id" id="id">
+					<input type="hidden" name="role" id="role">
 					<button type="button" class="btn btn-warning" id="checkBtn">비밀번호 변경</button>
 				</td>
 			</tr>
@@ -49,6 +50,7 @@
 <!-- 자바스트립트 섹션 시작 -->
 <script type="text/javascript">
 document.getElementById("id").value = opener.document.getElementById("id").value;
+document.getElementById("role").value = opener.document.getElementById("role").value;
 
 /* 비밀번호 확인 */
 $("#pwdCheck").focusout(function(){
@@ -91,19 +93,33 @@ $("#checkBtn").click(function(){
 	    alert("비밀번호를 확인해주세요.");
     	return false;
 	} else if(data.pwd == data.pwd2) {
-		$.ajax({
-			type: "put",
-			url: '/member/Pwdmodify/{data.pwd}',
-			data: JSON.stringify(data),
-			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
-		}).done(function(response){ // 처리 성공 시
-			alert('비밀번호가 변경되었습니다');	
-			window.close();	
-		}).fail(function(error){ 	// 처리 실패 시
-			alert(error);
-		});
-
-	
+		
+		if($("#role").val() == "MEMBER") {
+			$.ajax({
+				type: "put",
+				url: '/member/Pwdmodify/{data.pwd}',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('비밀번호가 변경되었습니다');	
+				window.close();	
+			}).fail(function(error){ 	// 처리 실패 시
+				alert(error);
+			});
+			
+		} else if($("#role").val() == "SELLER") {
+			$.ajax({
+				type: "put",
+				url: '/seller/Pwdmodify/{data.pwd}',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('비밀번호가 변경되었습니다');	
+				window.close();	
+			}).fail(function(error){ 	// 처리 실패 시
+				alert(error);
+			});
+		}
 	}	
 });
 
