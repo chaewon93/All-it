@@ -39,12 +39,14 @@
 		<input type="checkbox" name="checkAll" id="regAll">
 	</th>
 </tr>
-
+<tr th:if="${list.getTotalElements() == 0}">
+	<td colspan="6" align="center" style="font-weight: bold; color: rgb(255, 195, 81);">등록된 글이 없습니다.</td>
+</tr>
 <tr th:each="cate, state : ${list}" align="center">
 	<!-- <td><a th:href="@{/admin/getCustoDetail(cno=${cate.cno})}" th:text="${state.count}"></a></td> -->
   	<td th:text="${state.count}"></td>
 	<td th:text="${cate.category}"></td>
-	<td align="left"><a th:href="@{/admin/getCustoDetail(cno=${cate.cno})}" th:text="${cate.title}"></a></td>
+	<td align="left"><a th:href="@{/admin/getCustoDetail(cno=${cate.cno})}" th:text="${cate.title}" class="text-info"></a></td>
 	<!-- <td align="left"><a th:href="@{/admin/getCustoDetail(cno=${cate.cno})}" th:text="${cate.content}"></a></td> -->
 	<td th:if="${cate.imageName} != null"><img class="img-fluid" th:src="@{ /images/admin/ } + ${ cate.imageName }" width="350"></td>
 	<td th:if="${cate.imageName} == null"></td>
@@ -60,9 +62,10 @@
 	<input type="button" value="메인화면 등록" onclick="mainBanner()" class="btn btn-outline-warning">
 </div>
 </form>
-
-<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
-<!-- pagination replace -->
+<th:block th:if="${list.getTotalElements() != 0}">
+	<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
+	<!-- pagination replace -->
+</th:block>
 </div>
 </body>
 
@@ -110,7 +113,7 @@ function mainBanner(){
 }
 
 function insertCustoView(){
-	let openwin = window.open("/admin/insertCustoView", "고객센터 글 작성", "width=600, height=300");
+	let openwin = window.open("/admin/insertCustoView", "고객센터 글 작성", "width=600, height=600");
 }
 </script>
 

@@ -22,7 +22,9 @@
 	<th width="300">주소</th>
 	<th width="200">전화번호</th>
 </tr>
-
+<tr th:if="${list.getTotalElements() == 0}">
+	<td colspan="8" align="center" style="font-weight: bold; color: rgb(255, 195, 81);">가입된 회원이 없습니다.</td>
+</tr>
 <tr th:each="member, state : ${list}">
 	<td th:text="${state.count}"></td>
 	<td th:text="${member.id}"></td>
@@ -34,11 +36,13 @@
 	<td th:text="${member.address}"></td>
 	<td th:text="${member.phone}"></td>
 </tr>
-
 </table>
+
+<th:block th:if="${list.getTotalElements() != 0}">
+	<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
+	<!-- pagination replace -->
+</th:block>
 </div>
-<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
-<!-- pagination replace -->
 	
 </body>
 <!-- footer replace -->

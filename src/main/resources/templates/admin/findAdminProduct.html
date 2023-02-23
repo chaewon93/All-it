@@ -38,6 +38,9 @@
 	<th width="100"><input type="checkbox" name="checkAll" id="regAll"> 체크</th>
 	
 </tr>
+<tr th:if="${list.getTotalElements() == 0}">
+	<td colspan="10" align="center" style="font-weight: bold; color: rgb(255, 195, 81);">상품이 없습니다.</td>
+</tr>
 <tr th:each="pro, state : ${list}">
 	<td th:text="${state.count}"></td>
 	<td th:switch="${pro.category}">
@@ -74,10 +77,11 @@
 	<input type="button" value="삭제" onclick="delete_product()" class="btn btn-secondary">
 </div>
 </form>
+<th:block th:if="${list.getTotalElements() != 0}">
+	<div th:replace="~{ /fragments/admin_pagination.html :: pagination }"></div>
+	<!-- pagination replace -->
+</th:block>
 </div>
-
-<div th:replace="~{ /fragments/admin_pagination.html :: pagination }"></div>
-<!-- pagination replace -->
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">

@@ -39,6 +39,10 @@
 		</td>	  			
 	</tr>
 </table>
+<th:block th:if="${size} != 0">
+	<!-- pagination replace -->
+	<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
+</th:block>
 </div>
 </div>
 </body>
@@ -72,10 +76,6 @@ index.init();
 
 </script>
 <!-- 자바스트립트 섹션 끝 -->
-
-<!-- pagination replace -->
-<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
-
 
 <!-- footer replace -->
 <div th:replace="~{ /fragments/footer.html :: footer }"></div>

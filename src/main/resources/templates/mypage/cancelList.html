@@ -163,6 +163,9 @@
     </div>
     <!-- 반품 내역 섹션 끝 -->
 </div>
+
+<div th:replace="~{ /fragments/pager.html :: pager }"></div>
+<!-- pagination replace -->
 </div>
 </div>
 
@@ -242,9 +245,6 @@ function refesh(type) {
 <!-- 자바스트립트 섹션 끝 -->
 
 </body>
-
-<div th:replace="~{ /fragments/pager.html :: pager }"></div>
-<!-- pagination replace -->
 
 <!-- footer replace -->
 <div th:replace="~{ /fragments/footer.html :: footer }"></div>

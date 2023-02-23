@@ -24,7 +24,6 @@
 
 .modal.in{
 	padding-right: 0 !important;
-	
 }
 
 .modal-dialog {
@@ -47,6 +46,19 @@
 
 .modal-body .in-content{
 	border-width:0;
-	width:100%;height:100%;
+	width:100%;
+	height:100%;
 	overflow:auto;
+}
+
+#contentDiv{
+  height: auto;
+  min-height: 75%;
+  /* overflow: hidden; */
+}
+
+footer{
+  height: 230px;
+  position : relative;
+  transform : translateY(-100%);
 }

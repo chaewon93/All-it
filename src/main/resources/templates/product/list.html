@@ -27,22 +27,23 @@
 	</form>
 	</nav> <br>
 	<div class="row">
-		<div class="col-sm-4" th:each="product : ${ productList }">
+		<div class="col-sm-4" th:each="product : ${ productList }" >
 			<!-- <a th:href="@{ /product/detail(pno=${ product.pno }) }"> -->
 			<a th:href="@{ |/product/${ product.pno }| }" class="text-info">
-				<h2 th:text="${ product.name }"></h2>
+				<h3 th:text="${ product.name }" style="height: 35px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></h3>
 				<img th:if="${#strings.isEmpty(product.imageName)}" class="img-fluid" th:src="@{ /img/noimage.gif }" width="350">
-				<img th:if="${not #strings.isEmpty(product.imageName)}" class="img-fluid" th:src="@{ /images/product/ } + ${ product.imageName }" width="350">
+				<img th:if="${not #strings.isEmpty(product.imageName)}" class="img-fluid" th:src="@{ /images/product/ } + ${ product.imageName }" width="350" height="350">
 				<p th:text="${ product.content }"></p>
 			</a>
 			<hr class="d-sm-none">
 		</div>
 	</div>
+<th:block th:if="${ productList.getTotalElements() != 0 }">
+	<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
+	<!-- pagination replace -->
+</th:block>
 </div>
 <!-- 내용 섹션 끝 -->
-
-<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
-<!-- pagination replace -->
 
 <div th:replace="~{ /fragments/footer.html :: footer }"></div>
 <!-- footer replace -->

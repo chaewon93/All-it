@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <div th:replace="~{ /fragments/header.html :: header }"></div>
+<head>
 <script type="text/javascript">
 $(document).ready(function() {
 	var carousel = $(".carousel-item");
@@ -13,9 +14,22 @@ $(document).ready(function() {
 	carousel_indi.addClass("active");
 });
 </script>
+<style>
+#contentDiv{
+  height: auto;
+  min-height: 70%;
+}
+footer{
+  height: 230px;
+  position : relative;
+  transform : translateY(-100%);
+}
+</style>
 <!-- header replace -->
-
+</head>
+<body>
 <!-- 내용 섹션 시작 -->
+<div id="contentDiv">
 <div class="container" style="margin-top: 30px; background-color: white">
 	<!-- 이벤트 리스트에 등록된 고객센터 이미지 출력 -->
 	<div id="demo" class="carousel slide" data-ride="carousel">
@@ -41,35 +55,18 @@ $(document).ready(function() {
 	<div class="row">
 		<div class="col-sm-4" th:each="mdPick : ${proList}">
 			<a th:href="@{ |/product/${ mdPick.pno }| }" class="text-info">
-				<h2 th:text="${mdPick.name}" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"></h2>
+				<h3 th:text="${mdPick.name}" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></h3>
 				<img class="img-fluid" th:src="@{ /images/product/ } + ${ mdPick.imageName }" width="350">
 				<p th:text="${mdPick.content}" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"></p>
 			</a>
 			<hr class="d-sm-none">
 		</div>
-	<!-- 
-		<div class="col-sm-4">
-			<h2>울산 과메기</h2>
-			<a href><img class="img-fluid" th:src="@{ /img/gataka.jpg }" alt="Busan" width="350"></a>
-			<p>동해 바닷바람을 맞으며 숙성된 과메기입니다.</p>
-			<hr class="d-sm-none">
-		</div>
-		<div class="col-sm-4">
-			<h2>여수 갓김치</h2>
-			<a href><img class="img-fluid" th:src="@{ /img/moneyball.jpg }" alt="Busan" width="350"></a>
-			<p>어머님들의 손맛이 담긴 갓김치입니다.</p>
-			<hr class="d-sm-none">
-		</div>
-		<div class="col-sm-4">
-			<h2>나주 배</h2>
-			<a href><img class="img-fluid" th:src="@{ /img/moonlight.jpg }" alt="Busan" width="350"></a>			
-			<p>30년 경력의 농부님이 정성을 들여 키운 배입니다.</p>
-			<hr class="d-sm-none">
-		</div>
-	 -->
 	</div>
+</div>
 </div>
 <!-- 내용 섹션 끝 -->
 
 <div th:replace="~{ /fragments/footer.html :: footer }"></div>
 <!-- footer replace -->
+</body>
+</html>

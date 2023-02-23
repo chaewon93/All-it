@@ -4,8 +4,9 @@
 <div th:replace="~{ /fragments/header.html :: header }"></div>
 <!-- header replace -->
 
-<!-- 내용 섹션 시작 -->
-<div class="container" style="margin-top: 30px; background-color: white">	
+<!-- 판매자 상품목록 섹션 시작 -->
+<div class="container" style="margin-top: 30px; height: 800px;">
+<h1>상품 목록</h1><br>	
 	<nav class="navbar navbar-expand-sm">
 	<form method="get" th:action="@{ /seller/ }" class="form-inline">
 		<select class="form-control" style="padding-right:10px; width: 120px;" name="searchCondition" id="searchCondition">
@@ -35,11 +36,14 @@
 			<hr class="d-sm-none">
 		</div>
 	</div>
-</div>
-<!-- 내용 섹션 끝 -->
 
-<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
-<!-- pagination replace -->
+<th:block th:if="${ productList.getTotalElements() != 0 }">
+	<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
+	<!-- pagination replace -->
+</th:block>
+
+</div>
+<!-- 판매자 상품목록 섹션 끝 -->
 
 <div th:replace="~{ /fragments/footer.html :: footer }"></div>
 <!-- footer replace -->
