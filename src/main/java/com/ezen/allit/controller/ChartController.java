@@ -2,14 +2,8 @@ package com.ezen.allit.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import javax.persistence.Entity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ezen.allit.dto.Chart;
 import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.ProductRepository;
-import com.ezen.allit.service.MemberService;
 
 @Controller
 @RequestMapping("/chart/")
@@ -32,34 +25,13 @@ public class ChartController {
 	private MemberRepository memRepo;
 	
 	@Autowired
-	private MemberService memService;
-	
-	@Autowired
 	private ProductRepository proRepo;
-	
-	// 메인 차트
-	@RequestMapping("/mainCharts")
-	public String salesRecorddChart(Model model){
-		// 성별
-		String m = "남자";
-		String w = "여자";
-		String x = "안함";
-		int mc = memRepo.countMemberByGender(m);
-		int wc = memRepo.countMemberByGender(w);
-		int xc = memRepo.countMemberByGender(x);
-		
-		model.addAttribute("m", mc);
-		model.addAttribute("w", wc);
-		model.addAttribute("x", xc);
-
-		return "/admin/mainCharts";
-	}
 	
 	// 메인 차트
 	@GetMapping("/mainChart")
 	public String testChartView(Model model){
 		
-		return "/admin/mainChart";
+		return "/admin/mainCharts";
 	}
 	
 	// 성별

@@ -107,13 +107,13 @@ function reg_product(){
 			var chk = $(this).val();
 			chk_arr.push(chk);
 		})
-		var check =	confirm(chk_arr+" 등록 확인?")
+		var check =	confirm("선택한 상품을 등록할까요?")
 		if(check){
 			document.getElementById("theform").action = "/admin/regPro";
 			document.getElementById("theform").submit();		
 		}
 	}else{
-		alert("체크된 값이 없습니다.");
+		alert("선택한 상품이 없습니다.");
 		return;
 	}
 }
@@ -125,13 +125,13 @@ function changeProMDPick(){
 			var chk = $(this).val();
 			chk_arr.push(chk);
 		})
-		var check =	confirm(chk_arr+" 변경 확인?")
+		var check =	confirm("선택한 상품의 MDPICK 등록 여부를 변경할까요?")
 		if(check){
 			document.getElementById("theform").action = "/admin/changeProMDPick";
 			document.getElementById("theform").submit();				
 		}		
 	}else{
-		alert("체크된 값이 없습니다.");
+		alert("선택한 상품이 없습니다.");
 		return;
 	}
 }
@@ -143,13 +143,13 @@ function delete_product(){
 			var chk = $(this).val();
 			chk_arr.push(chk);
 		})
-		var check =	confirm(chk_arr+" 삭제 확인?")
+		var check =	confirm("선택한 상품을 삭제할까요?")
 		if(check){
 			document.getElementById("theform").action = "/admin/deletePro";
 			document.getElementById("theform").submit();		
 		}
 	}else{
-		alert("체크된 값이 없습니다.");
+		alert("선택한 상품이 없습니다.");
 		return;
 	}
 }
