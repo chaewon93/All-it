@@ -187,7 +187,7 @@ public class SellerController {
 	    int endPage = ((startPage + naviSize - 1) < productList.getTotalPages()) ? startPage + naviSize - 1 : productList.getTotalPages();
 		
 	    model.addAttribute("list", productList);
-	    model.addAttribute("url", "/seller/");
+	    model.addAttribute("url", "/seller/unregistered");
 	    model.addAttribute("productList", productList);
 	    model.addAttribute("startPage", startPage);
 	    model.addAttribute("endPage", endPage);
