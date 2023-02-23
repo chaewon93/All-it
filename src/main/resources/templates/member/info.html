@@ -27,8 +27,6 @@
 	<div id="menu1" class="container tab-pane active"><br>
 		<form method="post" id="frm" class="form-inline">
 		<table th:align="center" th:cellpadding="3" th:cellspacing="0">
-			<input type="hidden" name="provider" id="provider" th:value="${ session['user']?.provider }">
-			<input type="hidden" name="id" id="id" th:value="${ session['user']?.id }" readonly="readonly"/>
 			<tr>
 				<td>아이디</td>
 				<td><input type="text" th:value="${ session['user']?.id }" class="form-control mr-sm-2" readonly="readonly"/></td>
@@ -73,6 +71,10 @@
 			</tr>
 			<tr>
 				<td colspan="2" align="center"><br>
+					<input type="hidden" name="provider" id="provider" th:value="${ session['user']?.provider }">
+					<input type="hidden" name="id" id="id" th:value="${ session['user']?.id }"/>
+					<input type="hidden" name="role" id="role" th:value="${ session['user']?.role }"/>
+					
 					<input type="submit" value="정보수정" formaction="/member/infoModify" id="modBtn" class="btn btn-warning"/>
 					<button type="button" th:if="${#authentication.principal.member?.provider == null}" th:text="비밀번호변경" id="pwdBtn" class="btn btn-warning"></button>
 					<button type="button" th:text="회원탈퇴" id="delBtn" class="btn btn-dark"/></button> <!-- formaction="/member/userDel" -->

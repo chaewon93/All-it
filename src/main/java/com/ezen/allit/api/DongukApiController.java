@@ -197,8 +197,7 @@ public class DongukApiController {
 	 * 회원탈퇴
 	 */
 	@DeleteMapping("/member/delete/{id}")
-	public int deleteMember(Model model,
-											@RequestBody MemberDto memberDto) {
+	public int deleteMember(Model model, @RequestBody MemberDto memberDto) {
 		boolean match = memberService.checkPwd(memberDto);
 		System.out.println("memberDto = " + memberDto);
 		System.out.println("match = " + match);

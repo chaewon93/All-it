@@ -146,7 +146,7 @@ public class MemberServiceImpl implements MemberService {
 		return match;
 	}
 	
-	/** 비밀번호찾기 화면에서 비밀번호 수정 */
+	/** 비밀번호 변경 팝업창에서 비밀번호 변경 */
 	@Override
 	@Transactional
 	public Member modifyMemberPwd(MemberDto memberDto) {

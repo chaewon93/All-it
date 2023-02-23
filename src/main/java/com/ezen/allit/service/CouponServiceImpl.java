@@ -37,6 +37,7 @@ public class CouponServiceImpl implements CouponService {
 	@Autowired
 	ProductService proService;
 	
+	/** 쿠폰 목록 조회 */
 	@Override
 	public Page<Coupon> findCouponList(Pageable pageable) {
 		
@@ -49,6 +50,7 @@ public class CouponServiceImpl implements CouponService {
         return couponList;	
 	}
 	
+	/** 쿠폰 생성 */
 	@Override
 	public void createCoupon(Coupon coupon) {
 		
@@ -83,6 +85,7 @@ public class CouponServiceImpl implements CouponService {
         couponRepo.save(coupon);
 	}
 	
+	/** 쿠폰 수정 */
 	@Override
 	public void updateCoupon(Coupon coupon) {
 		Coupon cou = couponRepo.findById(coupon.getCouId()).get();
@@ -97,7 +100,8 @@ public class CouponServiceImpl implements CouponService {
 		
 		couponRepo.save(cou);
 	}	
-
+	
+	/** 쿠폰 다운로드(사용자) */
 	@Override
 	public void insertMemCoupon(Member member, int couid) {
 		
@@ -126,6 +130,7 @@ public class CouponServiceImpl implements CouponService {
 		couponRepo.save(coupon);
 	}
 
+	/** 상품에 사용할 수 있는 쿠폰 목록 */
 	@Override
 	public List<Coupon> forMemberCouponList(Member member, int pno) {
 
@@ -149,9 +154,8 @@ public class CouponServiceImpl implements CouponService {
 			if(pro.getMdPickyn() == 0) {
 				List<Coupon> allCouList3 = couponRepo.findCouponByConditionContaining("NO");
 				allCouList.retainAll(allCouList3);
-			}else if(pro.getMdPickyn() == 1) {
-				List<Coupon> allCouList3 = couponRepo.findCouponByConditionContaining("YES");
-				allCouList.retainAll(allCouList3);
+			} else if(pro.getMdPickyn() == 1) {
+				
 			}
 			
 			List<Coupon> allCouList4 = couponRepo.findCouponByConditionContainingOrConditionContaining(pro.getSeller().getId(), "SELLERS");
@@ -161,6 +165,7 @@ public class CouponServiceImpl implements CouponService {
 
 	}
 		
+	/** 내가 받을 수 있는 쿠폰(상품 상관 없이) */
 	@Override
 	public List<MemCoupon> MemProCouponList(Member member, int pno) {
 		List<MemCoupon> list = member.getMemCoupon();
@@ -179,7 +184,8 @@ public class CouponServiceImpl implements CouponService {
 		System.out.println(memCouList);
 		return memCouList;
 	}
-
+	
+	/** 쿠폰 사용 시 최소사용금액/최대할인금액 체크 */
 	@Override
 	public int checkPrice(int memCouid, int price) {
 		Coupon coupon = memCouRepo.findById(memCouid).get().getCoupon();

@@ -486,14 +486,6 @@ public class MemberController {
 	
 			model.addAttribute("pno", pno);
 			
-			int price = 0;
-			if(pno != 0) {
-				 price = proRepo.findById(pno).get().getPrice();
-			}else {
-				price = 0;
-			}
-			model.addAttribute("price", price);
-	
 			List<Coupon> couponList = new ArrayList<>();
 			for(MemCoupon memCou : memCouList) {
 				couponList.add(memCou.getCoupon());
