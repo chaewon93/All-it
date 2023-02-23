@@ -5,7 +5,6 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,14 +29,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.config.auth.PrincipalDetailSeller;
-import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
 import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
-import com.ezen.allit.dto.MemberDto;
 import com.ezen.allit.dto.ResponseDto;
 import com.ezen.allit.dto.SearchDto;
 import com.ezen.allit.service.SellerService;
@@ -226,6 +223,7 @@ public class SellerController {
 	    model.addAttribute("search", search);
 	    model.addAttribute("startPage", startPage);
 	    model.addAttribute("endPage", endPage);
+	    if(productList.getTotalElements() == 0) model.addAttribute("size", 0);
 		
 		return "seller/productList";
 	}
@@ -249,41 +247,9 @@ public class SellerController {
 	    model.addAttribute("productList", productList);
 	    model.addAttribute("startPage", startPage);
 	    model.addAttribute("endPage", endPage);
+	    if(productList.getTotalElements() == 0) model.addAttribute("size", 0);
 		
 		return "seller/unRegisteredProductList";
-	}
-	
-	/*
-	 * 판매자 상품조회
-	 */
-	@GetMapping("/product/{pno}")
-	public String getProduct(Model model,
-							@PathVariable int pno,
-							@PageableDefault(page = 1) Pageable pageable) {
-		
-		Product theProduct = sellerService.getProduct(pno);
-
-		/* 별점 평균 구하기 */
-		List<Review> reviewList = theProduct.getReview();
-		
-		if(reviewList != null) {
-			Review review = null;
-			int totalRating = 0;
-			for(int i=0; i<reviewList.size(); i++) { // 리뷰갯수만큼 반복문을 돌려
-				review = reviewList.get(i);
-				totalRating += review.getRating();	 // totalRating에 저장
-			}
-			float rating = (float)totalRating/reviewList.size(); // 리뷰갯수에서 totalRating을 나누어 최종적으로 값을 저장
-			theProduct.setRating(getRating(rating, 1));
-		} 
-		if(reviewList.isEmpty()) {
-			theProduct.setRating(0);
-		}
-		
-		model.addAttribute("product", theProduct);
-		model.addAttribute("page", pageable.getPageNumber());
-		
-		return "seller/product";
 	}
 	
 	/*
@@ -351,6 +317,39 @@ public class SellerController {
 	    System.out.println("========= qnaList = " + qnaList);
 		
 		return "seller/qnaList";
+	}
+	
+	/*
+	 * 판매자 상품조회
+	 */
+	@GetMapping("/product/{pno}")
+	public String getProduct(Model model,
+							@PathVariable int pno,
+							@PageableDefault(page = 1) Pageable pageable) {
+		
+		Product theProduct = sellerService.getProduct(pno);
+
+		/* 별점 평균 구하기 */
+		List<Review> reviewList = theProduct.getReview();
+		
+		if(reviewList != null) {
+			Review review = null;
+			int totalRating = 0;
+			for(int i=0; i<reviewList.size(); i++) { // 리뷰갯수만큼 반복문을 돌려
+				review = reviewList.get(i);
+				totalRating += review.getRating();	 // totalRating에 저장
+			}
+			float rating = (float)totalRating/reviewList.size(); // 리뷰갯수에서 totalRating을 나누어 최종적으로 값을 저장
+			theProduct.setRating(getRating(rating, 1));
+		} 
+		if(reviewList.isEmpty()) {
+			theProduct.setRating(0);
+		}
+		
+		model.addAttribute("product", theProduct);
+		model.addAttribute("page", pageable.getPageNumber());
+		
+		return "seller/product";
 	}
 	
 	/*
