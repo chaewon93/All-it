@@ -62,6 +62,20 @@ public class ProductServiceImpl implements ProductService {
 	}
 	
 	/*
+	 * 특가세일상품목록조회
+	 */
+	@Transactional
+	public Page<Product> getSaleProductList(Pageable pageable) {
+		int page = pageable.getPageNumber() - 1;
+		int pageSize = 6;
+
+		Page<Product> productList = 
+				productRepo.findAllByDiscountNotAndStatus(0, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "discount")));
+
+        return productList;
+	}
+	
+	/*
 	 * MDPICK 상품 조회
 	 */
 	@Transactional

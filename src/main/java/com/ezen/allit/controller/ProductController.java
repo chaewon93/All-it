@@ -155,6 +155,41 @@ public class ProductController {
 		return "product/list";
 	}
 	
+	/** 특가세일상품 조회 */
+	@GetMapping("/sale")
+	public String getSaleList(Model model,
+							@PageableDefault(page = 1) Pageable pageable,
+							@RequestParam(value= "searchCondition", defaultValue = "0") int searchCondition,
+							@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword) {		
+		
+		/* productList null값으로 전역변수 선언 */
+		Page<Product> productList = null;
+		
+		/* SearchDto라는 검색만을 위한 dto를 만들어 사용 */
+		SearchDto search = new SearchDto();
+		search.setSearchCondition(searchCondition);
+		search.setSearchKeyword(searchKeyword);
+
+		if(searchKeyword.equals("")) { // 검색어가 없을 경우
+			productList = productService.getSaleProductList(pageable);
+		} else {					   // 검색어가 있을 경우
+			productList = productService.search(searchCondition, searchKeyword, pageable);
+		}
+
+		int naviSize = 10; // 페이지네이션 갯수
+		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
+		int endPage = ((startPage + naviSize - 1) < productList.getTotalPages()) ? startPage + naviSize - 1 : productList.getTotalPages();
+		
+		model.addAttribute("list", productList);
+		model.addAttribute("url", "/product/sale");
+		model.addAttribute("productList", productList);
+		model.addAttribute("search", search);
+		model.addAttribute("startPage", startPage);
+		model.addAttribute("endPage", endPage);
+
+		return "product/list";
+	}
+	
 	/** MDPICK 상품 조회 */
 	@GetMapping("/mdpickList")
 	public String mdpcikList(Model model, @PageableDefault(page = 1) Pageable pageable,
@@ -177,7 +212,6 @@ public class ProductController {
 
 		model.addAttribute("list", productList);
 		model.addAttribute("url", "/product/mdpickList");
-		
 		model.addAttribute("productList", productList);
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
