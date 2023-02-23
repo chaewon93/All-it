@@ -95,7 +95,7 @@
 		<li class="list-group-item d-flex justify-content-between" id="reply--1">
 	  		<div>
 	  			<span th:if="${ review.fileStatus == 1 }" th:each="file, status : ${ review.reviewFile }" style="display: inline-block;">
-	  				<img class="img-fluid" th:src="@{ /images/review/ } + ${ file.imageName }" width="100"><br>
+	  				<img class="img-fluid" id="reviewImg" th:src="@{ /images/review/ } + ${ file.imageName }" width="100"><br>
 	  			</span> <br>
 	  			<span>작성자:</span><span th:text="${ review.member.id }" id="review-writer"></span> <br>
 				<span>평점:</span><span th:text="${ review.rating }" id="review-rating"></span>점 <br>
