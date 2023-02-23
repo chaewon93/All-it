@@ -41,7 +41,7 @@ public class CouponServiceImpl implements CouponService {
 	public Page<Coupon> findCouponList(Pageable pageable) {
 		
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 6;
+		int pageSize = 10;
 		
 		Page<Coupon> couponList = 
 				couponRepo.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "couId")));

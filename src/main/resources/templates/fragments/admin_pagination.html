@@ -23,7 +23,7 @@
 	<th:block th:unless="${ list.totalElements == 0 }">
 		<th:block th:each="page: ${ #numbers.sequence(startPage, endPage) }">
 			<!-- 요청페이지가 현재페이지면 링크 X -->
-			<li class="page-item"><a class="page-link text-warning" th:if="${ page == list.number + 1 }" th:text="${ page }"></a></li>
+			<li class="page-item"><a class="page-link text-info" th:if="${ page == list.number + 1 }" th:text="${ page }"></a></li>
 			<!-- 요청페이지가 현재페이지가 아니면 링크 O -->
 			<li class="page-item" th:unless="${ page == list.number + 1}"><a class="page-link text-warning" th:href="@{ ${ url }(page=${ page }, searchKeyword = ${ param.searchKeyword }, a=${a}) }" th:text="${ page }"></a></li>
 		</th:block>

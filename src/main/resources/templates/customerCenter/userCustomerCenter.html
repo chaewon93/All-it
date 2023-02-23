@@ -64,7 +64,7 @@
 
 </head>
 <body>
-<div id="contentDiv" style="margin-top: 30px; height: 600px;">
+<div id="contentDiv" style="margin-top: 30px;">
 <ul class="nav nav-pills justify-content-center" id="navActive">
   <li class="nav-item">
     <a class="nav-link" aria-current="page" href="/customerCenter/userCustomerCenter?cate=모두 보기">모두 보기</a>
@@ -99,7 +99,7 @@
     </h2>
     <div th:id="|flush-collapse${state.count}|" class="accordion-collapse collapse" th:aria-labelledby="|flush-heading${state.count}|" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
-	    <p th:text="${cate.content}"></p>
+	    <p th:text="${cate.content}" style="white-space: pre-wrap;"></p>
       	<img th:if="${cate.imageName} != null" class="img-fluid" th:src="@{ /images/admin/ } + ${ cate.imageName }" width="350">
       </div>
     </div>	    

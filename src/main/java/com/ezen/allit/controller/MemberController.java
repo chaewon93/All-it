@@ -214,7 +214,7 @@ public class MemberController {
 			
 			return "member/info";
 		} else {
-			out.println("<script>alert('비밀번호가 틀렸습니다.'); location.href='/member/infoCheck'</script>");
+			out.println("<script>alert('비밀번호가 틀렸습니다.'); location.href='/member/infoCheckView'</script>");
 			out.flush();
 			out.close();
 			return null;
@@ -550,6 +550,7 @@ public class MemberController {
 		return "mypage/coupon";
 	}
 	
+	/** 쿠폰 다운로드 */ 
 	@PostMapping("downCoupon")
 	public String downCoupon(@ModelAttribute("user") Member member,
 			@RequestParam Map<String, Object> map, RedirectAttributes re) {
