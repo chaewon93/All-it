@@ -15,14 +15,10 @@ $(document).ready(function() {
 });
 </script>
 <style>
-#contentDiv{
-  height: auto;
-  min-height: 70%;
-}
-footer{
-  height: 230px;
-  position : relative;
-  transform : translateY(-100%);
+#img {
+   width: 350px;
+   height: 350px;
+   object-fit: fill;
 }
 </style>
 <!-- header replace -->
@@ -57,7 +53,7 @@ footer{
 		<div class="col-sm-4" th:each="mdPick : ${proList}">
 			<a th:href="@{ |/product/${ mdPick.pno }| }" class="text-info">
 				<h3 th:text="${mdPick.name}" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></h3>
-				<img class="img-fluid" th:src="@{ /images/product/ } + ${ mdPick.imageName }" width="350">
+				<img class="img-fluid" id="img" th:src="@{ /images/product/ } + ${ mdPick.imageName }" width="350" height="350" style="object-fit: fill;">
 				<p th:text="${mdPick.content}" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"></p>
 			</a>
 			<hr class="d-sm-none">

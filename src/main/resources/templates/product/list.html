@@ -39,7 +39,7 @@
 				<h3 th:text="${ product.name }" style="height: 35px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></h3>
 				<img th:if="${#strings.isEmpty(product.imageName)}" class="img-fluid" th:src="@{ /img/noimage.gif }" width="350">
 				<img th:if="${not #strings.isEmpty(product.imageName)}" class="img-fluid" th:src="@{ /images/product/ } + ${ product.imageName }" width="350" height="350">
-				<p th:text="${ product.content }"></p>
+				<p th:text="${ product.content }" style="height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></p>
 			</a>
 			<hr class="d-sm-none">
 		</div>

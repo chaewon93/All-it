@@ -66,7 +66,7 @@
 <h3>주문 상품</h3>
 <table th:align="center" id="prodInfo" class="table">
 	<tr>
-		<th width="400">상품 정보</th>
+		<th width="500">상품 정보</th>
 		<th width="100">수량</th>
 		<th width="150">상품금액</th>
 		<th width="150">쿠폰 적용</th>
@@ -471,7 +471,7 @@ function selectCoupon(btn){
 //	let apno = $("input[name=cpno]").eq(index).val();
 	let price = $("input[name=cpprice]").eq(index).val();
 	
-	alert(apno+", "+ mid+", "+price+", "+index);
+//	alert(apno+", "+ mid+", "+price+", "+index);
 	let openwin = window.open("/member/coupon1?pno="+apno, "쿠폰", "width=800, height=600, scrollbars=yes");
 }
 

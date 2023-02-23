@@ -25,7 +25,7 @@ public class CustomerCenterServiceImpl implements CustomerCenterService {
 	@Override
 	public Page<CustomerCenter> getCustomercenter(Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 6;
+		int pageSize = 10;
 		
 		Page<CustomerCenter> custoList = 
 				cusRepo.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "cno")));
@@ -99,15 +99,16 @@ public class CustomerCenterServiceImpl implements CustomerCenterService {
 		if(imageFile.getOriginalFilename().isEmpty()) {
 			CustomerCenter custo = cusRepo.findById(cus.getCno()).get();
 			
-			String realPath = "c:/allit/images/admin/"; 	// 상품 이미지파일 저장경로
-			File oldFile = new File(realPath, custo.getImageName());
-			oldFile.delete();
+			if(custo.getImageName() != null) {
+	            String realPath = "c:/allit/images/admin/";    // 상품 이미지파일 저장경로
+	            File oldFile = new File(realPath, custo.getImageName());
+	            oldFile.delete();
+	         }
 			
 			custo.setCategory(cus.getCategory());
 			custo.setTitle(cus.getTitle());
 			custo.setContent(cus.getContent());
-			custo.setPick(cus.getPick());
-			custo.setImageName("");
+			custo.setImageName(null);
 			
 			cusRepo.save(custo);
 		}else if(imageFile != null) {
@@ -115,10 +116,12 @@ public class CustomerCenterServiceImpl implements CustomerCenterService {
 			CustomerCenter custo = cusRepo.findCustomerCenterByCno(cus.getCno());
 			
 			String ogName = imageFile.getOriginalFilename(); // 원본 파일명
-			String realPath = "c:/allit/images/admin/"; 	// 상품 이미지파일 저장경로
+			String realPath = "c:/allit/images/admin/";    // 상품 이미지파일 저장경로
 			
-			File oldFile = new File(realPath, custo.getImageName());
-			oldFile.delete();
+			if(custo.getImageName() != null) {
+	            File oldFile = new File(realPath, custo.getImageName());
+	            oldFile.delete();
+	         }
 			
 			/*
 			 * UUID를 이용해 중복되지 않는 파일명 생성
@@ -161,7 +164,7 @@ public class CustomerCenterServiceImpl implements CustomerCenterService {
 	@Override
 	public Page<CustomerCenter> findCustomerCenterByCategoryContaining(String cate, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 6;
+		int pageSize = 10;
 		
 		Page<CustomerCenter> custoList = 
 				cusRepo.findCustomerCenterByCategoryContaining(cate, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "cno")));

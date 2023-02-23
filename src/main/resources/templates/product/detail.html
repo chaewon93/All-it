@@ -31,12 +31,12 @@
 		<label for="name">상품명</label>
 		<input type="text" class="form-control" th:value="${ product.name }" name="name" id="name" readonly/>
 		<label for="price">판매가</label>
-		<input type="text" class="form-control" th:value="${ product.firstPrice }" name="firstPrice" id="firstPrice" readonly/>
+		<input type="text" class="form-control" th:value="${ #numbers.formatInteger(product.firstPrice, 1, 'COMMA') }+'원'" name="firstPrice" id="firstPrice" readonly/>
 		<div th:if="${ product.discount } > 0">
 			<label for="discount">할인</label>
 			<input type="text" class="form-control" th:value="|${ product.discount }%|" name="discount" id="discount" readonly/>
 			<label for="finalPrice">최종 판매가</label>
-			<input type="text" class="form-control" th:value="${ product.price }" name="price" id="price" readonly/>
+			<input type="text" class="form-control" th:value="${ #numbers.formatInteger(product.price, 1, 'COMMA') }+'원'" name="price" id="price" readonly/>
 		</div>
 		<label for="quantity">수량</label>
 		<input type="number" class="form-control" th:value="1" name="quantity" id="quantity" min="1"/>
@@ -486,17 +486,23 @@ let price,quantity;
 function allmemproCoupon(){
 	let mid = $("#mid").val();
 	let pno = $("#pno").val();
-	setPrice();
-	let totp = price * quantity;
-	document.getElementById("totp").value = totp;
 	
-	console.log("pno="+pno+", mid="+ mid+", totalPrice="+totp);
-	let openwin = window.open("/member/coupon?pno="+pno, "쿠폰", "width=800, height=600, scrollbars=yes");
+	if(mid == undefined || mid == "") {
+		alert("로그인이 필요한 서비스입니다.");
+		return false;
+	} else {
+		setPrice();
+		let totp = price * 1;
+		document.getElementById("totp").value = totp;
+		
+		console.log("pno="+pno+", mid="+ mid+", totalPrice="+totp);
+		let openwin = window.open("/member/coupon?pno="+pno, "쿠폰", "width=800, height=600, scrollbars=yes");
+	}
 }
 
 function setPrice(){
 	price = $("#price").val();
-	quantity = $("#quantity").val();
+	//quantity = $("#quantity").val();
 }
 
 </script>
