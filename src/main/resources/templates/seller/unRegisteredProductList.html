@@ -5,7 +5,7 @@
 <!-- header replace -->
 
 <!-- 내용 섹션 시작 -->
-<div class="container" style="margin-top: 30px; background-color: white">
+<div class="container" style="margin-top: 30px; height: 800px;">
 <h1>등록대기 상품 조회</h1>
 	<table th:align="center" th:cellpadding="3" th:cellspacing="0" th:width="900" class="table">
 		<tr>
@@ -40,11 +40,12 @@
 			<td th:text="${product.discount}"></td>	
 		</tr>
 	</table>
+<th:block th:if="${ productList.getTotalElements() != 0 }">
+	<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
+	<!-- pagination replace -->
+</th:block>
 </div>
 <!-- 내용 섹션 끝 -->
-
-<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
-<!-- pagination replace -->
 
 <div th:replace="~{ /fragments/footer.html :: footer }"></div>
 <!-- footer replace -->

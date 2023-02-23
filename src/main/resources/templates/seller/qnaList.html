@@ -4,7 +4,8 @@
 <!-- header replace -->
 
 <!-- 판매자 상품문의내역 섹션 시작 -->
-<div class="container" style="margin-top: 30px; background-color: white">	
+<div class="container" style="margin-top: 30px; height: 800px;">	
+<h1>상품 문의내역</h1><br>
 	<nav class="navbar navbar-expand-sm">
 	<form method="get" th:action="@{ /seller/qna }" class="form-inline">
 		<input type="text" name="searchKeyword" id="searchKeyword" placeholder="제목을 입력해주세요" class="form-control mr-sm-2">
@@ -38,11 +39,12 @@
 			<td th:text="${ #dates.format(qna.resDate, 'yyyy-MM-dd') }" /></td>
 		</tr>
 	</table>   
+<th:block th:if="${size} != 0">
+	<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
+	<!-- pagination replace -->
+</th:block>
 </div>
 <!-- 내용 섹션 끝 -->
-
-<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
-<!-- pagination replace -->
 
 <div th:replace="~{ /fragments/footer.html :: footer }"></div>
 <!-- footer replace -->

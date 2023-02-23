@@ -23,7 +23,7 @@
 			<input type="hidden" th:value="${ #authentication.principal.seller.id }" name="seller" id="seller">
 			<input type="hidden" th:value="${ product.pno }" name="pno" id="pno">
 			
-			<label for="sel1">카테고리</label>
+			<label for="sel1"><b>카테고리</b></label>
 			<select class="form-control" name="category" id="category">
 				<option>==카테고리==</option>
 				<option th:value="1" th:selected="${ product.category }=='1'">패션</option>
@@ -37,17 +37,17 @@
 				<option th:value="9" th:selected="${ product.category }=='9'">반려동물용품</option>
 				<option th:value="10" th:selected="${ product.category }=='10'">건강식품</option>	
 			</select>
-			<label for="name">상품명</label>
+			<label for="name"><b>상품명</b></label>
 			<input type="text" class="form-control" th:value="${ product.name }" name="name" id="name"/>
-			<label for="price">판매가</label>
+			<label for="price"><b>판매가</b></label>
 			<input type="text" class="form-control" th:value="${ product.firstPrice }" name="firstPrice" id="firstPrice"/>
-			<label for="discount">할인율</label>
+			<label for="discount"><b>할인율</b></label>
 			<input type="text" class="form-control" th:value="${ product.discount }" name="discount" id="discount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" onfocusout="priceCheck()"/>
-			<label for="finalPrice">최종 판매가</label>
+			<label for="finalPrice"><b>최종 판매가</b></label>
 			<input type="text" class="form-control" th:value="${ product.price }" name="price" id="price" readonly/>
-			<label for="content">상품설명</label>
+			<label for="content"><b>상품설명</b></label>
 			<textarea class="form-control" th:text="${ product.content }" rows="5" name="content" id="content"></textarea>
-			<label for="image">이미지 업로드</label>
+			<label for="image"><b>상품 이미지 업로드</b></label>
 			<input type="hidden" th:value="${ product.imageName }" name="imageName" id="imageName">
 			<input type="file" class="form-control-file border" name="imageFile" id="imageFile"/>
 			<br>

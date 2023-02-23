@@ -8,13 +8,6 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 <body>
-<!-- 
-<a th:href="@{/admin/findQnA(cate='결제')}">결제</a> <br>
-<a th:href="@{/admin/findQnA(cate='상품')}">상품</a> <br>
-<a th:href="@{/admin/findQnA(cate='신고')}">신고</a> <br>
-<a th:href="@{/admin/findQnA(cate='기타')}">기타</a> <br>
-<a th:href="@{/admin/findQnA(cate='모두 보기')}">모두 보기</a> <br> 
-<p th:text="${a}"></p>-->
 
 <!-- QnA목록 섹션 시작 -->
 <div class="container" style="margin-top: 30px; background-color: white">
@@ -49,7 +42,9 @@
 	<th width="80">답변 상태</th>
 	<!-- <th width="100">답변</th> -->
 </tr>
-
+<tr th:if="${list.getTotalElements() == 0}">
+	<td colspan="8" align="center" style="font-weight: bold; color: rgb(255, 195, 81);">문의 내역이 없습니다.</td>
+</tr>
 <tr th:each="qna, state : ${list}">
 	<td th:text="${state.count}"></td>
 	<td th:text="${qna.category}"></td>
@@ -64,10 +59,11 @@
 	<!-- <td th:text="${qna.reply?.content}"></td> -->
 </tr>
 </table>
+<th:block th:if="${list.getTotalElements() != 0}">
+	<div th:replace="~{ /fragments/admin_pagination.html :: pagination }"></div>
+	<!-- pagination replace -->
+</th:block>
 </div>
-
-<div th:replace="~{ /fragments/admin_pagination.html :: pagination }"></div>
-<!-- pagination replace -->
 
 </body>
 <!-- footer replace -->
