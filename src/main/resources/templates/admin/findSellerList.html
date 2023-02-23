@@ -103,13 +103,13 @@ function change_seller(){
 			var chk = $(this).val();
 			chk_arr.push(chk);
 		})
-		var check =	confirm(chk_arr+" 등록 상태 변경 확인?")
+		var check =	confirm("선택한 판매자의 상태를 변경할까요?\n(입점대기->판매자, 판매자->입점대기)")
 		if(check){
 			document.getElementById("theform").action = "/admin/changeSeller";
 			document.getElementById("theform").submit();		
 		}
 	}else{
-		alert("체크된 값이 없습니다.");
+		alert("판매자를 선택해 주세요");
 		return;
 	}
 }
@@ -121,13 +121,13 @@ function delete_seller(){
 			var chk = $(this).val();
 			chk_arr.push(chk);
 		})
-		var check =	confirm(chk_arr+" 삭제 확인?")
+		var check =	confirm("선택한 판매자를 삭제할까요?")
 		if(check){
 			document.getElementById("theform").action = "/admin/deleteSeller";
 			document.getElementById("theform").submit();			
 		}
 	}else{
-		alert("체크된 값이 없습니다.");
+		alert("판매자를 선택해주세요");
 		return;
 	}
 }

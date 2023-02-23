@@ -91,7 +91,7 @@ public class SellerServiceImpl implements SellerService {
 	@Transactional
 	public Page<Product> getProductList(Pageable pageable, Seller seller) {
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 3;
+		int pageSize = 10;
 		Page<Product> productList = 
 				productRepo.findAllBySellerIdAndStatus(seller.getId(), 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 
@@ -115,7 +115,7 @@ public class SellerServiceImpl implements SellerService {
 	@Transactional
 	public Page<Product> search(Seller seller, String searchKeyword, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 3;
+		int pageSize = 10;
 		
 		Page<Product> productList = 
 				productRepo.findAllBySellerIdAndNameContainingAndStatus(seller.getId(), searchKeyword, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
@@ -129,7 +129,7 @@ public class SellerServiceImpl implements SellerService {
 	@Transactional
 	public Page<Product> search(Seller seller, int searchCondition, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 3;
+		int pageSize = 10;
 		
 		Page<Product> productList = 
 				productRepo.findAllBySellerIdAndCategoryAndStatus(seller.getId(), searchCondition, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
@@ -143,7 +143,7 @@ public class SellerServiceImpl implements SellerService {
 	@Transactional
 	public Page<Product> search(Seller seller, String searchKeyword, int searchCondition, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 3;
+		int pageSize = 10;
 		
 		Page<Product> productList = 
 				productRepo.findAllBySellerIdAndCategoryAndNameContainingAndStatus(seller.getId(), searchCondition, searchKeyword, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
@@ -157,7 +157,7 @@ public class SellerServiceImpl implements SellerService {
 	@Transactional
 	public Page<Product> getUnregisteredProductList(Seller seller, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 3;
+		int pageSize = 10;
 		
 		Page<Product> productList = 
 				productRepo.findAllBySellerIdAndStatus(seller.getId(), 0, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
@@ -246,7 +246,7 @@ public class SellerServiceImpl implements SellerService {
 	public void saveProduct(Product product, MultipartFile imageFile) throws Exception {
 		String ogName = imageFile.getOriginalFilename();                                 // 원본 파일명
 	    String realPath = "c:/allit/images/product/";    // 상품 이미지파일 저장경로
-
+	    
 		/*
 		 * UUID를 이용해 중복되지 않는 파일명 생성
 		 */
@@ -289,18 +289,29 @@ public class SellerServiceImpl implements SellerService {
 	@Transactional
 	public void modifyProduct(int pno, Product product, MultipartFile imageFile) throws Exception {
 		String ogName = imageFile.getOriginalFilename(); // 원본 파일명
-		//String realPath = "c:/fileUpload/images/"; 		 // 파일 저장경로
+		//String realPath = "c:/fileUpload/images/"; 	 // 파일 저장경로
 		String realPath = "c:/allit/images/product/"; 	// 상품 이미지파일 저장경로
-		
-		/* 기존 이미지 파일 삭제 */
-		File oldFile = new File(realPath, product.getImageName());
-		oldFile.delete();
-		
+		String imgName = "";
+		int result = 0;
+
 		/*
 		 * UUID를 이용해 중복되지 않는 파일명 생성
 		 */
 		UUID uuid = UUID.randomUUID();
-		String imgName = uuid + "_" + ogName; 			 // 저장될 파일명
+		
+		/*
+		 * 수정시 이미지파일 미등록시 기존이미지 자동 등록 분기
+		 */
+		if(imageFile.getOriginalFilename().isBlank()) { // 이미지파일 미등록시
+			imgName = product.getImageName(); // 기존파일 사용
+			result = 0;
+		} else {										// 이미지파일 등록시
+			/* 기존 이미지 파일 삭제 */
+			File oldFile = new File(realPath, product.getImageName());
+			oldFile.delete();
+			imgName = uuid + "_" + ogName; 	  // 새 파일 사용
+			result = 1;
+		}
 		
 		File saveDir = new File(realPath);
 		// 디렉토리가 존재하지 않거나 디렉토리가 아닌 경우
@@ -308,9 +319,35 @@ public class SellerServiceImpl implements SellerService {
 			// mkdir() : 해당 경로에 디렉토리가 존재하지 않으면 생성
 			// mkdirs() :  mkdir()과 같으나 상위 폴더들이 없으면 상위 폴더들까지 생성
 			if(saveDir.mkdirs()) {
+				if(result == 1) { 									 // 이미지 파일 새로 등록시 
+					File saveFile = new File(realPath, imgName);     // 저장경로와 파일명을 토대로 새 파일 생성 
+					imageFile.transferTo(saveFile);					 // 생성 완료
+					Product theProduct = productRepo.findById(pno).get();
+					theProduct.setCategory(product.getCategory());
+					theProduct.setName(product.getName());
+					theProduct.setFirstPrice(product.getFirstPrice());
+					theProduct.setDiscount(product.getDiscount());
+					theProduct.setPrice(product.getPrice());
+					theProduct.setContent(product.getContent());
+					theProduct.setImageName(imgName);			
+				} else { 											 // 이미지 파일 미등록시 
+					Product theProduct = productRepo.findById(pno).get();
+					theProduct.setCategory(product.getCategory());
+					theProduct.setName(product.getName());
+					theProduct.setFirstPrice(product.getFirstPrice());
+					theProduct.setDiscount(product.getDiscount());
+					theProduct.setPrice(product.getPrice());
+					theProduct.setContent(product.getContent());
+					theProduct.setImageName(imgName);		
+				}
+			} else {
+				System.out.println("[modifyProduct()] "+ realPath + " : 디렉토리가 생성 중 오류");
+			}
+		} else {
+			if(result == 1) {				 					 // 이미지 파일 새로 등록시 
+				System.out.println("[modifyProduct()] 이미 폴더가 존재하는 경우");
 				File saveFile = new File(realPath, imgName);     // 저장경로와 파일명을 토대로 새 파일 생성 
 				imageFile.transferTo(saveFile);					 // 생성 완료
-				
 				Product theProduct = productRepo.findById(pno).get();
 				theProduct.setCategory(product.getCategory());
 				theProduct.setName(product.getName());
@@ -319,24 +356,17 @@ public class SellerServiceImpl implements SellerService {
 				theProduct.setPrice(product.getPrice());
 				theProduct.setContent(product.getContent());
 				theProduct.setImageName(imgName);
-				
-			} else {
-				System.out.println("[modifyProduct()] "+ realPath + " : 디렉토리가 생성 중 오류");
+			} else { 											 // 이미지 파일 미등록시
+				System.out.println("[modifyProduct()] 이미 폴더가 존재하는 경우");
+				Product theProduct = productRepo.findById(pno).get();
+				theProduct.setCategory(product.getCategory());
+				theProduct.setName(product.getName());
+				theProduct.setFirstPrice(product.getFirstPrice());
+				theProduct.setDiscount(product.getDiscount());
+				theProduct.setPrice(product.getPrice());
+				theProduct.setContent(product.getContent());
+				theProduct.setImageName(imgName);
 			}
-		} else {
-			System.out.println("[modifyProduct()] 이미 폴더가 존재하는 경우");
-			
-			File saveFile = new File(realPath, imgName);     // 저장경로와 파일명을 토대로 새 파일 생성 
-			imageFile.transferTo(saveFile);					 // 생성 완료
-			
-			Product theProduct = productRepo.findById(pno).get();
-			theProduct.setCategory(product.getCategory());
-			theProduct.setName(product.getName());
-			theProduct.setFirstPrice(product.getFirstPrice());
-			theProduct.setDiscount(product.getDiscount());
-			theProduct.setPrice(product.getPrice());
-			theProduct.setContent(product.getContent());
-			theProduct.setImageName(imgName);
 		}
 	}
 	

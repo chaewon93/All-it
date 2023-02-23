@@ -146,17 +146,28 @@ public class MemberServiceImpl implements MemberService {
 		return match;
 	}
 	
-	/** 비밀번호변경 */
+	/** 비밀번호찾기 화면에서 비밀번호 수정 */
 	@Override
 	@Transactional
-	public Member modifyPwd(MemberDto memberDto) {
-		System.out.println("memberDto = " + memberDto);
+	public Member modifyMemberPwd(MemberDto memberDto) {
 		Member member = memberRepo.findById(memberDto.getId()).get();
-		System.out.println("member = " + member);
-		
-		member.setPwd(memberDto.getPwd());
+		String rawPwd = memberDto.getPwd();		// 회원가입 화면에서 넘겨받은 pwd
+		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
+
+		member.setPwd(encPwd);
 
 		return member;
+	}
+	
+	/** 마이올잇에서 비밀번호변경 */
+	@Override
+	@Transactional
+	public void modifyPwd(MemberDto memberDto) {
+		Member member = memberRepo.findById(memberDto.getId()).get();
+		String rawPwd = memberDto.getPwd();
+		String encPwd = encoder.encode(rawPwd);
+		
+		member.setPwd(encPwd);
 	}
 
 	/** 아이디 중복확인 */
@@ -183,19 +194,6 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public Member findByPw(Member member) {
 		return memberRepo.findByIdAndNameAndEmail(member.getId(), member.getName(), member.getEmail());
-	}
-	
-	/** 회원 비밀번호 수정 */
-	@Override
-	@Transactional
-	public Member modifyMemberPwd(Member member) {
-		Member theMember = memberRepo.findById(member.getId()).get();
-		String rawPwd = member.getPwd();		// 회원가입 화면에서 넘겨받은 pwd
-		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
-
-		theMember.setPwd(encPwd);
-
-		return theMember;
 	}
 
 	/** 회원 탈퇴 */

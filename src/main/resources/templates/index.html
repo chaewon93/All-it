@@ -38,10 +38,11 @@ footer{
 		</ul>
 		<div class="carousel-inner" >
 			<div class="carousel-item " th:each="event : ${eventList}">
+				<a href="customerCenter/userCustomerCenter?cate=이벤트">
 				<img class="img-fluid" th:src="@{ /images/admin/ } + ${ event.imageName }" width="1100" height="500">
-				<div class="carousel-caption">
-					<h3 th:text="${event.title}"></h3>
-				</div> 
+				</a>
+				<div class="carousel-caption"></div> 
+				
 			</div>
 		</div>
 	<a class="carousel-control-prev" href="#demo" data-slide="prev">

@@ -16,7 +16,7 @@ public interface CustomerCenterService {
 	
 	void insertCustomerCenter(CustomerCenter cus, MultipartFile imageFile) throws Exception;
 	
-	void updateCusto(CustomerCenter cus);
+	void updateCusto(CustomerCenter cus, MultipartFile imageFile) throws Exception;
 	
 	void deleteCusto(int cno);
 	

@@ -61,4 +61,11 @@ footer{
   height: 230px;
   position : relative;
   transform : translateY(-100%);
+
+#reviewImg {
+	transition: all 0.2s linear;
+}
+
+#reviewImg:hover {
+	transform: scale(6.0);
 }

@@ -107,8 +107,7 @@ $("#modify").click(function() {
 	let discount = $("#discount").val();
 	let price = $("#price").val();
 	let content = $("#content").val();
-	let imageFile = $("#imageFile").val();
-	
+
 	if(category == 0) {
 		alert('카테고리를 선택해주세요');
 		return false;
@@ -130,10 +129,6 @@ $("#modify").click(function() {
 	}
 	if(content.trim() == "") {
 		alert('상품에 대한 설명을 입력해주세요');
-		return false;
-	}
-	if(imageFile == "") {
-		alert('이미지 파일을 포함해주세요');
 		return false;
 	}
 })
@@ -165,7 +160,6 @@ let index = {
 }
 
 index.init();
-
 </script>
 <!-- 자바스트립트 섹션 끝 -->
 

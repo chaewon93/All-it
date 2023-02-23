@@ -1,6 +1,7 @@
 package com.ezen.allit.api;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -186,9 +187,28 @@ public class DongukApiController {
 	public ResponseDto<Integer> modifyPwd(Model model,
 										@RequestBody MemberDto memberDto) {
 
-		memberService.modifyPwd(memberDto);
+		Member member = memberService.modifyMemberPwd(memberDto);
+		model.addAttribute("user", member);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);		
+	}
+	
+	/*
+	 * 회원탈퇴
+	 */
+	@DeleteMapping("/member/delete/{id}")
+	public int deleteMember(Model model,
+											@RequestBody MemberDto memberDto) {
+		boolean match = memberService.checkPwd(memberDto);
+		System.out.println("memberDto = " + memberDto);
+		System.out.println("match = " + match);
+		if(match) {
+			memberService.deleteMember(memberDto.getId());
+			SecurityContextHolder.clearContext();			
+			return 1;		
+		} else {
+			return 0;
+		}
 	}
 }
 

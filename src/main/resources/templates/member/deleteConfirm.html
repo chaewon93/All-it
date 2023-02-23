@@ -39,22 +39,32 @@ document.getElementById("id").value = opener.document.getElementById("id").value
 
 /** 회원탈퇴 버튼 이벤트 */
 $("#checkBtn").click(function(){
-	// 대문자+소문자+숫자+특수문자(~,!,@,#,$,%,^,&,*,_,-) 모두 포함해서 7자 이상
-	let regPw = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[~!@#$%^&*_-])[a-zA-Z0-9~!@#$%^&*_-]{7,}$/;
-	let pwd = $("#pwd").val();
-    console.log('pwd = ', pwd);
+	let data = {
+		id: $("#id").val(),
+		pwd: $("#pwd").val()
+	}
+    console.log('data = ', data);
 	
-	if(pwd.trim() == '') {
-    	alert("비밀번호를 입력해주세요.");
+	if(data.pwd.trim() == '') {
+    	alert("비밀번호를 입력해주세요");
     	return false;
 	} else {
-    	var delCheck = window.confirm("정말 탈퇴하시겠습니까? \n탈퇴하시면 모든 정보는 삭제됩니다.");
-		
-		if(delCheck) {
-			$("#frm").submit();
-		} else {
-			return false;
-		}
+    	$.ajax({
+			type: "delete",
+			url: '/member/delete/${data.id}',
+			data: JSON.stringify(data),
+			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+		}).done(function(response){ // 처리 성공 시
+			if(response == 1) {
+				alert('탈퇴 완료되었습니다');
+				window.close();
+				opener.location.href="/";			
+			} else {
+				alert('비밀번호가 틀렸습니다');
+			}
+		}).fail(function(error){ // 처리 실패 시
+			alert(error);
+		});
 	}
 });
 
