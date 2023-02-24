@@ -108,7 +108,6 @@ public class HomeController {
 	 */
 	@GetMapping("/findIdAndPw")
 	public String findForm() {
-		System.out.println("개짱나네!!!");
 		return "member/findIdAndPw";
 	}
 

@@ -111,7 +111,7 @@ public class ProductController {
 		int endPage = ((startPage + naviSize - 1) < productList.getTotalPages()) ? startPage + naviSize - 1 : productList.getTotalPages();
 		
 		model.addAttribute("list", productList);
-		model.addAttribute("url", "/product/");
+		model.addAttribute("url", "/product/new");
 		model.addAttribute("productList", productList);
 		model.addAttribute("search", search);
 		model.addAttribute("startPage", startPage);
@@ -146,7 +146,7 @@ public class ProductController {
 		int endPage = ((startPage + naviSize - 1) < productList.getTotalPages()) ? startPage + naviSize - 1 : productList.getTotalPages();
 		
 		model.addAttribute("list", productList);
-		model.addAttribute("url", "/product/");
+		model.addAttribute("url", "/product/best");
 		model.addAttribute("productList", productList);
 		model.addAttribute("search", search);
 		model.addAttribute("startPage", startPage);

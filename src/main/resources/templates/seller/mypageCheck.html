@@ -5,11 +5,11 @@
 <!-- header replace -->
 
 <!-- 판매자 회원정보 확인 전 비밀번호 확인 섹션 시작 -->
-<br>
-<h1 align="center">판매자 정보 확인</h1><br>
+<br><h1 align="center">판매자 정보 확인</h1><br>
+<div align="center">
 <b>
 	<span th:text="${#authentication.principal.seller?.name}" class="text-info"></span>님의 정보를 안전하게 보호하기 위해 비밀번호를 다시 한번 확인 합니다.
-</b>
+</b><br><br>
 <form method="post" id="frm" class="form-inline" style="margin-bottom: 100px;">
 <table th:align="center" th:cellpadding="3" th:cellspacing="0">
 	<tr>
@@ -30,6 +30,7 @@
 </table>
 </form>
 <!-- 판매자 회원정보 확인 전 비밀번호 확인 섹션 끝 -->
+</div>
 
 <div th:replace="~{ /fragments/footer.html :: footer }"></div>
 <!-- footer replace -->

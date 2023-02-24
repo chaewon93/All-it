@@ -110,21 +110,17 @@ public class OrderServiceImpl implements OrderService {
 		int page = pageable.getPageNumber() - 1;
 		int pageSize = 5;
 		
-		return ordersDetailRepo.findByMemberAndStatusOrStatusAndCancelDateNotNull(member, status1, status2, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));
+		return ordersDetailRepo.findByMemberAndCancelDateNotNullAndStatusOrStatus(member, status1, status2, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));
 	}
 	
 	/** 오더 디테일에 사용한 쿠폰 등록 */
 	@Transactional
 	public void saveCouponOrder(int mcid, int couProid) {
 		int ono = selectMaxOno();
-		System.out.println("맥스 ono11111111");
 		System.out.println(ono);
 		MemCoupon memCou = memCouRepo.findById(mcid).get();
-		System.out.println("맥스 ono2222222");
 		Orders orders = ordersRepo.findById(ono).get();
-		System.out.println("맥스 ono33333333");
 		List<OrdersDetail> detailList = orders.getOrdersDetail();
-		System.out.println("맥스 ono44444444");
 		
 		for(OrdersDetail ordersDetail : detailList) {
 			int pno = ordersDetail.getProduct().getPno();
@@ -137,7 +133,6 @@ public class OrderServiceImpl implements OrderService {
 				break;
 			}
 		}
-		
 	}
 	
 	/** 판매자 주문상태 수정 */

@@ -50,7 +50,6 @@
 					<li class="nav-item"><a class="nav-link" th:href="@{ /product/new }">신상품</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{ /product/best }">베스트상품</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{ /product/sale }">특가세일</a></li>
-					<li class="nav-item"><a class="nav-link" href="#">쿠폰세일</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{ /product/mdpickList }">MDPICK 상품</a></li>
 				</ul>
 			</div>
@@ -92,7 +91,6 @@
 					<li class="nav-item"><a class="nav-link" th:href="@{ /product/new }">신상품</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{ /product/best }">베스트상품</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{ /product/sale }">특가세일</a></li>
-					<li class="nav-item"><a class="nav-link" href="#">쿠폰세일</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{ /product/mdpickList }">MDPICK 상품</a></li>
 				</ul>
 			</div>
@@ -153,8 +151,6 @@
 	</div>	
 	<!-- 입점대기 -->
 	 <div class="header-container" sec:authorize="hasRole('TEMP')">
-		<ul class="nav justifiy-content-end"> 
-			<li class="nav-item"><b class="nav-link" th:text="${ #authentication.principal.seller.name }+'님'"></b></li>
 		<ul class="nav container justifiy-content-end"> 
 			<li class="nav-item"><b class="nav-link" th:text="${ #authentication.principal.seller.name }+'님'"></b></li>
 			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /logout }">로그아웃</a></li>
