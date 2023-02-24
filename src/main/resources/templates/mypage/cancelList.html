@@ -46,11 +46,17 @@
 			</tr>
 			<tr th:each="cancel : ${cancelList}">      
 				<td>
-					<a th:href="@{ |/product/${ cancel.product.pno }| }">
-						<img class="img-fluid" th:src="@{ /images/product/ } + ${ cancel.product.imageName }" width="100">
-							<b class="text-info" th:text="${ cancel.product.name }"></b>
-					</a>
-					<span th:text="${#numbers.formatInteger(cancel.product.price, 1, 'COMMA')}+'원'"></span>
+					<div style="display: flex;">
+						<div class="col-ms-2">
+							<img class="img-fluid" th:src="@{ /images/product/ } + ${ cancel.product.imageName }" width="100">
+						</div>
+						<div class="col-ms-4" style="width: 300px; margin-left: 20px;">
+							<a th:href="@{ |/product/${ cancel.product.pno }| }">
+								<b class="text-info" th:text="${ cancel.product.name }"></b>
+							</a><br>
+							<span th:text="${#numbers.formatInteger(cancel.product.price, 1, 'COMMA')}+'원'"></span>
+						</div>
+					</div>
 				</td>
 				<td th:text="${cancel.quantity}+'개'"> </td>
 				<td th:text="${#numbers.formatInteger(cancel.product.price*cancel.quantity, 1, 'COMMA')}+'원'" /> </td>
@@ -91,11 +97,17 @@
 			</tr>
 			<tr th:each="exchange : ${exchangeList}">      
 				<td>
-					<a th:href="@{ |/product/${ exchange.product.pno }| }">
-						<img class="img-fluid" th:src="@{ /images/product/ } + ${ exchange.product.imageName }" width="100">
-							<b class="text-info" th:text="${ exchange.product.name }"></b>
-					</a>
-					<span th:text="${#numbers.formatInteger(exchange.product.price, 1, 'COMMA')}+'원'"></span>
+					<div style="display: flex;">
+						<div class="col-ms-2">
+							<img class="img-fluid" th:src="@{ /images/product/ } + ${ exchange.product.imageName }" width="100">
+						</div>
+						<div class="col-ms-4" style="width: 300px; margin-left: 20px;">
+							<a th:href="@{ |/product/${ exchange.product.pno }| }">
+								<b class="text-info" th:text="${ exchange.product.name }"></b>
+							</a><br>
+							<span th:text="${#numbers.formatInteger(exchange.product.price, 1, 'COMMA')}+'원'"></span>
+						</div>
+					</div>
 				</td>
 				<td th:text="${exchange.quantity}+'개'"> </td>
 				<td th:text="${#numbers.formatInteger(exchange.product.price*exchange.quantity, 1, 'COMMA')}+'원'" /> </td>
@@ -136,11 +148,17 @@
 			</tr>
 			<tr th:each="refund : ${refundList}">      
 				<td>
-					<a th:href="@{ |/product/${ refund.product.pno }| }">
-						<img class="img-fluid" th:src="@{ /images/product/ } + ${ refund.product.imageName }" width="100">
-							<b class="text-info" th:text="${ refund.product.name }"></b>
-					</a>
-					<span th:text="${#numbers.formatInteger(refund.product.price, 1, 'COMMA')}+'원'"></span>
+					<div style="display: flex;">
+						<div class="col-ms-2">
+							<img class="img-fluid" th:src="@{ /images/product/ } + ${ refund.product.imageName }" width="100">
+						</div>
+						<div class="col-ms-4" style="width: 300px; margin-left: 20px;">
+							<a th:href="@{ |/product/${ refund.product.pno }| }">
+								<b class="text-info" th:text="${ refund.product.name }"></b>
+							</a><br>
+							<span th:text="${#numbers.formatInteger(refund.product.price, 1, 'COMMA')}+'원'"></span>
+						</div>
+					</div>
 				</td>
 				<td th:text="${refund.quantity}+'개'"> </td>
 				<td th:text="${#numbers.formatInteger(refund.product.price*refund.quantity, 1, 'COMMA')}+'원'" /> </td>
@@ -173,6 +191,7 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	
+	// 선택되어야 할 탭 구분
 	var status = $("#status").val();
 	console.log(status);
 	
@@ -197,11 +216,11 @@ $(document).ready(function(){
 		con3.toggle('active');
 	}
 	
+	// 페이징 : 첫 화면일 때는 주문취소 페이징만 출력
 //	refresh(status);
-	
-//	$("#divCancel").show();
-//	$("#divExchange").hide();
-//	$("#divRefund").hide();
+	$("#divCancel").show();
+	$("#divExchange").hide();
+	$("#divRefund").hide();
 });
 
 function refesh(type) {

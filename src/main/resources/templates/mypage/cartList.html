@@ -27,13 +27,19 @@
 					<td><input type="hidden" th:value="${ cart.product.seller.role }" name="inactive" id="inactive">
 					<input type="checkbox" name="cno" id="cno" th:value="${ cart.cno }"></td>
 					<td>
-						<a th:href="@{ |/product/${ cart.product.pno }| }">
-						<img class="img-fluid" th:src="@{ /images/product/ } + ${ cart.product.imageName }" width="100">
-							<b class="text-info" th:text="${ cart.product.name }"></b>
-						</a>
-						<span th:text="${#numbers.formatInteger(cart.product.price, 1, 'COMMA')}+'원'"></span>
-						<div th:if="${ cart.product.seller.role.toString().equals('INACTIVE') }">
-							<p style="color: red">현재 구매 불가한 제품입니다</p>
+						<div style="display: flex;">
+							<div class="col-ms-2">
+								<img class="img-fluid" th:src="@{ /images/product/ } + ${ cart.product.imageName }" width="100">
+							</div>
+							<div class="col-ms-4" style="width: 300px; margin-left: 20px;">
+								<a th:href="@{ |/product/${ cart.product.pno }| }">
+									<b class="text-info" th:text="${ cart.product.name }"></b>
+								</a><br>
+								<span th:text="${#numbers.formatInteger(cart.product.price, 1, 'COMMA')}+'원'"></span>
+							</div>
+							<div th:if="${ cart.product.seller.role.toString().equals('INACTIVE') }">
+								<p style="color: red">현재 구매 불가한 제품입니다</p>
+							</div>
 						</div>
 					</td>
 					<td>

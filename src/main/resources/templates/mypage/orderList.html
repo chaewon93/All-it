@@ -30,15 +30,21 @@
 			</tr>
 			<tr th:each="detail : ${order.ordersDetail}">      
 				<td>
-					<a th:href="@{ |/product/${ detail.product.pno }| }">
-						<img class="img-fluid" th:src="@{ /images/product/ } + ${ detail.product.imageName }" width="100">
-							<b class="text-info" th:text="${ detail.product.name }"></b>
-							<input type="hidden" id="pname" th:value="${ detail.product.name }">
-					</a>
-					<span th:text="${#numbers.formatInteger(detail.product.price, 1, 'COMMA')}+'원'"></span>
+					<div style="display: flex;">
+						<div class="col-ms-2">
+							<img class="img-fluid" th:src="@{ /images/product/ } + ${ detail.product.imageName }" width="100">
+						</div>
+						<div class="col-ms-4" style="width: 300px; margin-left: 20px;">
+							<a th:href="@{ |/product/${ detail.product.pno }| }">
+								<b class="text-info" th:text="${ detail.product.name }"></b>
+								<input type="hidden" id="pname" th:value="${ detail.product.name }">
+							</a><br>
+							<span th:text="${#numbers.formatInteger(detail.product.price, 1, 'COMMA')}+'원'"></span>
+						</div>
+					</div>    
 					<div align="right">
 						<input type="button" class="btn btn-outline-secondary" id="inCart" value="장바구니 담기">
-					</div>    
+					</div>
 				</td>
 				<td th:text="${detail.quantity}+'개'"/> 
 				<td th:text="${#numbers.formatInteger(detail.product.price*detail.quantity, 1, 'COMMA')}+'원'" />      

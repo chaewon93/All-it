@@ -345,7 +345,6 @@ public class MemberController {
 //			SecurityContextHolder.clearContext();	
 //			return "redirect:/";
 //		} else {
-//			System.out.println("처리하니?");
 //			out.println("<script>alert('비밀번호가 틀렸습니다.');</script>");
 //			out.println("<script>window.close();</script>");
 //			out.flush();
