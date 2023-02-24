@@ -41,7 +41,7 @@
 	<th width="100">가격</th>
 	<th width="100">할인률</th>
 	<th width="100">판매자</th>
-	<th th:if="${a}==1" width="100">MDPick 등록 여부</th>
+	<th th:if="${a}==1" width="100">MDPick 선정 여부</th>
 	<th width="100"><input type="checkbox" name="checkAll" id="regAll"> 체크</th>
 	
 </tr>
@@ -71,8 +71,8 @@
 	<td th:text="${pro.discount}"></td>	
 	<td th:text="${pro.seller?.id}"></td>
 	<td th:if="${a}==1" th:switch="${pro.mdPickyn}" align="center">
-		<p th:case="0" th:text="미등록" style="color:red;"></p>
-		<p th:case="1" th:text="등록완료" style="color:blue;"></p>
+		<p th:case="0" th:text="선정" style="color:red;"></p>
+		<p th:case="1" th:text="미선정" style="color:blue;"></p>
 	</td>
 	<td align="center"><input type="checkbox" name="pno" class="test" th:value="${pro.pno}"></td>
 	
@@ -80,7 +80,10 @@
 </table>
 <div align="right">
 	<input th:if="${a}==1" type="button" value="MDPick 변경" onclick="changeProMDPick()" class="btn btn-outline-warning">
-	<input th:if="${a}==0" type="button" value="승인" onclick="reg_product()" class="btn btn-warning">
+	<input th:if="${a}==0" type="button" value="상태변경" onclick="changeProStatus()" class="btn btn-warning">
+	<!-- 
+	<input th:if="${a}==0" type="button" value="상태변경" onclick="reg_product()" class="btn btn-warning">
+	 -->
 	<input type="button" value="삭제" onclick="delete_product()" class="btn btn-secondary">
 </div>
 </form>
@@ -111,16 +114,16 @@ $(document).ready(function(){
 		});
 });
 
-function reg_product(){
+function changeProStatus(){
 	var chk_arr = [];
 	if ($("input:checkbox[name='pno']").is(":checked")==true){
 		$("input:checkbox[name='pno']:checked").each(function(){
 			var chk = $(this).val();
 			chk_arr.push(chk);
 		})
-		var check =	confirm("선택한 상품을 등록할까요?")
+		var check =	confirm("선택한 상품 상태를 변경할까요?")
 		if(check){
-			document.getElementById("theform").action = "/admin/regPro";
+			document.getElementById("theform").action = "/admin/changeProStatus";
 			document.getElementById("theform").submit();		
 		}
 	}else{
@@ -136,7 +139,7 @@ function changeProMDPick(){
 			var chk = $(this).val();
 			chk_arr.push(chk);
 		})
-		var check =	confirm("선택한 상품의 MDPICK 등록 여부를 변경할까요?")
+		var check =	confirm("선택한 상품의 MDPICK 선정 여부를 변경할까요?")
 		if(check){
 			document.getElementById("theform").action = "/admin/changeProMDPick";
 			document.getElementById("theform").submit();				

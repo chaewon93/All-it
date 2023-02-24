@@ -48,7 +48,7 @@
 		<input type="button" class="btn btn-warning" onclick="allmemproCoupon()" value="쿠폰">
 		<input type="button" class="btn btn-outline-warning" id="hit" value="좋아요"/>
 		<input type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#myModal" value="문의하기"/><br>
-		<input type="hidden" name="useCoupon" id="useCoupon">
+<!-- 	<input type="hidden" name="useCoupon" id="useCoupon">
 		<input type="hidden" name="couPrice" id="couPrice">
 		<input type="hidden" name="totp" id="totp">	
 	</form>
@@ -486,18 +486,32 @@ let price,quantity;
 function allmemproCoupon(){
 	let mid = $("#mid").val();
 	let pno = $("#pno").val();
-	setPrice();
-	let totp = price * quantity;
-	document.getElementById("totp").value = totp;
+//	let firstP = $("#firstPrice").val();
+//	let fPrice = $("#price").val();
+	/*
+	if($("#price").val() == null){
+		console.log("null")
+		let price = $("#firstPrice").val();	
+	}else{
+		console.log("아님")
+		let price = $("#price").val();	
+	}*/	
+//	document.getElementById("totp").value = totp;
 	
-	console.log("pno="+pno+", mid="+ mid+", totalPrice="+totp);
+//	console.log("pno="+pno+", mid="+ mid+", firstP="+ firstP+", fPrice="+fPrice+", totalPrice="+totp+", price="+price);
 	let openwin = window.open("/member/coupon?pno="+pno, "쿠폰", "width=800, height=600, scrollbars=yes");
 }
-
+/*
 function setPrice(){
-	price = $("#price").val();
-	quantity = $("#quantity").val();
-}
+	if($("#price").val() == null){
+		console.log("null")
+		let price = $("#firstPrice").val();	
+	}else{
+		console.log("아님")
+		let price = $("#price").val();	
+	}	
+//	quantity = $("#quantity").val();
+}*/
 
 </script>
 <!-- 자바스트립트 섹션 끝 -->

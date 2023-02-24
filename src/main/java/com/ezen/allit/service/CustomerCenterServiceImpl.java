@@ -25,7 +25,7 @@ public class CustomerCenterServiceImpl implements CustomerCenterService {
 	@Override
 	public Page<CustomerCenter> getCustomercenter(Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 6;
+		int pageSize = 10;
 		
 		Page<CustomerCenter> custoList = 
 				cusRepo.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "cno")));
@@ -46,6 +46,7 @@ public class CustomerCenterServiceImpl implements CustomerCenterService {
 //		cusRepo.save(custo);		
 //	}
 	
+	// 고객센터 글 등록
 	@Override
 	public void insertCustomerCenter(CustomerCenter cus, MultipartFile imageFile) throws Exception {
 		
@@ -56,6 +57,7 @@ public class CustomerCenterServiceImpl implements CustomerCenterService {
 		custo.setContent(cus.getContent());
 		custo.setPick(cus.getPick());
 		
+		// 이미지 파일이 있으면
 		if(imageFile != null) {
 
 			String ogName = imageFile.getOriginalFilename(); 										  // 원본 파일명
@@ -96,29 +98,36 @@ public class CustomerCenterServiceImpl implements CustomerCenterService {
 	// 관리자 고겍센터 게시글 수정
 	@Override
 	public void updateCusto(CustomerCenter cus, MultipartFile imageFile) throws Exception {
+		// 수정하면서 이미지 파일을 추가 안할 때
 		if(imageFile.getOriginalFilename().isEmpty()) {
 			CustomerCenter custo = cusRepo.findById(cus.getCno()).get();
 			
-			String realPath = "c:/allit/images/admin/"; 	// 상품 이미지파일 저장경로
-			File oldFile = new File(realPath, custo.getImageName());
-			oldFile.delete();
+			// 수정 전 글에 이미지 파일이 있었다면 해당 이미지 파일 삭제
+			if(custo.getImageName()!=null) {
+				String realPath = "c:/allit/images/admin/"; 	// 상품 이미지파일 저장경로
+				File oldFile = new File(realPath, custo.getImageName());
+				oldFile.delete();
+			}
 			
 			custo.setCategory(cus.getCategory());
 			custo.setTitle(cus.getTitle());
 			custo.setContent(cus.getContent());
-			custo.setPick(cus.getPick());
-			custo.setImageName("");
+			custo.setImageName(null);
 			
 			cusRepo.save(custo);
+		// 수정하면서 이미지 파일도 수정
 		}else if(imageFile != null) {
 			
 			CustomerCenter custo = cusRepo.findCustomerCenterByCno(cus.getCno());
-			
+
 			String ogName = imageFile.getOriginalFilename(); // 원본 파일명
 			String realPath = "c:/allit/images/admin/"; 	// 상품 이미지파일 저장경로
 			
-			File oldFile = new File(realPath, custo.getImageName());
-			oldFile.delete();
+			// 수정 전 글에 이미지 파일이 있었다면 해당 이미지 파일 삭제
+			if(custo.getImageName()!=null) {
+				File oldFile = new File(realPath, custo.getImageName());
+				oldFile.delete();
+			}
 			
 			/*
 			 * UUID를 이용해 중복되지 않는 파일명 생성
@@ -158,10 +167,11 @@ public class CustomerCenterServiceImpl implements CustomerCenterService {
 		cusRepo.deleteById(cno);		
 	}
 
+	// 고객센터 카테고리 별 조회
 	@Override
 	public Page<CustomerCenter> findCustomerCenterByCategoryContaining(String cate, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
-		int pageSize = 6;
+		int pageSize = 10;
 		
 		Page<CustomerCenter> custoList = 
 				cusRepo.findCustomerCenterByCategoryContaining(cate, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "cno")));
@@ -170,6 +180,7 @@ public class CustomerCenterServiceImpl implements CustomerCenterService {
 
 	}
 
+	// 고객센터 메인 화면 등록 여부 조회
 	@Override
 	public List<CustomerCenter> findCustomerCenterByPick(String pick) {
 		

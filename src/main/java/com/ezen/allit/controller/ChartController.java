@@ -39,20 +39,17 @@ public class ChartController {
 	@ResponseBody
 	public List<Map<String, Object>> genderChart(){
 		
+		// chart 형식(이름과 카운트)으로 성별 조회(성별-수)
 		List<Chart> gender = memRepo.chartGenderGroup();
 		List<Map<String, Object>> mapList = new ArrayList<>();
-		
-		System.out.println("============================= 성별 통계");
+
+		// 얻어온 값을 map에 담아서 전달
 		for(Chart gen : gender) {
 			Map<String, Object> map = new HashMap<>();
-			System.out.println(gen.getGender());
-			System.out.println(gen.getCount());
 			map.put("gender",gen.getGender());
 			map.put("genderCount", gen.getCount());
 			mapList.add(map);
-			System.out.println("=============================");
 		}
-		System.out.println(mapList);
 		
 		return mapList;
 	}
@@ -64,18 +61,13 @@ public class ChartController {
 		
 		List<Chart> address = memRepo.chartAddressGroup();
 		List<Map<String, Object>> mapList = new ArrayList<>();
-		
-		System.out.println("============================= 주소 통계");
+
 		for(Chart add : address) {
 			Map<String, Object> map = new HashMap<>();
-			System.out.println(add.getAddress());
-			System.out.println(add.getCount());
 			map.put("address",add.getAddress());
 			map.put("addressCount", add.getCount());
 			mapList.add(map);
-			System.out.println("=============================");
 		}
-		System.out.println(mapList);
 		
 		return mapList;
 	}
@@ -87,18 +79,13 @@ public class ChartController {
 		
 		List<Chart> grade = memRepo.chartGradeGroup();
 		List<Map<String, Object>> mapList = new ArrayList<>();
-		
-		System.out.println("============================= 등급 통계");
+
 		for(Chart gra : grade) {
 			Map<String, Object> map = new HashMap<>();
-			System.out.println(gra.getGrade());
-			System.out.println(gra.getCount());
 			map.put("grade",gra.getGrade());
 			map.put("count", gra.getCount());
 			mapList.add(map);
-			System.out.println("=============================");
 		}
-		System.out.println(mapList);
 		
 		return mapList;
 	}	
@@ -113,7 +100,7 @@ public class ChartController {
 
 		for(Chart cate : category) {
 			Map<String, Object> map = new HashMap<>();
-			
+			// 카테고리 번호마다 이름 적용
 			switch(cate.getCategory()) {
 				case "1" :
 					map.put("category","패션");
@@ -158,7 +145,6 @@ public class ChartController {
 			}
 			mapList.add(map);
 		}
-		System.out.println(mapList);
 		
 		return mapList;
 	}	

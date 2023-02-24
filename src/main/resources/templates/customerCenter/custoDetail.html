@@ -45,7 +45,8 @@
 	<tr>
 		<th>전 이미지</th>
 		<td align="left">
-			<img class="img-fluid" th:src="@{ /images/admin/ } + ${ custo.imageName }" width="350" name="imageView" id="imageView">
+			<img class="img-fluid" th:if="${custo.imageName} != null" th:src="@{ /images/admin/ } + ${ custo.imageName }" width="350" name="imageView" id="imageView">
+			<span th:if="${custo.imageName} == null" th:text="이미지없음"></span>
 		</td>
 	</tr>
 	<tr>

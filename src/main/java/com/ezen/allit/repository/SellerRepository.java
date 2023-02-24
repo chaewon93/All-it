@@ -26,7 +26,9 @@ public interface SellerRepository extends JpaRepository<Seller, String> {
 	// 관리자 조회
 //	List<Seller> findSellerByRole(Role role);
 	
+	// Seller role에 따라 조회
 	Page<Seller> findSellerByRole(Role role, Pageable pageable);
 	
+	// 관리자 빼고 조회에 사용
 	Page<Seller> findSellerByRoleNot(Role role, Pageable pageable);
 }
