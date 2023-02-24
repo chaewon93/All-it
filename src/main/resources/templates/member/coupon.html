@@ -7,8 +7,8 @@
 </head>
 <!-- header replace -->
 <th:block th:if="${pno} == 0">
-<div th:replace="~{ /fragments/header.html :: header }"></div>
-<div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
+	<div th:replace="~{ /fragments/header.html :: header }"></div>
+	<div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
 </th:block>
 <th:block th:unless="${pno} == 0">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -60,9 +60,6 @@
 				<input type="hidden" name="memCouCon" id="memCouCon" th:value="${memcou.coupon.couContent}">
 				<input type="hidden" name="memCouid" id="memCouid" th:value="${memcou.mcid}">
 		 		<input type="hidden" name="index" id="index" th:value="${state.index}">	
-		 		<!-- 
-				<input type="button" name="useCoupon" th:value="사용" onclick="useCou(this)" class="btn btn-warning">
-				 -->
 			</td>
 		</tr>
 		</table>
@@ -118,7 +115,7 @@ $(document).ready(function() {
 
 function downCou(btn){
 	
-	var chk = confirm("다운?");
+	var chk = confirm("쿠폰을 다운받으시겠습니까?");
 	let couId = btn.previousElementSibling.value;
 	
 	let pno = $("input[name='pno']").val();
@@ -139,50 +136,11 @@ function downCou(btn){
 
 	}
 }
-/*
-function useCou(btn){
-	
-	var chk = confirm("사용?");
-	let index = btn.previousElementSibling.value;
-	let memCouid = document.getElementsByName("memCouid")[index].value;
-	let totp = opener.document.getElementById("totp").value;
-	
-	console.log("index=", btn.previousElementSibling);
-	console.log("content=", document.getElementsByName("memCouCon")[index]);
-	console.log("totp=", totp);
-	
-	opener.document.getElementById("useCoupon").value = document.getElementsByName("memCouCon")[index].value
-
-	alert(memCouid);
-	if(chk) {
-		$.ajax({
-			url:'/cart/useCoupon',
-			type:'post',
-			data: {
-				"memCouid":memCouid,
-				"totp":totp,
-			},
-			success: function(res){
-				console.log("price=", res);
-				console.log("price=", res['price']);
-				opener.document.getElementById("couPrice").value = res['price'];
-				alert("쿠폰 사용");
-				close();
-			}, error: function(xhr,status,err){
-				alert("사용할 수 없습니다.");				
-			}			
-		}); 
-
-	}
-}*/
 </script>
-
-<!-- <div th:replace="~{ /fragments/pagination.html :: pagination }"></div>  -->
-<!-- pagination replace -->
 
 <!-- footer replace -->
 <th:block th:if="${pno} == 0">
-<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+	<div th:replace="~{ /fragments/footer.html :: footer }"></div>
 </th:block>
 </body>
 

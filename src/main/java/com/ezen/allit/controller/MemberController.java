@@ -215,7 +215,7 @@ public class MemberController {
 			
 			return "member/info";
 		} else {
-			out.println("<script>alert('비밀번호가 틀렸습니다.'); location.href='/member/infoCheck'</script>");
+			out.println("<script>alert('비밀번호가 틀렸습니다.'); location.href='/member/infoCheckView'</script>");
 			out.flush();
 			out.close();
 			return null;
@@ -485,20 +485,7 @@ public class MemberController {
 			List<Coupon> couList = couponService.forMemberCouponList(member, pno);
 	
 			model.addAttribute("pno", pno);
-		/*	
-			int price = 0;
-			if(pno != 0) {
-				Product product = proRepo.findById(pno).get();
-				if(product.getDiscount()>0) {
-					price = product.getPrice();
-				}else {
-					price = product.getFirstPrice();
-				}				 
-			}else {
-				price = 0;
-			}
-			model.addAttribute("price", price);
-	*/
+
 			List<Coupon> couponList = new ArrayList<>();
 			for(MemCoupon memCou : memCouList) {
 				couponList.add(memCou.getCoupon());
@@ -556,7 +543,7 @@ public class MemberController {
 		return "mypage/coupon";
 	}
 	
-	// 쿠폰 다운로드
+	/** 쿠폰 다운로드 */ 
 	@PostMapping("downCoupon")
 	public String downCoupon(@ModelAttribute("user") Member member,
 			@RequestParam Map<String, Object> map) {

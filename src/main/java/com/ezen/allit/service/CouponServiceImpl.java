@@ -36,8 +36,8 @@ public class CouponServiceImpl implements CouponService {
 
 	@Autowired
 	ProductService proService;
-	
-	// 쿠폰 리스트 조회
+
+	/** 쿠폰 목록 조회 */
 	@Override
 	public Page<Coupon> findCouponList(Pageable pageable) {
 		
@@ -49,8 +49,8 @@ public class CouponServiceImpl implements CouponService {
 
         return couponList;	
 	}
-	
-	// 쿠폰 생성
+
+	/** 쿠폰 생성 */
 	@Override
 	public void createCoupon(Coupon coupon) {
 		
@@ -80,8 +80,8 @@ public class CouponServiceImpl implements CouponService {
 
         couponRepo.save(coupon);
 	}
-	
-	// 쿠폰 수정
+
+	/** 쿠폰 수정 */
 	@Override
 	public void updateCoupon(Coupon coupon) {
 		Coupon cou = couponRepo.findById(coupon.getCouId()).get();
@@ -96,8 +96,9 @@ public class CouponServiceImpl implements CouponService {
 		
 		couponRepo.save(cou);
 	}	
-
-	// 멤버가 쿠폰 다우놀드 했을 때 memCou에 쿠폰 등록
+  
+	// 멤버가 쿠폰 다운로드 했을 때 memCou에 쿠폰 등록
+	/** 쿠폰 다운로드(사용자) */
 	@Override
 	public void insertMemCoupon(Member member, int couid) {
 		
@@ -127,7 +128,7 @@ public class CouponServiceImpl implements CouponService {
 		couponRepo.save(coupon);
 	}
 
-	// 회원이 받을 수 있는 쿠폰 조회
+	// 회원이 받을 수 있는 쿠폰 조회 - 상품이 없을 때, 있을 때
 	@Override
 	public List<Coupon> forMemberCouponList(Member member, int pno) {
 
@@ -163,8 +164,6 @@ public class CouponServiceImpl implements CouponService {
 				allCouList.retainAll(allCouList3);
 			}else if(pro.getMdPickyn() == 1) {
 				// 상품이 MDPICK 이면 YES와 NO 모두 조건에 맞으므로 따로 과정 없음
-//				List<Coupon> allCouList3 = couponRepo.findCouponByConditionContaining("YES");
-//				allCouList.retainAll(allCouList3);
 			}
 			
 			// 판매자 조건 쿠폰 조회 후 중복 제거
@@ -175,7 +174,7 @@ public class CouponServiceImpl implements CouponService {
 		}
 
 	}
-		
+
 	// 가지고 있는 쿠폰 중 상품에 사용 가능한 쿠폰 조회
 	@Override
 	public List<MemCoupon> MemProCouponList(Member member, int pno) {
@@ -194,8 +193,8 @@ public class CouponServiceImpl implements CouponService {
 		}
 		return memCouList;
 	}
-
-	// 상품 가격과 쿠폰 조건 비교해서 할인 가격 선정
+  
+	// 상품 가격과 쿠폰 조건(최소사용금액/최대할인금액) 비교해서 할인 가격 선정
 	@Override
 	public int checkPrice(int memCouid, int price) {
 		Coupon coupon = memCouRepo.findById(memCouid).get().getCoupon();

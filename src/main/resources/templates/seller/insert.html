@@ -51,15 +51,18 @@
 
 // 할인가 등록시 자동 계산
 function priceCheck() {
-	let firstPrice = $("#firstPrice").val();
-	let discount = $("#discount").val();
-	let price = '';
-
+	let firstPrice = $("#firstPrice").val(); // 초기가
+	let discount = $("#discount").val();     // 할인율
+	let price = '';							 // 할인 적용될 가격
+	let thePrice = '';						 // 할인 적용, 소수제거 후 최종가
+	
+	// 할인 적용시 소수점 아래로 값이 떨어질 경우 소수 제거
 	if(0 <= discount && discount < 100) {
 		price = firstPrice-(firstPrice*(discount/100));
-		document.getElementById("price").value = price;	
+		thePrice = price;
+		document.getElementById("price").value = Math.floor(thePrice);
 	} else {
-		alert('책정한 할인을 적용할 수 없습니다.\n할인은 1~100 사이의 숫자만 가능합니다');
+		alert('책정한 할인을 적용할 수 없습니다.\n할인은 0~99 사이의 숫자만 가능합니다');
 		document.getElementById("price").value = '';
 	}
 }

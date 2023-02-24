@@ -1,12 +1,15 @@
 package com.ezen.allit.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,11 +17,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.allit.config.auth.PrincipalDetailSeller;
@@ -28,6 +35,7 @@ import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
 import com.ezen.allit.domain.Role;
 import com.ezen.allit.domain.Seller;
+import com.ezen.allit.dto.ResponseDto;
 import com.ezen.allit.dto.SearchDto;
 import com.ezen.allit.service.SellerService;
 
@@ -48,37 +56,37 @@ public class SellerController {
 	}
 	
 	// 로그아웃
-	@GetMapping("/logout")
-	public String logout(HttpSession session) {
-		session.invalidate();
-		
-		return "redirect:/";
-	}
+//	@GetMapping("/logout")
+//	public String logout(HttpSession session) {
+//		session.invalidate();
+//		
+//		return "redirect:/";
+//	}
 	
 	/*
 	 * 판매자 로그인
 	 */
-	@PostMapping("/login")
-	public String login(Seller seller, HttpSession session) {
-		Seller theSeller = sellerService.findByIdAndPwd(seller.getId(), seller.getPwd());
-		if(theSeller != null) {
-			if(theSeller.getRole().equals(Role.ADMIN)) {
-				session.setAttribute("admin", theSeller);
-				
-				return "admin/adminMain";
-			}
-			if(theSeller.getRole().equals(Role.SELLER)) {
-				session.setAttribute("seller", theSeller);
-				return "redirect:/seller/";
-			} else {
-				
-				return "seller/loginError";
-			}
-		} else {
-			
-			return "seller/login";
-		}
-	}
+//	@PostMapping("/login")
+//	public String login(Seller seller, HttpSession session) {
+//		Seller theSeller = sellerService.findByIdAndPwd(seller.getId(), seller.getPwd());
+//		if(theSeller != null) {
+//			if(theSeller.getRole().equals(Role.ADMIN)) {
+//				session.setAttribute("admin", theSeller);
+//				
+//				return "admin/adminMain";
+//			}
+//			if(theSeller.getRole().equals(Role.SELLER)) {
+//				session.setAttribute("seller", theSeller);
+//				return "redirect:/seller/";
+//			} else {
+//				
+//				return "seller/loginError";
+//			}
+//		} else {
+//			
+//			return "seller/login";
+//		}
+//	}
 	
 	// 판매자 마이페이지 이동
 	@GetMapping("/mypage")
@@ -87,16 +95,60 @@ public class SellerController {
 		
 		Seller seller = principal.getSeller();
 		System.out.println("seller = " + seller);
-
+		
 		String fullAddr = seller.getAddress();
 		
 		if(fullAddr != null) {
 			String[] addr = fullAddr.split(",");
 			model.addAttribute("addr", addr);
 		}
+		
+		if(seller.getRole().equals(Role.ADMIN)) {
+			return "seller/mypage";
+		} else {
+			return "seller/mypageCheck";
+		}
 
-		return "seller/mypage";
+	}
+	
+	/** 판매자 정보 수정 전 비밀번호 확인 */
+	@PostMapping("/infoCheck")
+	public String infoCheck(Seller seller, Model model, HttpServletResponse response,
+						@AuthenticationPrincipal PrincipalDetailSeller principal) throws IOException {
+		
+		boolean result = sellerService.pwdCheck(seller);
+		Seller session = principal.getSeller();
 
+		if(result) {
+			String fullAddr = session.getAddress();
+			if(fullAddr != null) {
+				String[] addr = fullAddr.split(",");
+				model.addAttribute("addr", addr);
+			}
+			
+			return "seller/mypage";
+		} else {
+			response.setContentType("text/html; charset=UTF-8");
+			PrintWriter out = response.getWriter();
+
+			out.println("<script>alert('비밀번호가 틀렸습니다.'); location.href='/seller/mypage'</script>");
+			out.flush();
+			out.close();
+
+			return null;
+		}
+	}
+	
+	/** 판매자 비밀번호변경 */
+	@ResponseBody
+	@PutMapping("/Pwdmodify/{pwd}")
+	public ResponseDto<Integer> modifyPwd(Model model,
+										@RequestBody Seller seller) {
+
+		Seller modify_seller = sellerService.modifySellerPwd(seller);
+		model.addAttribute("user", modify_seller);
+		
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);		
 	}
 	
 	/*
@@ -113,17 +165,20 @@ public class SellerController {
 		return "redirect:/seller/";
 	}
 	
-	/*
-	 * 판매자 탈퇴
-	 */
-	@PostMapping("/quit")
-	public String quit(Seller seller) {
-		sellerService.quit(seller);
-		
-		/* 세션 제거 */
-		SecurityContextHolder.clearContext();
-		
-		return "redirect:/";
+	/** 판매자 탈퇴 */
+	@ResponseBody
+	@DeleteMapping("/delete/{id}")
+	public int deleteMember(Model model, @RequestBody Seller seller) {
+		boolean match = sellerService.pwdCheck(seller);
+		System.out.println("seller = " + seller);
+		System.out.println("match = " + match);
+		if(match) {
+			sellerService.quit(seller);
+			SecurityContextHolder.clearContext();			
+			return 1;		
+		} else {
+			return 0;
+		}
 	}
 	
 	/*
@@ -168,6 +223,7 @@ public class SellerController {
 	    model.addAttribute("search", search);
 	    model.addAttribute("startPage", startPage);
 	    model.addAttribute("endPage", endPage);
+	    if(productList.getTotalElements() == 0) model.addAttribute("size", 0);
 		
 		return "seller/productList";
 	}
@@ -191,41 +247,9 @@ public class SellerController {
 	    model.addAttribute("productList", productList);
 	    model.addAttribute("startPage", startPage);
 	    model.addAttribute("endPage", endPage);
+	    if(productList.getTotalElements() == 0) model.addAttribute("size", 0);
 		
 		return "seller/unRegisteredProductList";
-	}
-	
-	/*
-	 * 판매자 상품조회
-	 */
-	@GetMapping("/product/{pno}")
-	public String getProduct(Model model,
-							@PathVariable int pno,
-							@PageableDefault(page = 1) Pageable pageable) {
-		
-		Product theProduct = sellerService.getProduct(pno);
-
-		/* 별점 평균 구하기 */
-		List<Review> reviewList = theProduct.getReview();
-		
-		if(reviewList != null) {
-			Review review = null;
-			int totalRating = 0;
-			for(int i=0; i<reviewList.size(); i++) { // 리뷰갯수만큼 반복문을 돌려
-				review = reviewList.get(i);
-				totalRating += review.getRating();	 // totalRating에 저장
-			}
-			float rating = (float)totalRating/reviewList.size(); // 리뷰갯수에서 totalRating을 나누어 최종적으로 값을 저장
-			theProduct.setRating(getRating(rating, 1));
-		} 
-		if(reviewList.isEmpty()) {
-			theProduct.setRating(0);
-		}
-		
-		model.addAttribute("product", theProduct);
-		model.addAttribute("page", pageable.getPageNumber());
-		
-		return "seller/product";
 	}
 	
 	/*
@@ -293,6 +317,39 @@ public class SellerController {
 	    System.out.println("========= qnaList = " + qnaList);
 		
 		return "seller/qnaList";
+	}
+	
+	/*
+	 * 판매자 상품조회
+	 */
+	@GetMapping("/product/{pno}")
+	public String getProduct(Model model,
+							@PathVariable int pno,
+							@PageableDefault(page = 1) Pageable pageable) {
+		
+		Product theProduct = sellerService.getProduct(pno);
+
+		/* 별점 평균 구하기 */
+		List<Review> reviewList = theProduct.getReview();
+		
+		if(reviewList != null) {
+			Review review = null;
+			int totalRating = 0;
+			for(int i=0; i<reviewList.size(); i++) { // 리뷰갯수만큼 반복문을 돌려
+				review = reviewList.get(i);
+				totalRating += review.getRating();	 // totalRating에 저장
+			}
+			float rating = (float)totalRating/reviewList.size(); // 리뷰갯수에서 totalRating을 나누어 최종적으로 값을 저장
+			theProduct.setRating(getRating(rating, 1));
+		} 
+		if(reviewList.isEmpty()) {
+			theProduct.setRating(0);
+		}
+		
+		model.addAttribute("product", theProduct);
+		model.addAttribute("page", pageable.getPageNumber());
+		
+		return "seller/product";
 	}
 	
 	/*

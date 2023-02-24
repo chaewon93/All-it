@@ -11,7 +11,7 @@
 } 
 </style>
 <!-- 내용 섹션 시작 -->
-<div class="container" style="margin-top: 30px; height: 800px;">
+<div class="container" style="margin-top: 30px;">
 <h1>판매 상품 조회</h1>
 	<nav class="navbar navbar-expand-sm">
 		<form method="get" th:action="@{ /seller/ }" class="form-inline">
@@ -42,6 +42,9 @@
 			<th width="150">등록일</th>
 			<th width="100">가격</th>
 			<th width="100">할인률</th>	
+		</tr>
+		<tr th:if="${size} == 0">
+			<td colspan="7" align="center" style="font-weight: bold; color: rgb(255, 195, 81);">등록한 상품이 없습니다.</td>
 		</tr>
 		<tr th:each="product, state : ${ productList }">
 			<td th:text="${state.count}"></td>

@@ -62,6 +62,7 @@ footer{
   position : relative;
   transform : translateY(-100%);
 }
+
 #reviewImg {
 	transition: all 0.2s linear;
 }

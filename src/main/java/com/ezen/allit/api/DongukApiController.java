@@ -17,7 +17,6 @@ import com.ezen.allit.dto.OrdersDetailDto;
 import com.ezen.allit.dto.QnADto;
 import com.ezen.allit.dto.ResponseDto;
 import com.ezen.allit.dto.ReviewDto;
-import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.service.MemberService;
 import com.ezen.allit.service.OrderService;
 import com.ezen.allit.service.QnAService;
@@ -197,8 +196,7 @@ public class DongukApiController {
 	 * 회원탈퇴
 	 */
 	@DeleteMapping("/member/delete/{id}")
-	public int deleteMember(Model model,
-											@RequestBody MemberDto memberDto) {
+	public int deleteMember(Model model, @RequestBody MemberDto memberDto) {
 		boolean match = memberService.checkPwd(memberDto);
 		System.out.println("memberDto = " + memberDto);
 		System.out.println("match = " + match);

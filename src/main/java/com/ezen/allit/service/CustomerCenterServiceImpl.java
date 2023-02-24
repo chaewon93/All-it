@@ -108,7 +108,7 @@ public class CustomerCenterServiceImpl implements CustomerCenterService {
 				File oldFile = new File(realPath, custo.getImageName());
 				oldFile.delete();
 			}
-			
+      
 			custo.setCategory(cus.getCategory());
 			custo.setTitle(cus.getTitle());
 			custo.setContent(cus.getContent());
@@ -121,7 +121,7 @@ public class CustomerCenterServiceImpl implements CustomerCenterService {
 			CustomerCenter custo = cusRepo.findCustomerCenterByCno(cus.getCno());
 
 			String ogName = imageFile.getOriginalFilename(); // 원본 파일명
-			String realPath = "c:/allit/images/admin/"; 	// 상품 이미지파일 저장경로
+			String realPath = "c:/allit/images/admin/";    // 상품 이미지파일 저장경로
 			
 			// 수정 전 글에 이미지 파일이 있었다면 해당 이미지 파일 삭제
 			if(custo.getImageName()!=null) {

@@ -111,7 +111,7 @@
 
 function downCou(btn){
 	
-	var chk = confirm("다운로드할까요?");
+	var chk = confirm("쿠폰을 받으시겠습니까?");
 	let couId = btn.previousElementSibling.value;
 	
 	let pno = $("input[name='pno']").val();
@@ -135,7 +135,7 @@ function downCou(btn){
 
 function useCou(btn){
 	
-	var chk = confirm("사용할까요?");
+	var chk = confirm("쿠폰을 사용하시겠습니까?");
 	let index = btn.previousElementSibling.value;
 	let memCouid = document.getElementsByName("memCouid")[index].value;
 	let price = document.getElementById("price").value;
@@ -158,16 +158,13 @@ function useCou(btn){
 				close();
 
 			}, error: function(xhr,status,err){
-				alert("사용할 수 없습니다.");				
+				alert("쿠폰을 사용할 수 없습니다.");				
 			}			
 		}); 
 
 	}
 }
 </script>
-
-<!-- <div th:replace="~{ /fragments/pagination.html :: pagination }"></div>  -->
-<!-- pagination replace -->
 
 </body>
 </html>

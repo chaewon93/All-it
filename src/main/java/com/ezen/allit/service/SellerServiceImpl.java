@@ -13,6 +13,7 @@ import java.io.File;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
@@ -44,17 +45,40 @@ public class SellerServiceImpl implements SellerService {
 		return sellerRepo.findByIdAndPwd(id, pwd);
 	}
 	
+	/** 판매자 정보수정 전 비밀번호 체크 */
+	@Override
+	@Transactional
+	public boolean pwdCheck(Seller seller) {
+		Seller theSeller = sellerRepo.findById(seller.getId()).get();
+		String dbPwd = theSeller.getPwd();     // DB상 비밀번호
+		String rawPwd = seller.getPwd(); 		// 입력한 비밀번호
+
+		boolean match = encoder.matches(rawPwd, dbPwd); // encoder.matches(입력Pwd, DBPwd) 맞으면 true, 틀리면 false 반환
+
+		return match;
+	}
+	
+	/** 판매자 비밀번호 변경 처리 */
+	@Override
+	@Transactional
+	public Seller modifySellerPwd(Seller seller) {
+		Seller modify_seller = sellerRepo.findById(seller.getId()).get();
+		String rawPwd = seller.getPwd();		// 회원가입 화면에서 넘겨받은 pwd
+		String encPwd = encoder.encode(rawPwd); // BCryptPasswordEncoder 클래스를 이용해 암호화
+
+		modify_seller.setPwd(encPwd);
+
+		return modify_seller;
+	}
+	
 	/*
 	 * 판매자 정보수정
 	 */
 	@Transactional
 	public void modify(Seller seller) {
 		Seller theSeller = sellerRepo.findById(seller.getId()).get();
-		String rawPwd = seller.getPwd(); 	 	// 정보수정 시 작성한 password를 문자열에 담아
-		String encPwd = encoder.encode(rawPwd); // PasswordEncoder객체를 이용해 해쉬화
 		
 		theSeller.setId(seller.getId());
-		theSeller.setPwd(encPwd);
 		theSeller.setName(seller.getName());
 		theSeller.setContent(seller.getContent());
 		theSeller.setEmail(seller.getEmail());

@@ -17,7 +17,8 @@
 <div id="wrap" align="center">	
   	<h3>회원탈퇴</h3>
   	<br>
-	<form id="frm" action="/member/userDel" method="post">
+	<!-- <form id="frm" action="/member/userDel" method="post"> -->
+	<form id="frm" method="post">
 		<table>
 			<tr>
 				<td>비밀번호</td>
@@ -26,6 +27,7 @@
 			<tr>
 				<td align="center" colspan="2">
 					<input type="hidden" name="id" id="id">
+					<input type="hidden" name="role" id="role">
 					<button type="button" class="btn btn-warning" id="checkBtn" th:text="회원탈퇴"></button>
 				</td>
 			</tr>
@@ -36,6 +38,7 @@
 <!-- 자바스트립트 섹션 시작 -->
 <script type="text/javascript">
 document.getElementById("id").value = opener.document.getElementById("id").value;
+document.getElementById("role").value = opener.document.getElementById("role").value;
 
 /** 회원탈퇴 버튼 이벤트 */
 $("#checkBtn").click(function(){
@@ -49,22 +52,41 @@ $("#checkBtn").click(function(){
     	alert("비밀번호를 입력해주세요");
     	return false;
 	} else {
-    	$.ajax({
-			type: "delete",
-			url: '/member/delete/${data.id}',
-			data: JSON.stringify(data),
-			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
-		}).done(function(response){ // 처리 성공 시
-			if(response == 1) {
-				alert('탈퇴 완료되었습니다');
-				window.close();
-				opener.location.href="/";			
-			} else {
-				alert('비밀번호가 틀렸습니다');
-			}
-		}).fail(function(error){ // 처리 실패 시
-			alert(error);
-		});
+		if($("#role").val() == "MEMBER") {
+	    	$.ajax({
+				type: "delete",
+				url: '/member/delete/${data.id}',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				if(response == 1) {
+					alert('탈퇴가 완료되었습니다');
+					window.close();
+					opener.location.href="/";			
+				} else {
+					alert('비밀번호가 틀렸습니다');
+				}
+			}).fail(function(error){ // 처리 실패 시
+				alert(error);
+			});
+		} else if($("#role").val() == "SELLER") {
+			$.ajax({
+				type: "delete",
+				url: '/seller/delete/{data.pwd}',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				if(response == 1) {
+					alert('탈퇴가 완료되었습니다');
+					window.close();
+					opener.location.href="/";			
+				} else {
+					alert('비밀번호가 틀렸습니다');
+				}
+			}).fail(function(error){ 	// 처리 실패 시
+				alert(error);
+			});
+		}
 	}
 });
 
