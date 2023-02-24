@@ -60,7 +60,14 @@ public class OrderController {
 		}
 	}
 	
-	/** 즉시구매 시 주문/결제 페이지 요청 */
+	/** 즉시구매 시 주문/결제 페이지 요청 
+	 * @author 정동욱
+	 * @param product	주문할 상품 정보가 담긴 객체
+	 * @param model		주문 페이지에 넘겨줄 정보 저장
+	 * @param mid		주문하는 사용자 아이디
+	 * @param quantity	상품 상세 페이지에서 넘겨준 수량
+	 * @return			주문 페이지로 이동
+	 */
 	@PostMapping("/orderNow")
 	public String getOrderView(Product product, Model model, String mid,
 							@RequestParam("quantity") int quantity) {
@@ -76,7 +83,13 @@ public class OrderController {
 		return "mypage/orderInfo";
 	}
 	
-	/** 장바구니에서 주문/결제 페이지 요청 */
+	/** 장바구니에서 주문/결제 페이지 요청
+	 * @author 임채원
+	 * @param model		주문 페이지에 넘겨줄 정보 저장
+	 * @param session	세션에 저장된 사용자 정보
+	 * @param cno		장바구니 페이지에서 넘겨준 장바구니 번호
+	 * @return			주문 페이지로 이동
+	 */
 	@PostMapping("/orderInfo")
 	public String ordersView(Model model, HttpSession session,
 							@RequestParam(value = "cno") int[] cno) {
@@ -103,7 +116,18 @@ public class OrderController {
 		return "mypage/orderInfo";
 	}
 
-	/** 주문하기 - 바로구매 */
+	/** 주문하기 - 바로구매
+	 * @author 정동욱
+	 * @param pno			구매할 상품 번호
+	 * @param mid			구매자(사용자) 아이디
+	 * @param model			세션에 수정된 사용자 정보를 저장
+	 * @param ordersDetail	상품 상세정보가 담긴 객체
+	 * @param finalPrice	총 결제 금액
+	 * @param usePoint		사용한 포인트
+	 * @param mcid			사용한 쿠폰번호
+	 * @param couProid		
+	 * @return				주문 내역 페이지로 이동
+	 */
 	@PostMapping("/order")
 	public String insertOrder(int pno, String mid, Model model, OrdersDetail ordersDetail,
 							@RequestParam(value = "finalPrice") int finalPrice,
@@ -140,7 +164,18 @@ public class OrderController {
 		return "redirect:orderList";
 	}
 	
-	/** 주문하기 - 장바구니 */
+	/** 주문하기 - 장바구니 
+	 * @author 임채원
+	 * @param model			세션에 수정된 사용자 정보 저장
+	 * @param ordersDetail	주문할 상품 정보가 담긴 객체
+	 * @param member		구매자(사용자) 정보가 담긴 객체	
+	 * @param cno			장바구니 페이지에서 선택한 장바구니 번호 배열
+	 * @param finalPrice	총 결제 금액
+	 * @param usePoint		사용한 포인트
+	 * @param mcid			사용한 쿠폰 아이디
+	 * @param couProid
+	 * @return				주문 내역 페이지로 이동
+	 */
 	@PostMapping("/orders")
 	public String insertOrders(Model model, OrdersDetail ordersDetail,
 							@ModelAttribute("user") Member member,
@@ -187,7 +222,13 @@ public class OrderController {
 
 	}
 	
-	/** 주문 목록조회 */
+	/** 주문 목록조회
+	 * @author 임채원
+	 * @param model			주문 내역 페이지에 넘길 정보 저장
+	 * @param principal		로그인시 저장된 사용자 정보
+	 * @param pageable		주문 내역 페이지의 페이징을 처리에 필요한 객체
+	 * @return				주문 내역 페이지로 이동
+	 */
 	@GetMapping("/orderList")
 	public String getOrderList(Model model,
 							@AuthenticationPrincipal PrincipalDetailMember principal,
@@ -209,7 +250,13 @@ public class OrderController {
 		return "mypage/orderList";
 	}
 	
-	/** 주문 상세조회 */
+	/** 주문 상세조회
+	 * @author 임채원
+	 * @param model		주문 상세 페이지에 넘겨줄 정보 저장
+	 * @param ono		상세 조회할 주문 번호
+	 * @param member	세션에 저장된 사용자 정보
+	 * @return			주문 상세 페이지로 이동
+	 */
 	@PostMapping("/orderDetail/{ono}")
 	public String orderDetail(Model model, @PathVariable int ono,
 							@ModelAttribute("user") Member member) {
@@ -251,10 +298,15 @@ public class OrderController {
 	}
 	
 	
-	/** 주문 취소 */
+	/** 주문 취소
+	 * @author 임채원
+	 * @param model		수정된 사용자 정보를 저장
+	 * @param member	세션에 담긴 사용자 정보
+	 * @param param		주문 내역 또는 주문 상세 페이지에서 넘긴 정보(주문 번호, 주문 상세 번호)
+	 */
 	@ResponseBody
 	@PostMapping("/orderCancel")
-	public String orderCancel(Model model, @ModelAttribute("user") Member member,
+	public void orderCancel(Model model, @ModelAttribute("user") Member member,
 							@RequestBody Map<String, Object> param) {
 		
 		Orders order = new Orders();
@@ -334,11 +386,14 @@ public class OrderController {
 			Member findMember = memberService.getMember(member);
 			model.addAttribute("user", findMember);
 		}
-		
-		return "";
 	}
 	
-	/** 구매확정 */
+	/** 구매확정
+	 * @author 임채원
+	 * @param model		수정된 사용자 정보 저장
+	 * @param member	세션에 저장된 사용자 정보
+	 * @param param		주문 내역 또는 주문 상세 페이지에서 ajax로 넘긴 데이터
+	 */
 	@ResponseBody
 	@PostMapping("/orderComplete")
 	public void orderComplete(Model model, @ModelAttribute("user") Member member,
@@ -357,7 +412,11 @@ public class OrderController {
 		
 	}
 	
-	/** 교환/반품 신청 */
+	/** 교환/반품 신청 
+	 * @author 임채원
+	 * @param member	세션에 저장된 사용자 정보
+	 * @param param		주문 내역 또는 주문 상세 페이지에서 ajax로 넘겨준 데이터
+	 */
 	@ResponseBody
 	@PostMapping("/orderRefund")
 	public void orderRefund(@ModelAttribute("user") Member member,

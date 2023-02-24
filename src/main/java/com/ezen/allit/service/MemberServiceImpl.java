@@ -106,7 +106,7 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	@Transactional
 	public Member modifySnsMemberInfo(MemberDto memberDto) {
-		System.out.println("memberDto = " + memberDto);
+//		System.out.println("memberDto = " + memberDto);
 		Member theMember = memberRepo.findById(memberDto.getId()).get();
 
 		theMember.setEmail(memberDto.getEmail());
@@ -115,7 +115,7 @@ public class MemberServiceImpl implements MemberService {
 		theMember.setAddress(memberDto.getAddress1()+", "+memberDto.getAddress2());
 		theMember.setBirth(memberDto.getBirth());
 		theMember.setGender(memberDto.getGender());
-		System.out.println("theMember = " + theMember);
+//		System.out.println("theMember = " + theMember);
 		
 		return theMember;
 	}
@@ -258,7 +258,7 @@ public class MemberServiceImpl implements MemberService {
 		member.setMoney(member.getMoney() - amount);
 	}
 	
-	/** 취소/반품 시 올잇머니 환불 */
+	/** 올잇머니 충전, 취소/반품 시 올잇머니 환불 */
 	@Transactional
 	@Override
 	public void addMoney(String id, int amount) {
@@ -271,18 +271,13 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public void minusPoint(String id, int amount) {
 		Member member = memberRepo.findById(id).get();
-		System.out.println("====================================minusPoint 포인트");
-		System.out.println(amount);
-		System.out.println(member);
 		member.setPoint(member.getPoint() - amount);
-		System.out.println(member);
 	}
 
 	/** 상품 구매 완료 후 포인트 적립 */
 	@Transactional
 	@Override
 	public void addPoint(String id, int finalPrice) {
-		System.out.println("==========================================포인트 적립");
 		Member member = memberRepo.findById(id).get();
 		String grade = member.getGrade().toString();
 		if(grade.equals(Grade.BRONZE.toString())) {			// 1% 적립

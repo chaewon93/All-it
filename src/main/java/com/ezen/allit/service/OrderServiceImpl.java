@@ -78,18 +78,6 @@ public class OrderServiceImpl implements OrderService {
 		//return ordersDetailRepo.updateStatus(status, odno);
 	}
 	
-	/** 주문 취소 - OrdersDetail 삭제 */
-//	@Override
-//	public void deleteOrdersDetail(int odno) {
-//		ordersDetailRepo.deleteById(odno);
-//	}
-	
-	/** 주문 취소 - Orders 삭제 */
-//	@Override
-//	public void deleteOrders(int ono) {
-//		ordersRepo.deleteById(ono);
-//	}
-	
 	/** 주문 취소 - Orders의 finalPrice 수정 */
 	@Override
 	public void updateOrders(int ono, int finalPrice) {
