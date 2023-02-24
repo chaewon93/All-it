@@ -459,6 +459,7 @@ public class AdminController {
 	}
 	
 	// 매달 1일 00:00 이 되면 모든 멤버들에게 특정 쿠폰을 보내줌.. 
+	// cron 표현식 : 초 분 시 일 달(월) 주(요일) 
 	@Scheduled(cron="0 0 0 1 * *")
 	public void checkFirst() {
 		

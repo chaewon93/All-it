@@ -182,9 +182,15 @@ public class CouponServiceImpl implements CouponService {
 		Product pro = proService.getProduct(pno);
 		List<MemCoupon> memCouList = new ArrayList<>();
 		for(MemCoupon memCoupon : list) {
-			// 내가 가진 쿠폰 리스트에서 카테고리, 등급, 판매자 조건으로 사용 가능 조건 쿠폰 조회
+			String MdPick = "";
+	         if((pro.getMdPickyn()) == 1) {
+	            MdPick = "YES";
+	         }else if((pro.getMdPickyn()) == 0) {
+	            MdPick = "NO";
+	         }
+			// 내가 가진 쿠폰 리스트에서 카테고리, mdPick, 판매자 조건으로 사용 가능 조건 쿠폰 조회
 			if(memCoupon.getCoupon().getCondition().contains(Integer.toString(pro.getCategory())) || memCoupon.getCoupon().getCondition().contains("0")){
-				if(memCoupon.getCoupon().getCondition().contains(Integer.toString(pro.getMdPickyn())) || memCoupon.getCoupon().getCondition().contains("NO")) {
+				if(memCoupon.getCoupon().getCondition().contains(MdPick) || memCoupon.getCoupon().getCondition().contains("NO")) {
 					if(memCoupon.getCoupon().getCondition().contains(pro.getSeller().getId()) || memCoupon.getCoupon().getCondition().contains("SELLERS")) {
 						memCouList.add(memCoupon);
 					}

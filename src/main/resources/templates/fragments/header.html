@@ -154,7 +154,7 @@
 	<!-- 입점대기 -->
 	 <div class="header-container" sec:authorize="hasRole('TEMP')">
 		<ul class="nav justifiy-content-end"> 
-			<li class="nav-item"><span th:text="${ #authentication.principal.seller.name }+'님'"></span></li>
+			<li class="nav-item"><b class="nav-link" th:text="${ #authentication.principal.seller.name }+'님'"></b></li>
 			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /logout }">로그아웃</a></li>
 		</ul>
 		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">

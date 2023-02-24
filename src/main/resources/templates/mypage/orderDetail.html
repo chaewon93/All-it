@@ -45,14 +45,7 @@
 				<td th:case="7">반품신청</td>
 			</th:block>
 			<td>
-<!-- 				<input type="button" th:if="${detail.status == 1}" id="cancelOrder" value="주문취소" class="btn btn-light"> 
-				<input type="button" th:if="${detail.status == 2}" id="delivery" value="배송조회" class="btn btn-light"> 
-				<input type="button" th:if="${detail.status == 3}" id="buyComplete" value="구매확정" class="btn btn-light"> 
-				<input type="button" th:if="${detail.status == 3}" id="refund" value="교환/반품 신청" class="btn btn-light"> 
-				<input type="button" class="btn btn-light" id="productQna" value="상품문의"> 
-				<input type="button" th:if="${detail.status == 3}" id="writeReview" value="리뷰작성" class="btn btn-light">
- -->
-				<input type="button" th:if="${detail.status == 1}" id="cancelOrder" value="주문취소" class="btn btn-outline-secondary" th:onclick="'javascript:index.cancelOrder(' +${ order.ono }+ ',' +${ detail.odno }+ ');'">
+				<input type="button" th:if="${detail.status == 1}" id="cancelOrder" value="주문취소" class="btn btn-outline-secondary" th:onclick="'javascript:index.cancelOrder(' +${ detail.orders.ono }+ ',' +${ detail.odno }+ ');'">
 				<input type="button" th:if="${detail.status == 2}" id="delivery" value="배송조회" class="btn btn-outline-secondary" th:onclick="'javascript:index.openDelivery(this);'" data-toggle="modal" data-target="#deliveryModal" th:data-pname="${detail.product.name}">
 				<input type="button" th:if="${detail.status == 3}" id="buyComplete" value="구매확정" class="btn btn-outline-secondary" th:onclick="'javascript:index.buyComplete(' +${ detail.odno }+ ');'">
           		<input type="button" id="qna" value="상품문의" class="btn btn-outline-secondary" th:onclick="'javascript:index.openQna(this);'" data-toggle="modal" data-target="#qnaModal" th:data-product="${ detail.product.name }" th:data-seller="${ detail.product.seller.id }" th:data-pno="${ detail.product.pno }"/>
