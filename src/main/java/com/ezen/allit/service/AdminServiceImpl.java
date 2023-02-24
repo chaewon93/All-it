@@ -155,6 +155,7 @@ public class AdminServiceImpl implements AdminService {
 //        return qna;
 //	}
 
+	// 미답변, 답변 QnA 조회
 	@Override
 	public Page<QnA> findQnAByStatus(int status, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
@@ -177,6 +178,7 @@ public class AdminServiceImpl implements AdminService {
 //        return qna;
 //	}
 
+	// 카테고리 별 QnA 조회
 	@Override
 	public Page<QnA> findQnAByCategoryContaining(String cate, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
@@ -188,6 +190,7 @@ public class AdminServiceImpl implements AdminService {
         return qna;
 	}
 
+	// Seller Role 별 조회
 	@Override
 	public Page<Seller> findSellerByRole(Role role, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
@@ -198,6 +201,7 @@ public class AdminServiceImpl implements AdminService {
 		return seller;
 	}
 
+	// 관리자 빼고 Seller 조회
 	@Override
 	public Page<Seller> findSellerByRoleNot(Role role, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
@@ -208,6 +212,7 @@ public class AdminServiceImpl implements AdminService {
 		return seller;
 	}
 
+	// Seller 전체 조회
 	@Override
 	public Page<Seller> findAllSeller(Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;

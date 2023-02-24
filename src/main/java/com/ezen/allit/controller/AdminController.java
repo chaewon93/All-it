@@ -90,6 +90,7 @@ public class AdminController {
 	}
 	
 	// 관리자 QnA 조회
+	// a로 전체, 미답변, 답변 QnA 구분 조회
 	@RequestMapping("getQnAList")
 	public String getQnAList(Model model, @PageableDefault(page = 1) Pageable pageable,
 			@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword,
@@ -129,7 +130,7 @@ public class AdminController {
 		return "/admin/getQnAList";
 	}
 	
-	// 관리자 미답변 QnA 조회
+/* // 관리자 미답변 QnA 조회
 	@RequestMapping("getNoQnAList")
 	public String getNoQnAList(Model model, @PageableDefault(page = 1) Pageable pageable,
 			@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword,
@@ -164,10 +165,11 @@ public class AdminController {
 		model.addAttribute("a", status);
 		
 		return "/admin/getQnAList";
-	}
+	}*/
 	
 	// 관리자 QnA 카테고리 별 조회
-	@RequestMapping("findQnA")
+	// cate 로 카테고리를 받아서 분류
+	@GetMapping("findQnA")
 	public String findQnAByCategory(Model model, @PageableDefault(page = 1) Pageable pageable,
 						@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword,
 						@RequestParam(value= "cate", defaultValue = "") String cate) {
@@ -175,11 +177,12 @@ public class AdminController {
 		System.out.println("카테고리 번호 : "+cate);
 		
 		Page<QnA> qnaList = null;
-
+		
+		// 모두 보기이면 전체 조회이므로 첫 화면 다시 보여줌
 		if(cate.equals("모두 보기")) {
 			return "redirect:getQnAList";
 		}
-		
+		// 카테고리컬럼에서 cate를 포함하는 QnA 조회
 		qnaList = adminService.findQnAByCategoryContaining(cate, pageable);
 
 		int naviSize = 10; // 페이지네이션 갯수
@@ -238,6 +241,7 @@ public class AdminController {
 	}
 	
 	// 관리자 판매,관리,판매대기자 조회
+	// a로 조회 조건을 분류해서 조회
 	@GetMapping("findSellerList")
 	public String findSellerList(Model model, @PageableDefault(page = 1) Pageable pageable,
 			@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword,
@@ -277,8 +281,9 @@ public class AdminController {
 	@PostMapping("changeSeller")
 	public String changeSeller(@RequestParam(value = "sellerId") String[] sellerId, RedirectAttributes re) {
 		// model은 주로 페이지(view)로 보낼 때 사용...
-		// RedirectAttributes은 컨트롤러로 보낼 때 사용...
+		// RedirectAttributes은 컨트롤러로 보낼 때 사용... a 를 함께 보내줌
 		
+		// 체크된 판매자 리스트에서 SELLER이면 TEMP로, TEMP면 SELLER로 변경
 		for(int i=0; i<sellerId.length; i++) {
 			
 			Seller seller = sellerRepo.findById(sellerId[i]).get();
@@ -289,15 +294,16 @@ public class AdminController {
 			}
 			sellerRepo.save(seller);
 		}
-		re.addAttribute("a", 0);
-		String pass = "redirect:/admin/findSellerList?a=2"; 
+		re.addAttribute("a", 2);
+//		String pass = "redirect:/admin/findSellerList?a=2"; 
+		String pass = "redirect:/admin/findSellerList"; 
 		return pass;
 	}
 	
 	// 관리자 판매자 삭제
 	@PostMapping("deleteSeller")
 	public String deleteSeller(@RequestParam(value = "sellerId") String[] sellerId, RedirectAttributes re) {
-	
+		// 체크된 판매자 리스트에서 삭제
 		for(int i=0; i<sellerId.length; i++) {
 			
 			Seller seller = sellerRepo.findById(sellerId[i]).get();
@@ -309,6 +315,7 @@ public class AdminController {
 	}
 	
 	// 관리자 판매상품(대기 및 등록) 조회 검색
+	// a가 0이면 대기상품, 1이면 등록상품
 	@GetMapping("findAdminProduct")
 	public String findAdminProduct(Model model, @PageableDefault(page = 1) Pageable pageable,
 								@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword,
@@ -337,17 +344,18 @@ public class AdminController {
 		return "admin/findAdminProduct";
 	}
 	
-	// 관리자 등록 대기 상품 등록
-	@PostMapping("regPro")
-	public String regPro(@RequestParam(value = "pno") int[] pno) {
-		// model은 주로 페이지(view)로 보낼 때 사용...
-		// RedirectAttributes은 컨트롤러로 보낼 때 사용...
+	// 관리자 상품 등록 상태 변경
+	@PostMapping("changeProStatus")
+	public String changeProStatus(@RequestParam(value = "pno") int[] pno) {
 		
+		// 체크 리스트를 받아서 상태 변경
 		for(int i=0; i<pno.length; i++) {
 			
 			Product product = proRepo.findById(pno[i]).get();
 			if(product.getStatus() == 0) {
 				product.setStatus(1);
+			}else if(product.getStatus() == 1) {
+				product.setStatus(0);
 			}
 			proRepo.save(product);
 		}
@@ -355,11 +363,11 @@ public class AdminController {
 		return pass;
 	}	
 	
-	// 관리자 등록 대기 상품 등록
+	// 관리자 등록된 상품 MDPICK 선정 여부 변경
 	@PostMapping("changeProMDPick")
 	public String changeProMDPick(@RequestParam(value = "pno") int[] pno) {
-		// model은 주로 페이지(view)로 보낼 때 사용...
 		
+		// 체크 리스트에서 MDPCIK 상태 변경
 		for(int i=0; i<pno.length; i++) {
 			
 			Product product = proRepo.findById(pno[i]).get();
@@ -388,6 +396,7 @@ public class AdminController {
 		return "redirect:findAdminProduct";
 	}
 	
+	// 쿠폰 목록 조회
 	@GetMapping("couponList")
 	public String couponList(Model model, @PageableDefault(page = 1) Pageable pageable,
 			@RequestParam(value= "searchKeyword", defaultValue = "") String searchKeyword) {
@@ -412,6 +421,7 @@ public class AdminController {
 		return "admin/couponList";
 	}
 	
+	// 쿠폰 창 열기(생성과 쿠폰 상세보기 같이 함)
 	@GetMapping("createCoupon")
 	public String createCouponView(Model model, @RequestParam(value="couno", defaultValue = "0") int couno) {
 		if(couno == 0) {
@@ -423,9 +433,11 @@ public class AdminController {
 		}		
 	}
   
+	// 쿠폰 생성과 쿠폰 수정
 	@PostMapping("createCoupon")
 	public String createCoupon(Coupon coupon) {
 
+		// 쿠폰 창에서 생성이면 couId가 없고 수정이면 couId가 있음.. 이거로 구분
 		if(couponRepo.findById(coupon.getCouId()).isPresent()) {
 			System.out.println("=========================쿠폰이 이미 있습니다 수정입니다.===========================");
 			System.out.println(coupon.getCouId());
@@ -436,21 +448,23 @@ public class AdminController {
 			couponService.createCoupon(coupon);
 		}
 		
-		
 		return "redirect:couponList";
 	}
 	
+	// 쿠폰 삭제
 	@RequestMapping("deleteCoupon")
 	public String deleteCoupon(Coupon coupon) {
 		couponRepo.delete(coupon);		
 		return "redirect:couponList";
 	}
 	
+	// 매달 1일 00:00 이 되면 모든 멤버들에게 특정 쿠폰을 보내줌.. 
 	@Scheduled(cron="0 0 0 1 * *")
 	public void checkFirst() {
 		
 		List<Member> memList = memRepo.findAll();
 		
+		// 특정 쿠폰 지금은 couId가 3인 쿠폰을 보내줌 
 		for(Member member : memList) {
 			couponService.insertMemCoupon(member, 3);
 		}		

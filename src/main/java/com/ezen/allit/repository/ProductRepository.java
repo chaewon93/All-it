@@ -56,7 +56,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	// 판매자별 상품검색 (검색조선 o, 검색어 o)
 	Page<Product> findAllBySellerIdAndCategoryAndNameContainingAndStatus(String id, int searchCondition, String searchKeyword, int status, Pageable pageable);
 		
-	// 차트에 필요한 쿼리
+	// 차트에 필요한 상품 쿼리
 	@Query(value="select category, COUNT(*) as count from product group by category ORDER BY category ASC", nativeQuery = true)
 	List<Chart> chartCategoryGroup();
 
