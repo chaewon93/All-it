@@ -170,8 +170,7 @@ public class SellerController {
 	@DeleteMapping("/delete/{id}")
 	public int deleteMember(Model model, @RequestBody Seller seller) {
 		boolean match = sellerService.pwdCheck(seller);
-		System.out.println("seller = " + seller);
-		System.out.println("match = " + match);
+
 		if(match) {
 			sellerService.quit(seller);
 			SecurityContextHolder.clearContext();			
