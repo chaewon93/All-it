@@ -60,7 +60,7 @@
 	
 	<!-- 회원 로그인 시작 -->
 	<div class="header-container" sec:authorize="hasRole('MEMBER')">
-		<ul class="nav justifiy-content-end" >
+		<ul class="nav container justifiy-content-end" >
 			<li class="nav-item"><b class="nav-link" th:text="${ #authentication.principal.member.name }+'님'"></b></li>
 	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /logout }">로그아웃</a></li>
 	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /order/orderList }">마이올잇</a></li>
@@ -103,7 +103,7 @@
 	<!-- 판매자/관리자 로그인 시작 -->
 	<!-- 판매자 -->
  	<div class="header-container" sec:authorize="hasRole('SELLER')">
-		<ul class="nav justifiy-content-end"> 
+		<ul class="nav container justifiy-content-end"> 
 			<li class="nav-item"><b class="nav-link" th:text="${ #authentication.principal.seller.name }+'님'"></b></li>
 			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /seller/ }">판매자페이지</a></li>
 			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /seller/mypage }">마이페이지</a></li>
@@ -127,7 +127,7 @@
 	</div>
 	<!-- 관리자 -->
 	<div class="header-container" sec:authorize="hasRole('ADMIN')">
-		<ul class="nav justifiy-content-end"> 
+		<ul class="nav container justifiy-content-end"> 
 			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /seller/mypage }">마이페이지</a></li>
 			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /logout }">로그아웃</a></li>
 		</ul>
@@ -153,7 +153,7 @@
 	</div>	
 	<!-- 입점대기 -->
 	 <div class="header-container" sec:authorize="hasRole('TEMP')">
-		<ul class="nav justifiy-content-end"> 
+		<ul class="nav container justifiy-content-end"> 
 			<li class="nav-item"><span th:text="${ #authentication.principal.seller.name }+'님'"></span></li>
 			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /logout }">로그아웃</a></li>
 		</ul>
