@@ -219,8 +219,6 @@ public class ProductController {
 		return "product/mdpickList";
 	}
 	
-	/** 베스트상품 조회 */
-	
 	/** 상품 상세조회 */
 	@GetMapping("/{pno}")
 	public String getProduct(Model model,
@@ -228,7 +226,7 @@ public class ProductController {
 							@AuthenticationPrincipal PrincipalDetailSeller principal,
 							@PageableDefault(page = 1) Pageable pageable) {
 		Product theProduct = productService.getProduct(pno);
-		
+
 		/* 별점 평균 구하기 */
 		List<Review> reviewList = theProduct.getReview();
 		if(reviewList != null) {
