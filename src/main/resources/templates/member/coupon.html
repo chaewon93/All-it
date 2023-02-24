@@ -53,9 +53,9 @@
 			<td th:text="${memcou.coupon.couContent}"></td>
 			<td th:text="${#dates.format(memcou.createMemCouDate, 'yyyy-MM-dd')}"></td>
 			<td th:text="${#dates.format(memcou.endMemCouDate, 'yyyy-MM-dd')}"></td>
-			<td th:if="${memcou.status} == 0" th:text="사용가능"></td>
-			<td th:if="${memcou.status} == 1" th:text="사용됨"></td>
-			<td th:if="${memcou.status} == 2" th:text="만료됨"></td>
+			<td th:if="${memcou.status} == 0" th:text="사용가능" class="text-primary"></td>
+			<td th:if="${memcou.status} == 1" th:text="사용됨" class="text-dark"></td>
+			<td th:if="${memcou.status} == 2" th:text="만료됨" class="text-danger"></td>
 			<td th:if="${price}!=0">
 				<input type="hidden" name="memCouCon" id="memCouCon" th:value="${memcou.coupon.couContent}">
 				<input type="hidden" name="memCouid" id="memCouid" th:value="${memcou.mcid}">
