@@ -219,8 +219,6 @@ public class ProductController {
 		return "product/mdpickList";
 	}
 	
-	/** 베스트상품 조회 */
-	
 	/** 상품 상세조회 */
 	@GetMapping("/{pno}")
 	public String getProduct(Model model,

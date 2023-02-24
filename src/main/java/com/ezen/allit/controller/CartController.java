@@ -48,7 +48,12 @@ public class CartController {
 		}
 	}
 	
-	/** 장바구니 담기 처리 */
+	/** 장바구니 담기 처리
+	 * @author 임채원
+	 * @param param		장바구니 페이지에서 ajax로 넘긴 데이터(상품번호, 수량)
+	 * @param principal	로그인시 저장된 사용자 정보
+	 * @return			"exist":이미 장바구니에 같은 상품이 담겨 있음 / "inCart":상품을 처음 장바구니에 담음 / "noUser":로그인 정보가 없음
+	 */
 	@ResponseBody
 	@PostMapping("/insert")
 	//public int insertCart(@ModelAttribute("member") Member member, Cart cart, @RequestBody(required=false) Map<String, Object> param) {
@@ -81,7 +86,12 @@ public class CartController {
 		}
 	}
 	
-	/** 장바구니 조회 처리 */
+	/** 장바구니 조회 처리 
+	 * @author 임채원
+	 * @param model		장바구니 페이지에 넘겨줄 정보(장바구니 목록, 총 상품가격) 저장 시 사용
+	 * @param principal	로그인시 저장된 사용자 정보
+	 * @return
+	 */
 	@GetMapping("/cartList")
 	public String getCartList(Model model,
 							@AuthenticationPrincipal PrincipalDetailMember principal) {
@@ -102,10 +112,13 @@ public class CartController {
 		return "mypage/cartList";
 	}
 	
-	/** 장바구니에서 삭제 처리 */
+	/** 장바구니에서 삭제 처리
+	 * @author 임채원
+	 * @param request	장바구니 페이지에서 ajax로 넘긴 데이터(삭제할 장바구니 번호 배열)를 사용하기 위한 객체
+	 */
 	@ResponseBody
 	@PostMapping("/delCart")
-	public void deleteCart(Cart cart, HttpServletRequest request) {
+	public void deleteCart(HttpServletRequest request) {
 		String[] ajaxParam = request.getParameterValues("cnoArr");
 		System.out.println("[delCart cnt] : "+ajaxParam.length);
 		
@@ -119,7 +132,12 @@ public class CartController {
 		}
 	}
 	
-	/** 장바구니 수량 변경 처리 */
+	/** 장바구니 수량 변경 처리
+	 * @author 임채원
+	 * @param param		장바구니 페이지에서 ajax로 넘긴 데이터(상품번호, 장바구니 수량변경 타입)
+	 * @param principal	로그인시 저장된 사용자 정보
+	 * @return			"modCart":장바구니 수량변경 성공 / "null":장바구니에 담긴 상품정보 없음 또는 오류 / "noUser":로그인 정보가 없음
+	 */
 	@ResponseBody
 	@PostMapping("/modCart")
 	public String modifyCart(@RequestBody Map<String, Object> param,
@@ -165,7 +183,12 @@ public class CartController {
 		}
 	}
 	
-	// 마이페이지 쿠폰보기와 상품페이지 쿠폰보기를 담당
+
+	/** 마이페이지 쿠폰보기와 상품페이지 쿠폰보기를 담당
+	 * @author 박현일
+	 * @param map
+	 * @return
+	 */
 	@PostMapping("useCoupon")
 	@ResponseBody
 	public Map<String, Integer> useCoupon(@RequestParam Map<String,Object> map) {
@@ -182,7 +205,13 @@ public class CartController {
 		return map1;
 	}
 	
-	// 오더페이지 쿠폰적용을 담당
+
+	/** 오더페이지 쿠폰적용을 담당
+	 * @author 박현일
+	 * @param member
+	 * @param map
+	 * @return
+	 */
 	@PostMapping("useCoupon1")
 	@ResponseBody
 	public Map<String, Integer> useCoupon1(@ModelAttribute("user") Member member,
