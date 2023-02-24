@@ -17,7 +17,6 @@ import com.ezen.allit.dto.OrdersDetailDto;
 import com.ezen.allit.dto.QnADto;
 import com.ezen.allit.dto.ResponseDto;
 import com.ezen.allit.dto.ReviewDto;
-import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.service.MemberService;
 import com.ezen.allit.service.OrderService;
 import com.ezen.allit.service.QnAService;

@@ -14,6 +14,8 @@ public interface ProductService {
 	
 	Page<Product> getBestProductList(Pageable pageable);
 	
+	Page<Product> getSaleProductList(Pageable pageable);
+	
 	Page<Product> getMdpickProductList(Pageable pageable);
 	
 	List<Product> getMdpickProductMainPage();

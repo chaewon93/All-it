@@ -183,7 +183,8 @@ public class CartController {
 		}
 	}
 	
-	/**
+
+	/** 마이페이지 쿠폰보기와 상품페이지 쿠폰보기를 담당
 	 * @author 박현일
 	 * @param map
 	 * @return
@@ -191,21 +192,21 @@ public class CartController {
 	@PostMapping("useCoupon")
 	@ResponseBody
 	public Map<String, Integer> useCoupon(@RequestParam Map<String,Object> map) {
-		System.out.println("====================================== useCopon1");
-		System.out.println(map);
+		// map으로 memCouid와 totp(가격*수량)를 가져옴... 지금은 totp가 아니라 그냥 상품 1개 가격
 		int memCouid = Integer.parseInt(String.valueOf(map.get("memCouid")));
 		int totp = Integer.parseInt(String.valueOf(map.get("totp")));
-		System.out.println("====================================== useCopon2");
-		System.out.println(map);
+		
+		// 쿠폰의 할인금액과 최소적용금액, 최대할인금액 상품 가격을 비교하여 할인금액 계산
 		int price = couponService.checkPrice(memCouid, totp);
-		System.out.println(price);
-		System.out.println("====================================== useCopon3");
+		
+		// 계산된 할인금액 보냄
 		Map<String, Integer> map1 = new HashMap<>();
 		map1.put("price", price);
 		return map1;
 	}
 	
-	/**
+
+	/** 오더페이지 쿠폰적용을 담당
 	 * @author 박현일
 	 * @param member
 	 * @param map
@@ -215,15 +216,9 @@ public class CartController {
 	@ResponseBody
 	public Map<String, Integer> useCoupon1(@ModelAttribute("user") Member member,
 				@RequestParam Map<String,Object> map) {
-		System.out.println("====================================== useCopon1");
-		System.out.println(map);
 		int memCouid = Integer.parseInt(String.valueOf(map.get("memCouid")));
 		int price = Integer.parseInt(String.valueOf(map.get("price")));
-		System.out.println("====================================== useCopon2");
-		System.out.println(map);
 		int fprice = couponService.checkPrice(memCouid, price);
-		System.out.println(fprice);
-		System.out.println("====================================== useCopon3");
 		Map<String, Integer> map1 = new HashMap<>();
 		map1.put("fprice", fprice);
 		map1.put("memCouid", memCouid);

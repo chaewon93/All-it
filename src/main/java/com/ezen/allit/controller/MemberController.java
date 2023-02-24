@@ -33,6 +33,7 @@ import com.ezen.allit.domain.Hit;
 import com.ezen.allit.domain.MemCoupon;
 import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.OrdersDetail;
+import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
 import com.ezen.allit.dto.MemberDto;
@@ -499,24 +500,26 @@ public class MemberController {
 				// 내가 가지고 있는 쿠폰 조회
 				memCouList = member.getMemCoupon();
 				model.addAttribute("list", memCouList);
-				System.out.println("======================== getmemcoupon");
-				System.out.println(memCouList);
 			}else {
+				// 내가 가지고 있는 쿠폰 중 상품에 사용할 수 있는 쿠폰 조회
 				memCouList = couponService.MemProCouponList(member, pno);
 				model.addAttribute("list", memCouList);
 			}
 			
+			// 내가 상품에 사용할 수 있는 쿠폰 조회
+			// 상품번호가 0이면-마이페이지에서 보면, 내가 사용할 수 있는 쿠폰 조회
 			List<Coupon> couList = couponService.forMemberCouponList(member, pno);
 	
 			model.addAttribute("pno", pno);
-			
+
 			List<Coupon> couponList = new ArrayList<>();
 			for(MemCoupon memCou : memCouList) {
 				couponList.add(memCou.getCoupon());
 			}
-			
+
+			// 두 쿠폰리스트에서 중복 제거
 			couList.removeAll(couponList);
-	
+
 			model.addAttribute("couList", couList);
 		} else {
 			model.addAttribute("login", "noLogin");
@@ -532,31 +535,34 @@ public class MemberController {
 
 		List<MemCoupon> memCouList = new ArrayList<>();
 		if(pno == 0) {
+			// 내가 가지고 있는 쿠폰 조회
 			memCouList = member.getMemCoupon();
-			model.addAttribute("list", memCouList);
-			System.out.println("======================== getmemcoupon");
-			System.out.println(memCouList);
 		}else {
+			// 내가 가지고 있는 쿠폰 중 상품에 사용할 수 있는 쿠폰 조회
 			memCouList = couponService.MemProCouponList(member, pno);
 			model.addAttribute("list", memCouList);
 		}
+		// 내가 상품에 사용할 수 있는 쿠폰 조회
 		List<Coupon> couList = couponService.forMemberCouponList(member, pno);
 
 		model.addAttribute("pno", pno); 
+		
+		// 상품 할인 유무에 따라 가격 선택
 		int price = 0;
-		if(pno != 0) {
-			 price = proRepo.findById(pno).get().getPrice();
+		Product product = proRepo.findById(pno).get();
+		if(product.getDiscount()>0) {
+			price = product.getPrice();
 		}else {
-			price = 0;
+			price = product.getFirstPrice();
 		}
 		
 		model.addAttribute("price", price);
 
+		// 두 쿠폰리스트에서 중복 제거
 		List<Coupon> couponList = new ArrayList<>();
 		for(MemCoupon memCou : memCouList) {
 			couponList.add(memCou.getCoupon());
 		}
-
 		couList.removeAll(couponList);
 
 		model.addAttribute("couList", couList);
@@ -567,12 +573,12 @@ public class MemberController {
 	/** 쿠폰 다운로드 */ 
 	@PostMapping("downCoupon")
 	public String downCoupon(@ModelAttribute("user") Member member,
-			@RequestParam Map<String, Object> map, RedirectAttributes re) {
+			@RequestParam Map<String, Object> map) {
 		
 		int couId = Integer.parseInt(String.valueOf(map.get("couId")));
 		
 		couponService.insertMemCoupon(member, couId);
-		
+		// ajax라 별 의미 없음...
 		return "redirect:coupon";
 	}
 	

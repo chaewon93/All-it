@@ -47,7 +47,6 @@
 			<th width="150">등록일</th>
 			<th width="150">만료일</th>
 			<th width="150">쿠폰상태</th>
-			<th th:if="${price}!=0" width="150">쿠폰 사용</th>
 		</tr>
 		<tr th:each="memcou, state : ${list}">
 			<td th:text="${state.count}"></td>
@@ -70,7 +69,9 @@
     <!-- 받을 수 있는 쿠폰 목록 시작 -->
     <div id="menu2" class="container tab-pane fade"><br>
 		<form action="/coupon/deleteCoupon" method="post" id="theform1" class="">
-		<h3 th:if="${couList.size() == 0}" class="text-danger" style="text-align: center;">받을 수 있는 쿠폰이 없습니다</h3>
+		<th:block th:if="${couList.size() == 0}">
+			<h3 class="text-danger" style="text-align: center;">받을 수 있는 쿠폰이 없습니다</h3>
+		</th:block>
 		<th:block th:unless="${couList.size() == 0}">
 		<table th:align="center" th:cellpadding="3" th:cellspacing="0" th:width="700" class="table">
 			<tr>
@@ -135,7 +136,6 @@ function downCou(btn){
 
 	}
 }
-
 </script>
 
 <!-- footer replace -->

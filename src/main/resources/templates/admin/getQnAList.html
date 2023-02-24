@@ -25,8 +25,12 @@
 	</select>
 	<select name="QnAList" onchange="location.href=(this.value)" class="form-control mb-2 mr-sm-2">
 		<option value="/admin/getQnAList?a=-1" th:selected="${a} == -1">QnA 조회</option>
+		<option value="/admin/getQnAList?a=1" th:selected="${a} == 1">답변 QnA 조회</option>
+		<option value="/admin/getQnAList?a=0" th:selected="${a} == 0">미답변 QnA 조회</option>		
+		<!-- 
 		<option value="/admin/getNoQnAList?a=1" th:selected="${a} == 1">답변 QnA 조회</option>
 		<option value="/admin/getNoQnAList?a=0" th:selected="${a} == 0">미답변 QnA 조회</option>
+		 -->
 	</select>
 </div>
 <table th:align="center" th:cellpadding="3" th:cellspacing="0" th:width="700" class="table">
