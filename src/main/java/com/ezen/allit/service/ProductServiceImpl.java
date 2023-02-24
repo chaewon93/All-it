@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ezen.allit.domain.Product;
+import com.ezen.allit.domain.Role;
 import com.ezen.allit.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class ProductServiceImpl implements ProductService {
 		int pageSize = 6;
 
 		Page<Product> productList = 
-				productRepo.findAllByStatus(1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+				productRepo.findAllByStatusAndSellerRole(1, Role.SELLER, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 
         return productList;
 	}
@@ -70,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
 		int pageSize = 6;
 
 		Page<Product> productList = 
-				productRepo.findAllByDiscountNotAndStatus(0, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "discount")));
+				productRepo.findAllByDiscountNotAndStatusAndSellerRole(0, 1, Role.SELLER, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "discount")));
 
         return productList;
 	}
@@ -107,7 +108,7 @@ public class ProductServiceImpl implements ProductService {
 		int pageSize = 6;
 
 		Page<Product> productList = 
-				productRepo.findAllByNameContainingAndStatus(searchKeyword, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+				productRepo.findAllByNameContainingAndStatusAndSellerRole(searchKeyword, 1, Role.SELLER, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 		
 		return productList;
 	}
@@ -121,7 +122,7 @@ public class ProductServiceImpl implements ProductService {
 		int pageSize = 6;
 
 		Page<Product> productList = 
-				productRepo.findAllByCategoryAndStatus(searchCondition, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+				productRepo.findAllByCategoryAndStatusAndSellerRole(searchCondition, 1, Role.SELLER, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 		
 		return productList;
 	}
@@ -135,7 +136,7 @@ public class ProductServiceImpl implements ProductService {
 		int pageSize = 6;
 
 		Page<Product> productList = 
-				productRepo.findAllByCategoryAndNameContainingAndStatus(searchCondition, searchKeyword, 1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+				productRepo.findAllByCategoryAndNameContainingAndStatusAndSellerRole(searchCondition, searchKeyword, 1, Role.SELLER, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
 		
 		return productList;
 	}

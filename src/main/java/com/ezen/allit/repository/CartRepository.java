@@ -15,5 +15,4 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
 	
 	// 장바구니 담기 전 같은 상품이 담겨있는지 확인
 	Cart findByMemberAndProduct(Member member, Product product);
-	
 }

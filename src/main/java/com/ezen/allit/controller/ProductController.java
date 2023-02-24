@@ -226,7 +226,7 @@ public class ProductController {
 							@AuthenticationPrincipal PrincipalDetailSeller principal,
 							@PageableDefault(page = 1) Pageable pageable) {
 		Product theProduct = productService.getProduct(pno);
-		
+
 		/* 별점 평균 구하기 */
 		List<Review> reviewList = theProduct.getReview();
 		if(reviewList != null) {
