@@ -221,11 +221,11 @@ public class MemberController {
 	
 	/** 내 정보 확인 전 비밀번호 체크 처리
 	 * @author 정동욱
-	 * @param memberDto
-	 * @param model
-	 * @param response
-	 * @return
-	 * @throws IOException
+	 * @param memberDto    비밀번호 체크 페이지에서 넘어온 값을 받을 Dto 객체
+	 * @param model	 	   내 정보 확인 페이지에 넘겨줄 정보 저장
+	 * @param response     비밀번호 체크 실패 시 alert창을 생성하기 위한 객체
+	 * @return			   비밀번호 체크 성공 시 내 정보 확인 페이지로 이동, 실패 시 알림 후 비밀번호 체크 페이지로 이동(새로고침)
+	 * @throws IOException PrintWriter 객체 사용으로 스트림 발생. 스트림 예외
 	 */
 	@PostMapping("/infoCheck")
 	public String infoCheck(MemberDto memberDto, Model model,
@@ -579,8 +579,14 @@ public class MemberController {
 		// ajax라 별 의미 없음...
 		return "redirect:coupon";
 	}
-	
-	/** 마이올잇>리뷰관리 */
+
+	/** 마이올잇>리뷰관리 조회
+	 * @author 정동욱
+	 * @param model 	리뷰목록 페이지에 넘겨줄 정보 저장
+	 * @param pageable 	리뷰목록 페이징 처리를 위해 필요한 객체
+	 * @param principal 현재 로그인을 통해 인증된 객체
+	 * @return			리뷰목록 페이지로 이동
+	 */
 	@GetMapping("/reviewList")
 	public String reviewView(Model model,
 							@PageableDefault(page = 1) Pageable pageable,
@@ -601,8 +607,13 @@ public class MemberController {
 		
 		return "mypage/reviewList";
 	}
-	
-	/** 마이올잇>리뷰작성 */
+
+	/** 마이올잇>리뷰작성 화면 조회
+	 * @author 정동욱
+	 * @param model 리뷰목록 페이지에 넘겨줄 정보 저장
+	 * @param odno 	주문목록 페이지에서 넘긴 주문상세 번호
+	 * @return		리뷰작성 페이지로 이동
+	 * */
 	@GetMapping("/reviewWrite/{odno}")
 	public String reviewWriteView(Model model,
 								@PathVariable int odno) {
@@ -613,7 +624,11 @@ public class MemberController {
 		return "mypage/reviewWrite";
 	}
 	
-	/** 마이올잇>리뷰작성 */
+	/** 마이올잇>리뷰작성
+	 * @author 정동욱
+	 * @param reviewDto 리뷰작성 화면에서 넘어온 값을 받을 Dto 객체
+	 * @return 리뷰작성 후 리뷰목록 페이지로 이동
+	 *  */
 	@PostMapping("/writeReview")
 	public String writeReview(ReviewDto reviewDto) throws Exception {
 		memberService.saveReview(reviewDto);
@@ -621,7 +636,13 @@ public class MemberController {
 		return "redirect:reviewList";
 	}
 	
-	/** 마이올잇>좋아요리스트 */
+	/** 마이올잇>좋아요리스트
+	 * @author 정동욱
+	 * @param model 	좋아요목록 페이지에 넘겨줄 정보 저장
+	 * @param pageable 	좋아요목록 페이징 처리를 위해 필요한 객체
+	 * @param principal 현재 로그인을 통해 인증된 객체
+	 * @return 			좋아요목록 페이지로 이동
+	 *  */
 	@GetMapping("/likeList")
 	public String likeView(Model model,
 							@PageableDefault(page = 1) Pageable pageable,
