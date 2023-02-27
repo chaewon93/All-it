@@ -177,10 +177,7 @@ public class CouponServiceImpl implements CouponService {
 				allCouList.retainAll(allCouList4);
 			}else if(pro.getMdPickyn() == 1) {
 				// 상품이 MDPICK 이면 YES와 NO 모두 조건에 맞으므로 따로 과정 없음
-				// 상품이 MDPICK 이면 YES 인 쿠폰만 조회해서 중복 제거
-				List<Coupon> allCouList4 = couponRepo.findCouponByConditionContaining("YES");
-				allCouList.retainAll(allCouList4);
-				System.out.println(allCouList);
+
 			}
 			
 			// 판매자 조건 쿠폰 조회 후 중복 제거
