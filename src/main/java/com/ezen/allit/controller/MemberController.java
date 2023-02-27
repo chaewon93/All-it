@@ -11,8 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -37,6 +40,7 @@ import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
 import com.ezen.allit.dto.MemberDto;
+import com.ezen.allit.dto.ResponseDto;
 import com.ezen.allit.dto.ReviewDto;
 import com.ezen.allit.repository.CouponRepository;
 import com.ezen.allit.repository.MemCouponRepository;
@@ -465,11 +469,23 @@ public class MemberController {
 						@RequestParam(value = "status", defaultValue = "cancel") String status) {
 		
 		// 주문취소 내역
-		Page<OrdersDetail> cancelList = orderService.getCancelList(member, 5, pageable);
+		Page<OrdersDetail> cancelList = orderService.getCancelList(member, 5, pageable.getPageNumber() - 1);
 		// 교환 내역
-		Page<OrdersDetail> exchangeList = orderService.getExchangeAndRefundList(member, 6, 9, pageable);
+		Page<OrdersDetail> exchangeList = orderService.getExchangeAndRefundList(member, 6, 9, pageable.getPageNumber() - 1);
 		// 반품 내역
-		Page<OrdersDetail> refundList = orderService.getExchangeAndRefundList(member, 7, 10, pageable);
+		Page<OrdersDetail> refundList = orderService.getExchangeAndRefundList(member, 7, 10, pageable.getPageNumber() - 1);
+		
+		/* 각 탭에서 페이징 이동 후 다른 탭 클릭시 해당 페이지가 없으면 각 탭의 첫번째 페이지로 강제 세팅 */
+		if(cancelList.getTotalPages() < pageable.getPageNumber()) {
+			cancelList = orderService.getCancelList(member, 5, 0);
+			//cancelList = ordersDetailRepo.findByMemberAndStatusAndCancelDateNotNull(member, 5, PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "odno")));
+		}
+		if(exchangeList.getTotalPages() < pageable.getPageNumber()) {
+			exchangeList = orderService.getExchangeAndRefundList(member, 6, 9, 0);
+		}
+		if(refundList.getTotalPages() < pageable.getPageNumber()) {
+			refundList = orderService.getExchangeAndRefundList(member, 7, 10, 0);
+		}
 		
 //		int naviSize = 10; // 페이지네이션 갯수
 //		int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / naviSize))) - 1) * naviSize + 1; // 1 11 21 31 ~~
@@ -493,7 +509,7 @@ public class MemberController {
 		
 		return "mypage/cancelList";
 	}
-
+	
 	
 	/** 쿠폰조회 팝업창 */
 	@GetMapping("coupon")

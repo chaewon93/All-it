@@ -41,10 +41,10 @@ public interface OrderService {
 	void refundOrder(int status, String reason, int odno);
 	
 	/** 취소 내역 조회 */
-	Page<OrdersDetail> getCancelList(Member member, int status, Pageable pageable);
+	Page<OrdersDetail> getCancelList(Member member, int status, int pageNum);
 
 	/** 교환/반품 내역 조회 */
-	Page<OrdersDetail> getExchangeAndRefundList(Member member, int status1, int status2, Pageable pageable);
+	Page<OrdersDetail> getExchangeAndRefundList(Member member, int status1, int status2, int pageNum);
 	
 	/** 판매자가 주문상태 변경 */
 	void modifyOrderStatus(OrdersDetailDto orderDetailDto, int status);

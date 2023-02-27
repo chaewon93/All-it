@@ -34,9 +34,12 @@
 						</a><br>
 						<span th:text="${#numbers.formatInteger(detail.product.price, 1, 'COMMA')}+'원'"></span>
 					</div>
+					<div th:if="${ detail.product.seller.role.toString().equals('INACTIVE') }">
+						<p style="color: red">현재 구매 불가한 제품입니다</p>
+					</div>
 				</div>
 				<div align="right">
-					<input type="button" class="btn btn-outline-secondary" id="inCart" value="장바구니 담기">
+					<input type="button" class="btn btn-outline-secondary" id="inCart" value="장바구니 담기" th:onclick="'javascript:index.insertCart(' +${ detail.product.pno }+ ');'">
 				</div>	
 			</td>
 			<td th:text="${detail.quantity}+'개'"></td>
@@ -50,14 +53,18 @@
 				<td th:case="5">주문취소</td>
 				<td th:case="6">교환신청</td>
 				<td th:case="7">반품신청</td>
+				<td th:case="8">리뷰작성완료</td>
+				<td th:case="9">교환완료</td>
+				<td th:case="10">반품완료</td>
 			</th:block>
 			<td>
 				<input type="button" th:if="${detail.status == 1}" id="cancelOrder" value="주문취소" class="btn btn-outline-secondary" th:onclick="'javascript:index.cancelOrder(' +${ detail.orders.ono }+ ',' +${ detail.odno }+ ');'">
 				<input type="button" th:if="${detail.status == 2}" id="delivery" value="배송조회" class="btn btn-outline-secondary" th:onclick="'javascript:index.openDelivery(this);'" data-toggle="modal" data-target="#deliveryModal" th:data-pname="${detail.product.name}">
 				<input type="button" th:if="${detail.status == 3}" id="buyComplete" value="구매확정" class="btn btn-outline-secondary" th:onclick="'javascript:index.buyComplete(' +${ detail.odno }+ ');'">
-          		<input type="button" id="qna" value="상품문의" class="btn btn-outline-secondary" th:onclick="'javascript:index.openQna(this);'" data-toggle="modal" data-target="#qnaModal" th:data-product="${ detail.product.name }" th:data-seller="${ detail.product.seller.id }" th:data-pno="${ detail.product.pno }"/>
+          		<input type="button" th:if="${detail.product.seller.role.toString().equals('SELLER')}" id="qna" value="상품문의" class="btn btn-outline-secondary" th:onclick="'javascript:index.openQna(this);'" data-toggle="modal" data-target="#qnaModal" th:data-product="${ detail.product.name }" th:data-seller="${ detail.product.seller.id }" th:data-pno="${ detail.product.pno }"/>
 				<input type="button" th:if="${detail.status == 3}" id="refund" value="교환/반품 신청" class="btn btn-outline-secondary" th:onclick="'javascript:index.openRefund(this);'" data-toggle="modal" data-target="#refundModal" th:data-odno="${ detail.odno }" th:data-pname="${ detail.product.name }">
-				<input type="button" th:if="${detail.status == 4}" id="writeReview" value="리뷰작성" class="btn btn-outline-secondary" th:onclick="'javascript:index.writeReview(' +${ detail.odno }+ ');'">
+				<input type="button" th:if="|${detail.product.seller.role.toString().equals('SELLER') && detail.status == 4}|" id="writeReview" value="리뷰작성" class="btn btn-outline-secondary" th:onclick="'javascript:index.writeReview(' +${ detail.odno }+ ');'">
+				<!-- <input type="text" th:value="${detail.product.seller.role}"> -->
 				
 				<input type="hidden" th:value="${ detail.orders.ono }" id="ono" name="ono">
 	 			<input type="hidden" th:value="${ session['user']?.id }" id="mid" name="mid">
@@ -277,7 +284,7 @@ let index = {
     },
 
 	// 장바구니 담기
-	insertCart:function() {
+	insertCart:function(pno) {
 		let user_id = $("#mid").val();
 		
 		if(user_id == "" || user_id == "undefined") {
@@ -292,7 +299,7 @@ let index = {
 				type: "post",
 				data: JSON.stringify({
 					mid: $("#mid").val(),
-					pno: $("#pno").val(),
+					pno: pno,
 					quantity : 1
 				}),
 				dataType: "text",
@@ -311,8 +318,8 @@ let index = {
 								type: "post",
 								data: JSON.stringify({
 									mid: $("#mid").val(),
-									pno: $("#pno").val(),
-									quantity : $("#quantity").val(),
+									pno: pno,
+									quantity : 1,
 									type: "add"
 								}),
 								dataType: "text",

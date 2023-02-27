@@ -16,13 +16,13 @@
 <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item">
       <!-- <a class="nav-link text-danger active" data-toggle="tab" href="#menu1" onclick="refesh('cancel')">주문취소 내역</a> -->
-		<a class="nav-link text-danger" data-toggle="tab" href="#menu1" onclick="refesh('cancel')" id="tab1">주문취소 내역</a>
+		<a class="nav-link text-danger" data-toggle="tab" href="#menu1" onclick="refresh('cancel')" id="tab1">주문취소 내역</a>
     </li>
     <li class="nav-item">
-		<a class="nav-link text-danger" data-toggle="tab" href="#menu2" onclick="refesh('exchange')" id="tab2">교환 내역</a>
+		<a class="nav-link text-danger" data-toggle="tab" href="#menu2" onclick="refresh('exchange')" id="tab2">교환 내역</a>
     </li>
     <li class="nav-item">
-		<a class="nav-link text-danger" data-toggle="tab" href="#menu3" onclick="refesh('refund')" id="tab3">반품 내역</a>
+		<a class="nav-link text-danger" data-toggle="tab" href="#menu3" onclick="refresh('refund')" id="tab3">반품 내역</a>
     </li>
 </ul>
 <!-- Tab panes -->
@@ -194,6 +194,7 @@ $(document).ready(function(){
 	// 선택되어야 할 탭 구분
 	var status = $("#status").val();
 	console.log(status);
+//	alert("status = "+status);
 	
 	var tab1 = document.getElementById("tab1").classList;
 	var tab2 = document.getElementById("tab2").classList;
@@ -217,13 +218,13 @@ $(document).ready(function(){
 	}
 	
 	// 페이징 : 첫 화면일 때는 주문취소 페이징만 출력
-//	refresh(status);
-	$("#divCancel").show();
-	$("#divExchange").hide();
-	$("#divRefund").hide();
+	refresh(status);
+//	$("#divCancel").show();
+//	$("#divExchange").hide();
+//	$("#divRefund").hide();
 });
 
-function refesh(type) {
+function refresh(type) {
 	//console.log(type);
 	$("#status").val(type);
 	//alert($("#status").val());
@@ -241,6 +242,8 @@ function refesh(type) {
 		$("#divCancel").hide();
 		$("#divExchange").hide();
 	}
+}
+
 /*	
 	$.ajax({
 		url : "/member/"+type+"List",
@@ -259,7 +262,6 @@ function refesh(type) {
 		}
 	});
 */
-}
 </script>
 <!-- 자바스트립트 섹션 끝 -->
 
