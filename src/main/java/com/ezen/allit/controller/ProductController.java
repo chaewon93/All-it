@@ -42,7 +42,14 @@ public class ProductController {
 		}
 	}
 
-	/** 상품 검색 조회 */
+	/** 상품 검색 조회
+	 * @author 정동욱
+	 * @param model 		  상품목록 페이지에 넘겨줄 정보 저장
+	 * @param pageable 		  상품목록 페이지 페이징 처리를 위해 필요한 객체
+	 * @param searchCondition 검색조건으로 넘어온 값을 받을 객체 
+	 * @param searchKeyword	  검색어로 넘어온 값을 받을 객체
+	 * @return 				  상품목록 페이지로 이동
+	 */
 	@GetMapping("/")
 	public String getsearchList(Model model,
 							@PageableDefault(page = 1) Pageable pageable,
@@ -85,7 +92,14 @@ public class ProductController {
 		return "product/list";
 	}
 
-	/** 신상품 조회 */
+	/** 신상품 조회 
+	 * @author 정동욱
+	 * @param model 		  신상품목록 페이지에 넘겨줄 정보 저장
+	 * @param pageable 		  신상품목록 페이지 페이징 처리를 위해 필요한 객체
+	 * @param searchCondition 검색조건으로 넘어온 값을 받을 객체 
+	 * @param searchKeyword	  검색어로 넘어온 값을 받을 객체
+	 * @return 				  신상품목록 페이지로 이동
+	 */
 	@GetMapping("/new")
 	public String getNewList(Model model,
 							@PageableDefault(page = 1) Pageable pageable,
@@ -111,7 +125,7 @@ public class ProductController {
 		int endPage = ((startPage + naviSize - 1) < productList.getTotalPages()) ? startPage + naviSize - 1 : productList.getTotalPages();
 		
 		model.addAttribute("list", productList);
-		model.addAttribute("url", "/product/");
+		model.addAttribute("url", "/product/new");
 		model.addAttribute("productList", productList);
 		model.addAttribute("search", search);
 		model.addAttribute("startPage", startPage);
@@ -120,7 +134,14 @@ public class ProductController {
 		return "product/list";
 	}
 	
-	/** 베스트상품 조회 */
+	/** 베스트상품 조회 
+	 * @author 정동욱
+	 * @param model 		  베스트상품목록 페이지에 넘겨줄 정보 저장
+	 * @param pageable 		  베스트상품목록 페이지 페이징 처리를 위해 필요한 객체
+	 * @param searchCondition 검색조건으로 넘어온 값을 받을 객체 
+	 * @param searchKeyword	  검색어로 넘어온 값을 받을 객체
+	 * @return 				  베스트상품목록 페이지로 이동
+	 */
 	@GetMapping("/best")
 	public String getBestList(Model model,
 							@PageableDefault(page = 1) Pageable pageable,
@@ -146,7 +167,7 @@ public class ProductController {
 		int endPage = ((startPage + naviSize - 1) < productList.getTotalPages()) ? startPage + naviSize - 1 : productList.getTotalPages();
 		
 		model.addAttribute("list", productList);
-		model.addAttribute("url", "/product/");
+		model.addAttribute("url", "/product/best");
 		model.addAttribute("productList", productList);
 		model.addAttribute("search", search);
 		model.addAttribute("startPage", startPage);
@@ -155,7 +176,14 @@ public class ProductController {
 		return "product/list";
 	}
 	
-	/** 특가세일상품 조회 */
+	/** 특가세일상품 조회
+	 * @author 정동욱
+	 * @param model 		  특가세일 상품목록 페이지에 넘겨줄 정보 저장
+	 * @param pageable 		  특가세일 상품목록 페이지 페이징 처리를 위해 필요한 객체
+	 * @param searchCondition 검색조건으로 넘어온 값을 받을 객체 
+	 * @param searchKeyword	  검색어로 넘어온 값을 받을 객체
+	 * @return 				  특가세일 상품목록 페이지로 이동
+	 */
 	@GetMapping("/sale")
 	public String getSaleList(Model model,
 							@PageableDefault(page = 1) Pageable pageable,
@@ -219,14 +247,21 @@ public class ProductController {
 		return "product/mdpickList";
 	}
 	
-	/** 상품 상세조회 */
+	/** 상품 상세조회
+	 * @author 정동욱
+	 * @param model 	상품 페이지에 넘겨줄 정보 저장
+	 * @param pno       상품목록 페이지에서 넘겨준 상품번호
+	 * @param principal 현재 로그인을 통해 인증된 객체
+	 * @param pageable  상품조회 후 페이징 유지를 위해 필요한 객체
+	 * @return 			상품 페이지로 이동
+	 */
 	@GetMapping("/{pno}")
 	public String getProduct(Model model,
 							@PathVariable int pno,
 							@AuthenticationPrincipal PrincipalDetailSeller principal,
 							@PageableDefault(page = 1) Pageable pageable) {
 		Product theProduct = productService.getProduct(pno);
-		
+
 		/* 별점 평균 구하기 */
 		List<Review> reviewList = theProduct.getReview();
 		if(reviewList != null) {
@@ -257,7 +292,12 @@ public class ProductController {
 		return "product/detail";
 	}
 	
-	/** 별점 자릿수 계산 매서드 */
+	/** 별점 자릿수 계산 매서드
+	 * @author 정동욱
+	 * @param rating   평균별점을 받을 객체
+	 * @param position 평균을 소수점 1자리까지만 출력하기 위해 자릿수를 정하는 객체
+	 * @return 		   소수점 1자리까지 계산된 평균별점
+	 */
 	public static float getRating(float rating, int position) {
 		float num = (float) Math.pow(10.0, position);
 		

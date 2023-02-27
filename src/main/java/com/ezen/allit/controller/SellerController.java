@@ -48,14 +48,21 @@ public class SellerController {
 	private final SellerService sellerService;
 	private final AuthenticationManager authenticationManager;
 		
-	// 판매자 상품등록 화면 이동
+	/** 상품등록
+	 * @author 정동욱
+	 * @return 상품등록 페이지로 이동
+	 */
 	@GetMapping("/insert")
 	public String insertView() {
 		
 		return "seller/insert";
 	}
 	
-	// 로그아웃
+	/** 로그아웃
+	 * @author 정동욱
+	 * @param  session 로그인 후 인증된 객체
+	 * @return 메인 페이지로 이동
+	 */
 //	@GetMapping("/logout")
 //	public String logout(HttpSession session) {
 //		session.invalidate();
@@ -63,8 +70,11 @@ public class SellerController {
 //		return "redirect:/";
 //	}
 	
-	/*
-	 * 판매자 로그인
+	/** 판매자 로그인
+	 * @author 정동욱
+	 * @param seller  로그인 페이지에서 넘어온 값을 담은 객체
+	 * @param session 로그인 성공시 저장할 세션 객체
+	 * @return 		  로그인 성공시 Role에 따라 관리자 메인, 판매자 메인 페이지로 이동, 실패시 로그인 페이지 이동(새로고침)
 	 */
 //	@PostMapping("/login")
 //	public String login(Seller seller, HttpSession session) {
@@ -88,7 +98,12 @@ public class SellerController {
 //		}
 //	}
 	
-	// 판매자 마이페이지 이동
+	/** 판매자 마이페이지 이동
+	 * @author 정동욱, 임채원
+	 * @param model 	판매자 마이페이지에 넘겨줄 정보 저장
+	 * @param principal 현재 로그인을 통해 인증된 객체
+	 * @return 			Role에 따라 관리자 마이페이지, 판매자 메인페이지로 이동 
+	 */
 	@GetMapping("/mypage")
 	public String mypageView(Model model,
 						@AuthenticationPrincipal PrincipalDetailSeller principal) {
@@ -111,7 +126,15 @@ public class SellerController {
 
 	}
 	
-	/** 판매자 정보 수정 전 비밀번호 확인 */
+	/** 판매자 정보 수정 전 비밀번호 확인 
+	 * @author 정동욱
+	 * @param seller 	비밀번호 확인 페이지에서 넘어온 값을 담을 객체
+	 * @param model 	비밀번호 확인 후 주소정보를 담을 객체
+	 * @param response  비밀번호 확인 실패 시 alert창을 생성하기 위한 객체
+	 * @param principal 현재 로그인을 통해 인증된 객체
+	 * @return 			비밀번호 인증 성공 시 마이페이지로 이동, 실패 시 알림 후 비밀번호 확인 페이지로 이동(새로고침)
+	 * @throws IOException PrintWriter 객체 사용으로 스트림 발생. 스트림 예외
+	 */
 	@PostMapping("/infoCheck")
 	public String infoCheck(Seller seller, Model model, HttpServletResponse response,
 						@AuthenticationPrincipal PrincipalDetailSeller principal) throws IOException {
@@ -139,7 +162,12 @@ public class SellerController {
 		}
 	}
 	
-	/** 판매자 비밀번호변경 */
+	/** 판매자 비밀번호변경 
+	 * @author 임채원
+	 * @param model  비밀번호변경 성공 후 변경된 값을 다시 담을 객체
+	 * @param seller 비밃번호변경 페이지에서 넘어온 값을 받을 객체
+	 * @return 	  	 ajax 사용. 페이지 이동이 아닌 매서드 처리가 성공했음을 알림
+	 */
 	@ResponseBody
 	@PutMapping("/Pwdmodify/{pwd}")
 	public ResponseDto<Integer> modifyPwd(Model model,
@@ -151,8 +179,10 @@ public class SellerController {
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);		
 	}
 	
-	/*
-	 * 판매자 정보 수정
+	/** 판매자 정보 수정
+	 * @author 정동욱
+	 * @param seller 정보수정 페이지에서 넘어온 값을 받을 객체
+	 * @return		 판매자 메인 페이지로 이동
 	 */
 	@PostMapping("/modify")
 	public String modify(Seller seller) {
@@ -165,13 +195,16 @@ public class SellerController {
 		return "redirect:/seller/";
 	}
 	
-	/** 판매자 탈퇴 */
+	/** 판매자 탈퇴 
+	 * @author 임채원
+	 * @param seller 회원탈퇴 페이지에서 넘어온 값으로 DB의 패스워드와 비교할 객체
+	 * @return		 비밀번호가 맞으면 1, 틀리면 0을 반환
+	 */
 	@ResponseBody
 	@DeleteMapping("/delete/{id}")
-	public int deleteMember(Model model, @RequestBody Seller seller) {
+	public int deleteMember(@RequestBody Seller seller) {
 		boolean match = sellerService.pwdCheck(seller);
-		System.out.println("seller = " + seller);
-		System.out.println("match = " + match);
+
 		if(match) {
 			sellerService.quit(seller);
 			SecurityContextHolder.clearContext();			
@@ -181,8 +214,14 @@ public class SellerController {
 		}
 	}
 	
-	/*
-	 * 판매자 메인화면 이동
+	/** 판매자 메인화면 이동
+	 * @author 정동욱
+	 * @param model 		  판매자 메인 페이지에 넘겨줄 정보 저장
+	 * @param searchCondition 검색조건으로 넘어온 값을 받을 객체 
+	 * @param searchKeyword   검색어로 넘어온 값을 받을 객체
+	 * @param pageable 		  판매자 메인 페이지 페이징 처리를 위해 필요한 객체
+	 * @param principal 	  현재 로그인을 통해 인증된 객체
+	 * @return 				  판매자 메인 페이지로 이동
 	 */
 	@RequestMapping("/")
 	public String mainView(Model model,
@@ -228,8 +267,12 @@ public class SellerController {
 		return "seller/productList";
 	}
 	
-	/*
-	 * 판매자 미등록상품목록 조회
+	/** 판매자 미등록상품목록 조회
+	 * @author 정동욱
+	 * @param model 	판맴자 미등록 상품목록 페이지에 넘겨줄 정보 저장
+	 * @param pageable 	판매자 미등록 상품목록 페이지 페이징 처리를 위해 필요한 객체
+	 * @param principal 현재 로그인을 통해 인증된 객체
+	 * @return 			판매자 미등록 상품목록 페이지로 이동
 	 */
 	@RequestMapping("/unregistered")
 	public String getUnregisteredProductList(Model model,
@@ -252,8 +295,13 @@ public class SellerController {
 		return "seller/unRegisteredProductList";
 	}
 	
-	/*
-	 * 판매자 주문목록조회
+	/** 판매자 주문목록조회
+	 * @author 정동욱
+	 * @param model 		판매자 주문목록 페이지에 넘겨줄 정보 저장
+	 * @param searchKeyword 검색어로 넘어온 값을 받을 객체
+	 * @param pageable 		판매자 주문목록 페이지 페이징 처리를 위해 필요한 객체
+	 * @param principal 	현재 로그인을 통해 인증된 객체
+	 * @return 				판매자 주문목록 페이지로 이동
 	 */
 	@GetMapping("/order")
 	public String getOrderList(Model model,
@@ -285,8 +333,13 @@ public class SellerController {
 		return "seller/orderList";
 	}
 	
-	/*
-	 * 판매자 qna목록조회
+	/** 판매자 qna목록조회
+	 * @author 정동욱
+	 * @param model 		판매자 문의목록 페이지에 넘겨줄 정보 저장
+	 * @param searchKeyword 검색어로 넘어온 값을 받을 객체
+	 * @param pageable 		판매자 문의목록 페이지 페이징 처리를 위해 필요한 객체
+	 * @param principal 	현재 로그인을 통해 인증된 객체
+	 * @return 				판매자 문의목록 페이지로 이동
 	 */
 	@GetMapping("/qna")
 	public String getQnAList(Model model,
@@ -319,8 +372,12 @@ public class SellerController {
 		return "seller/qnaList";
 	}
 	
-	/*
-	 * 판매자 상품조회
+	/** 판매자 상품조회
+	 * @author 정동욱
+	 * @param model    판매자 상품 페이지에 넘겨줄 정보 저장
+	 * @param pno      판매자 상품목록 페이지에서 넘겨준 상품번호
+	 * @param pageable 판매자 상품조회 후 페이징 유지를 위해 필요한 객체
+	 * @return 		   판매자 상품 페이지로 이동
 	 */
 	@GetMapping("/product/{pno}")
 	public String getProduct(Model model,
@@ -352,19 +409,30 @@ public class SellerController {
 		return "seller/product";
 	}
 	
-	/*
-	 * 판매자 qna조회
+	/** 판매자 qna조회
+	 * @author 정동욱
+	 * @param model    판매자 문의답변 페이지에 넘겨줄 정보 저장
+	 * @param qno      판매자 문의목록 페이지에서 넘겨준 상품번호
+	 * @param pageable 판매자 문의조회 후 페이징 유지를 위해 필요한 객체
+	 * @return 		   판매자 문의답변 페이지로 이동
 	 */
 	@GetMapping("/qna/{qno}")
-	public String getQnA(@PathVariable int qno, Model model) {
+	public String getQnA(Model model,
+						@PathVariable int qno,
+						@PageableDefault(page = 1) Pageable pageable) {
+		
 		QnA qna = sellerService.getQnA(qno);
 		model.addAttribute("qna", qna);
+		model.addAttribute("page", pageable.getPageNumber());
 		
 		return "seller/qna";
 	}
 	
-	/*
-	 * 판매자 상품등록
+	/** 판매자 상품등록
+	 * @author 정동욱
+	 * @param product   판매자 상품등록 페이지에서 넘어온 값을 받을 객체
+	 * @param imagaFile 판매자 상품등록 페이지에서 넘어온 file객체를 받을 객체
+	 * @return 		    판매자 메인 페이지로 이동
 	 */
 	@PostMapping("/product/insert")
 	public String insertProduct(Product product, MultipartFile imageFile) throws Exception {
@@ -373,8 +441,12 @@ public class SellerController {
 		return "redirect:/seller/";
 	}
 	
-	/*
-	 * 판매자 상품수정
+	/** 판매자 상품수정
+	 * @author 정동욱
+	 * @param pno		판매자 상품수정 페이지에서 넘어온 값을 받을 객체
+	 * @param product   판매자 상품수정 페이지에서 넘어온 값을 받을 객체
+	 * @param imagaFile 판매자 상품수정 페이지에서 넘어온 file객체를 받을 객체
+	 * @return 		    판매자 메인 페이지로 이동
 	 */
 	@PostMapping("/product/modify")
 	public String modifyProduct(int pno, Product product, MultipartFile imageFile) throws Exception {
@@ -383,8 +455,11 @@ public class SellerController {
 		return "redirect:/seller/";
 	}
 	
-	/*
-	 * 별점 자릿수 계산 매서드
+	/** 별점 자릿수 계산 매서드
+	 * @author 정동욱
+	 * @param rating   평균별점을 받을 객체
+	 * @param position 평균을 소수점 1자리까지만 출력하기 위해 자릿수를 정하는 객체
+	 * @return 		   소수점 1자리까지 계산된 평균별점
 	 */
 	public static float getRating(float rating, int position) {
 		float num = (float) Math.pow(10.0, position);

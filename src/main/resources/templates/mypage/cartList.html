@@ -24,13 +24,23 @@
 				</tr>
 				
 				<tr th:each="cart, st : ${cartList}">
-					<td><input type="checkbox" name="cno" id="cno" th:value="${ cart.cno }"></td>
+					<td><input type="hidden" th:value="${ cart.product.seller.role }" name="inactive" id="inactive">
+					<input type="checkbox" name="cno" id="cno" th:value="${ cart.cno }"></td>
 					<td>
-						<a th:href="@{ |/product/${ cart.product.pno }| }">
-						<img class="img-fluid" th:src="@{ /images/product/ } + ${ cart.product.imageName }" width="100">
-							<b class="text-info" th:text="${ cart.product.name }"></b>
-						</a>
-						<span th:text="${#numbers.formatInteger(cart.product.price, 1, 'COMMA')}+'원'"></span>
+						<div style="display: flex;">
+							<div class="col-ms-2">
+								<img class="img-fluid" th:src="@{ /images/product/ } + ${ cart.product.imageName }" width="100">
+							</div>
+							<div class="col-ms-4" style="width: 300px; margin-left: 20px;">
+								<a th:href="@{ |/product/${ cart.product.pno }| }">
+									<b class="text-info" th:text="${ cart.product.name }"></b>
+								</a><br>
+								<span th:text="${#numbers.formatInteger(cart.product.price, 1, 'COMMA')}+'원'"></span>
+							</div>
+							<div th:if="${ cart.product.seller.role.toString().equals('INACTIVE') }">
+								<p style="color: red">현재 구매 불가한 제품입니다</p>
+							</div>
+						</div>
 					</td>
 					<td>
 						<input type="hidden" th:value="${ #authentication.principal.member?.id }" name="mid" id="mid">
@@ -166,12 +176,21 @@
 	}
 	
 	// 주문하기
-	function goOrderList(){
+	function goOrderList(btn){
 		var valueArr = new Array();
 		var list = $("input[name='cno']");
+		var inactiveArr = new Array();
+		
 		for(var i=0; i<list.length; i++) {
 			if(list[i].checked) {
-				valueArr.push(list[i].value);
+				var inactive = list[i].previousElementSibling.value;
+				console.log(inactive);
+				if(inactive == 'INACTIVE') {
+					alert("판매가 종료된 상품이 포함되어 있습니다. 삭제해주세요."); 
+					return false;	
+				} else {
+					valueArr.push(list[i].value);
+				}
 			}
 		}
 		if(valueArr.length == 0) {

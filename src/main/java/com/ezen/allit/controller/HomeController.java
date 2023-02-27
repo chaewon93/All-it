@@ -36,11 +36,9 @@ public class HomeController {
 		// 메인화면에 출력되는 이벤트 리스트와 mdPick 리스트
 		String pick ="1";
 		List<CustomerCenter> eventList = custoService.findCustomerCenterByPick(pick);
-		
 		model.addAttribute("eventList", eventList);
 		
 		List<Product> proList = proService.getMdpickProductMainPage();
-		
 		model.addAttribute("proList", proList);
 		
 		return "index";
@@ -110,7 +108,6 @@ public class HomeController {
 	 */
 	@GetMapping("/findIdAndPw")
 	public String findForm() {
-		System.out.println("개짱나네!!!");
 		return "member/findIdAndPw";
 	}
 

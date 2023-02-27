@@ -23,11 +23,18 @@
 		</tr>
 		<!-- <tr th:text="${#dates.format(orderDetailList.orders.regDate, 'yyyy-MM-dd')} +' 주문'" /> -->
 		<tr th:each="detail : ${orderDetailList}">
-			<td><a th:href="@{ |/product/${ detail.product.pno }| }">
-				<img class="img-fluid" th:src="@{ /images/product/ } + ${ detail.product.imageName }" width="100">
-					<b class="text-info" th:text="${ detail.product.name }"></b>
-				</a> 
-				<span th:text="${#numbers.formatInteger(detail.product.price, 1, 'COMMA')}+'원'"></span>
+			<td>
+				<div style="display: flex;">
+					<div class="col-ms-2">
+						<img class="img-fluid" th:src="@{ /images/product/ } + ${ detail.product.imageName }" width="100">
+					</div>
+					<div class="col-ms-4" style="width: 300px; margin-left: 20px;">
+						<a th:href="@{ |/product/${ detail.product.pno }| }">
+							<b class="text-info" th:text="${ detail.product.name }"></b>
+						</a><br>
+						<span th:text="${#numbers.formatInteger(detail.product.price, 1, 'COMMA')}+'원'"></span>
+					</div>
+				</div>
 				<div align="right">
 					<input type="button" class="btn btn-outline-secondary" id="inCart" value="장바구니 담기">
 				</div>	
@@ -45,14 +52,7 @@
 				<td th:case="7">반품신청</td>
 			</th:block>
 			<td>
-<!-- 				<input type="button" th:if="${detail.status == 1}" id="cancelOrder" value="주문취소" class="btn btn-light"> 
-				<input type="button" th:if="${detail.status == 2}" id="delivery" value="배송조회" class="btn btn-light"> 
-				<input type="button" th:if="${detail.status == 3}" id="buyComplete" value="구매확정" class="btn btn-light"> 
-				<input type="button" th:if="${detail.status == 3}" id="refund" value="교환/반품 신청" class="btn btn-light"> 
-				<input type="button" class="btn btn-light" id="productQna" value="상품문의"> 
-				<input type="button" th:if="${detail.status == 3}" id="writeReview" value="리뷰작성" class="btn btn-light">
- -->
-				<input type="button" th:if="${detail.status == 1}" id="cancelOrder" value="주문취소" class="btn btn-outline-secondary" th:onclick="'javascript:index.cancelOrder(' +${ order.ono }+ ',' +${ detail.odno }+ ');'">
+				<input type="button" th:if="${detail.status == 1}" id="cancelOrder" value="주문취소" class="btn btn-outline-secondary" th:onclick="'javascript:index.cancelOrder(' +${ detail.orders.ono }+ ',' +${ detail.odno }+ ');'">
 				<input type="button" th:if="${detail.status == 2}" id="delivery" value="배송조회" class="btn btn-outline-secondary" th:onclick="'javascript:index.openDelivery(this);'" data-toggle="modal" data-target="#deliveryModal" th:data-pname="${detail.product.name}">
 				<input type="button" th:if="${detail.status == 3}" id="buyComplete" value="구매확정" class="btn btn-outline-secondary" th:onclick="'javascript:index.buyComplete(' +${ detail.odno }+ ');'">
           		<input type="button" id="qna" value="상품문의" class="btn btn-outline-secondary" th:onclick="'javascript:index.openQna(this);'" data-toggle="modal" data-target="#qnaModal" th:data-product="${ detail.product.name }" th:data-seller="${ detail.product.seller.id }" th:data-pno="${ detail.product.pno }"/>

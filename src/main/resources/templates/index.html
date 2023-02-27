@@ -63,7 +63,7 @@ $(document).ready(function() {
 </div>
 <!-- 내용 섹션 끝 -->
 
-<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+<div th:replace="~{ /fragments/footer.html :: footer }" sec:authorize="!hasRole('TEMP')"></div>
 <!-- footer replace -->
 </body>
 </html>

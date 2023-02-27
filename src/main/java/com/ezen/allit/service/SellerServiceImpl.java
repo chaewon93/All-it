@@ -13,7 +13,6 @@ import java.io.File;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.ezen.allit.domain.Member;
 import com.ezen.allit.domain.OrdersDetail;
 import com.ezen.allit.domain.Product;
 import com.ezen.allit.domain.QnA;
@@ -89,11 +88,12 @@ public class SellerServiceImpl implements SellerService {
 	}
 	
 	/*
-	 * 판매자 탈퇴
+	 * 판매자 탈퇴(롤 변경)
 	 */
 	@Transactional
 	public void quit(Seller seller) {
-		sellerRepo.deleteById(seller.getId());
+		Seller theSeller = sellerRepo.findById(seller.getId()).get();
+		theSeller.setRole(Role.INACTIVE);
 	}
 	
 

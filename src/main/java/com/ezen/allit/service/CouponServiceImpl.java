@@ -208,21 +208,13 @@ public class CouponServiceImpl implements CouponService {
 			}			 
 			// 내가 가진 쿠폰 리스트에서 카테고리, MDPICK, 판매자 조건으로 사용 가능 조건 쿠폰 조회
 			if(memCoupon.getCoupon().getCondition().contains(Integer.toString(pro.getCategory())) || memCoupon.getCoupon().getCondition().contains("0")){
-				System.out.println("======================================= 카테고리로 컷");
-				System.out.println(memCoupon);
 				if(memCoupon.getCoupon().getCondition().contains(MdPick) || memCoupon.getCoupon().getCondition().contains("NO")) {
-					System.out.println("======================================= MDPICK로 컷");
-					System.out.println(memCoupon);
 					if(memCoupon.getCoupon().getCondition().contains(pro.getSeller().getId()) || memCoupon.getCoupon().getCondition().contains("SELLERS")) {
-						System.out.println("======================================= 판매자로 컷");
-						System.out.println(memCoupon);
 						memCouList.add(memCoupon);
 					}
 				}
 			}
 		}
-		System.out.println("==================================================== 내가 가지는 쿠폰");
-		System.out.println(memCouList);
 		return memCouList;
 	}
 	
