@@ -467,7 +467,7 @@ public class AdminController {
 		
 		// 특정 쿠폰 지금은 couId가 3인 쿠폰을 보내줌 
 		for(Member member : memList) {
-			couponService.insertMemCoupon(member, 3);
+			couponService.insertMemCoupon(member, 81);
 		}		
 	}
 }
