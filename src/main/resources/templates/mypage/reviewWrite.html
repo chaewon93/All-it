@@ -15,13 +15,14 @@
 
 <body th:align="center">
 <div class="container" style="height: 800px; margin-top: 30px;">
+<h1>상품 품질 리뷰</h1>
 	<form th:action="@{ /member/writeReview }" method="post" enctype="multipart/form-data">
 		<br>
 		<table th:align="center">		
-			<tr>
+			<!-- <tr>
 				<th></th>
 				<th>상품 품질 리뷰</th>
-			</tr>
+			</tr> -->
 			<tr><th></th></tr><tr><th></th></tr><tr><th></th></tr><tr><th></th></tr>
 			<tr>
 				<th></th>
@@ -53,9 +54,9 @@
 			</tr>
 			<tr><th></th></tr><tr><th></th></tr><tr><th></th></tr><tr><th></th></tr>	
 			<tr>
-				<th width="70" th:text="상세"></th>
+				<th width="70" th:text="내용"></th>
 				<td align="left">
-					<textarea name="content" id="content" cols="60" rows="10" placeholder="타인에게 불쾌감을 주는 내용을 삼가해주세요."></textarea>
+					<textarea name="content" id="content" cols="60" rows="10" placeholder="타인에게 불쾌감을 주는 내용을 삼가해주세요." class="form-control"></textarea>
 				</td>
 			</tr>
 			<tr><th></th></tr><tr><th></th></tr><tr><th></th></tr><tr><th></th></tr>
@@ -75,7 +76,7 @@
 					<input type="hidden" th:value="${ ordersDetail.product.pno }" name="pno" id="pno">
 					<input type="hidden" th:value="${ ordersDetail.product.seller.id }" name="sid" id="sid">
 					<input type="hidden" th:value="${ #authentication.principal.member?.id }" name="mid" id="mid">
-					<input type="submit" class="btn btn-primary" value="등록" onclick="return save()"/>
+					<input type="submit" class="btn btn-warning" value="리뷰 등록" onclick="return save()"/>
 				</td>
 			</tr>
 		</table>

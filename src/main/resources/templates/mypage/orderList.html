@@ -185,7 +185,7 @@
 				<span>카테고리 </span>
 				<select id="question-category" class="form-control">
 					<option th:value="상품">상품</option>
-				</select> <br><br>
+				</select> <br>
 				<span>제목 </span>
 				<input type="text" id="question-title" class="form-control"><br>
 				<span>문의내용 </span><br>
@@ -465,13 +465,14 @@ let index = {
 				reason = reason_txt;
 			}
 			console.log("odno :",$("#reason").val());
+			
 			$.ajax({
 				url: "/order/orderRefund",
 				type: "post",
 				data: JSON.stringify({
 					odno: $("#refund-odno").val(),
 					reason: reason,
-					type: $("#type").val()
+					type: $("input[name=type]:checked").val()
 				}),
 				dataType: "text",
 				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시

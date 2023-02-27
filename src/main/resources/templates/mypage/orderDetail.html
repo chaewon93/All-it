@@ -8,9 +8,9 @@
 </head>
 
 <body th:align="center">
-<h1>주문 상세</h1>
-<div style="display: flex;">
-<article>
+<div style="display: flex; margin-top: 30px;">
+<div class="container">
+<h1>주문 상세</h1><br>
 	<form name="formm" method="post">
 	<table id="orderList" class="table">
 		<tr>
@@ -114,8 +114,8 @@
 		<input type="button" value="≪ 주문목록 돌아가기" class="btn btn-outline-warning" onclick="location.href='/order/orderList'">
 		<!-- <input type="button" value="주문내역 삭제" class="btn btn-light" onclick=""> -->     
 	</div>
-	</form>  
-</article>
+	</form><br><br>  
+</div>
 </div>
 
 <!-- 배송조회 모달 섹션 시작 -->
@@ -438,7 +438,7 @@ let index = {
 				data: JSON.stringify({
 					odno: $("#refund-odno").val(),
 					reason: reason,
-					type: $("#type").val()
+					type: $("input[name=type]:checked").val()
 				}),
 				dataType: "text",
 				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
