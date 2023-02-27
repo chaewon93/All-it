@@ -27,6 +27,7 @@
 <input type="hidden" id="loginChk" th:if="${login == 'noLogin'}" th:value="noLogin">
 
 <!-- Nav tabs -->
+<div style="display: inline-block;">
 <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item">
       <a class="nav-link active text-danger" data-toggle="tab" href="#menu1">내 쿠폰</a>
@@ -34,10 +35,11 @@
     <li class="nav-item">
       <a class="nav-link text-danger" data-toggle="tab" href="#menu2">받을 수 있는 쿠폰</a>
     </li>
-    <li>
-    	<button type="button" id="regCou" name="regCou" value="등록" onclick="regCou()">등록</button>
-    </li>
 </ul>
+</div>
+<div align="right" style="float: right;">
+	<button type="button" id="regCou" name="regCou" value="등록" onclick="regCou()" class="btn btn-outline-warning">쿠폰 등록</button>
+</div>
 <!-- Tab panes -->
 <div class="tab-content">
 	<!-- 내 쿠폰 목록 시작 -->
@@ -116,6 +118,7 @@ $(document).ready(function() {
 	}
 })
 
+// 쿠폰 다운로드
 function downCou(btn){
 	
 	var chk = confirm("쿠폰을 다운받으시겠습니까?");
@@ -140,6 +143,7 @@ function downCou(btn){
 	}
 }
 
+// 쿠폰 등록 팝업창
 function regCou(){
 	
 	var url = "/member/findRegCoupon";
