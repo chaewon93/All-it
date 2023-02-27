@@ -34,6 +34,9 @@
     <li class="nav-item">
       <a class="nav-link text-danger" data-toggle="tab" href="#menu2">받을 수 있는 쿠폰</a>
     </li>
+    <li>
+    	<button type="button" id="regCou" name="regCou" value="등록" onclick="regCou()">등록</button>
+    </li>
 </ul>
 <!-- Tab panes -->
 <div class="tab-content">
@@ -135,6 +138,14 @@ function downCou(btn){
 		}); 
 
 	}
+}
+
+function regCou(){
+	
+	var url = "/member/findRegCoupon";
+
+	window.open(url, "_blank_", 
+		"toolbar=no, menubar=no, scrollbars=yes, resizable=no, width=550, height=550");
 }
 </script>
 

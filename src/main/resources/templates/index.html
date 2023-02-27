@@ -25,7 +25,7 @@ $(document).ready(function() {
 </head>
 <body>
 <!-- 내용 섹션 시작 -->
-<div id="contentDiv">
+<div id="contentDiv" sec:authorize="!hasRole('TEMP')">
 <div class="container" style="margin-top: 30px; background-color: white">
 	<!-- 이벤트 리스트에 등록된 고객센터 이미지 출력 -->
 	<div id="demo" class="carousel slide" data-ride="carousel">

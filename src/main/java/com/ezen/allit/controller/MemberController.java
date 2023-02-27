@@ -3,6 +3,7 @@ package com.ezen.allit.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +39,8 @@ import com.ezen.allit.domain.QnA;
 import com.ezen.allit.domain.Review;
 import com.ezen.allit.dto.MemberDto;
 import com.ezen.allit.dto.ReviewDto;
+import com.ezen.allit.repository.CouponRepository;
+import com.ezen.allit.repository.MemCouponRepository;
 import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.OrdersDetailRepository;
 import com.ezen.allit.repository.ProductRepository;
@@ -64,6 +67,12 @@ public class MemberController {
 	
 	@Autowired
 	private ProductRepository proRepo;
+	
+	@Autowired
+	private CouponRepository couRepo;
+	
+	@Autowired
+	private MemCouponRepository memCouRepo;
 	
 	@Autowired
 	private OrdersDetailRepository ordersDetailRepo;
@@ -516,6 +525,10 @@ public class MemberController {
 			for(MemCoupon memCou : memCouList) {
 				couponList.add(memCou.getCoupon());
 			}
+			
+			System.out.println("====================================== 쿠폰리스트 비교");
+			System.out.println(couList);
+			System.out.println(couponList);
 
 			// 두 쿠폰리스트에서 중복 제거
 			couList.removeAll(couponList);
@@ -576,10 +589,54 @@ public class MemberController {
 			@RequestParam Map<String, Object> map) {
 		
 		int couId = Integer.parseInt(String.valueOf(map.get("couId")));
+		System.out.println("========================MDPICK 쿠폰 테스트");
+		System.out.println(couId);
 		
 		couponService.insertMemCoupon(member, couId);
 		// ajax라 별 의미 없음...
 		return "redirect:coupon";
+	}
+
+	@GetMapping("findRegCoupon")
+	public String findRegCoupon() {
+		return "member/regCoupon";
+	}
+	
+	@PostMapping("findRegCoupon")
+	@ResponseBody
+	public Map<String, Object> findRegCoupon(@ModelAttribute("user") Member member, @RequestParam Map<String, Object> map) {
+		
+		String couponName = (String) map.get("coupon");
+		
+		Coupon coupon = couponService.findRegCoupon(couponName);
+		
+		MemCoupon memCou =  memCouRepo.findMemCouponByCouponAndMember(coupon, member);
+		
+		if(memCou == null) {
+			
+			Map<String, Object> map1 = new HashMap<>();
+			map1.put("couCon", coupon.getCouContent());
+			map1.put("couId", coupon.getCouId());
+			
+			return map1;
+		}else {
+			
+			Map<String, Object> map1 = new HashMap<>();
+			map1.put("couCon", "이미 등록한 쿠폰입니다");
+			map1.put("couId", 0);
+			
+			return map1;
+		}
+	}
+	
+	@PostMapping("regCoupon")
+	@ResponseBody
+	public String regCoupon(@ModelAttribute("user") Member member, @RequestParam Map<String, Object> map) {
+		int a = Integer.parseInt(map.get("couid").toString());
+		System.out.println("=================================== a : "+a);
+		couponService.insertMemCoupon(member, a);
+		
+		return "ok";
 	}
 	
 	/** 마이올잇>리뷰관리 */

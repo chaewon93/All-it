@@ -120,6 +120,13 @@
 		</td>
 	</tr>
 	<tr>
+		<th>숨김여부</th>
+		<td>
+			<input type="radio" name="hide" id="hide" value="hide" class="form-control mr-sm-2" />숨김
+			<input type="radio" name="hide" id="show" value="show" checked="checked" class="form-control mr-sm-2"/>검색가능
+		</td>
+	</tr>	
+	<tr>
 		<td colspan="2" align="center">
 			<input type="hidden" th:if="${coupon} == null" name="condition" id="condition" value="">
 			<input type="hidden" th:if="${coupon} != null" name="condition" id="condition" th:value="${coupon.condition}">
@@ -174,8 +181,14 @@ $(document).ready(function(){
 		}else if(con.match("NO")){
 			$('#mdpickNo').val('NO').prop("checked",true);
 		}
-		let [a,b,c,d,e] = con.split(', ');
+		let [a,b,c,d,e,f] = con.split(', ');
 		document.getElementById('seller').value = e;
+		
+		if(con.match("show")){
+			$('#show').val('show').prop("checked",true);
+		}else if(con.match("hide")){
+			$('#hide').val('hide').prop("checked",true);
+		}
 	}
 	
 });
@@ -186,8 +199,9 @@ function setCondition(){
 	let category = $("#category").val();
 	let pick = $("input[name=mdpick]:checked").val();
 	let seller = $("#seller").val();
+	let hide = $("#hide").val();
 	
-	let con = grade + ', ' + gender + ', ' + category + ', ' +pick + ', ' + seller;
+	let con = grade + ', ' + gender + ', ' + category + ', ' +pick + ', ' + seller + ', ' + hide;
 	
 	document.getElementById('condition').value = con;
 

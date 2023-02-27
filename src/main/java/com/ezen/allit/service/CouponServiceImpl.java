@@ -102,7 +102,9 @@ public class CouponServiceImpl implements CouponService {
 	@Override
 	public void insertMemCoupon(Member member, int couid) {
 		
+		System.out.println("============================ MDPICK 쿠폰 테스트");
 		Coupon coupon = couponRepo.findById(couid).get();
+		System.out.println(coupon);
 		
 		MemCoupon memCoupon = new MemCoupon();
 		memCoupon.setMember(member);
@@ -132,43 +134,58 @@ public class CouponServiceImpl implements CouponService {
 	@Override
 	public List<Coupon> forMemberCouponList(Member member, int pno) {
 
+		System.out.println("=============================================== 상품이 있는지 없는지");
+		System.out.println(pno);
 		if(pno == 0) {
 			// 상품이 없을 때 - 마이페이지에서 쿠폰 조회 시
 			// 등급과 성별 조건 만족하는 쿠폰 조회
-			List<Coupon> allCouList = couponRepo.findCouponByConditionContainingOrConditionContaining(member.getGrade().toString(), "ALL");
+			// 검색가능 쿠폰 조회
+			List<Coupon> allCouList = couponRepo.findCouponByConditionContaining("show");
 			
-			List<Coupon> allCouList1 = couponRepo.findCouponByConditionContainingOrConditionContaining(member.getGender(), "남녀");
+			List<Coupon> allCouList1 = couponRepo.findCouponByConditionContainingOrConditionContaining(member.getGrade().toString(), "ALL");
 			
 			allCouList.retainAll(allCouList1);
+			
+			List<Coupon> allCouList2 = couponRepo.findCouponByConditionContainingOrConditionContaining(member.getGender(), "남녀");
+			
+			allCouList.retainAll(allCouList2);
 			return allCouList;
 		}else {
 			// 상품이 있을 때 - 상품페이지 or 주문페이지
 			// 등급과 성별로 조회한 쿠폰 리스트 중 중복 제거
-			List<Coupon> allCouList = couponRepo.findCouponByConditionContainingOrConditionContaining(member.getGrade().toString(), "ALL");
+			List<Coupon> allCouList = couponRepo.findCouponByConditionContaining("show");
 			
-			List<Coupon> allCouList1 = couponRepo.findCouponByConditionContainingOrConditionContaining(member.getGender(), "남녀");
+			List<Coupon> allCouList1 = couponRepo.findCouponByConditionContainingOrConditionContaining(member.getGrade().toString(), "ALL");
 			
 			allCouList.retainAll(allCouList1);
+			
+			List<Coupon> allCouList2 = couponRepo.findCouponByConditionContainingOrConditionContaining(member.getGender(), "남녀");
+			
+			allCouList.retainAll(allCouList2);
 
 			// 카테고리로 조회한 쿠폰 리스트
 			Product pro = proService.getProduct(pno);			
-			List<Coupon> allCouList2 = couponRepo.findCouponByConditionContainingOrConditionContaining(Integer.toString(pro.getCategory()), "0");
+			List<Coupon> allCouList3 = couponRepo.findCouponByConditionContainingOrConditionContaining(Integer.toString(pro.getCategory()), "0");
 			
 			// 등급 성별로 걸러진 쿠폰리스트와 카테고리 쿠폰 리스트 중복 제거
-			allCouList.retainAll(allCouList2);
+			allCouList.retainAll(allCouList3);
 			
 			// MDPICK 조건 쿠폰 조회
 			if(pro.getMdPickyn() == 0) {
 				// 상품이 MDPICK 아니면 NO 인 쿠폰만 조회해서 중복 제거
-				List<Coupon> allCouList3 = couponRepo.findCouponByConditionContaining("NO");
-				allCouList.retainAll(allCouList3);
+				List<Coupon> allCouList4 = couponRepo.findCouponByConditionContaining("NO");
+				allCouList.retainAll(allCouList4);
 			}else if(pro.getMdPickyn() == 1) {
 				// 상품이 MDPICK 이면 YES와 NO 모두 조건에 맞으므로 따로 과정 없음
+				// 상품이 MDPICK 이면 YES 인 쿠폰만 조회해서 중복 제거
+				List<Coupon> allCouList4 = couponRepo.findCouponByConditionContaining("YES");
+				allCouList.retainAll(allCouList4);
+				System.out.println(allCouList);
 			}
 			
 			// 판매자 조건 쿠폰 조회 후 중복 제거
-			List<Coupon> allCouList4 = couponRepo.findCouponByConditionContainingOrConditionContaining(pro.getSeller().getId(), "SELLERS");
-			allCouList.retainAll(allCouList4);
+			List<Coupon> allCouList5 = couponRepo.findCouponByConditionContainingOrConditionContaining(pro.getSeller().getId(), "SELLERS");
+			allCouList.retainAll(allCouList5);
 			
 			return allCouList;
 		}
@@ -181,19 +198,47 @@ public class CouponServiceImpl implements CouponService {
 		List<MemCoupon> list = member.getMemCoupon();
 		Product pro = proService.getProduct(pno);
 		List<MemCoupon> memCouList = new ArrayList<>();
+		System.out.println("============================ Integer.toString(pro.getMdPickyn())"+Integer.toString(pro.getMdPickyn()));
 		for(MemCoupon memCoupon : list) {
-			// 내가 가진 쿠폰 리스트에서 카테고리, 등급, 판매자 조건으로 사용 가능 조건 쿠폰 조회
+			String MdPick = "";
+			if((pro.getMdPickyn()) == 1) {
+				MdPick = "YES";
+			}else if((pro.getMdPickyn()) == 0) {
+				MdPick = "NO";
+			}			 
+			// 내가 가진 쿠폰 리스트에서 카테고리, MDPICK, 판매자 조건으로 사용 가능 조건 쿠폰 조회
 			if(memCoupon.getCoupon().getCondition().contains(Integer.toString(pro.getCategory())) || memCoupon.getCoupon().getCondition().contains("0")){
-				if(memCoupon.getCoupon().getCondition().contains(Integer.toString(pro.getMdPickyn())) || memCoupon.getCoupon().getCondition().contains("NO")) {
+				System.out.println("======================================= 카테고리로 컷");
+				System.out.println(memCoupon);
+				if(memCoupon.getCoupon().getCondition().contains(MdPick) || memCoupon.getCoupon().getCondition().contains("NO")) {
+					System.out.println("======================================= MDPICK로 컷");
+					System.out.println(memCoupon);
 					if(memCoupon.getCoupon().getCondition().contains(pro.getSeller().getId()) || memCoupon.getCoupon().getCondition().contains("SELLERS")) {
+						System.out.println("======================================= 판매자로 컷");
+						System.out.println(memCoupon);
 						memCouList.add(memCoupon);
 					}
 				}
 			}
 		}
+		System.out.println("==================================================== 내가 가지는 쿠폰");
+		System.out.println(memCouList);
 		return memCouList;
 	}
-  
+	
+	@Override
+	public Coupon findRegCoupon(String couponName) {
+		
+		Coupon a = couponRepo.findCouponBycouName(couponName);
+		
+		if(a != null) {
+			return a;
+		}else {
+			return null;
+		}
+
+	}
+
 	// 상품 가격과 쿠폰 조건(최소사용금액/최대할인금액) 비교해서 할인 가격 선정
 	@Override
 	public int checkPrice(int memCouid, int price) {

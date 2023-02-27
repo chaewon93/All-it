@@ -24,6 +24,8 @@ public interface CouponService {
 	int checkPrice(int memCouid, int pno);
 	
 	Page<Coupon> findCouponList(Pageable pageable);
+	
+	Coupon findRegCoupon(String couponName);
 
 	/** 취소/반품시 쿠폰 복원 */
 	void updateStatus(int memCouid, int status);

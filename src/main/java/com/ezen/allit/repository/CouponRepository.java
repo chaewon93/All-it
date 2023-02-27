@@ -13,4 +13,6 @@ public interface CouponRepository extends JpaRepository<Coupon, Integer> {
 	
 	// MDPICK 조건 쿠폰 검색
 	List<Coupon> findCouponByConditionContaining(String condition);
+	
+	Coupon findCouponBycouName(String couponName);
 }
