@@ -97,8 +97,9 @@ public class OrderServiceImpl implements OrderService {
 	
 	/** 주문 취소 내역 조회 */
 	@Override
-	public Page<OrdersDetail> getCancelList(Member member, int status, Pageable pageable) {
-		int page = pageable.getPageNumber() - 1;
+//	public Page<OrdersDetail> getCancelList(Member member, int status, Pageable pageable) {
+	public Page<OrdersDetail> getCancelList(Member member, int status, int page) {
+		//int page = pageable.getPageNumber() - 1;
 		int pageSize = 5;
 		
 		return ordersDetailRepo.findByMemberAndStatusAndCancelDateNotNull(member, status, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));
@@ -106,8 +107,9 @@ public class OrderServiceImpl implements OrderService {
 	
 	/** 교환/반품 내역 조회 */
 	@Override
-	public Page<OrdersDetail> getExchangeAndRefundList(Member member, int status1, int status2, Pageable pageable) {
-		int page = pageable.getPageNumber() - 1;
+//	public Page<OrdersDetail> getExchangeAndRefundList(Member member, int status1, int status2, Pageable pageable) {
+	public Page<OrdersDetail> getExchangeAndRefundList(Member member, int status1, int status2, int page) {
+		//int page = pageable.getPageNumber() - 1;
 		int pageSize = 5;
 		
 		return ordersDetailRepo.findByMemberAndCancelDateNotNullAndStatusOrStatus(member, status1, status2, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));

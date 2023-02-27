@@ -74,6 +74,7 @@ public class CartController {
 			//System.out.println("====[cart]==== : "+cart);
 			cart.setMember(principal.getMember());
 			
+			// 장바구니 담기 전 같은 상품이 담겨있는지 확인
 			Cart cartList = cartService.checkCart(principal.getMember(), product);
 			if(cartList != null && cartList.getProduct().getPno() == product.getPno()) {
 				return "exist";
