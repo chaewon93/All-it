@@ -20,17 +20,18 @@
 	<form class="form-inline">
 		<table th:align="center">
 			<tr>
-				<td>쿠폰</td>
-				<td><input type="text" id="coupon" name="coupon" required="required" class="form-control mr-sm-2" placeholder="쿠폰이름"/></td>
-				<td><button type="button" class="btn btn-warning" id="findCou">쿠폰 확인</button></td>
-				<input type="hidden" id="couId">
+				<th>쿠폰 번호</th>
+				<td><input type="text" id="coupon" name="coupon" required="required" class="form-control mr-sm-2" placeholder="쿠폰 번호"/></td>
+				<td>
+				<input type="hidden" id="couId"></td>
 			</tr>
 			<tr>
-				<td></td>
-				<td><input type="text" id="coupon1" name="coupon1" required="required" class="form-control mr-sm-2"/></td>
+				<th></th>
+				<td><b id="coupon1" class="text-danger"></b></td>
 			</tr>
 			<tr>
 				<td align="center" colspan="2"><br>
+					<button type="button" class="btn btn-warning" id="findCou">쿠폰 확인</button>
 					<button type="button" class="btn btn-warning" id="regCou">쿠폰 등록</button>
 				</td>
 			</tr>
@@ -52,7 +53,7 @@ $("#findCou").click(function(){
 			"coupon":coupon,
 		},
 		success: function(res){
-			document.getElementById("coupon1").value = res['couCon'];
+			document.getElementById("coupon1").innerText = res['couCon'];
 			document.getElementById("couId").value = res['couId'];
 			if(res['couCon'] == "이미 등록한 쿠폰입니다"){
 				alert(res['couCon']);
@@ -64,7 +65,7 @@ $("#findCou").click(function(){
 });
 
 $("#regCou").click(function(){
-	let coupon = document.getElementById("coupon1").value;
+	let coupon = document.getElementById("coupon1").innerText;
 	let couid = $("#couId").val();
 	
 	if(coupon != "이미 등록한 쿠폰입니다"){
@@ -75,7 +76,8 @@ $("#regCou").click(function(){
 				"couid":couid,
 			},
 			success: function(res){
-				opner.document.reload(true);	
+				alert("등록 되었습니다.");
+				opener.location.reload(true);	
 				close();
 
 			}, error: function(xhr,status,err){
