@@ -1,0 +1,95 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<link rel="stylesheet" th:href="@{ /css/files.css }">
+<link rel="stylesheet" th:href="@{ https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css }">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<body th:align="center">
+	<div class="jumbotron text-center" style="margin-bottom: 0; background-color: white">
+		<h1>
+			<img class="logo" th:src="@{ /img/logo.jpg }">
+		</h1>
+	</div>
+<div id="wrap" align="center">	
+  	<h3>쿠폰 등록</h3>
+  	<br>
+	<form class="form-inline">
+		<table th:align="center">
+			<tr>
+				<th>쿠폰 번호</th>
+				<td><input type="text" id="coupon" name="coupon" required="required" class="form-control mr-sm-2" placeholder="쿠폰 번호"/></td>
+				<td>
+				<input type="hidden" id="couId"></td>
+			</tr>
+			<tr>
+				<th></th>
+				<td><b id="coupon1" class="text-danger"></b></td>
+			</tr>
+			<tr>
+				<td align="center" colspan="2"><br>
+					<button type="button" class="btn btn-warning" id="findCou">쿠폰 확인</button>
+					<button type="button" class="btn btn-warning" id="regCou">쿠폰 등록</button>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>
+
+<!-- 자바스트립트 섹션 시작 -->
+<script type="text/javascript">
+
+$("#findCou").click(function(){
+	
+	let coupon = $("#coupon").val();
+
+	$.ajax({
+		url:'/member/findRegCoupon',
+		type:"post",
+		data:{
+			"coupon":coupon,
+		},
+		success: function(res){
+			document.getElementById("coupon1").innerText = res['couCon'];
+			document.getElementById("couId").value = res['couId'];
+			if(res['couCon'] == "이미 등록한 쿠폰입니다"){
+				alert(res['couCon']);
+			}
+		}, error: function(xhr,status,err){
+			alert("쿠폰 이름을 확인해 주세요");
+		}
+	});	
+});
+
+$("#regCou").click(function(){
+	let coupon = document.getElementById("coupon1").innerText;
+	let couid = $("#couId").val();
+	
+	if(coupon != "이미 등록한 쿠폰입니다"){
+		$.ajax({
+			url:'/member/regCoupon',
+			type:"post",
+			data:{
+				"couid":couid,
+			},
+			success: function(res){
+				alert("등록 되었습니다.");
+				opener.location.reload(true);	
+				close();
+
+			}, error: function(xhr,status,err){
+				alert("다시 받아주세요");
+			}
+		});
+	}else{
+		alert("이미 등록한 쿠폰입니다");
+	}
+
+});
+</script>
+<!-- 자바스트립트 섹션 끝 -->
+</body>
+</html>

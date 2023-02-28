@@ -1,47 +1,146 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 <body>
-
-<form th:action="@{/updateCusto}" method="post" name="custo">
-<table >
-	<input type="hidden" name="cno" th:value="${custo.cno}"/>
+<!-- 관리자 고객센터 글 상세보기 섹션 시작 -->
+<div style="display: flex; margin-top: 30px;">
+<div class="container">
+<h1>고객센터 글 상세</h1>
+<form th:action="@{/admin/updateCusto}" method="post" name="theform" id="theform" enctype="multipart/form-data">
+<input type="hidden" name="cno" th:value="${custo.cno}">
+<table class="table">
 	<tr>
+		<th width="100">카테고리</th>
 		<td>
-			<select name="category">
+			<select name="category" class="form-control">
 				<option value="공지사항" th:selected="${custo.category}=='공지사항'">공지사항</option>
 				<option value="이벤트" th:selected="${custo.category}=='이벤트'">이벤트</option>
 				<option value="자주하는질문-주문/결제" th:selected="${custo.category}=='자주하는질문-주문/결제'" >자주하는질문-주문/결제</option>
+				<option value="자주하는질문-취소/교환/반품" th:selected="${custo.category}=='자주하는질문-취소/교환/반품'">자주하는질문-취소/교환/반품</option>
+				<option value="자주하는질문-환불" th:selected="${custo.category}=='자주하는질문-환불'">자주하는질문-환불</option>
+				<option value="자주하는질문-배송" th:selected="${custo.category}=='자주하는질문-배송'">자주하는질문-배송</option>
 				<option value="자주하는질문-회원서비스" th:selected="${custo.category}=='자주하는질문-회원서비스'">자주하는질문-회원서비스</option>
-				<option value="자주하는질문-배송문의" th:selected="${custo.category}=='자주하는질문-배송문의'">자주하는질문-배송문의</option>
-				<option value="자주하는질문-반품/교환/환불" th:selected="${custo.category}=='자주하는질문-반품/교환/환불'">자주하는질문-반품/교환/환불</option>
-				<option value="테스트용 신고" th:selected="${custo.category}=='테스트용 신고'">테스트용 신고</option>
+				<option value="기타" th:selected="${custo.category}=='기타'">기타</option>
 			</select>
 		</td>
 	</tr>
 	<tr>
-		<td bgcolor="orange" width="70" th:text="제목"></td><td align="left">
-		<input type="text" name="title" th:value="${custo.title}"/></td>
+		<th th:text="제목"></th>
+		<td align="left">
+			<input type="text" name="title" id="title" th:value="${custo.title}" class="form-control"/>
+		</td>
 	</tr>
 	<tr>
-		<td bgcolor="orange" th:text="내용"></td><td align="left">
-		<textarea name="content" cols="40" rows="10" th:text="${custo.content}"></textarea></td>
+		<th th:text="내용"></th>
+		<td align="left">
+			<textarea name="content" id="content" cols="40" rows="10" th:text="${custo.content}" class="form-control"></textarea>
+		</td>
 	</tr>
+	<tr>
+		<th>전 이미지</th>
+		<td align="left">
+			<img class="img-fluid" th:if="${custo.imageName} != null" th:src="@{ /images/admin/ } + ${ custo.imageName }" width="350" name="imageView" id="imageView">
+			<span th:if="${custo.imageName} == null" th:text="이미지없음"></span>
+		</td>
+	</tr>
+	<tr>
+		<th>후 이미지</th>
+		<td align="left">
+			<input type="file" class="form-control-file border" name="imageFile" id="imageFile" onchange="changeImage(this);">
+			<img class="img-fluid" width="350" id="preview">
+		</td>
+	</tr>	
 	<tr>
 		<td colspan="2" align="center">
-		<input type="submit" value="수정"/></td>
+		<button type="button" onclick="history.back()" class="btn btn-outline-warning">≪ 목록으로 돌아가기</button>
+		<input type="button" value="수정" onclick="return aa()" class="btn btn-warning"/>
+		<button type="button" th:onclick="|location.href='@{/admin/deleteCusto?(cno=${custo.cno})}'|" class="btn btn-secondary">삭제</button>
+		</td>
 	</tr>
-	<tr>
-		<th>
-		<a th:href="@{/deleteCusto(cno=${custo.cno})}" th:text="답변삭제"></a>
-		</th>
-	</tr>		
 </table>
 </form>
-
-
+</div>
+</div>
 </body>
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+
+<script type="text/javascript">
+function changeImage(input){
+	  if (input.files && input.files[0]) {
+		    var reader = new FileReader();
+		    reader.onload = function(e) {
+		      document.getElementById('preview').src = e.target.result;
+		    };
+		    reader.readAsDataURL(input.files[0]);
+		  } else {
+		    document.getElementById('preview').src = "";
+		  }
+}
+
+function aa(){
+	let category = $("#category").val();
+	let title = $("input[name='title']").val();
+	let content = $("#content").val();
+	let imageFile = document.querySelector("#imageFile");
+	let pick = "0";
+
+	if($("#pick1").is(":checked")){
+		pick = $("#pick1").val();
+	}else{
+		pick = $("#pick0").val();
+	}
+	
+	if(title.trim() == ""){
+		alert("제목을 입력해 주세요");
+		return false;
+	}else if(content.trim() == ""){
+		alert("내용을 입력해 주세요");
+		return false;		
+	}
+	
+	if(imageFile.files[0] == null){
+		var chk = confirm("이미지 파일이 없으면 메인화면 노출은 불가능합니다.\n등록하시겠습니까?");
+	}else if(imageFile.files[0] != null){
+		var chk = confirm("등록하시겠습니까?");
+	}
+	
+	if(chk){
+		document.getElementById("theform").action = "/admin/updateCusto";
+		document.getElementById("theform").submit();
+	}else{
+		return;
+	}
+/*		
+	var formData = new FormData();
+	formData.append("category",category);
+	formData.append("title",title);
+	formData.append("content",content);
+	formData.append("pick",pick);
+	formData.append("imageFile",imageFile.files[0]);
+
+	if(chk) {
+		$.ajax({
+			url:'/admin/updateCusto',
+			type:'post',
+			enctype: 'multipart/form-data',
+			data: formData,
+			contentType : false,
+			processData : false,
+			success: function(res){
+				close();
+			}, error: function(xhr,status,err){
+				alert("다시 실행해주세요.");				
+			}			
+		}); 
+	}
+	*/
+}
+</script>
 </html>

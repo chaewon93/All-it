@@ -1,15 +1,18 @@
 package com.ezen.allit.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.UUID;
+import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.ezen.allit.domain.Product;
-import com.ezen.allit.dto.ReviewSaveRequestDto;
+import com.ezen.allit.domain.Hit;
+import com.ezen.allit.domain.Member;
+import com.ezen.allit.domain.Review;
+import com.ezen.allit.dto.HitDto;
+import com.ezen.allit.dto.ReviewDto;
+import com.ezen.allit.repository.HitRepository;
+import com.ezen.allit.repository.MemberRepository;
 import com.ezen.allit.repository.ReviewRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -18,33 +21,75 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 	private final ReviewRepository reviewRepo;
-
+	private final HitRepository hitRepo;
+	private final MemberRepository memberRepo;
+	
 	/*
 	 * 리뷰작성
 	 */
 	@Transactional
-	public void saveReview(ReviewSaveRequestDto reviewSaveRequestDto) {
-		reviewRepo.saveReview(reviewSaveRequestDto.getContent(), reviewSaveRequestDto.getImageName(), reviewSaveRequestDto.getRating(), reviewSaveRequestDto.getPno());
+	public void saveReview(ReviewDto reviewDto) {
+		reviewRepo.saveReview(reviewDto.getContent(), reviewDto.getTheImageName(), reviewDto.getRating(), reviewDto.getPno(), reviewDto.getMid());
 	}
 	
-//	/*
-//	 * 리뷰작성
-//	 */
-//	@Transactional
-//	public void saveReview(ReviewSaveRequestDto reviewSaveRequestDto, MultipartFile reviewImageFile) throws Exception {
-//		System.out.println("reviewImageFile = " + reviewImageFile);
-//		String ogName = reviewImageFile.getOriginalFilename(); // 원본 파일명
-//		String realPath = "c:/fileUpload/images/"; 		       // 파일 저장경로
-//		
-//		/*
-//		 * UUID를 이용해 중복되지 않는 파일명 생성
-//		 */
-//		UUID uuid = UUID.randomUUID();
-//		String imgName = uuid + "_" + ogName; 			 	   // 저장될 파일명
-//		
-//		File saveFile = new File(realPath, imgName);     	   // 저장경로와 파일명을 토대로 새 파일 생성 
-//		reviewImageFile.transferTo(saveFile);				   // 생성 완료
-//		
-//		reviewRepo.saveReview(reviewSaveRequestDto.getContent(), imgName, reviewSaveRequestDto.getRating(), reviewSaveRequestDto.getPno());
-//	}
+	/*
+	 * 리뷰수정
+	 */
+	@Transactional
+	public void modifyReview(ReviewDto reviewDto) {
+		Review review = reviewRepo.findById(reviewDto.getRvno()).get();
+		review.setContent(reviewDto.getContent());
+		review.setRating(reviewDto.getRating());
+		review.setModDate(new Date());
+	}
+	
+	/*
+	 * 리뷰삭제
+	 */
+	@Transactional
+	public void deleteReview1(ReviewDto reviewDto) {
+		Review review = reviewRepo.findById(reviewDto.getRvno()).get();
+		review.getOrdersDetail().setStatus(4);
+		reviewRepo.deleteById(reviewDto.getRvno());
+	}
+	
+	/*
+	 * 리뷰 좋아요
+	 */
+	@Transactional
+	public void hitReview(HitDto hitDto) {
+		Optional<Hit> hit = hitRepo.findByReviewRvnoAndMemberId(hitDto.getRvno(), hitDto.getMid());
+		Review review = reviewRepo.findById(hitDto.getRvno()).get();
+		Member member = memberRepo.findById(hitDto.getMid()).get();
+		
+		/* 이전에 좋아요 누른 기록이 없으면 좋아요, 있으면 좋아요 취소 */
+		if(hit.isEmpty()) {
+			hitRepo.save(new Hit(review, member));
+			review.setHit(review.getHit()+1);
+		} else {
+			hitRepo.deleteById(hit.get().getHno());
+			review.setHit(review.getHit()-1);
+		}
+	}
+	
+	/*
+	 * 리뷰답글작성
+	 */
+
+	@Transactional
+	public void saveReviewReply(ReviewDto reviewDto) {
+		reviewRepo.saveReviewReply(reviewDto.getContent(), reviewDto.getPno(), reviewDto.getRvno());
+	}
+
+	
+	/*
+	 * 리뷰삭제
+	 */
+	@Transactional
+	public void deleteReview2(ReviewDto reviewDto) {
+		Review review = reviewRepo.findById(reviewDto.getRvno()).get();
+		review.getOrdersDetail().setStatus(4);
+		reviewRepo.deleteById(reviewDto.getRvno());
+	}
+
 }

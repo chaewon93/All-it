@@ -1,0 +1,271 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
+<head>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">	
+</head>
+
+<body th:align="center">
+<div style="display: flex;" id="contentDiv">
+<div class="catainer" style="margin-top: 30px;">
+<h1>취소/교환/반품 내역</h1><br>
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+      <!-- <a class="nav-link text-danger active" data-toggle="tab" href="#menu1" onclick="refesh('cancel')">주문취소 내역</a> -->
+		<a class="nav-link text-danger" data-toggle="tab" href="#menu1" onclick="refresh('cancel')" id="tab1">주문취소 내역</a>
+    </li>
+    <li class="nav-item">
+		<a class="nav-link text-danger" data-toggle="tab" href="#menu2" onclick="refresh('exchange')" id="tab2">교환 내역</a>
+    </li>
+    <li class="nav-item">
+		<a class="nav-link text-danger" data-toggle="tab" href="#menu3" onclick="refresh('refund')" id="tab3">반품 내역</a>
+    </li>
+</ul>
+<!-- Tab panes -->
+<div class="tab-content">
+	<!-- 주문취소 내역 섹션 시작 -->
+	<!-- <div id="menu1" class="container tab-pane active"><br> -->
+	<div id="menu1" class="container tab-pane"><br>
+		<div style="display: flex;">
+		<table class="table" th:align="center" th:cellpadding="3" th:cellspacing="0">
+			<tr>
+				<th width="450">상품명</th>
+				<th width="80">수 량</th>
+				<th width="100">가 격</th> 
+				<th width="150">주문일</th> 
+				<th width="150">취소 신청일</th>
+				<th width="150">진행 상태</th>
+			</tr>
+			<!-- <tr th:if="${size == 0}"> -->
+			<tr th:if="${cancelList.getTotalElements() == 0}">
+				<td colspan="6" class="text-danger" th:align="center"> 주문 취소 내역이 없습니다.
+			</tr>
+			<tr th:each="cancel : ${cancelList}">      
+				<td>
+					<div style="display: flex;">
+						<div class="col-ms-2">
+							<img class="img-fluid" th:src="@{ /images/product/ } + ${ cancel.product.imageName }" width="100">
+						</div>
+						<div class="col-ms-4" style="width: 300px; margin-left: 20px;">
+							<a th:href="@{ |/product/${ cancel.product.pno }| }">
+								<b class="text-info" th:text="${ cancel.product.name }"></b>
+							</a><br>
+							<span th:text="${#numbers.formatInteger(cancel.product.price, 1, 'COMMA')}+'원'"></span>
+						</div>
+					</div>
+				</td>
+				<td th:text="${cancel.quantity}+'개'"> </td>
+				<td th:text="${#numbers.formatInteger(cancel.product.price*cancel.quantity, 1, 'COMMA')}+'원'" /> </td>
+				<!-- <th:block th:with="coupon=${cancel.memCoupon.coupon.discount}">
+					<span th:text="coupon > 100 ? coupon : coupon = (cancel.product.price * coupon) / 100"></span>
+				</th:block>    -->   
+				<td th:text="${#dates.format(cancel.orders.regDate, 'yyyy-MM-dd')}" /></td>
+				<td th:text="${#dates.format(cancel.cancelDate, 'yyyy-MM-dd')}" /></td>
+				<td th:text="${cancel.status == 5 ? '주문취소' : ''}">
+					
+					<input type="hidden" th:value="${ cancel.orders.ono }" id="ono" name="ono">
+		 			<input type="hidden" th:value="${ session['user']?.id }" id="mid" name="mid">
+		 			<input type="hidden" th:value="${ cancel.product.pno }" id="pno" name="pno">
+		 			<input type="hidden" th:value="${ cancel.odno }" id="odno" name="odno">
+		 			<input type="hidden" th:value="${ cancel.orders.finalPrice }" id="finalPrice" name="finalPrice">
+			</tr>
+		 			<input type="hidden" th:value="${status}" id="status" name="status">
+	 	</table>
+	 	</div>
+    </div>
+    <!-- 주문취소 내역 섹션 끝 -->
+    <!-- 교환 내역 섹션 시작 -->
+    <!-- <div id="menu2" class="container tab-pane fade"><br> -->
+    <div id="menu2" class="container tab-pane"><br>
+		<div style="display: flex;">
+		<table class="table" th:align="center" th:cellpadding="3" th:cellspacing="0">
+			<tr>
+				<th width="450">상품명</th>
+				<th width="80">수 량</th>
+				<th width="100">가 격</th> 
+				<th width="150">주문일</th> 
+				<th width="150">교환 신청일</th>
+				<th width="150">진행 상태</th>
+			</tr>
+			<!-- <tr th:if="${size == 0}"> -->
+			<tr th:if="${exchangeList.getTotalElements() == 0}">
+				<td colspan="6" class="text-danger" th:align="center"> 교환 내역이 없습니다.
+			</tr>
+			<tr th:each="exchange : ${exchangeList}">      
+				<td>
+					<div style="display: flex;">
+						<div class="col-ms-2">
+							<img class="img-fluid" th:src="@{ /images/product/ } + ${ exchange.product.imageName }" width="100">
+						</div>
+						<div class="col-ms-4" style="width: 300px; margin-left: 20px;">
+							<a th:href="@{ |/product/${ exchange.product.pno }| }">
+								<b class="text-info" th:text="${ exchange.product.name }"></b>
+							</a><br>
+							<span th:text="${#numbers.formatInteger(exchange.product.price, 1, 'COMMA')}+'원'"></span>
+						</div>
+					</div>
+				</td>
+				<td th:text="${exchange.quantity}+'개'"> </td>
+				<td th:text="${#numbers.formatInteger(exchange.product.price*exchange.quantity, 1, 'COMMA')}+'원'" /> </td>
+				<!-- <th:block th:with="coupon=${exchange.memCoupon.coupon.discount}">
+					<span th:text="coupon > 100 ? coupon : coupon = (exchange.product.price * coupon) / 100"></span>
+				</th:block>    -->   
+				<td th:text="${#dates.format(exchange.orders.regDate, 'yyyy-MM-dd')}" /></td>
+				<td th:text="${#dates.format(exchange.cancelDate, 'yyyy-MM-dd')}" /></td>
+				<td th:if="${exchange.status == 6}" th:text="교환신청">
+				<td th:if="${exchange.status == 9}" th:text="교환완료">
+					
+					<input type="hidden" th:value="${ exchange.orders.ono }" id="ono" name="ono">
+		 			<input type="hidden" th:value="${ session['user']?.id }" id="mid" name="mid">
+		 			<input type="hidden" th:value="${ exchange.product.pno }" id="pno" name="pno">
+		 			<input type="hidden" th:value="${ exchange.odno }" id="odno" name="odno">
+		 			<input type="hidden" th:value="${ exchange.orders.finalPrice }" id="finalPrice" name="finalPrice">
+			</tr>
+	 	</table>
+	 	</div>
+    </div>
+    <!-- 교환 내역 섹션 끝 -->
+    <!-- 반품 내역 섹션 시작 -->
+    <!-- <div id="menu3" class="container tab-pane fade"><br> -->
+    <div id="menu3" class="container tab-pane fade"><br>
+    	<div style="display: flex;">
+		<table class="table" th:align="center" th:cellpadding="3" th:cellspacing="0">
+			<tr>
+				<th width="450">상품명</th>
+				<th width="80">수 량</th>
+				<th width="100">가 격</th> 
+				<th width="150">주문일</th> 
+				<th width="150">반품 신청일</th>
+				<th width="150">진행 상태</th>
+			</tr>
+			<!-- <tr th:if="${size == 0}"> -->
+			<tr th:if="${refundList.getTotalElements() == 0 || refundList.getTotalElements() == null}">
+				<td colspan="6" class="text-danger" th:align="center"> 반품 내역이 없습니다.
+			</tr>
+			<tr th:each="refund : ${refundList}">      
+				<td>
+					<div style="display: flex;">
+						<div class="col-ms-2">
+							<img class="img-fluid" th:src="@{ /images/product/ } + ${ refund.product.imageName }" width="100">
+						</div>
+						<div class="col-ms-4" style="width: 300px; margin-left: 20px;">
+							<a th:href="@{ |/product/${ refund.product.pno }| }">
+								<b class="text-info" th:text="${ refund.product.name }"></b>
+							</a><br>
+							<span th:text="${#numbers.formatInteger(refund.product.price, 1, 'COMMA')}+'원'"></span>
+						</div>
+					</div>
+				</td>
+				<td th:text="${refund.quantity}+'개'"> </td>
+				<td th:text="${#numbers.formatInteger(refund.product.price*refund.quantity, 1, 'COMMA')}+'원'" /> </td>
+				<!-- <th:block th:with="coupon=${refund.memCoupon.coupon.discount}">
+					<span th:text="coupon > 100 ? coupon : coupon = (refund.product.price * coupon) / 100"></span>
+				</th:block>    -->   
+				<td th:text="${#dates.format(refund.orders.regDate, 'yyyy-MM-dd')}" /></td>
+				<td th:text="${#dates.format(refund.cancelDate, 'yyyy-MM-dd')}" /></td>
+				<td th:if="${refund.status == 7}" th:text="반품신청">
+				<td th:if="${refund.status == 10}" th:text="반품완료">
+					
+					<input type="hidden" th:value="${ refund.orders.ono }" id="ono" name="ono">
+		 			<input type="hidden" th:value="${ session['user']?.id }" id="mid" name="mid">
+		 			<input type="hidden" th:value="${ refund.product.pno }" id="pno" name="pno">
+		 			<input type="hidden" th:value="${ refund.odno }" id="odno" name="odno">
+		 			<input type="hidden" th:value="${ refund.orders.finalPrice }" id="finalPrice" name="finalPrice">
+			</tr>
+	 	</table>
+	 	</div>
+    </div>
+    <!-- 반품 내역 섹션 끝 -->
+</div>
+
+<div th:replace="~{ /fragments/pager.html :: pager }"></div>
+<!-- pagination replace -->
+</div>
+</div>
+
+<!-- 자바스트립트 섹션 시작 -->
+<script type="text/javascript">
+$(document).ready(function(){
+	
+	// 선택되어야 할 탭 구분
+	var status = $("#status").val();
+	console.log(status);
+//	alert("status = "+status);
+	
+	var tab1 = document.getElementById("tab1").classList;
+	var tab2 = document.getElementById("tab2").classList;
+	var tab3 = document.getElementById("tab3").classList;
+	
+	var con1 = document.getElementById("menu1").classList;
+	var con2 = document.getElementById("menu2").classList;
+	var con3 = document.getElementById("menu3").classList;
+	
+	if(status == "cancel") {
+		//alert(tab1);
+		tab1.toggle('active');
+		con1.toggle('active');
+		//alert(con1);
+	} else if(status == "exchange") {
+		tab2.toggle('active');
+		con2.toggle('active');
+	} else if(status == "refund") {
+		tab3.toggle('active');
+		con3.toggle('active');
+	}
+	
+	// 페이징 : 첫 화면일 때는 주문취소 페이징만 출력
+	refresh(status);
+//	$("#divCancel").show();
+//	$("#divExchange").hide();
+//	$("#divRefund").hide();
+});
+
+function refresh(type) {
+	//console.log(type);
+	$("#status").val(type);
+	//alert($("#status").val());
+	
+	if(type == 'cancel') {
+		$("#divCancel").show();
+		$("#divExchange").hide();
+		$("#divRefund").hide();
+	} else if(type == 'exchange') {
+		$("#divExchange").show();
+		$("#divCancel").hide();
+		$("#divRefund").hide();
+	} else if(type == 'refund') {
+		$("#divRefund").show();
+		$("#divCancel").hide();
+		$("#divExchange").hide();
+	}
+}
+
+/*	
+	$.ajax({
+		url : "/member/"+type+"List",
+		type : "get",
+//		data : {
+//			status : type
+//		},
+		dataType : "text",
+		contentType : "application/json; charset=utf-8",
+		success : function(data) {
+			//console.log(data);
+			//location.reload("/order/cancelList");
+		}, error : function(err) {
+			alert("다시 시도해주세요.");
+			console.log('[cancelList refesh() ajax error] ' + err);
+		}
+	});
+*/
+</script>
+<!-- 자바스트립트 섹션 끝 -->
+
+</body>
+
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>

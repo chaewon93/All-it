@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<div class="container" style="margin-top: 30px;">
+<h1>쿠폰 목록</h1>
+<table th:align="center" th:cellpadding="0" th:cellspacing="0" th:width="700" class="table">
+<tr align="center">	
+	<th width="100">번호</th>	
+	<th width="300">쿠폰 설명<br>쿠폰 이름</th>
+	<th width="200">생성일<br>만료일<br>사용 기한</th>
+	<th width="200">할인율<br>최대할인금액<br>최소사용금액</th>	
+	<th width="300">사용 조건<br>(등급,성별,카테고리,MDPICK,판매자)</th>
+</tr>
+<tr th:if="${list.getTotalElements() == 0}">
+	<td colspan="5" align="center" style="font-weight: bold; color: rgb(255, 195, 81);">등록된 쿠폰이 없습니다.</td>
+</tr>
+<tr align="center" th:each="coupon, state : ${list}">
+	<td th:text="${state.count}"></td>
+	<td><span th:text="${coupon.couContent}" class="text-info"></span><br>
+					<a th:href="@{/admin/createCoupon(couno=${coupon.couId})}" th:text="${coupon.couName}"></a></td>
+	<td><span th:text="${coupon.createDate}"></span><br>
+					<span th:text="${coupon.endDate}"></span><br>
+					<span th:text="${coupon.period}"></span>일</td>
+	<td><span th:if="${coupon.discount > 100}" th:text="${#numbers.formatInteger(coupon.discount, 1, 'COMMA')}+'원'"></span>
+		<span th:unless="${coupon.discount > 100}" th:text="${coupon.discount}+'%'"></span><br>
+					<span th:text="${#numbers.formatInteger(coupon.maxValue, 1, 'COMMA')}+'원'"></span><br>
+					<span th:text="${#numbers.formatInteger(coupon.minPrice, 1, 'COMMA')}+'원'"></span></td>	
+	<td><span th:text="${coupon.condition}"></span>
+					</td>														
+</tr>
+</table>
+<th:block th:if="${list.getTotalElements() != 0}">
+	<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
+	<!-- pagination replace -->
+</th:block>
+</div>
+	
+</body>
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+</html>

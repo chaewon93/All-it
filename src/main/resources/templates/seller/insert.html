@@ -1,37 +1,114 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<div th:replace="~{ /fragments/seller_header.html :: header }"></div>
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div th:replace="~{ /fragments/header.html :: header }"></div>
 <!-- header replace -->
 
-<!-- 내용 섹션 시작 -->
-<form method="post" th:action="@{ /seller/product/insert }" enctype="multipart/form-data">
-	<div class="form-group">
-		<label for="sel1">카테고리</label>
+<!-- 상품 등록 섹션 시작 -->
+<div class="container" style="margin-top: 30px; margin-bottom: 50px;">
+<h1>상품 등록</h1><br>
+<div class="row">
+	<div class="col-sm-12">
+	<form method="post" th:action="@{ /seller/product/insert }" enctype="multipart/form-data">
+		<input type="hidden" th:value="${ #authentication.principal.seller.id }" name="seller" id="seller">
+		
+		<label for="sel1"><b>카테고리</b></label>
 		<select class="form-control" name="category" id="category">
-			<option>==카테고리==</option>
+			<option th:value="0">==카테고리==</option>
 			<option th:value="1">패션</option>
 			<option th:value="2">식품</option>
 			<option th:value="3">주방용품</option>
 			<option th:value="4">생활용품</option>
 			<option th:value="5">인테리어</option>
-			<option th:value="6">가전</option>
+			<option th:value="6">가전제품</option>
 			<option th:value="7">스포츠/레저</option>
 			<option th:value="8">도서/음반/DVD</option>
 			<option th:value="9">반려동물용품</option>
-			<option th:value="10">건강식품</option>	
-		</select>
-		<label for="name">상품명</label>
-		<input type="text" class="form-control" name="name" id="name"/>
-		<label for="price">판매가</label>
-		<input type="text" class="form-control" name="price" id="price"/>
-		<label for="content">상품설명</label>
-		<textarea class="form-control" rows="5" name="content" id="content"></textarea>
-		<label for="image">이미지 업로드</label>
+			<option th:value="10">건강식품</option>
+		</select><br>
+		<label for="name"><b>상품명</b></label>
+		<input type="text" class="form-control" name="name" id="name"/><br>
+		<label for="price"><b>판매가</b></label>
+		<input type="text" class="form-control" name="firstPrice" id="firstPrice" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/><br>
+		<label for="discount"><b>할인율</b></label>
+		<input type="text" class="form-control" name="discount" id="discount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" onfocusout="priceCheck()"/><br>
+		<label for="finalPrice"><b>최종 판매가</b></label>
+		<input type="text" class="form-control" name="price" id="price" readonly/><br>
+		<label for="content"><b>상품설명</b></label>
+		<textarea class="form-control" rows="5" name="content" id="content"></textarea><br>
+		<label for="image"><b>상품 이미지 업로드</b></label>
 		<input type="file" class="form-control-file border" name="imageFile" id="imageFile">
+		<br>
+		<button type="submit" class="btn btn-warning" name="save" id="save">상품등록</button>
+	</form>
 	</div>
-	<button type="submit" class="btn btn-primary">상품등록</button>
-</form>
 <!-- 내용 섹션 끝 -->
+</div>
+</div>
+
+<!-- 자바스트립트 섹션 시작 -->
+<script type="text/javascript">
+
+// 할인가 등록시 자동 계산
+function priceCheck() {
+	let firstPrice = $("#firstPrice").val(); // 초기가
+	let discount = $("#discount").val();     // 할인율
+	let price = '';							 // 할인 적용될 가격
+	let thePrice = '';						 // 할인 적용, 소수제거 후 최종가
+	
+	// 할인 적용시 소수점 아래로 값이 떨어질 경우 소수 제거
+	if(0 <= discount && discount < 100) {
+		price = firstPrice-(firstPrice*(discount/100));
+		thePrice = price;
+		document.getElementById("price").value = Math.floor(thePrice);
+	} else {
+		alert('책정한 할인을 적용할 수 없습니다.\n할인은 0~99 사이의 숫자만 가능합니다');
+		document.getElementById("price").value = '';
+	}
+}
+
+// 상품등록 시 빈칸체크
+$("#save").click(function() {
+	let category = $("#category").val();
+	let name = $("#name").val();
+	let firstPrice = $("#firstPrice").val();
+	let discount = $("#discount").val();
+	let price = $("#price").val();
+	let content = $("#content").val();
+	let imageFile = $("#imageFile").val();
+	
+	if(category == 0) {
+		alert('카테고리를 선택해주세요');
+		return false;
+	}
+	if(name.trim() == "") {
+		alert('상품명을 입력해주세요');
+		return false;
+	}
+	if(firstPrice.trim() == "") {
+		alert('판매가를 입력해주세요');
+		return false;
+	}
+	if(discount.trim() == "") {
+		document.getElementById("discount").value = 0;
+	}
+	if(price.trim() == "") {
+		alert('최종 판매가를 정상적으로 책정해주세요');
+		return false;
+	}
+	if(content.trim() == "") {
+		alert('상품에 대한 설명을 입력해주세요');
+		return false;
+	}
+	if(imageFile == "") {
+		alert('이미지 파일을 포함해주세요');
+		return false;
+	}
+});
+
+</script>
+<!-- 자바스트립트 섹션 끝 -->
 
 <div th:replace="~{ /fragments/footer.html :: footer }"></div>
 <!-- footer replace -->
+</html>

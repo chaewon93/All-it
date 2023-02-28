@@ -17,16 +17,16 @@ public class Reply {
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	private int rno;		 // 답글 일련번호
 	private String content;  // 내용
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "pno")
 	private Product product; // 상품정보
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sid")
 	private Seller seller;   // 질문자정보
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "mid")
 	private Member member;   // 질문자정보
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "qno")
 	private QnA qna;   		 // 질문정보
 	@CreationTimestamp

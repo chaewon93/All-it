@@ -1,0 +1,63 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
+<head>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+<div style="display: flex; height: 800px; margin-top: 30px;">
+<div class="container">
+<table class="table">
+	<!-- <tr>
+		<th>작성자</th>
+		<td th:text="${qna.member.id}"></td>
+	</tr> -->
+	<tr>
+		<th>카테고리</th>
+		<td th:text="${qna.category}"></td>
+	</tr>
+	<tr>
+		<th width="100">제목</th>
+		<td th:text="${qna.title}"></td>
+	</tr>
+	<tr>
+		<th>내용</th>
+		<td><textarea th:text="${qna.content}" cols="40" rows="7" readonly="readonly" class="form-control"></textarea></td>
+	</tr>
+	<tr th:if="${qna.status} == '1'">
+		<th>답변</th>
+		<td th:if="${qna.category == '상품'}">
+			<textarea name="content" cols="40" rows="10" th:text="${qna.response}" readonly="readonly" class="form-control"></textarea>
+			<input type="hidden" name="rno" th:value="${qna.reply?.rno}" >
+		</td>
+		<td th:unless="${qna.category == '상품'}">
+			<textarea name="content" cols="40" rows="10" th:text="${qna.reply.content}" readonly="readonly" class="form-control"></textarea>
+			<input type="hidden" name="rno" th:value="${qna.reply?.rno}" >
+		</td>
+	</tr>
+	<tr th:if="${qna.status} == '1'">
+		<th>답변일</th>
+		<td th:text="${qna.resDate}">
+	</tr>
+	<tr th:if="${qna.status} == '0'">
+		<th>답변</th>
+		<td><span style="font-weight: bold; color: rgb(255, 195, 81);">잠시만 기다려 주시면 곧 답변 드리겠습니다.</span>
+			<input type="hidden" name="qno" th:value="${qna.qno}" >
+		</td>
+	</tr>	
+	<tr>
+		<td colspan="2" align="center">
+		<input type="button" value="≪ 문의내역 돌아가기" onclick="history.back()" class="btn btn-outline-warning"> <br>
+		</td>
+	</tr>
+
+</table>
+</div>
+</div>
+</body>
+
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+</html>

@@ -1,0 +1,209 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
+<head>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+
+<body th:align="center">
+<div id="contentDiv" style="display: flex; margin-top: 30px;">
+<div class="container">
+<h1>장바구니</h1><br>
+	<form name="formm" id="cartform" method="post">
+		<h3 th:if="${cartList.size() == 0}" class="text-danger" style="text-align: center;">장바구니가 비었습니다.</h3>
+		<th:block th:unless="${cartList.size() == 0}">
+			<table id="cartList" class="table">
+				<tr>
+					<th width="80"><input type="checkbox" id="allCheck" name="allCheck"> 전체선택</th>
+					<th width="400">상 품 정 보</th>
+					<th width="50">수 량</th>
+					<th width="100">가 격</th>
+				</tr>
+				
+				<tr th:each="cart, st : ${cartList}">
+					<td><input type="hidden" th:value="${ cart.product.seller.role }" name="inactive" id="inactive">
+					<input type="checkbox" name="cno" id="cno" th:value="${ cart.cno }"></td>
+					<td>
+						<div style="display: flex;">
+							<div class="col-ms-2">
+								<img class="img-fluid" th:src="@{ /images/product/ } + ${ cart.product.imageName }" width="100">
+							</div>
+							<div class="col-ms-4" style="width: 300px; margin-left: 20px;">
+								<a th:href="@{ |/product/${ cart.product.pno }| }">
+									<b class="text-info" th:text="${ cart.product.name }"></b>
+								</a><br>
+								<span th:text="${#numbers.formatInteger(cart.product.price, 1, 'COMMA')}+'원'"></span>
+							</div>
+							<div th:if="${ cart.product.seller.role.toString().equals('INACTIVE') }">
+								<p style="color: red">현재 구매 불가한 제품입니다</p>
+							</div>
+						</div>
+					</td>
+					<td>
+						<input type="hidden" th:value="${ #authentication.principal.member?.id }" name="mid" id="mid">
+						<input type="hidden" th:value="${ cart.product.pno }" name="pno" id="pno">
+						<select class="form-control mr-sm-2" th:id="'quantity'+${ st.count }" name="quantity" onchange="qtyChange(this);">
+							<option value="1" th:selected="${ cart.quantity }=='1'">1</option>
+							<option value="2" th:selected="${ cart.quantity }=='2'">2</option>
+							<option value="3" th:selected="${ cart.quantity }=='3'">3</option>
+							<option value="4" th:selected="${ cart.quantity }=='4'">4</option>
+							<option value="5" th:selected="${ cart.quantity }=='5'">5</option>
+							<option value="6" th:selected="${ cart.quantity }=='6'">6</option>
+							<option value="7" th:selected="${ cart.quantity }=='7'">7</option>
+							<option value="8" th:selected="${ cart.quantity }=='8'">8</option>
+							<option value="9" th:selected="${ cart.quantity }=='9'">9</option>
+							<option value="10" th:selected="${ cart.quantity }=='10'">10</option>
+						</select>
+					</td>
+					<td th:text="${#numbers.formatInteger((cart.product.price*cart.quantity), 1, 'COMMA')}+'원'"></td>
+				</tr>
+				
+				<tr>
+					<th></th>
+					<th colspan="2">총 상품가격</th>
+					<th th:text="${#numbers.formatInteger(totalPrice, 1, 'COMMA')}+'원'"></th>
+				</tr>
+			</table>
+		</th:block>
+		<div class="clear">
+			<a href="#" onclick="delCart()" th:if="${cartList.size() != 0}" class="btn btn-light"><span id="delCheck">선택삭제</span></a>
+		</div>
+		<div id="buttons" style="float: right">
+			<input type="button" value="쇼핑 계속하기" class="btn btn-outline-warning" onclick="location.href='/'">
+			<input th:if="${cartList.size() != 0}" type="button" value="주문하기" class="btn btn-warning" onclick="goOrderList()">
+		</div>
+	</form><br><br>
+</div>
+</div>
+
+<!-- 자바스트립트 섹션 시작 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+	// 전체선택/해제
+	$(function() {
+		var chkObj = document.getElementsByName("cno");
+		var rowCnt = chkObj.length;
+		
+		$("input[name='allCheck']").click(function() {
+			var chk_listArr = $("input[name='cno']");
+			for (var i=0; i<chk_listArr.length; i++){
+				chk_listArr[i].checked = this.checked;
+			}
+			if($("input[name='cno']:checked").length == rowCnt) {
+				$("#delCheck").html("전체삭제");
+			} else {
+				$("#delCheck").html("선택삭제");
+			}
+		});
+		$("input[name='cno']").click(function() {
+			if($("input[name='cno']:checked").length == rowCnt) {
+				$("input[name='allCheck']")[0].checked = true;
+				$("#delCheck").html("전체삭제");
+			} else {
+				$("input[name='allCheck']")[0].checked = false;
+				$("#delCheck").html("선택삭제");
+			}
+		});
+	});
+	
+	// 장바구니에서 삭제
+	function delCart(){
+		var valueArr = new Array();
+		var list = $("input[name='cno']");
+		for(var i=0; i<list.length; i++) {
+			if(list[i].checked) {
+				valueArr.push(list[i].value);
+			}
+		}
+		if(valueArr.length == 0) {
+			alert("장바구니에서 삭제할 상품을 선택해주세요."); 
+		} else {
+			var chk = confirm("정말 삭제하시겠습니까?");
+			if(chk) {
+				$.ajax({
+					url:'/cart/delCart',
+					type:'post',
+					traditional: true,
+					data:{cnoArr: valueArr},
+					//dataType:'json',
+					success: function(res){
+						alert("선택하신 상품이 삭제되었습니다.");
+						location.replace("/cart/cartList");
+					}, error: function(xhr,status,err){
+						alert("다시 시도해주세요.");				
+						console.log('[delCart() ajax error] '+err);
+					}			
+				}); 
+			}
+		}
+	}
+	
+	// 장바구니 수량 변경
+	function qtyChange(element){
+		var qty = $(element).val();
+		var pno = $(element.previousElementSibling).val();
+		//console.log("pno=",pno);
+
+		$.ajax({
+			url : "/cart/modCart",
+			type : "post",
+			data : JSON.stringify({
+				mid : $("#mid").val(),
+				pno : pno,
+				quantity : qty,
+				type: "mod"
+			}),
+			dataType : "text",
+			contentType : "application/json; charset=utf-8",
+			success : function(data) {
+					if (data == 'modCart') {
+					alert('상품 수량이 변경되었습니다.');
+					location.replace("/cart/cartList");
+				} else if (data == 'null') {
+					alert('장바구니 조회 중 일시적인 오류입니다.');
+				} else {
+					alert('로그인이 필요한 서비스입니다.');
+				}
+			},
+			error : function(err) {
+				alert("다시 시도해주세요.");
+				console.log('[modCart() ajax error] ' + err);
+			}
+		}); 
+	}
+	
+	// 주문하기
+	function goOrderList(btn){
+		var valueArr = new Array();
+		var list = $("input[name='cno']");
+		
+		for(var i=0; i<list.length; i++) {
+			if(list[i].checked) {
+				var inactive = list[i].previousElementSibling.value;
+				console.log(inactive);
+				if(inactive == 'INACTIVE') {
+					alert("판매가 종료된 상품이 포함되어 있습니다. 삭제해주세요."); 
+					return false;	
+				} else {
+					valueArr.push(list[i].value);
+				}
+			}
+		}
+		if(valueArr.length == 0) {
+			alert("주문할 상품을 선택해주세요."); 
+			return false;
+		} else {
+			$("#cartform").attr("action", "/order/orderInfo");
+			$("#cartform").submit();
+		}
+	}
+</script>
+<!-- 자바스트립트 섹션 끝 -->
+
+</body>
+
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>

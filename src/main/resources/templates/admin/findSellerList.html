@@ -1,54 +1,140 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<script type="text/javascript">
-
-</script>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
-<body>
-	
-<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
-<tr>
-	<th bgcolor="orange" width="100">번호</th>
-	<th bgcolor="orange" width="200">아이디</th>
-	<th bgcolor="orange" width="150">이름</th>
-	<th bgcolor="orange" width="150">설명</th>
-	<th bgcolor="orange" width="100">이메일</th>
-	<th bgcolor="orange" width="100">주소</th>
-	<th bgcolor="orange" width="100">우편번호</th>
-	<th bgcolor="orange" width="100">전화번호</th>
-	<th bgcolor="orange" width="100">사업자등록번호</th>
-	<th bgcolor="orange" width="100">입점상태</th>
-	<th th:if="${a}==5" bgcolor="orange" width="100">체크<br>
-		<input type="checkbox" name="regAll" id="regAll" class="test">
-	</th>
-</tr>
 
-<tr th:each="seller, state : ${sellerList}">
+<body>
+<div class="container" style="margin-top: 30px; background-color: white">
+<h1>관리자/판매자 조회</h1>
+<div class="form-inline">
+<nav class="navbar navbar-expand-sm" >	
+	<select name="category" onchange="location.href=(this.value)" class="form-control">
+		<option value="/admin/findSellerList?a=0" th:selected="${a} == 0">관리자/판매자 전체 조회</option>
+		<option value="/admin/findSellerList?a=1" th:selected="${a} == 1">관리자 조회</option>
+		<option value="/admin/findSellerList?a=2" th:selected="${a} == 2">전체 판매자 조회</option>
+		<option value="/admin/findSellerList?a=3" th:selected="${a} == 3">등록된 판매자 조회</option>
+		<option value="/admin/findSellerList?a=4" th:selected="${a} == 4">등록 대기 판매자 조회</option>
+	</select>
+</nav>
+</div>
+
+<form action="/admin/regSeller" method="post" id="theform">
+<table th:align="center" th:cellpadding="3" th:cellspacing="0" th:width="900" class="table">
+<tr>
+	<th width="100">번호</th>
+	<th width="100">아이디</th>
+	<th width="100">이름</th>
+	<!-- <th width="150">브랜드 설명</th> -->
+	<th width="100">이메일</th>
+	<th width="100">우편번호</th>
+	<th width="200">주소</th>
+	<th width="150">전화번호</th>
+	<th width="150">사업자등록번호</th>
+	<th width="120">상태</th>
+	<th th:if="${b}==1" width="100"><input type="checkbox" name="checkAll" id="regAll"> 선택</th>
+</tr>
+<tr th:if="${list.getTotalElements() == 0}">
+	<td colspan="10" align="center" style="font-weight: bold; color: rgb(255, 195, 81);">입점된 판매자 또는 관리자가 없습니다.</td>
+</tr>
+<tr th:each="seller, state : ${list}">
 	<td th:text="${state.count}"></td>
 	<td th:text="${seller.id}"></td>
 	<td th:text="${seller.name}"></td>
-	<td th:text="${seller.content}"></td>
+	<!-- <td th:text="${seller.content}"></td> -->
 	<td th:text="${seller.email}"></td>
-	<td th:text="${seller.address}"></td>
 	<td th:text="${seller.zipcode}"></td>
+	<td th:text="${seller.address}"></td>
 	<td th:text="${seller.phone}"></td>
 	<td th:text="${seller.regno}"></td>
-	<td th:text="${seller.role}"></td>
-	<td th:if="${a}==5"><input type="checkbox" name="reg" class="test"></td>
+	<td th:switch="${#strings.toString(seller.role)}">
+		<p th:case="TEMP" th:text="입점대기" style="color:red;"></p>
+		<p th:case="SELLER" th:text="판매자" style="color:blue;"></p>
+		<p th:case="ADMIN" th:text="관리자"></p>
+	</td>
+	<td th:if="${b}==1">
+		<input type="checkbox" name="sellerId" class="test" th:value="${seller.id}">
+	</td>
 </tr>
-<tr th:if="${a}==5">	
-	<td colspan="11" align="right"><input type="button" value="승인"/></td>
-</tr>
+
 </table>
-<a th:href="@{/adminMain}">관리자 메인으로...</a> <br>
-<a th:href="@{/findSellerList(a=1)}">관리자 조회</a> <br>
-<a th:href="@{/findSellerList(a=2)}">전체 판매자 조회</a> <br>
-<a th:href="@{/findSellerList(a=3)}">등록된 판매자 조회</a> <br>
-<a th:href="@{/findSellerList(a=4)}">등록 대기 판매자 조회</a> <br>
+<div align="right">
+	<input th:if="${a}==4 or ${a}==3 or ${a}==2" type="button" value="상태변경" onclick="change_seller()" class="btn btn-warning">
+	<input th:if="${a}==2" type="button" value="삭제" onclick="delete_seller()" class="btn btn-secondary">
+</div>
+</form><br>
+
+<th:block th:if="${list.getTotalElements() != 0}">
+	<div th:replace="~{ /fragments/admin_pagination.html :: pagination }"></div>
+	<!-- pagination replace -->
+</th:block>
+</div>
+
+<!-- 자바 스크립트 섹션 시작 -->
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function(){
+	$("#regAll").change(function(){
+		  if($("#regAll").is(":checked")){
+		 	 $(".test").prop("checked", true);
+		  }else{
+		  	$(".test").prop("checked", false);
+		  }
+		});
+	
+	$(".test").change(function(){
+		  if($(".test:checked").length == $(".test").length){
+		  	$("#regAll").prop("checked", true);
+		   }else{
+		  	$("#regAll").prop("checked", false);
+		  }
+		});
+});
+
+function change_seller(){
+	var chk_arr = [];
+	if ($("input:checkbox[name='sellerId']").is(":checked")==true){
+		$("input:checkbox[name='sellerId']:checked").each(function(){
+			var chk = $(this).val();
+			chk_arr.push(chk);
+		})
+		var check =	confirm("선택한 판매자의 상태를 변경할까요?\n(입점대기->판매자, 판매자->입점대기)")
+		if(check){
+			document.getElementById("theform").action = "/admin/changeSeller";
+			document.getElementById("theform").submit();		
+		}
+	}else{
+		alert("판매자를 선택해 주세요");
+		return;
+	}
+}
+
+function delete_seller(){
+	var chk_arr = [];	
+	if ($("input:checkbox[name='sellerId']").is(":checked")==true){
+		$("input:checkbox[name='sellerId']:checked").each(function(){
+			var chk = $(this).val();
+			chk_arr.push(chk);
+		})
+		var check =	confirm("선택한 판매자를 삭제할까요?")
+		if(check){
+			document.getElementById("theform").action = "/admin/deleteSeller";
+			document.getElementById("theform").submit();			
+		}
+	}else{
+		alert("판매자를 선택해주세요");
+		return;
+	}
+}
+</script>
+<!-- 자바 스크립트 섹션 끝 -->
 	
 </body>
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
 </html>

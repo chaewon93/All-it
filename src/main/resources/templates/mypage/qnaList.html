@@ -1,0 +1,50 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
+<head>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+<div style="display: flex; margin-top: 30px;" id="contentDiv">
+<div class="container">
+<h1>문의내역</h1><br>
+<table th:align="center" th:cellpadding="3" th:cellspacing="0" th:width="500" class="table">
+	<tr>
+		<th width="50">번호</th>
+		<th width="150">카테고리</th>
+		<th width="300">제목</th>
+		<th width="150">문의등록일</th>
+		<th width="100">답변 상태</th>
+		<th width="100">답변등록일</th>
+	</tr>
+	<tr th:if="${size} == 0">
+		<td colspan="6" align="center" style="font-weight: bold; color: rgb(255, 195, 81);">문의 내역이 없습니다.</td>
+	</tr>
+	<tr th:each="qna, state : ${list}">
+		<td th:text="${state.count}"></td>
+		<td th:text="${qna.category}"></td>
+		<td align="left"><b><a th:href="@{/member/qnaDetail(qno=${qna.qno})}" th:text="${qna.title}" class="text-info"></a></b></td>
+		<td th:text="${qna.regDate}"></td>
+		<td th:text="${qna.status == 0 ? '답변 대기 중' : '답변 완료'}"></td>
+		<td th:text="${qna.resDate}"></td>
+		<!-- <td th:text="${qna.member?.id}"></td>
+		<td th:text="${qna.product}"></td>
+		<td th:text="${qna.seller}"></td>
+		<td th:text="${qna.reply?.content}"></td> -->
+	</tr>
+</table>
+<th:block th:if="${size} != 0">
+	<!-- pagination replace -->
+	<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
+</th:block>
+</div>
+</div>
+</body>
+
+
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+</html>

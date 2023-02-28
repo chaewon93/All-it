@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <div th:fragment="header">	 
 	<head>
 	<title>All it - I have a All it</title>
@@ -11,52 +11,157 @@
 	<script th:src="@{ https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js }"></script>
 	<script th:src="@{ https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js }"></script>
 	<script th:src="@{ https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js }"></script>
+	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 	</head>
 	<body>
-	<div class="header-container">
-		<ul class="nav justifiy-content-end" >
-	  		<li class="nav-item"><a class="nav-link" th:if="${session['member'] == null}" th:href="@{ /member/login }">로그인</a>
-	  							<a class="nav-link" th:if="${session['member'] == null}" th:href="@{ /seller/login }">판매자 로그인</a>
-	  							<a class="nav-link" th:unless="${session['member'] == null}" th:href="@{ /member/logout }">로그아웃</a></li>
-	  		<li class="nav-item"><a class="nav-link" th:if="${session['member'] == null}" th:href="@{ /member/join }">회원가입</a>
-	  							<a class="nav-link" th:unless="${session['member'] == null}" th:href="@{ /member/info }">마이올잇</a></li>
-	  		<li class="nav-item"><a class="nav-link" th:href="@{ /seller/apply }">입점신청</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">고객센터</a></li>
+
+	<!-- 미로그인 시작 -->
+	<div class="header-container" sec:authorize="!isAuthenticated()">
+		<ul class="nav container justifiy-content-end">
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /member-login }">로그인</a></li>
+	  		<!-- <li class="nav-item"><a class="nav-link text-info" th:href="@{ /sellerLogin }">판매자 로그인</a> -->
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /member-join }">회원가입</a>
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /sellerApply }">입점신청</a></li>
+        	<li class="nav-item"><a class="nav-link text-info" th:href="@{ /customerCenter/userCustomerCenter }">고객센터</a></li>
 		</ul>
 		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
 			<h1><a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a></h1>
-			<div class="search">
-				<input type="text" placeholder="검색어를 입력해주세요">
-				<a href><img th:src='@{ https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png }'></a>
-			</div>
 		</div>
 
-		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+		<nav class="navbar navbar-expand-sm bg-dark navbar-dark align-middle" >
 			<div class="dropdown">
-				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">카테고리</button>
+				<button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">카테고리</button>
 				<div class="dropdown-menu">
-					<a class="dropdown-item" th:href="@{ / }">패션의류</a>
-					<a class="dropdown-item" th:href="@{ / }">가전제품</a>
-					<a class="dropdown-item" th:href="@{ / }">식료품</a>
-					<a class="dropdown-item" th:href="@{ / }">주방용품</a>
-					<a class="dropdown-item" th:href="@{ / }">생활용품</a>
-					<a class="dropdown-item" th:href="@{ / }">가전제품</a>
-					<a class="dropdown-item" th:href="@{ / }">반려동물용품</a>
-					<a class="dropdown-item" th:href="@{ / }">스포츠/레저</a>
-					<a class="dropdown-item" th:href="@{ / }">완구/취미</a>
-					<a class="dropdown-item" th:href="@{ / }">도서/음반/DVD</a>
-					<a class="dropdown-item" th:href="@{ / }">헬스/건강식품</a>
-					<a class="dropdown-item" th:href="@{ / }">인테리어</a>
-				</div>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=1) }">패션</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=2) }">식품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=3) }">주방용품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=4) }">생활용품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=5) }">인테리어</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=6) }">가전제품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=7) }">스포츠/레저</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=8) }">도서/음반/DVD</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=9) }">반려동물용품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=10) }">건강식품</a>
+					<!-- <a class="dropdown-item" th:href="@{ /product/category/{category} }">건강식품</a> -->
+ 				</div>
 			</div> &nbsp;&nbsp;
 			<div class="collapse navbar-collapse" id="collapsibleNavbar">
 				<ul class="navbar-nav">
-					<li class="nav-item"><a class="nav-link" th:href="@{ /product/newItem }">신상품</a></li>
-					<li class="nav-item"><a class="nav-link" href="#">베스트상품</a></li>
-					<li class="nav-item"><a class="nav-link" href="#">특가세일</a></li>
-					<li class="nav-item"><a class="nav-link" href="#">쿠폰세일</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /product/new }">신상품</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /product/best }">베스트상품</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /product/sale }">특가세일</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /product/mdpickList }">MDPICK 상품</a></li>
 				</ul>
 			</div>
 		</nav>
 	</div>
+	<!-- 미로그인 끝 -->
+	
+	<!-- 회원 로그인 시작 -->
+	<div class="header-container" sec:authorize="hasRole('MEMBER')">
+		<ul class="nav container justifiy-content-end" >
+			<li class="nav-item"><b class="nav-link" th:text="${ #authentication.principal.member.name }+'님'"></b></li>
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /logout }">로그아웃</a></li>
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /order/orderList }">마이올잇</a></li>
+	  		<li class="nav-item"><a class="nav-link text-info" th:href="@{ /cart/cartList }">장바구니</a></li>
+        	<li class="nav-item"><a class="nav-link text-info" th:href="@{ /customerCenter/userCustomerCenter }">고객센터</a></li>
+		</ul>
+		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
+			<h1><a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a></h1>
+		</div>
+
+		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+			<div class="dropdown">
+				<button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">카테고리</button>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=1) }">패션</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=2) }">식품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=3) }">주방용품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=4) }">생활용품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=5) }">인테리어</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=6) }">가전제품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=7) }">스포츠/레저</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=8) }">도서/음반/DVD</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=9) }">반려동물용품</a>
+					<a class="dropdown-item" th:href="@{ /product/(page=1, searchCondition=10) }">건강식품</a>
+				</div>
+			</div> &nbsp;&nbsp;
+			<div class="collapse navbar-collapse" id="collapsibleNavbar">
+				<ul class="navbar-nav">
+					<li class="nav-item"><a class="nav-link" th:href="@{ /product/new }">신상품</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /product/best }">베스트상품</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /product/sale }">특가세일</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /product/mdpickList }">MDPICK 상품</a></li>
+				</ul>
+			</div>
+		</nav>
+	</div>
+	<!-- 회원 로그인 끝 -->
+	
+	<!-- 판매자/관리자 로그인 시작 -->
+	<!-- 판매자 -->
+ 	<div class="header-container" sec:authorize="hasRole('SELLER')">
+		<ul class="nav container justifiy-content-end"> 
+			<li class="nav-item"><b class="nav-link" th:text="${ #authentication.principal.seller.name }+'님'"></b></li>
+			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /seller/ }">판매자페이지</a></li>
+			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /seller/mypage }">마이페이지</a></li>
+			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /logout }">로그아웃</a></li>
+		</ul>
+		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
+			<a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a> <br><br>
+		</div>
+
+		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+			<div class="collapse navbar-collapse" id="collapsibleNavbar">
+				<ul class="navbar-nav">
+					<li class="nav-item"><a class="nav-link" th:href="@{ /seller/insert }">상품 등록</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /seller/ }">상품 목록</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /seller/order }">주문 목록</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /seller/qna }">QnA 목록</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /seller/unregistered }">미승인 상품목록</a></li>
+				</ul>
+			</div>
+		</nav>
+	</div>
+	<!-- 관리자 -->
+	<div class="header-container" sec:authorize="hasRole('ADMIN')">
+		<ul class="nav container justifiy-content-end"> 
+			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /seller/mypage }">마이페이지</a></li>
+			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /logout }">로그아웃</a></li>
+		</ul>
+		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
+			<a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a> <br><br>
+		</div>
+
+		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+			<div class="collapse navbar-collapse" id="collapsibleNavbar">
+				<ul class="navbar-nav">
+					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/getMemberList }">회원목록</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/getQnAList }">QnA 조회</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/getCusto }">고객센터</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/findSellerList(a=0) }">판매자 조회</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/findAdminProduct(a=0) }">판매 상품 조회</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/couponList }">쿠폰목록</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /admin/createCoupon }">쿠폰 생성</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{ /chart/mainChart }">통계</a></li>
+					<!-- <li class="nav-item"><a class="nav-link" th:href="@{ /admin/adminMain }">관리자 메인화면</a></li> -->
+				</ul>
+			</div>
+		</nav>
+	</div>	
+	<!-- 입점대기 -->
+	 <div class="header-container" sec:authorize="hasRole('TEMP')">
+		<ul class="nav container justifiy-content-end"> 
+			<li class="nav-item"><b class="nav-link" th:text="${ #authentication.principal.seller.name }+'님'"></b></li>
+			<li class="nav-item"><a class="nav-link text-info" th:href="@{ /logout }">로그아웃</a></li>
+		</ul>
+		<div class="jumbotron text-center" style="margin-bottom:0; background-color: white">
+			<a th:href="@{ / }"><img class="logo" th:src="@{ /img/logo.jpg }"></a> <br><br>
+			<p style="color: red">현재 입점승인 대기 중입니다.</p>
+			<p style="color: red">입점대기 상태에는 아무런 기능이 주어지지 않습니다.</p>
+			<p style="color: red">입점승인까지는 약 1~2일이 소요됩니다.</p>
+			<p style="color: red">빠른 시간내에 승인처리 해드리겠습니다.</p>
+		</div>
+	</div>
+	<!-- 판매자 로그인 끝 -->
 </div>

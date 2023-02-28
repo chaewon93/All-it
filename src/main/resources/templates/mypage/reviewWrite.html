@@ -1,0 +1,122 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+	 
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
+
+<head>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<link rel="stylesheet" th:href="@{ /css/files.css }">
+<link rel="stylesheet" th:href="@{ https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css }">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+<body th:align="center">
+<div class="container" style="height: 800px; margin-top: 30px;">
+<h1>상품 품질 리뷰</h1>
+	<form th:action="@{ /member/writeReview }" method="post" enctype="multipart/form-data">
+		<br>
+		<table th:align="center">		
+			<!-- <tr>
+				<th></th>
+				<th>상품 품질 리뷰</th>
+			</tr> -->
+			<tr><th></th></tr><tr><th></th></tr><tr><th></th></tr><tr><th></th></tr>
+			<tr>
+				<th></th>
+				<td>이 상품의 품질에 대해 만족하시나요?</td>
+			</tr>
+			<tr><th></th></tr><tr><th></th></tr><tr><th></th></tr><tr><th></th></tr>
+			<tr>
+				<th></th>
+				<td style="font-weight: bold;">
+					<img class="img-fluid" th:src="@{ /images/product/ } + ${ ordersDetail.product.imageName }" width="250"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<span th:text="${ ordersDetail.product.name }"></span>
+					<span>, </span>
+					<span th:text="${ ordersDetail.quantity }"></span>
+					<span>개</span>
+				</td>
+			</tr>
+			<tr><th></th></tr><tr><th></th></tr><tr><th></th></tr><tr><th></th></tr>
+			<tr>
+				<th width="70" th:text="별점"></th>
+				<td>
+					<select class="form-control" name="rating" id="rating">
+						<option th:value="1">1</option>
+						<option th:value="2">2</option>
+						<option th:value="3">3</option>
+						<option th:value="4">4</option>
+						<option th:value="5">5</option>	
+					</select>
+				</td>
+			</tr>
+			<tr><th></th></tr><tr><th></th></tr><tr><th></th></tr><tr><th></th></tr>	
+			<tr>
+				<th width="70" th:text="내용"></th>
+				<td align="left">
+					<textarea name="content" id="content" cols="60" rows="10" placeholder="타인에게 불쾌감을 주는 내용을 삼가해주세요." class="form-control"></textarea>
+				</td>
+			</tr>
+			<tr><th></th></tr><tr><th></th></tr><tr><th></th></tr><tr><th></th></tr>
+			<tr>
+				<th></th>
+				<td>
+					<label class="badge badge-light" for="imageFile" style="cursor: pointer; line-height: 35px; width: 90px; border: 1px solid black;">
+						사진첨부
+						<input type="file" name="imageFile" id="imageFile" style="display: none;" multiple>
+					</label>
+				</td>
+			</tr>
+			<tr><th></th></tr><tr><th></th></tr><tr><th></th></tr><tr><th></th></tr>
+			<tr>
+				<td colspan="2" align="center">
+					<input type="hidden" th:value="${ ordersDetail.odno }" name="odno" id="odno">
+					<input type="hidden" th:value="${ ordersDetail.product.pno }" name="pno" id="pno">
+					<input type="hidden" th:value="${ ordersDetail.product.seller.id }" name="sid" id="sid">
+					<input type="hidden" th:value="${ #authentication.principal.member?.id }" name="mid" id="mid">
+					<input type="submit" class="btn btn-warning" value="리뷰 등록" onclick="return save()"/>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>
+</body>
+
+<!-- 자바스트립트 섹션 시작 -->
+<script type="text/javascript">
+/* 리뷰 작성 폼 체크 */
+function save() {
+	let imageFile = $("#imageFile").val();
+	let content = $("#content").val();
+	console.log("content = ", content);
+
+	if(imageFile.includes('{')) {
+		alert("특수문자와 같은 부적절한 파일명이 포함되었습니다");
+		return false;
+	} else if(imageFile.includes('}')) {
+		alert("특수문자와 같은 부적절한 파일명이 포함되었습니다");
+		return false;
+	} else if(imageFile.includes('(')) {
+		alert("특수문자와 같은 부적절한 파일명이 포함되었습니다");
+		return false;
+	} else if(imageFile.includes(')')) {
+		alert("특수문자와 같은 부적절한 파일명이 포함되었습니다");
+		return false;
+	} else if(imageFile.includes('[')) {
+		alert("특수문자와 같은 부적절한 파일명이 포함되었습니다");
+		return false;
+	} else if(imageFile.includes(']')) {
+		alert("특수문자와 같은 부적절한 파일명이 포함되었습니다");
+		return false;
+	} else if(content.trim() == '') {
+		alert("리뷰내용을 작성해주세요");
+		return false;
+	}
+}
+</script>
+<!-- 자바스트립트 섹션 끝 -->
+
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+<!-- footer replace -->

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<!-- header replace -->
+
+<!-- 판매자 주문목록 섹션 시작 -->
+<div class="container" style="margin-top: 30px; height: 800px;">	
+<h1>주문 목록</h1><br>
+	<nav class="navbar navbar-expand-sm">
+	<form method="get" th:action="@{ /seller/order }" class="form-inline">
+		<input type="text" name="searchKeyword" id="searchKeyword" placeholder="상품명을 입력해주세요" class="form-control mr-sm-2">
+		<button type="submit" class="btn btn-success">검색</button>
+	</form>
+	</nav> <br>
+	<table class="table">
+		<tr style="text-align: center;">
+			<th width="300">상품명</th>
+			<th width="100">구매자</th>
+			<th width="150">가격</th>
+			<th width="100">수량</th>
+			<th width="150">주문상태</th>
+		</tr>
+		<tr th:if="${size} == 0">
+			<td colspan="5" align="center" style="font-weight: bold; color: rgb(255, 195, 81);">판매 내역이 없습니다.</td>
+		</tr>
+		<tr th:each="order : ${ orderList }" style="text-align: center;">
+			<td >
+				<a th:href="@{ |/seller/product/${ order.product.pno }| }" class="text-info">
+					<span th:text="${ order.product.name }"></span>
+				</a>
+			</td>
+			<td th:text="${ order.member.id }"></td>
+			<td th:text="${ #numbers.formatInteger(order.product.price, 1, 'COMMA') }+'원'"></td>
+			<td th:text="${ order.quantity }"></td>
+			<td>
+				<div class="form-inline">
+				<select id="status" class="form-control mb-2 mr-sm-2">
+					<!-- <option th:value="1" th:selected="${ order.status }=='1'" style="font-style: italic;" disabled="disabled">결제완료</option> -->
+					<option th:value="2" th:selected="${ order.status }=='2'">배송중</option>
+					<option th:value="3" th:selected="${ order.status }=='3'">배송완료</option>
+					<!-- <option th:value="4" th:selected="${ order.status }=='4'" style="font-style: italic;" disabled="disabled">구매확정</option> -->
+					<option th:value="5" th:selected="${ order.status }=='5'">주문취소</option>
+					<!-- <option th:value="2" th:selected="${ order.status }=='6'" style="font-style: italic;" disabled="disabled">교환신청</option> -->
+					<!-- <option th:value="3" th:selected="${ order.status }=='7'" style="font-style: italic;" disabled="disabled">반품신청</option> -->
+					<!-- <option th:value="4" th:selected="${ order.status }=='8'" style="font-style: italic;" disabled="disabled">리뷰작성완료</option> -->
+					<option th:value="5" th:selected="${ order.status }=='9'">교환완료</option>
+					<option th:value="5" th:selected="${ order.status }=='10'">반품완료</option>					
+				</select>
+				<input type="hidden" th:value="${ order.odno }" id="odno">
+				<button type="button" class="btn btn-warning" name="btn" id="btn" th:onclick="'javascript:index.modifyStatus(this);'">확인</button>
+				</div>
+			</td>
+		</tr>
+	</table>
+<th:block th:if="${size} != 0">
+	<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
+	<!-- pagination replace -->
+</th:block>
+</div>
+<!-- 판매자 주문목록 섹션 끝 -->
+
+<!-- 자바스트립트 섹션 시작 -->
+<script type="text/javascript">
+let index = {
+	modifyStatus:function(btn) {
+ 		const data = {
+			status: btn.previousElementSibling.previousElementSibling.value,
+			odno: btn.previousElementSibling.value
+		}
+
+		$.ajax({
+			type: "put",
+			url: '/product/modify/${data.odno}',
+			data: JSON.stringify(data),
+			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+		}).done(function(response){ // 처리 성공 시
+			alert('변경이 완료되었습니다');
+			window.location.reload();
+		}).fail(function(error){ // 처리 실패 시
+			alert(JSON.stringify(error));
+		});
+	}	
+
+/* 	modifyStatus:function(odno) {
+		alert(odno);
+		let data = {
+			odno = odno,
+			status = status
+		}
+		alert(data);
+		$.ajax({
+			type: "put",
+			url: '/product/modify/{data.odno}',
+			data: JSON.stringify(data),
+			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+		}).done(function(response){ // 처리 성공 시
+			alert('확인이 완료되었습니다');
+			window.location.reload();
+		}).fail(function(error){ // 처리 실패 시
+			alert(JSON.stringify(error));
+		});
+	}	 */
+}
+
+index.init();
+
+</script>
+<!-- 자바스트립트 섹션 끝 -->
+
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+<!-- footer replace -->
+	

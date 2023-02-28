@@ -1,66 +1,200 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <div th:replace="~{ /fragments/header.html :: header }"></div>
 <!-- header replace -->
 
-<!-- 내용 섹션 시작 -->
-<form method="post" id="productDetail">
-	<div class="form-group">
+<!-- 아이콘 사용 위해 필요 -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+<!-- 상품 내용 섹션 시작 -->
+<div class="container" style="margin-top: 30px; margin-bottom: 50px;">
+<div class="row">
+	<div class="col-sm-4">
+		<img class="img-fluid" th:src="@{ /images/product/ } + ${ product.imageName }" width="350"><br>
+		
+		<label><i class="fas fa-heart">조회수 </i> <span th:text="${ product.count }" class="text-info"></span></label><br>
+		<label><i class="fas fa-star">별점 </i> <span th:if="${ product.rating } != 0" th:text="${ product.rating }" class="text-warning"></span></label>
+						  <span th:if="${ product.rating } == 0" class="text-warning">0</span><br>
+		<label><i class="fas fa-thumbs-up">좋아요 </i> <span th:text="${ product.hit }" class="text-primary"></span></label><br>
+	</div>
+	<div class="col-sm-8">
+	<form method="post" id="productDetail">
+		<input type="hidden" th:if="${ session['user'] }" th:value="${ #authentication.principal.member.id }" name="mid" id="mid"><!-- th:if="${ session['user'].id } ne null" -->
+		<input type="hidden" th:value="${ product.seller.id }" name="sid" id="sid">
 		<input type="hidden" th:value="${ product.pno }" name="pno" id="pno">
 		<input type="hidden" th:value="${ product.imageName }" name="imageName" id="imageName">
-		<img class="img-fluid" th:src="@{ /images/ } + ${ product.imageName }" width="350"><br>
-		별점 <p th:text="${ product.rating }" style="color: purple;"></p>
-		좋아요 <p th:text="${ product.hit }" style="color: aqua;"></p>
+
 		<label for="sel1">카테고리</label>
 		<input type="hidden" class="form-control" th:value="${ product.category }" name="category" id="category"/>
-		<input type="text" class="form-control" id="type"/>
+		<input type="text" class="form-control" id="type" disabled="disabled"/>
 		<label for="name">상품명</label>
-		<input type="text" class="form-control" th:value="${ product.name }" name="name" id="name"/>
+		<input type="text" class="form-control" th:value="${ product.name }" name="name" id="name" readonly/>
 		<label for="price">판매가</label>
-		<input type="text" class="form-control" th:value="${ product.price }" name="price" id="price"/>
+		<!-- <input type="text" class="form-control" th:value="${ #numbers.formatInteger(product.firstPrice, 1, 'COMMA') }+'원'" name="firstPrice" id="firstPrice" readonly/> -->
+		<input type="text" class="form-control" th:value="${ product.firstPrice }" name="firstPrice" id="firstPrice" readonly/>
+		<div th:if="${ product.discount } > 0">
+			<label for="discount">할인</label>
+			<input type="text" class="form-control" th:value="|${ product.discount }%|" name="discount" id="discount" readonly/>
+			<label for="finalPrice">최종 판매가</label>
+			<!-- <input type="text" class="form-control" th:value="${ #numbers.formatInteger(product.price, 1, 'COMMA') }+'원'" name="price" id="price" readonly/> -->
+			<input type="text" class="form-control" th:value="${ product.price }" name="price" id="price" readonly/>
+		</div>
 		<label for="quantity">수량</label>
-		<input type="text" class="form-control" th:value="1" name="quantity" id="quantity"/>
+		<input type="number" class="form-control" th:value="1" name="quantity" id="quantity" min="1"/>
 		<label for="content">상품설명</label>
-		<textarea class="form-control" th:text="${ product.content }" rows="5" name="content" id="content"></textarea>
+		<textarea class="form-control" th:text="${ product.content }" rows="5" name="content" id="content" readonly></textarea><br>
+			<div th:if="${ product.seller.role.toString().equals('SELLER') }">
+				<input type="button" class="btn btn-warning" id="inCart" value="장바구니">
+		    	<input type="submit" class="btn btn-warning" id="buy" formaction="/order/orderNow" value="바로구매" th:onclick="return buyCheck()"/>
+				<input type="button" class="btn btn-warning" onclick="allmemproCoupon()" value="쿠폰">
+				<input type="button" class="btn btn-outline-warning" id="hit" value="좋아요"/>
+				<input type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#myModal" value="문의하기"/><br>
+			</div>
+			<div th:if="${ product.seller.role.toString().equals('INACTIVE') }">
+				<p style="color: red">현재 구매 불가한 제품입니다</p>
+			</div>
+	</form>
 	</div>
-	<input type="submit" class="btn btn-light" id="inCart" value="장바구니">
-	<input type="submit" class="btn btn-light" id="buy" formaction="/orders/insert" value="바로구매">
-</form>
-<!-- 내용 섹션 끝 -->
+<!-- 상품 내용 섹션 끝 -->
+</div><br>
 
-<!-- 상품평 작성 섹션 시작 -->
-<div class="form-group" id="reply_write">
-	<label for="content">상품평</label>
-	<textarea class="form-control" rows="3" name="reply-content" id="reply-content" placeholder="후기를 작성해주세요"></textarea>
-	<input type="hidden" name="mid" id="mid"><!-- 로그인한 유저의 id, value -->
-	<button type="button" class="btn btn-light" id="reply-write">등록</button>
+<!-- 문의 모달 섹션 시작 -->
+<div class="modal fade" id="myModal">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2 class="modal-title">상품 문의</h2>
+			</div>
+			<div class="modal-body">
+				<span>상품명 </span>
+				<input type="text" th:value="${ product.name }" readonly="readonly" class="form-control"/> <br>
+				<span>판매자 </span>
+				<input type="text" th:value="${ product.seller.name }" readonly="readonly" class="form-control"/> <hr>
+				<span>카테고리 </span>
+				<select id="question-category" class="form-control">
+					<option th:value="상품">상품</option>
+				</select> <br>
+				<span>제목 </span>
+				<input type="text" id="question-title" class="form-control"><br>
+				<span>문의내용 </span><br>
+				<textarea rows="6"cols="75" id="question-content" class="form-control"></textarea>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-warning" id="question-save">작성</button>
+				<button type="button" class="btn btn-light" data-dismiss="modal">취소</button>
+			</div>
+		</div>
+	</div>
 </div>
-<!-- 상품평 작성 섹션 끝 -->
+<!-- 문의 모달 섹션 끝 -->
 
-<!-- 댓글 출력 섹션 시작 -->
-<div class="card">
-	<div class="card-header">댓글</div>
-	<ul class="list-group" id="reply--box" th:each="review : ${ product.reviewList }">
+<!-- 리뷰 출력 섹션 시작 -->
+<div class="col-sm-12" style="height: 300px;">
+	<div class="card-header">
+		<span>리뷰</span>
+	</div>
+	<ul class="list-group" id="reply--box" th:each="review : ${ product.review }" th:if="${ review.prvno == 0 }">
 		<li class="list-group-item d-flex justify-content-between" id="reply--1">
-	  		<div> 
-	  			<!-- <p th:text="${ review.member.id }"></p> -->
-		  		<span th:text="${ review.rating }"></span>점 <span th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span> <br>
-		  		<!-- <p th:text="${ review.seller.id }"></p> -->
-		  		<!-- <p th:text="${ review.product.name }"></p> -->
-		  		<p th:text="${ review.content }"></p>
+	  		<div>
+	  			<span th:if="${ review.fileStatus == 1 }" th:each="file, status : ${ review.reviewFile }" style="display: inline-block;">
+	  				<img class="img-fluid" id="reviewImg" th:src="@{ /images/review/ } + ${ file.imageName }" width="100"><br>
+	  			</span> <br>
+	  			<span>작성자:</span><span th:text="${ review.member.id }" id="review-writer"></span> <br>
+				<span>평점:</span><span th:text="${ review.rating }" id="review-rating"></span>점 <br>
+				<span>작성일:</span><span th:if="${ review.modDate == null }" th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span>
+								  <span th:if="${ review.modDate != null }" th:text="${ #dates.format(review.modDate, 'yyyy-MM-dd') }+(' (수정됨)')"></span> <br>
+		  		<span>상품명:</span><span th:text="${ review.product.name }"></span> <br>
+		  		<span>리뷰:</span><span th:text="${ review.content }" id="review-content"></span> <br>
 		  		<span>좋아요 </span><span th:text="${ review.hit }"></span>개
 	  		</div>
-	  		<div class="d-flex">
+	  		<div align="center">
 	  			<!-- <div class="font-italic" th:text="${ review.member.id }"></div> &nbsp; -->
-	  			<button class="badge" style="color: black">삭제</button>
+				<!-- <button class="badge" id="reviewModifyView" style="color: black" th:if="${ review.member.id == session['user']?.id }" th:onclick="'javascript:index.modifyReviewView(this, ' +${ review.rating }+ ', ' +${ review.rvno }+');'">수정</button> -->
+	  			<button class="badge" id="reviewDelete" style="color: black" th:if="${ review.member.id == session['user']?.id }" th:onclick="'javascript:index.deleteReview(pno.value, ' +${ review.rvno }+ ');'">삭제</button>
+	  			<button class="badge" id="reviewHit" style="color: black" th:onclick="'javascript:index.hitReview(pno.value, mid.value, ' +${ review.rvno }+ ');'">좋아요</button>
 	  		</div>
 	  	</li>
+	  	
+	  	<!-- 댓글 수정 섹션 시작 -->
+	   <!--  <div id="review-modifying" style="display: none">
+  			<div class="card-body">
+				<textarea class="form-control" id="modifying-content" rows=""></textarea>
+			</div>
+			<div class="card-footer">
+				<select class="form-control" name="rating" id="modifying-rating">
+					<option th:value="1">1</option>
+					<option th:value="2">2</option>
+					<option th:value="3">3</option>
+					<option th:value="4">4</option>
+					<option th:value="5">5</option>	
+				</select>
+				<input type="hidden" id="modifying-rvno">
+				<input type="file" class="form-control-file border" name="reviewImageFile" id="reviewImageFile"/>
+				<button type="button" class="btn btn-primary" id="reviewModify" th:onclick="'javascript:index.modifyReview(this, pno.value);'">수정</button>
+				<button type="button" class="btn btn-primary" id="reviewCancle" th:onclick="'javascript:index.cancleReview(this);'">취소</button>
+			</div>
+  		</div> -->
+  		<!-- 댓글 수정 섹션 끝 -->
+  		
+  		<!-- 답글 작성 섹션 시작 -->
+	    <!-- <div id="review-reply" style="display: none">
+  			<div class="card-body">
+				<textarea class="form-control" id="reply-content" rows=""></textarea>
+			</div>
+			<div class="card-footer">
+				<input type="text" id="reply-rvno">
+				<input type="file" class="form-control-file border" name="reviewImageFile" id="reviewImageFile"/>
+				<button type="button" class="btn btn-primary" id="reviewReply" th:onclick="'javascript:index.replyReview(this, pno.value);'">작성</button>
+				<button type="button" class="btn btn-primary" id="reviewCancle" th:onclick="'javascript:index.cancleReview(this);'">취소</button>
+			</div>
+  		</div> -->
+  		<!-- 답글 작성 섹션 끝 -->
 	</ul>
+</div> <br>
+<!-- 리뷰 출력 섹션 끝 -->
+
+<!-- 상품평 작성 섹션 시작 -->
+<!-- <div class="form-group">
+	<form id="reply-save-form">
+		<div class="card-body">
+			<textarea class="form-control" rows="3" id="review-save-content" placeholder="후기를 작성해주세요"></textarea>
+		</div>
+		<div class="card-footer">
+			<select class="form-control" name="rating" id="rating">
+				<option th:value="1">1</option>
+				<option th:value="2">2</option>
+				<option th:value="3">3</option>
+				<option th:value="4">4</option>
+				<option th:value="5">5</option>	
+			</select>
+			<input type="file" class="form-control-file border" name="reviewImageFile" id="reviewImageFile"/>
+			<input type="hidden" name="mid" id="mid"> --><!-- 로그인한 유저의 id, value
+			<button type="button" class="btn btn-primary" id="review-save">등록</button>
+		</div>
+	</form>
+</div> -->
+<!-- 상품평 작성 섹션 끝 -->
 </div>
-<!-- 댓글 출력 섹션 끝 -->
 
 <!-- 자바스트립트 섹션 시작 -->
 <script type="text/javascript">
+//미로그인 바로구매시 false 리턴
+function buyCheck() {
+	let user_id = $("#mid").val();
+	let discount = $("#discount").val();
+
+	let discount2 = discount.substr(0, discount.length-1);
+	document.getElementById("discount").value = discount2;
+
+	if(user_id == "" || user_id == undefined) {
+		alert('로그인이 필요한 서비스입니다.');
+		return false;
+	} else {
+		return true;
+	}
+}
+
 let index = {
 	init:function() {
 		let type = $("#category").val();
@@ -99,62 +233,270 @@ let index = {
 			}
 		}
 		
-		$("#inCart").on("click", ()=>{ // function(){} 대신 ()=>{}를 사용하는 이유는 this를 바인딩 하기 위함
+		$("#inCart").on("click", ()=>{ 
 			this.insertCart();
-
 		});
-		$("#save").on("click", () =>{
-			this.save();
+		$("#buy").on("click", () => {
+			if($("#mid").val().trim() == "") {
+				alert('로그인이 필요한 서비스입니다.');
+				return false;
+			}
+		})
+		$("#hit").on("click", ()=>{
+			this.hit();
 		});
+		$("#question-save").on("click", () =>{
+			this.saveQuestion();
+		});
+		$("#review-save").on("click", () =>{
+			this.saveReview();
+		});
+		
 	},
 
+	// 장바구니 담기
 	insertCart:function() {
-		// ajax는 기본이 비동기 호출이기 때문에 만약 뒤에 다른 요청이 있으면 그것도 같이 수행
-		// ajax가 통신을 성공하고 서버가 json을 리턴하면 자동으로 자바오브젝트로 변환해줌
-		$.ajax({
-			url: "/cart/insert",
-			type: "post",
-			data: {
-				//mid: $("#mid").val(),
-				quantity : $("#quantity").val()
-			},
-			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
-		}).done(function(response){ // 처리 성공 시
-			alert("[처리결과]"+response);
-			if(response == 1) {
-				alert('상품이 장바구니에 담겼습니다.');
-				//location.href="/seller/main";
-			} else if(response == -1) {
-				alert('로그인이 필요한 서비스입니다.');
-				location.href="/member/login";
-			}	
-		}).fail(function(error){ // 처리 실패 시
-			alert(JSON.stringify(error));
-		});
+		let user_id = $("#mid").val();
+		
+		if(user_id == "" || user_id == undefined) {
+			alert('로그인이 필요한 서비스입니다.');
+			window.location.href="/member-login";
+			return false;
+		} else {
+			// ajax는 기본이 비동기 호출이기 때문에 만약 뒤에 다른 요청이 있으면 그것도 같이 수행
+			// ajax가 통신을 성공하고 서버가 json을 리턴하면 자동으로 자바오브젝트로 변환해줌
+			$.ajax({
+				url: "/cart/insert",
+				type: "post",
+				data: JSON.stringify({
+					mid: $("#mid").val(),
+					pno: $("#pno").val(),
+					quantity : $("#quantity").val()
+				}),
+				dataType: "text",
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+				success: function(data){ // 처리 성공 시
+					//alert("[처리결과]"+data);
+					if(data == 'inCart') {
+						alert('상품이 장바구니에 담겼습니다.');
+						//self.history.go(-1);
+					} else if(data == 'exist') {
+						var chk = confirm('장바구니에 같은 상품이 있습니다. \n그래도 담으시겠습니까?');
+						if(chk) {
+							//location.replace("/cart/modCart");
+							$.ajax({
+								url: "/cart/modCart",
+								type: "post",
+								data: JSON.stringify({
+									mid: $("#mid").val(),
+									pno: $("#pno").val(),
+									quantity : $("#quantity").val(),
+									type: "add"
+								}),
+								dataType: "text",
+								contentType: "application/json; charset=utf-8",
+								success: function(data){
+									if(data == 'modCart') {
+										alert('상품이 장바구니에 담겼습니다.');
+									} else if(data == 'null') {
+										alert('장바구니 조회 중 일시적인 오류입니다.');
+									} else {
+										alert('로그인이 필요한 서비스입니다.');
+									}
+								}, error: function(err){
+									alert("다시 시도해주세요.");				
+									console.log('[modCart() ajax error] '+err);
+								}	
+							});
+						}
+					} else {
+						alert('로그인이 필요한 서비스입니다.');
+					}
+				}
+			}).fail(function(error){ // 처리 실패 시
+				alert("다시 시도해주세요.");
+				console.log("[insertCart() ajax error] "+JSON.stringify(error));
+			});
+		}
 	},
 	
-	save:function() {
+	// 상품 좋아요
+	hit:function() {
 		let data = {
-			pno: $("#save-pno").val(),
-			content: $("#reply-content").val(),
-			rating: $("#rating").val()
+			pno: $("#pno").val(),
+			mid: $("#mid").val()
 		}
-		console.log("data = " + data);
 		$.ajax({
-			type: "post",
-			url: '/review/save/${data.pno}',
+			type: "put",
+			url: '/product/hit/${data.pno}',
 			data: JSON.stringify(data),
 			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
 		}).done(function(response){ // 처리 성공 시
-			alert('댓글이 작성되었습니다');
-			location.href="/seller/";
+			window.location.reload();
 		}).fail(function(error){ // 처리 실패 시
-			alert(JSON.stringify(error));
+			alert('로그인이 필요한 서비스입니다');
+		});
+	},
+
+	// 문의 작성
+	saveQuestion:function() {
+		let data = {
+			pno: $("#pno").val(),
+			sid: $("#sid").val(),
+			mid: $("#mid").val(),
+			category: $("#question-category").val(),
+			title: $("#question-title").val(),
+			content: $("#question-content").val()
+		}
+		if(data.mid == null || data.mid.trim() == "") {
+			alert('로그인이 필요한 서비스입니다');
+			return false;			
+		} else if(data.category == 0) {
+			alert('카테고리를 선택해주세요');
+			return false;
+		} else if(data.title.trim() == "") {
+			alert('제목을 입력해주세요');
+			return false;
+		} else if(data.content.trim() == "") {
+			alert('내용을 입력해주세요');
+			return false;
+		} else {
+			$.ajax({
+				type: "post",
+				url: '/product/qna/save/${data.pno}',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('상품문의가 완료되었습니다');
+				window.location.reload();
+			}).fail(function(error){ // 처리 실패 시
+				alert(JSON.stringify(error));
+			});
+		}
+	},
+	
+	// 리뷰 작성
+	saveReview:function() {
+		let data = {
+			pno: $("#pno").val(),
+			mid: $("#mid").val(),
+			content: $("#review-save-content").val(),
+			rating: $("#rating").val()
+		}
+		if(data.mid == null || data.mid.trim() == "") {
+			alert('로그인이 필요한 서비스입니다');
+			return false;
+		} else if(data.content.trim() == "") {
+			alert('내용을 입력해주세요');
+			return false;
+		} else {	
+			$.ajax({
+				type: "post",
+				url: '/review/save/${data.pno}',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('댓글이 작성되었습니다');
+				window.location.reload();
+			}).fail(function(error){ // 처리 실패 시
+				alert(JSON.stringify(error));
+			});
+		}
+	},
+
+	// 기존 리뷰 수정버튼
+/* 	modifyReviewView:function(btn, rating, rvno) {
+		btn.parentElement.parentElement.nextElementSibling.firstElementChild.nextElementSibling.firstElementChild.value = rating;
+		btn.parentElement.parentElement.nextElementSibling.firstElementChild.nextElementSibling.firstElementChild.nextElementSibling.value = rvno;
+		btn.parentElement.parentElement.nextElementSibling.style.display = 'block';
+	}, */
+	
+	// 기존 리뷰 수정
+/* 	modifyReview:function(btn, pno) {
+		let data = {
+			pno: pno,
+			content: btn.parentElement.previousElementSibling.firstElementChild.value, 
+			rating: btn.parentElement.firstElementChild.value,
+			rvno: btn.parentElement.firstElementChild.nextElementSibling.value
+		}
+			$.ajax({
+				type: "put",
+				url: '/review/modify/${data.pno}/${data.rvno}',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('댓글이 수정되었습니다');
+				window.location.reload();
+			}).fail(function(error){ // 처리 실패 시
+				alert(JSON.stringify(error));
+			});
+	}, */
+	
+	// 기존 리뷰 수정/답글 작성 취소
+/* 	cancleReview:function(btn) {
+		document.getElementById("modifying-content").value = "";
+		btn.parentElement.parentElement.style.display = 'none';
+	}, */
+	
+	// 리뷰 삭제
+	deleteReview:function(pno, rvno) {
+		let data = {
+			pno: pno,
+			rvno: rvno
+		}
+		console.log("data = ", data);
+		const check = confirm("삭제하시겠습니까?");
+		if(check === true) {	
+			$.ajax({
+				type: "delete",
+				url: '/review/delete/${data.pno}/${data.rvno}',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('댓글이 삭제되었습니다');
+				$("#reply--box").load(location.href+' #reply--box');
+			}).fail(function(error){ // 처리 실패 시
+				alert(JSON.stringify(error));
+			});
+		}
+	}, 
+	
+	// 리뷰 좋아요
+	hitReview:function(pno, mid, rvno) {
+		let data = {
+			pno: pno,
+			mid: mid,
+			rvno: rvno
+		}
+		console.log("data = ", data);
+		$.ajax({
+			type: "put",
+			url: '/review/hit/${data.pno}/${data.rvno}',
+			data: JSON.stringify(data),
+			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+		}).done(function(response){ // 처리 성공 시
+			window.location.reload();
+		}).fail(function(error){ // 처리 실패 시
+			alert('로그인이 필요한 서비스입니다');
 		});
 	}
-}
 
+}
 index.init();
+
+let price,quantity;
+// 쿠폰 버튼 클릭 이벤트
+function allmemproCoupon(){
+	let mid = $("#mid").val();
+	let pno = $("#pno").val();
+	
+	if(mid == undefined || mid == "") {
+		alert("로그인이 필요한 서비스입니다.");
+		return false;
+	} else {
+		let openwin = window.open("/member/coupon?pno="+pno, "쿠폰", "width=800, height=600, scrollbars=yes");
+	}
+}
 
 </script>
 <!-- 자바스트립트 섹션 끝 -->

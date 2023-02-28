@@ -1,55 +1,45 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <div th:replace="~{ /fragments/header.html :: header }"></div>
+<head>
+<script type="text/javascript">
+$(document).ready(function() {
+	var carousel = $(".carousel-item");
+	
+	carousel.eq(0).addClass("active");
+	
+	var carousel_indi = $("ul li:first");
+	
+	carousel_indi.addClass("active");
+});
+</script>
+<style>
+#img {
+   width: 350px;
+   height: 350px;
+   object-fit: fill;
+}
+</style>
 <!-- header replace -->
-
+</head>
+<body>
 <!-- 내용 섹션 시작 -->
+<div id="contentDiv" sec:authorize="!hasRole('TEMP')">
 <div class="container" style="margin-top: 30px; background-color: white">
+	<!-- 이벤트 리스트에 등록된 고객센터 이미지 출력 -->
 	<div id="demo" class="carousel slide" data-ride="carousel">
 		<ul class="carousel-indicators">
-			<li data-target="#demo" data-slide-to="0" class="active"></li>
-			<li data-target="#demo" data-slide-to="1"></li>
-			<li data-target="#demo" data-slide-to="2"></li>
-			<li data-target="#demo" data-slide-to="3"></li>
-			<li data-target="#demo" data-slide-to="4"></li>
+			 <li data-target="#demo" data-slide-to="${size.index}" th:each="event, size : ${eventList}"></li> 
 		</ul>
-		<div class="carousel-inner">
-			<div class="carousel-item active">
-				<a href><img th:src="@{ /img/dontlookup.jpg }" alt="Los Angeles" width="1100" height="500"></a>
-				<div class="carousel-caption">
-					<h3>Los Angeles</h3>
-					<p>We had such a great time in LA!</p>
-				</div>   
+		<div class="carousel-inner" >
+			<div class="carousel-item " th:each="event : ${eventList}">
+				<a href="customerCenter/userCustomerCenter?cate=이벤트">
+				<img class="img-fluid" th:src="@{ /images/admin/ } + ${ event.imageName }" width="1100" height="500">
+				</a>
+				<div class="carousel-caption"></div> 
+				
 			</div>
-			<div class="carousel-item">
-				<a href><img th:src="@{ /img/lalaland.jpg }" alt="Chicago" width="1100" height="500"></a>
-				<div class="carousel-caption">
-					<h3>Chicago</h3>
-					<p>Thank you, Chicago!</p>
-				</div>   
-			</div>
-			<div class="carousel-item">
-				<a href><img th:src="@{ /img/before.jpg }" alt="New York" width="1100" height="500"></a>
-				<div class="carousel-caption">
-					<h3>New York</h3>
-					<p>We love the Big Apple!</p>
-				</div>   
-			</div>
-			<div class="carousel-item">
-				<a href><img th:src="@{ /img/broker.jpg }" alt="Seoul" width="1100" height="500"></a>
-				<div class="carousel-caption">
-					<h3>Seoul</h3>
-					<p>We Love Seoul!</p>
-				</div>   
-			</div>
-			<div class="carousel-item">
-				<a href><img th:src="@{ /img/burning.jpg }" alt="Busan" width="1100" height="500"></a>
-				<div class="carousel-caption">
-					<h3>Busan</h3>
-					<p>We love the Sea!</p>
-				</div>   
-			</div>
-			
 		</div>
 	<a class="carousel-control-prev" href="#demo" data-slide="prev">
 		<span class="carousel-control-prev-icon"></span>
@@ -60,27 +50,20 @@
 	</div>
 	<br><br>
 	<div class="row">
-		<div class="col-sm-4">
-			<h2>울산 과메기</h2>
-			<a href><img class="img-fluid" th:src="@{ /img/gataka.jpg }" alt="Busan" width="350"></a>
-			<p>동해 바닷바람을 맞으며 숙성된 과메기입니다.</p>
-			<hr class="d-sm-none">
-		</div>
-		<div class="col-sm-4">
-			<h2>여수 갓김치</h2>
-			<a href><img class="img-fluid" th:src="@{ /img/moneyball.jpg }" alt="Busan" width="350"></a>
-			<p>어머님들의 손맛이 담긴 갓김치입니다.</p>
-			<hr class="d-sm-none">
-		</div>
-		<div class="col-sm-4">
-			<h2>나주 배</h2>
-			<a href><img class="img-fluid" th:src="@{ /img/moonlight.jpg }" alt="Busan" width="350"></a>			
-			<p>30년 경력의 농부님이 정성을 들여 키운 배입니다.</p>
+		<div class="col-sm-4" th:each="mdPick : ${proList}">
+			<a th:href="@{ |/product/${ mdPick.pno }| }" class="text-info">
+				<h3 th:text="${mdPick.name}" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></h3>
+				<img class="img-fluid" id="img" th:src="@{ /images/product/ } + ${ mdPick.imageName }" width="350" height="350" style="object-fit: fill;">
+				<p th:text="${mdPick.content}" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"></p>
+			</a>
 			<hr class="d-sm-none">
 		</div>
 	</div>
 </div>
+</div>
 <!-- 내용 섹션 끝 -->
 
-<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+<div th:replace="~{ /fragments/footer.html :: footer }" sec:authorize="!hasRole('TEMP')"></div>
 <!-- footer replace -->
+</body>
+</html>

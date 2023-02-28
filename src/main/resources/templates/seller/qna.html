@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<!-- header replace -->
+<head>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+<!-- 상품문의 답변 작성 섹션 시작 -->
+<div style="display: flex; margin-top: 30px;">
+<div class="container">
+<form method="post">
+	<table class="table">
+		<tr>
+			<th>카테고리 </th>
+			<td><input type="text" th:value="${ qna.category }" class="form-control" readonly="readonly"><br></td>
+		</tr>
+		<tr>
+			<th>상품 </th>
+			<td><input type="text" th:value="${ qna.product.name }" class="form-control" readonly="readonly"/> <br></td>
+		</tr>
+		<tr>
+			<th>제목 </th>
+			<td><input type="text" th:value="${ qna.title }" class="form-control" readonly="readonly"/> <br></td>
+		</tr>
+		<tr>
+			<th>질문자 </th>
+			<td><input type="text" th:value="${ qna.member.id }" class="form-control" readonly="readonly"/> <br></td>
+		</tr>
+		<tr>
+			<th>문의내용 </th><br>
+			<td><textarea rows="9"cols="75" th:text="${ qna.content }" class="form-control" readonly="readonly"></textarea><br></td>
+		</tr>
+		<tr>
+			<th>답변 </th><br>
+			<td><textarea th:if="${ qna.response }" th:text="${ qna.response }" rows="9"cols="75" id="response" readonly="readonly" class="form-control"></textarea>
+			<textarea th:unless="${ qna.response }" th:text="${ qna.response }" rows="9"cols="75" id="response" class="form-control"></textarea></td>
+		</tr>
+		<tr>
+			<td colspan="2" align="right">
+			<input type="hidden" th:value="${ qna.product.pno }" id="pno">
+			<input type="hidden" th:value="${ qna.qno }" id="qno">
+			<input type="button" value="≪ 문의내역 돌아가기" onclick="history.back()" class="btn btn-outline-warning">
+			<button type="button" class="btn btn-warning" th:unless="${ qna.response }" onclick="saveit()">작성</button>
+			<button type="button" class="btn btn-secondary" th:if="${ qna.response }" onclick="deleteit()">답변삭제</button></td>
+		</tr>
+	</table>
+</form>
+</div>
+</div>
+<!-- 내용 섹션 시작 -->
+
+<!-- 자바스트립트 섹션 시작 -->
+<script type="text/javascript">
+function saveit() {
+	let data = {
+		pno: $("#pno").val(),
+		qno: $("#qno").val(),
+		response: $("#response").val()
+	}
+	console.log('data = ', data);
+	if(data.response.trim() == "") {
+		alert('답변을 작성해주세요');
+		return false;			
+	} else {
+		$.ajax({
+			type: "put",
+			url: '/product/qna/save/${data.pno}/response',
+			data: JSON.stringify(data),
+			contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+		}).done(function(response){ // 처리 성공 시
+			alert('답변이 완료되었습니다');
+			location.href="/seller/qna";
+		}).fail(function(error){ // 처리 실패 시
+			alert(JSON.stringify(error));
+		});
+	}
+}
+
+function deleteit() {
+	let data = {
+		pno: $("#pno").val(),
+		qno: $("#qno").val()
+	}
+	console.log('data = ', data);
+	$.ajax({
+		type: "put",
+		url: '/product/qna/delete/${data.pno}/response',
+		data: JSON.stringify(data),
+		contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+	}).done(function(response){ // 처리 성공 시
+		alert('답변이 삭제되었습니다');
+		location.href="/seller/qna";
+	}).fail(function(error){ // 처리 실패 시
+		alert(JSON.stringify(error));
+	});
+}
+/* let index = {
+	init:function() {
+		$("#save").on("click", ()=>{
+			this.save();
+		});
+	},
+	
+	save:function() {
+		let data = {
+			qno: $("#qno").val(),
+			response: $("#response").val()
+		}
+		console.log('data = ', data);
+		if(data.response.trim() == "") {
+			alert('답변을 작성해주세요');
+			return false;			
+		} else {
+			$.ajax({
+				type: "post",
+				url: '/product/qna/save/${data.pno}/response',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('답변이 완료되었습니다');
+				window.location.reload();
+			}).fail(function(error){ // 처리 실패 시
+				alert(JSON.stringify(error));
+			});
+		}
+	}
+} */
+</script>
+<!-- 자바스트립트 섹션 끝 -->
+
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
+<!-- footer replace -->
+</body>

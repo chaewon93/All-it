@@ -1,0 +1,502 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<!-- header replace -->
+<div th:replace="~{ /fragments/header.html :: header }"></div>
+<div th:replace="~{ /fragments/subMenu.html :: subMenu }"></div>
+<head>
+	<title>All it - I have a All it</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+
+<body th:align="center">
+<div id="contentDiv" style="display: flex; margin-top: 30px;">
+<div class="container">
+<h1>주문 목록</h1><br>
+	<h3 th:if="${orderList.getTotalElements() == 0}" class="text-danger" th:align="center">주문 내역이 없습니다.</h3>
+	<form id="formm" method="post">
+	<table id="orderList" class="table">
+		<tr th:each="order : ${orderList}">
+		<table class="table">
+			<tr>
+				<th width="450">상품명</th>
+				<th width="80">수 량</th>
+				<th width="100">가 격</th> 
+				<th width="150">주문일</th> 
+				<th width="100">진행 상태</th>
+				<th width="150"></th>    
+			</tr>
+			<tr th:if="${orderList.getTotalElements() == 0}">
+				<td colspan="6" class="text-danger">
+			</tr>
+			<tr th:each="detail : ${order.ordersDetail}">      
+				<td>
+					<div style="display: flex;">
+						<div class="col-ms-2">
+							<img class="img-fluid" th:src="@{ /images/product/ } + ${ detail.product.imageName }" width="100">
+						</div>
+						<div class="col-ms-4" style="width: 300px; margin-left: 20px;">
+							<a th:href="@{ |/product/${ detail.product.pno }| }">
+								<b class="text-info" th:text="${ detail.product.name }"></b>
+								<input type="hidden" id="pname" th:value="${ detail.product.name }">
+							</a><br>
+							<span th:text="${#numbers.formatInteger(detail.product.price, 1, 'COMMA')}+'원'"></span>
+						</div>
+						<div th:if="${ detail.product.seller.role.toString().equals('INACTIVE') }">
+							<p style="color: red">현재 구매 불가한 제품입니다 </p>
+						</div>
+					</div>    
+					<div align="right">
+						<input type="button" class="btn btn-outline-secondary" id="inCart" value="장바구니 담기" th:onclick="'javascript:index.insertCart(' +${ detail.product.pno }+ ');'">
+					</div>
+				</td>
+				<td th:text="${detail.quantity}+'개'"/> 
+				<td th:text="${#numbers.formatInteger(detail.product.price*detail.quantity, 1, 'COMMA')}+'원'" />      
+				<td th:text="${#dates.format(order.regDate, 'yyyy-MM-dd')}" />
+				<th:block th:switch="${detail.status}">
+					<td th:case="1">주문완료</td>
+					<td th:case="2">배송중</td>
+					<td th:case="3">배송완료</td>
+					<td th:case="4">구매확정</td>
+					<td th:case="5">주문취소</td>
+					<td th:case="6">교환신청</td>
+					<td th:case="7">반품신청</td>
+					<td th:case="8">리뷰작성완료</td>
+					<td th:case="9">교환완료</td>
+					<td th:case="10">반품완료</td>
+				</th:block>
+				<td>
+					<input type="button" th:if="${detail.status == 1}" id="cancelOrder" value="주문취소" class="btn btn-outline-secondary" th:onclick="'javascript:index.cancelOrder(' +${ order.ono }+ ',' +${ detail.odno }+ ');'">
+					<input type="button" th:if="${detail.status == 2}" id="delivery" value="배송조회" class="btn btn-outline-secondary" th:onclick="'javascript:index.openDelivery(this);'" data-toggle="modal" data-target="#deliveryModal" th:data-pname="${detail.product.name}">
+					<input type="button" th:if="${detail.status == 3}" id="buyComplete" value="구매확정" class="btn btn-outline-secondary" th:onclick="'javascript:index.buyComplete(' +${ detail.odno }+ ');'">
+          			<input type="button" th:if="${detail.product.seller.role.toString().equals('SELLER')}" id="qna" value="상품문의" class="btn btn-outline-secondary" th:onclick="'javascript:index.openQna(this);'" data-toggle="modal" data-target="#qnaModal" th:data-product="${ detail.product.name }" th:data-seller="${ detail.product.seller.id }" th:data-pno="${ detail.product.pno }"/>
+					<input type="button" th:if="${detail.status == 3}" id="refund" value="교환/반품 신청" class="btn btn-outline-secondary" th:onclick="'javascript:index.openRefund(this);'" data-toggle="modal" data-target="#refundModal" th:data-odno="${ detail.odno }" th:data-pname="${ detail.product.name }">
+					<input type="button" th:if="|${detail.product.seller.role.toString().equals('SELLER') && detail.status == 4}|" id="writeReview" value="리뷰작성" class="btn btn-outline-secondary" th:onclick="'javascript:index.writeReview(' +${ detail.odno }+ ');'">
+			
+					<input type="hidden" th:value="${ order.ono }" id="ono" name="ono">
+	 				<input type="hidden" th:value="${ session['user']?.id }" id="mid" name="mid">
+	 				<input type="hidden" th:value="${ detail.product.pno }" id="pno" name="pno">
+	 				<input type="hidden" th:value="${ detail.odno }" id="odno" name="odno">
+	 				<input type="hidden" th:value="${ order.finalPrice }" id="finalPrice" name="finalPrice">
+				</td>
+			</tr>
+			<tr>
+	 			<td colspan="6">
+	 				<input type="submit" th:onclick="'javascript:index.orderDetail(' +${ order.ono }+ ');'" value="주문 상세보기 ≫" id="detail" class="btn btn-light"> 
+	 			</td>
+ 			</tr>
+ 		</table>
+		</tr>
+	</table>   
+	</form>  
+	<div id="buttons" align="right">
+		<input type="button" value="쇼핑 계속하기" class="btn btn-outline-warning" onclick="location.href='/'">     
+	</div>
+<th:block th:if="${orderList.getTotalElements() != 0}">
+	<div th:replace="~{ /fragments/pagination.html :: pagination }"></div>
+	<!-- pagination replace -->	
+</th:block>
+</div>
+</div>
+
+<!-- 배송조회 모달 섹션 시작 -->
+<div class="modal fade" id="deliveryModal">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2 class="modal-title">배송조회</h2>
+			</div>
+			<div class="modal-body">
+				<span>상품명 </span>
+				<input type="text" class="form-control" id="pName" readonly="readonly"/>
+				<hr>
+				
+				<h5>택배사 선택 </h5>
+				<select class="form-control" id="delivery-category">
+					<option th:value="CJ대한통운">CJ대한통운</option>
+					<option th:value="우체국택배">우체국택배</option>
+					<option th:value="한진택배">한진택배</option>
+					<option th:value="롯데택배">롯데택배</option>
+					<option th:value="로젠택배">로젠택배</option>
+					<option th:value="CU편의점택배">CU편의점택배</option>
+					<option th:value="GS25편의점택배">GS25편의점택배</option>
+				</select><br>
+				<input type="text" class="form-control" id="delivery-num" placeholder="운송장번호 - 없이 입력"> <br>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-warning" id="deliveryBtn">조회</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 배송조회 신청 모달 섹션 끝 -->
+
+<!-- 교환/반품 신청 모달 섹션 시작 -->
+<div class="modal fade" id="refundModal">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2 class="modal-title">교환/반품 신청</h2>
+			</div>
+			<div class="modal-body">
+				<span>상품명 </span>
+				<input type="hidden" id="refund-odno" name="odno"/>
+				<input type="text" class="form-control" id="prodName" readonly="readonly"/>
+				<hr>
+				<h5>교환/반품 사유 </h5>
+				<span><b>단순 변심 </b></span> <br>
+				<input type="radio" name="reason" value="상품이 마음에 들지 않음"> 상품이 마음에 들지 않음 <br>
+				<input type="radio" name="reason" value="더 저렴한 상품을 발견함"> 더 저렴한 상품을 발견함
+				<hr>
+				<span><b>상품 문제 </b></span> <br>
+				<input type="radio" name="reason" value="상품의 구성품/부속품이 들어있지 않음"> 상품의 구성품/부속품이 들어있지 않음 <br>
+				<input type="radio" name="reason" value="상품이 설명과 다름"> 상품이 설명과 다름 <br>
+				<input type="radio" name="reason" value="상품이 파손되어 배송됨"> 상품이 파손되어 배송됨 <br>
+				<input type="radio" name="reason" value="상품 결함/기능에 이상이 있음"> 상품 결함/기능에 이상이 있음
+				<hr>
+				<span><b>기타 사유 </b></span>
+				<input type="text" class="form-control" id="reason" name="reason">
+				<hr>
+				
+				<h5>해결 방법 선택 </h5>
+				<input type="radio" id="type" name="type" value="교환"> 교환 <br>
+				<input type="radio" id="type" name="type" value="반품"> 반품 및 환불
+				
+				<!-- 배송, 회수 정보 : 상품 회수 주소 -->
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-warning" id="refundBtn">신청</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 교환/반품 신청 모달 섹션 끝 -->
+
+<!-- 문의 모달 섹션 시작 -->
+<div class="modal fade" id="qnaModal">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2 class="modal-title">상품 문의</h2>
+			</div>
+			<div class="modal-body">
+				<span>상품명 </span>
+				<input type="text" readonly="readonly" id="qnaname" class="form-control"/> <br>
+				<span>판매자 </span>
+				<input type="text" readonly="readonly" id="qnasid" class="form-control"/> <br>
+				<span>카테고리 </span>
+				<select id="question-category" class="form-control">
+					<option th:value="상품">상품</option>
+				</select> <br>
+				<span>제목 </span>
+				<input type="text" id="question-title" class="form-control"><br>
+				<span>문의내용 </span><br>
+				<textarea rows="6"cols="75" id="question-content" class="form-control"></textarea>
+			</div>
+			<div class="modal-footer">
+				<input type="hidden" name="qnapno" id="qnapno" />				
+				<button type="button" class="btn btn-warning" id="question-save">작성</button>
+				<button type="button" class="btn btn-light" data-dismiss="modal">취소</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 문의 모달 섹션 끝 -->
+
+<!-- 자바스트립트 섹션 시작 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+let index = {
+	init:function() {
+		
+//		$("#inCart").on("click", ()=>{ 
+//			this.insertCart();
+//		});
+		
+		$("#refundBtn").on("click", ()=>{ 
+			this.refund();
+		});
+
+		$("#question-save").on("click", () =>{
+			this.saveQuestion();
+		});
+	},
+	
+	// 상품문의 모달창 open
+	openQna:function(btn) {
+		var product = $(btn).data('product');
+		var seller = $(btn).data('seller');
+		var pno = $(btn).data('pno');
+		console.log("pro", product);
+		console.log("sel", seller);
+		console.log("pno", pno);
+		$("#qnaname").val(product);
+		$("#qnasid").val(seller);
+		$("#qnapno").val(pno);
+	},
+	
+	// 교환/반품 신청 모달 open
+    openRefund:function(btn) {
+    	var odno = $(btn).data('odno');
+    	var name = $(btn).data('pname');
+    	
+    	console.log("odno : ",odno);
+    	$("#refund-odno").val(odno);
+    	$("#prodName").val(name);
+    },
+	
+	// 배송 조회 모달 open
+   	openDelivery:function(btn) {
+    	var name = $(btn).data('pname');
+    	
+    	$("#pName").val(name);
+    },
+
+	// 장바구니 담기
+	insertCart:function(pno) {
+		let user_id = $("#mid").val();
+		
+		if(user_id == "" || user_id == "undefined") {
+			alert('로그인이 필요한 서비스입니다.');
+			window.location.href="/member-login";
+			return false;
+		} else {
+			// ajax는 기본이 비동기 호출이기 때문에 만약 뒤에 다른 요청이 있으면 그것도 같이 수행
+			// ajax가 통신을 성공하고 서버가 json을 리턴하면 자동으로 자바오브젝트로 변환해줌
+			$.ajax({
+				url: "/cart/insert",
+				type: "post",
+				data: JSON.stringify({
+					mid: $("#mid").val(),
+					pno: pno,
+					quantity : 1
+				}),
+				dataType: "text",
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+				success: function(data){ // 처리 성공 시
+					//alert("[처리결과]"+data);
+					if(data == 'inCart') {
+						alert('상품이 장바구니에 담겼습니다.');
+						//self.history.go(-1);
+					} else if(data == 'exist') {
+						var chk = confirm('장바구니에 같은 상품이 있습니다. \n그래도 담으시겠습니까?');
+						if(chk) {
+							//location.replace("/cart/modCart");
+							$.ajax({
+								url: "/cart/modCart",
+								type: "post",
+								data: JSON.stringify({
+									mid: $("#mid").val(),
+									pno: pno,
+									quantity : 1,
+									type: "add"
+								}),
+								dataType: "text",
+								contentType: "application/json; charset=utf-8",
+								success: function(data){
+									if(data == 'modCart') {
+										alert('상품이 장바구니에 담겼습니다.');
+									} else if(data == 'null') {
+										alert('장바구니 조회 중 일시적인 오류입니다.');
+									} else {
+										alert('로그인이 필요한 서비스입니다.');
+									}
+								}, error: function(err){
+									alert("다시 시도해주세요.");				
+									console.log('[modCart() ajax error] '+err);
+								}	
+							});
+						}
+					} else {
+						alert('로그인이 필요한 서비스입니다.');
+					}
+				}
+			}).fail(function(error){ // 처리 실패 시
+				alert("다시 시도해주세요.");
+				console.log("[insertCart() ajax error] "+JSON.stringify(error));
+			});
+		}
+	},
+	
+	// 주문 상세보기
+	orderDetail:function(ono) { 
+		$("#formm").attr("action", "/order/orderDetail/"+ono);
+		$("#formm").submit();
+	},
+	
+	// 주문 취소
+	cancelOrder:function(ono, odno) {
+		let user_id = $("#mid").val();
+		
+		if(user_id == "" || user_id == "undefined") {
+			alert('로그인이 필요한 서비스입니다.');
+			window.location.href="/member-login";
+			return false;
+		} else {
+			var check = window.confirm("주문을 취소하시겠습니까?");
+			if(check) {
+				$.ajax({
+					url: "/order/orderCancel",
+					type: "post",
+					data: JSON.stringify({
+						mid: $("#mid").val(),
+						ono: ono,
+						odno : odno
+					}),
+					dataType: "text",
+					contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+					success: function(data){ // 처리 성공 시
+						console.log(data);
+						alert("선택하신 상품이 주문취소 처리 되었습니다.");
+						location.replace("/order/orderList");
+					}, error: function(xhr,status,err){
+						alert("다시 시도해주세요.");				
+						console.log('[cancelOrder() ajax error] '+JSON.stringify(err));
+					}
+				}).fail(function(error){ // 처리 실패 시
+					alert("다시 시도해주세요.");
+					console.log("[cancelOrder() ajax error] "+JSON.stringify(error));
+				}); 
+			}
+		}
+	},
+	
+	// 구매 확정
+	buyComplete:function(odno) {
+		//alert("odno : "+odno);
+		let user_id = $("#mid").val();
+		
+		if(user_id == "" || user_id == "undefined") {
+			alert('로그인이 필요한 서비스입니다.');
+			window.location.href="/member-login";
+			return false;
+		} else {
+			$.ajax({
+				url: "/order/orderComplete",
+				type: "post",
+				data: JSON.stringify({
+					//pno: $("#pno").val(),
+					//ono: $("#ono").val(),
+					odno: odno,
+					finalPrice: $("#finalPrice").val() 
+				}),
+				dataType: "text",
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+				success: function(data){ // 처리 성공 시
+					console.log(data);
+					alert("선택하신 상품이 구매확정 처리 되었습니다.");
+					location.replace("/order/orderList");
+				}, error: function(xhr,status,err){
+					alert("다시 시도해주세요.");				
+					console.log('[orderComplete() ajax error] '+err);
+				}
+			}).fail(function(error){ // 처리 실패 시
+				alert("다시 시도해주세요.");
+				console.log("[orderComplete() ajax error] "+JSON.stringify(error));
+			});
+		}
+	},
+
+	// 문의 작성
+	saveQuestion:function() {
+		let data = {
+			pno: $("#qnapno").val(),
+			sid: $("#qnasid").val(),
+			mid: $("#mid").val(),
+			category: $("#question-category").val(),
+			title: $("#question-title").val(),
+			content: $("#question-content").val()
+		}
+		console.log('data = ', data);
+		if(data.mid == null || data.mid.trim() == "") {
+			alert('로그인이 필요한 서비스입니다');
+			return false;			
+		} else if(data.category == 0) {
+			alert('카테고리를 선택해주세요');
+			return false;
+		} else if(data.title.trim() == "") {
+			alert('제목을 입력해주세요');
+			return false;
+		} else if(data.content.trim() == "") {
+			alert('내용을 입력해주세요');
+			return false;
+		} else {
+			$.ajax({
+				type: "post",
+				url: '/product/qna/save/${data.pno}',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+			}).done(function(response){ // 처리 성공 시
+				alert('상품문의가 완료되었습니다');
+				window.location.reload();
+			}).fail(function(error){ // 처리 실패 시
+				alert(JSON.stringify(error));
+			});
+		}
+	},
+	
+	// 리뷰작성 화면
+	writeReview:function(odno) {
+		
+		let user_id = $("#mid").val();
+		
+		if(user_id == "" || user_id == undefined) {
+			alert('로그인이 필요한 서비스입니다.');
+			window.location.href="/member-login";
+			return false;
+		}
+		location.href="/member/reviewWrite/"+odno;
+	},
+	
+	// 교환/반품 신청
+	refund:function() {
+		console.log($("input[name=reason]:checked").length);
+		if($("input[name=reason]:checked").length < 1 && $("#reason").val() == "") {
+			alert("사유를 선택하거나 입력해주세요.");
+			$("#reason").focus();
+			return false;
+		} else if($("input[name=type]:checked").length < 1) {
+			alert("해결 방법을 선택해주세요.");
+			return false;
+		} else {
+			var reason;
+			var reason_txt = $("#reason").val();
+			if(reason_txt == "") {
+				reason = $("input[name=reason]:checked").val();
+			} else {
+				reason = reason_txt;
+			}
+			console.log("odno :",$("#reason").val());
+			
+			$.ajax({
+				url: "/order/orderRefund",
+				type: "post",
+				data: JSON.stringify({
+					odno: $("#refund-odno").val(),
+					reason: reason,
+					type: $("input[name=type]:checked").val()
+				}),
+				dataType: "text",
+				contentType: "application/json; charset=utf-8", // body 데이터의 타입을 표시
+				success: function(data){ // 처리 성공 시
+					console.log(data);
+					alert("신청 되었습니다.");
+					location.replace("/order/orderList");
+					//location.replace("/order/orderCancelList");
+				}, error: function(xhr,status,err){
+					alert("다시 시도해주세요.");				
+					console.log('[orderRefund() ajax error] '+err);
+				}
+			});
+		}
+	}
+}
+index.init();
+</script>
+<!-- 자바스트립트 섹션 끝 -->
+
+</body>
+
+<!-- footer replace -->
+<div th:replace="~{ /fragments/footer.html :: footer }"></div>
