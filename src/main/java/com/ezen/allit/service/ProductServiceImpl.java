@@ -85,7 +85,7 @@ public class ProductServiceImpl implements ProductService {
 		int pageSize = 6;
 
 		Page<Product> productList = 
-				productRepo.findProductBymdPickyn(1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")));
+				productRepo.findProductBymdPickynAndStatus(1, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "pno")), 1);
 
         return productList;
 	}

@@ -61,6 +61,7 @@ public class OrderServiceImpl implements OrderService {
 	
 	/** 주문상세 조회 - Orders에 대한 OrdersDetail 조회 */
 	@Transactional
+	@Override
 	public List<OrdersDetail> getOrderDetail(Member member, Orders order) {
 		
 		List<OrdersDetail> orderDetailList = 
@@ -76,6 +77,16 @@ public class OrderServiceImpl implements OrderService {
 		OrdersDetail detail = ordersDetailRepo.findById(odno).get();
 		detail.setStatus(status);
 		//return ordersDetailRepo.updateStatus(status, odno);
+	}
+	
+	/** 주문 취소 - 취소할 OrdersDetail 조회 */
+	@Transactional
+	@Override
+	public OrdersDetail getOrderDetail(int odno) {
+		
+		OrdersDetail orderDetail = ordersDetailRepo.findById(odno).get();
+		
+		return orderDetail;
 	}
 	
 	/** 주문 취소 - Orders의 finalPrice 수정 */

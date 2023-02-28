@@ -55,6 +55,7 @@
 		<p th:case="TEMP" th:text="입점대기" style="color:red;"></p>
 		<p th:case="SELLER" th:text="판매자" style="color:blue;"></p>
 		<p th:case="ADMIN" th:text="관리자"></p>
+		<p th:case="INACTIVE" th:text="탈퇴판매자"></p>
 	</td>
 	<td th:if="${b}==1">
 		<input type="checkbox" name="sellerId" class="test" th:value="${seller.id}">

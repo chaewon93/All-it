@@ -51,7 +51,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	Page<Product> findByStatusAndNameContaining(int status, String searchKeyword, Pageable pageable);
 	
 	// mdPick 목록
-	Page<Product> findProductBymdPickyn(int y, Pageable pageable);
+	Page<Product> findProductBymdPickynAndStatus(int y, Pageable pageable, int status);
 	
 	// 메인화면에 나오는 mdPick 목록
 	List<Product> findFirst3BymdPickynOrderByRegDateDesc(int y);

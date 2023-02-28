@@ -30,11 +30,12 @@
 			<td>
 			<form id="rep" name="rep" action="/admin/updateReply" method="post">
 				<input type="hidden" name="rno" th:value="${qna.reply?.rno}" >
-				<textarea name="content" cols="40" rows="10" th:text="${qna.reply?.content}" class="form-control"></textarea><hr>
+				<textarea th:if="${qna.category != '상품'}" name="content" cols="40" rows="10" th:text="${qna.reply?.content}" class="form-control"></textarea>
+				<textarea th:if="${qna.category == '상품'}" name="content" rows="10" cols="40" class="form-control" readonly="readonly" th:text="${qna.response}"></textarea><hr>
 				<div class="form-inline ">
 					<input type="button" value="≪ 문의내역 돌아가기" onclick="history.back()" class="form-control mr-sm-2 btn btn-outline-warning"><br>
-					<input type="submit" value="수정" class="form-control mr-sm-2 btn btn-warning"><br>
-					<button type="button" th:if="${qna.status} == '1'" th:onclick="|location.href='@{/admin/deleteReply(qno=${qna.qno})}'|" th:text="답변삭제" class="form-control mr-sm-2 btn btn-secondary"></button>
+					<input type="submit" th:if="${qna.category != '상품'}" value="수정" class="form-control mr-sm-2 btn btn-warning"><br>
+					<button type="button" th:if="${qna.category != '상품'}" th:onclick="|location.href='@{/admin/deleteReply(qno=${qna.qno})}'|" th:text="답변삭제" class="form-control mr-sm-2 btn btn-secondary"></button>
 				</div>				
 			</form>
 			</td>	
@@ -44,7 +45,7 @@
 			<td>
 			<form id="rep" name="rep" action="/admin/insertReply" method="post">
 				<input type="hidden" name="qno" th:value="${qna.qno}" >
-				<textarea th:if="${qna.category != '상품'}" name="content" rows="10" cols="40" class="form-control"></textarea>
+				<textarea th:if="${qna.category != '상품'}" name="content" rows="10" cols="40" class="form-control" ></textarea>
 				<textarea th:if="${qna.category == '상품'}" name="content" rows="10" cols="40" class="form-control" readonly="readonly"></textarea><hr>
 				<div class="form-inline">
 					<input type="button" value="≪ 문의내역 돌아가기" onclick="history.back()" class="form-control mr-sm-2 btn btn-outline-warning"><br>
