@@ -21,7 +21,7 @@ public interface OrderService {
 
 	/** 주문목록 조회(주문 조회) */
 	Page<Orders> getOrder(Member member, Pageable pageable);
-
+	
 	/** 주문상세 조회 */
 	List<OrdersDetail> getOrderDetail(Member member, Orders order);
 	
@@ -33,6 +33,9 @@ public interface OrderService {
 	
 	/** 주문 취소 - Orders 삭제 */
 //	void deleteOrders(int ono);
+	
+	/** 주문 취소 - 취소할 주문 상세 조회 */
+	OrdersDetail getOrderDetail(int odno);
 	
 	/** 주문 취소 - Orders의 finalPrice 수정 */
 	void updateOrders(int ono, int finalPrice);

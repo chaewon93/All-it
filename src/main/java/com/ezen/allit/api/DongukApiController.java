@@ -87,12 +87,12 @@ public class DongukApiController {
 	 * @param reviewDto 상품 페이지에서 댓글삭제 시 넘어온 데이터를 받을 Dto 객체
 	 * @return 	  	 	ajax 사용. 페이지 이동이 아닌 매서드 처리가 성공했음을 알림 
 	 */
-//	@DeleteMapping("/review/delete/{pno}/{rvno}")
-//	public ResponseDto<Integer> deleteReview1(@RequestBody ReviewDto reviewDto) {
-//		reviewService.deleteReview1(reviewDto);
-//		
-//		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
-//	}
+	@DeleteMapping("/review/delete/{pno}/{rvno}")
+	public ResponseDto<Integer> deleteReview1(@RequestBody ReviewDto reviewDto) {
+		reviewService.deleteReview1(reviewDto);
+		
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}
 	
 	/** 리뷰삭제
 	 * @author	  	 	정동욱

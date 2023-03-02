@@ -114,7 +114,7 @@ public class CouponServiceImpl implements CouponService {
 		cal.setTime(memCoupon.getCreateMemCouDate());
 		// 쿠폰 만료일 계산
 		cal.add(Calendar.DATE, coupon.getPeriod());
-		memCoupon.setEndMemCouDate(cal.getTime());;
+		memCoupon.setEndMemCouDate(cal.getTime());
 
 		List<MemCoupon> memCouList = member.getMemCoupon();
 		memCouList.add(memCoupon);

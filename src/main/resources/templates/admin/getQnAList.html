@@ -43,7 +43,7 @@
 	<th width="200">상품명</th>
 	<th width="100">판매자</th>
 	<th width="100">문의등록일</th>
-	<th width="80">답변 상태</th>
+	<th width="80">답변여부</th>
 	<!-- <th width="100">답변</th> -->
 </tr>
 <tr th:if="${list.getTotalElements() == 0}">
@@ -58,8 +58,8 @@
 	<td th:text="${qna.product?.name}"></td>
 	<td th:text="${qna.seller?.id}"></td>
 	<td th:text="${qna.regDate}"></td>
-	<td th:if="${qna.status} == 1" ><span style="color: blue;">답변 완료</span></td>
-	<td th:if="${qna.status} == 0" ><span style="color: red;">답변 대기</span></td>
+	<td th:if="${qna.status} == 1" ><span style="color: blue;">완료</span></td>
+	<td th:if="${qna.status} == 0" ><span style="color: red;">대기</span></td>
 	<!-- <td th:text="${qna.reply?.content}"></td> -->
 </tr>
 </table>

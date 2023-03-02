@@ -101,18 +101,10 @@ public class CustomerCenterServiceImpl implements CustomerCenterService {
 		// 수정하면서 이미지 파일을 추가 안할 때
 		if(imageFile.getOriginalFilename().isEmpty()) {
 			CustomerCenter custo = cusRepo.findById(cus.getCno()).get();
-			
-			// 수정 전 글에 이미지 파일이 있었다면 해당 이미지 파일 삭제
-			if(custo.getImageName()!=null) {
-				String realPath = "c:/allit/images/admin/"; 	// 상품 이미지파일 저장경로
-				File oldFile = new File(realPath, custo.getImageName());
-				oldFile.delete();
-			}
       
 			custo.setCategory(cus.getCategory());
 			custo.setTitle(cus.getTitle());
 			custo.setContent(cus.getContent());
-			custo.setImageName(null);
 			
 			cusRepo.save(custo);
 		// 수정하면서 이미지 파일도 수정
