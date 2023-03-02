@@ -1,5 +1,6 @@
 package com.ezen.allit.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -123,7 +124,11 @@ public class OrderServiceImpl implements OrderService {
 		//int page = pageable.getPageNumber() - 1;
 		int pageSize = 5;
 		
-		return ordersDetailRepo.findByMemberAndCancelDateNotNullAndStatusOrStatus(member, status1, status2, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));
+		List<Integer> status = new ArrayList<>();
+		status.add(status1);
+		status.add(status2);
+		
+		return ordersDetailRepo.findByMemberAndStatusInAndCancelDateNotNull(member, status, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));
 	}
 	
 	/** 오더 디테일에 사용한 쿠폰 등록 */

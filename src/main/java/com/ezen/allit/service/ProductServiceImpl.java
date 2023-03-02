@@ -71,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
 		int pageSize = 6;
 
 		Page<Product> productList = 
-				productRepo.findAllByDiscountNotAndStatusAndSellerRole(0, 1, Role.SELLER, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "discount")));
+				productRepo.findAllByDiscountNotAndStatusAndSellerRole(0, 1, Role.SELLER, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "discount", "pno")));
 
         return productList;
 	}
