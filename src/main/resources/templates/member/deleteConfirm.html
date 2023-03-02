@@ -21,13 +21,13 @@
 	<form id="frm" method="post">
 		<table>
 			<tr>
-				<td>비밀번호</td>
-				<td><input type="password" id="pwd" name="pwd" required="required" class="form-control mr-sm-2" placeholder="비밀번호"/></td>
+				<th>비밀번호</th>
+				<td><input type="password" id="pwd" name="pwd" required="required" class="form-control mr-sm-2" placeholder="현재 비밀번호"/></td>
 			</tr>
 			<tr>
 				<td align="center" colspan="2">
 					<input type="hidden" name="id" id="id">
-					<input type="hidden" name="role" id="role">
+					<input type="hidden" name="role" id="role"><br>
 					<button type="button" class="btn btn-warning" id="checkBtn" th:text="회원탈퇴"></button>
 				</td>
 			</tr>

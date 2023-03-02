@@ -1,5 +1,6 @@
 package com.ezen.allit.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -61,6 +62,7 @@ public class OrderServiceImpl implements OrderService {
 	
 	/** 주문상세 조회 - Orders에 대한 OrdersDetail 조회 */
 	@Transactional
+	@Override
 	public List<OrdersDetail> getOrderDetail(Member member, Orders order) {
 		
 		List<OrdersDetail> orderDetailList = 
@@ -76,6 +78,16 @@ public class OrderServiceImpl implements OrderService {
 		OrdersDetail detail = ordersDetailRepo.findById(odno).get();
 		detail.setStatus(status);
 		//return ordersDetailRepo.updateStatus(status, odno);
+	}
+	
+	/** 주문 취소 - 취소할 OrdersDetail 조회 */
+	@Transactional
+	@Override
+	public OrdersDetail getOrderDetail(int odno) {
+		
+		OrdersDetail orderDetail = ordersDetailRepo.findById(odno).get();
+		
+		return orderDetail;
 	}
 	
 	/** 주문 취소 - Orders의 finalPrice 수정 */
@@ -112,7 +124,11 @@ public class OrderServiceImpl implements OrderService {
 		//int page = pageable.getPageNumber() - 1;
 		int pageSize = 5;
 		
-		return ordersDetailRepo.findByMemberAndCancelDateNotNullAndStatusOrStatus(member, status1, status2, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));
+		List<Integer> status = new ArrayList<>();
+		status.add(status1);
+		status.add(status2);
+		
+		return ordersDetailRepo.findByMemberAndStatusInAndCancelDateNotNull(member, status, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "odno")));
 	}
 	
 	/** 오더 디테일에 사용한 쿠폰 등록 */

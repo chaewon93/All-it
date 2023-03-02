@@ -22,7 +22,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 //				 + "   AND TO_CHAR(sysdate, 'YYYYMMDD')-TO_CHAR(p.reg_date, 'YYYYMMDD')<8"
 //				 + "   AND p.status = 1"
 //				 + "   AND s.role = 'SELLER'", nativeQuery = true)
-	@Query(value="SELECT * FROM newproduct where TO_CHAR(sysdate, 'YYYYMMDD')-TO_CHAR(reg_date, 'YYYYMMDD')<8 AND status = 1 AND role = 'SELLER'", nativeQuery = true)	
+	@Query(value="SELECT * FROM newproduct where sysdate - TO_DATE(TO_CHAR(reg_date, 'YYYYMMDD'), 'YYYYMMDD') < 8 AND status = 1 AND role = 'SELLER'", nativeQuery = true)	
 	Page<Product> getNewProductList(Pageable pageable);
 	
 	// 베스트상품목록조회
@@ -51,7 +51,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	Page<Product> findByStatusAndNameContaining(int status, String searchKeyword, Pageable pageable);
 	
 	// mdPick 목록
-	Page<Product> findProductBymdPickyn(int y, Pageable pageable);
+	Page<Product> findProductBymdPickynAndStatus(int y, Pageable pageable, int status);
 	
 	// 메인화면에 나오는 mdPick 목록
 	List<Product> findFirst3BymdPickynOrderByRegDateDesc(int y);

@@ -309,83 +309,61 @@ public class OrderController {
 	public void orderCancel(Model model, @ModelAttribute("user") Member member,
 							@RequestBody Map<String, Object> param) {
 		
-		Orders order = new Orders();
-		order.setOno(Integer.parseInt(param.get("ono").toString()));
-		
 		int cancelPrice = 0;
 		int coupon = 0;
 		int point = 0;
 		
 		// ono의 모든 주문 상세 정보 조회
-		List<OrdersDetail> orderDetailList = orderService.getOrderDetail(member, order);
+		OrdersDetail orderDetail = orderService.getOrderDetail(Integer.parseInt(param.get("odno").toString()));
 		
-		for(int i=0; i<orderDetailList.size(); i++) {
-			if(orderDetailList.get(i).getOdno() == Integer.parseInt(param.get("odno").toString())) {
-				// 총 상품금액(판매가 * 수량)
-				int prodPrice = orderDetailList.get(i).getProduct().getPrice() * orderDetailList.get(i).getQuantity();
-				
-				// 쿠폰 사용 이력 체크
-				if(orderDetailList.get(i).getMemCoupon() != null) {
-					if(orderDetailList.get(i).getMemCoupon().getCoupon().getDiscount() <= 100) {
-						// 할인율 계산 -> 할인된 금액
-						coupon = (prodPrice * orderDetailList.get(i).getMemCoupon().getCoupon().getDiscount()) / 100;
-						
-						// 할인 금액이 최대 할인금액보다 큰 경우
-						if(coupon > orderDetailList.get(i).getMemCoupon().getCoupon().getMaxValue()) {
-							coupon = orderDetailList.get(i).getMemCoupon().getCoupon().getMaxValue();
-						}
-					} else {
-						// 할인된 금액
-						coupon = orderDetailList.get(i).getMemCoupon().getCoupon().getDiscount();
-					}
-					
-					// MemCoupon의 status를 0(미사용)으로 변경
-					couponService.updateStatus(orderDetailList.get(i).getMemCoupon().getMcid(), 0);
-				} 
-				
-				if(orderDetailList.size() != 1) {
-					System.out.println("========== 개별 주문 취소 ==========");
-					// 개별 취소금액
-					cancelPrice = prodPrice - coupon;
-					memberService.addMoney(member.getId(), cancelPrice);
-					
-					// Orders의 finalPrice 수정 (포인트 적립때문에)
-					orderService.updateOrders(orderDetailList.get(i).getOrders().getOno(), 
-							orderDetailList.get(i).getOrders().getFinalPrice() - cancelPrice);
-					
-					// OrdersDetail 삭제 -> status를 5(주문 취소)로 변경, 취소 신청일 저장
-					//orderService.deleteOrdersDetail(orderDetailList.get(i).getOdno());
-					//orderService.updateStatus(5, orderDetailList.get(i).getOdno());
-					orderService.refundOrder(5, null, orderDetailList.get(i).getOdno());
-				
-				} else {
-					System.out.println("========== 전체 주문 취소 ==========");
-					// 포인트 사용 이력 체크
-					if(orderDetailList.get(i).getOrders().getUsePoint() != 0) {
-						point = orderDetailList.get(i).getOrders().getUsePoint();
-						
-						// 포인트 복원
-						memberService.addPoint(member.getId(), point);
-					}
-					
-					// 전체 취소금액
-					cancelPrice = prodPrice - coupon - point;
-					memberService.addMoney(member.getId(), cancelPrice);
-					
-					// OrdersDetail 삭제 -> status를 5(주문 취소)로 변경, 취소 신청일 저장
-					//orderService.deleteOrdersDetail(orderDetailList.get(i).getOdno());
-					//orderService.updateStatus(5, orderDetailList.get(i).getOdno());
-					orderService.refundOrder(5, null, orderDetailList.get(i).getOdno());
-					
-					// Orders 삭제
-//					orderService.deleteOrders(orderDetailList.get(i).getOrders().getOno());
+		// 총 상품금액(판매가 * 수량)
+		int prodPrice = orderDetail.getProduct().getPrice() * orderDetail.getQuantity();
+
+		// 쿠폰 사용 이력 체크
+		if(orderDetail.getMemCoupon() != null) {
+			if(orderDetail.getMemCoupon().getCoupon().getDiscount() <= 100) {
+				// 할인율 계산 -> 할인된 금액
+				coupon = (prodPrice * orderDetail.getMemCoupon().getCoupon().getDiscount()) / 100;
+
+				// 할인 금액이 최대 할인금액보다 큰 경우
+				if(coupon > orderDetail.getMemCoupon().getCoupon().getMaxValue()) {
+					coupon = orderDetail.getMemCoupon().getCoupon().getMaxValue();
 				}
+			} else {
+				// 할인된 금액
+				coupon = orderDetail.getMemCoupon().getCoupon().getDiscount();
 			}
+
+			// MemCoupon의 status를 0(미사용)으로 변경
+			couponService.updateStatus(orderDetail.getMemCoupon().getMcid(), 0);
+		} 
+
+		// 포인트 사용 이력 체크
+		if(orderDetail.getOrders().getUsePoint() != 0) {
+			point = orderDetail.getOrders().getUsePoint();
 			
-			// 세션에 수정된 정보 저장
-			Member findMember = memberService.getMember(member);
-			model.addAttribute("user", findMember);
+			// 포인트 복원
+			//memberService.addPoint(member.getId(), point);
+			member = memberRepo.findById(member.getId()).get();
+			member.setPoint(member.getPoint() + point);
+			
+			// Orders의 usePoint 0으로 수정
+			orderDetail.getOrders().setUsePoint(0);
 		}
+
+		// 취소금액 올잇머니 복원
+		cancelPrice = prodPrice - coupon - point;
+		memberService.addMoney(member.getId(), cancelPrice);
+
+		// Orders의 finalPrice 수정 (포인트 적립때문에)
+		orderService.updateOrders(orderDetail.getOrders().getOno(), orderDetail.getOrders().getFinalPrice() - cancelPrice);
+
+		// OrdersDetail 삭제 -> status를 5(주문 취소)로 변경, 취소 신청일 저장
+		orderService.refundOrder(5, null, orderDetail.getOdno());
+
+		// 세션에 수정된 정보 저장
+		Member findMember = memberService.getMember(member);
+		model.addAttribute("user", findMember);
 	}
 	
 	/** 구매확정

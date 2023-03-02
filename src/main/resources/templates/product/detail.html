@@ -100,19 +100,19 @@
 	  			<span th:if="${ review.fileStatus == 1 }" th:each="file, status : ${ review.reviewFile }" style="display: inline-block;">
 	  				<img class="img-fluid" id="reviewImg" th:src="@{ /images/review/ } + ${ file.imageName }" width="100"><br>
 	  			</span> <br>
-	  			<span>작성자:</span><span th:text="${ review.member.id }" id="review-writer"></span> <br>
-				<span>평점:</span><span th:text="${ review.rating }" id="review-rating"></span>점 <br>
-				<span>작성일:</span><span th:if="${ review.modDate == null }" th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }"></span>
+	  			<b>작성자 </b><span th:text="${ review.member.id }" id="review-writer" class="text-info"></span> <br>
+				<b>평점 </b><span th:text="${ review.rating }" id="review-rating" class="text-info"></span>점 <br>
+				<b>작성일 </b><span th:if="${ review.modDate == null }" th:text="${ #dates.format(review.regDate, 'yyyy-MM-dd') }" class="text-info"></span>
 								  <span th:if="${ review.modDate != null }" th:text="${ #dates.format(review.modDate, 'yyyy-MM-dd') }+(' (수정됨)')"></span> <br>
-		  		<span>상품명:</span><span th:text="${ review.product.name }"></span> <br>
-		  		<span>리뷰:</span><span th:text="${ review.content }" id="review-content"></span> <br>
-		  		<span>좋아요 </span><span th:text="${ review.hit }"></span>개
+		  		<b>상품명 </b><span th:text="${ review.product.name }" class="text-info"></span> <br>
+		  		<b>리뷰 </b><span th:text="${ review.content }" id="review-content" class="text-info"></span> <br>
+		  		<b>좋아요 </b><span th:text="${ review.hit }" class="text-info"></span>개
 	  		</div>
 	  		<div align="center">
 	  			<!-- <div class="font-italic" th:text="${ review.member.id }"></div> &nbsp; -->
 				<!-- <button class="badge" id="reviewModifyView" style="color: black" th:if="${ review.member.id == session['user']?.id }" th:onclick="'javascript:index.modifyReviewView(this, ' +${ review.rating }+ ', ' +${ review.rvno }+');'">수정</button> -->
-	  			<button class="badge" id="reviewDelete" style="color: black" th:if="${ review.member.id == session['user']?.id }" th:onclick="'javascript:index.deleteReview(pno.value, ' +${ review.rvno }+ ');'">삭제</button>
-	  			<button class="badge" id="reviewHit" style="color: black" th:onclick="'javascript:index.hitReview(pno.value, mid.value, ' +${ review.rvno }+ ');'">좋아요</button>
+	  			<button class="btn btn-outline-info" id="reviewDelete" th:if="${ review.member.id == session['user']?.id }" th:onclick="'javascript:index.deleteReview(pno.value, ' +${ review.rvno }+ ');'">삭제</button>
+	  			<button class="btn btn-info" id="reviewHit" th:onclick="'javascript:index.hitReview(pno.value, mid.value, ' +${ review.rvno }+ ');'">좋아요</button>
 	  		</div>
 	  	</li>
 	  	
